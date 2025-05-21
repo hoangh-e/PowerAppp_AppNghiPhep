@@ -1,0 +1,68 @@
+AppDefinition:
+  Name: AsiaShine_LeaveApp
+  MainContainer:
+    Control: AppContainer
+    Properties:
+      OnVisible: |
+        =If(
+          IsBlank(AppState.CurrentUser),
+          Navigate('LoginScreen'),
+          Navigate('HomeScreen')
+        )
+  AppState:
+    - CurrentUser: =User()
+    - UserRole: =""
+    - SelectedMenuItem: ="Home"
+  DataSources:
+    - NguoiDung:
+        Type: "ConnectedDataSource"
+        ServiceKind: "SharePoint"
+        ServiceName: "AsiaShine_NguoiDung"
+        EntityName: "NguoiDung"
+    - DonNghiPhep:
+        Type: "ConnectedDataSource"
+        ServiceKind: "SharePoint"
+        ServiceName: "AsiaShine_DonNghiPhep"
+        EntityName: "DonNghiPhep"
+    - SoNgayPhep:
+        Type: "ConnectedDataSource"
+        ServiceKind: "SharePoint"
+        ServiceName: "AsiaShine_SoNgayPhep"
+        EntityName: "SoNgayPhep"
+    - NgayLe:
+        Type: "ConnectedDataSource"
+        ServiceKind: "SharePoint"
+        ServiceName: "AsiaShine_NgayLe"
+        EntityName: "NgayLe"
+    - DonVi:
+        Type: "ConnectedDataSource"
+        ServiceKind: "SharePoint"
+        ServiceName: "AsiaShine_DonVi"
+        EntityName: "DonVi"
+    - LoaiNghi:
+        Type: "ConnectedDataSource"
+        ServiceKind: "SharePoint"
+        ServiceName: "AsiaShine_LoaiNghi"
+        EntityName: "LoaiNghi"
+    - PheDuyetDon:
+        Type: "ConnectedDataSource"
+        ServiceKind: "SharePoint"
+        ServiceName: "AsiaShine_PheDuyetDon"
+        EntityName: "PheDuyetDon"
+    - QuyTrinhDuyet:
+        Type: "ConnectedDataSource"
+        ServiceKind: "SharePoint"
+        ServiceName: "AsiaShine_QuyTrinhDuyet"
+        EntityName: "QuyTrinhDuyet"
+  NavigationContainer: 
+    ScreenOrder:
+      - 'LoginScreen'
+      - 'HomeScreen'
+      - 'ProfileScreen'
+      - 'LeaveRequestScreen'
+      - 'PersonalCalendarScreen'
+      - 'TeamCalendarScreen'
+      - 'ApprovalScreen'
+      - 'UserManagementScreen'
+      - 'LeaveManagementScreen'
+      - 'WorkflowSettingsScreen'

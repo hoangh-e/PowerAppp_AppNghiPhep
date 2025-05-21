@@ -1,0 +1,51 @@
+ComponentDefinitions:
+  HeaderComponent:
+    DefinitionType: CanvasComponent
+    AccessAppScope: true
+    CustomProperties:
+      Title:
+        PropertyKind: Input
+        DisplayName: Title
+        Description: The header title text
+        DataType: Text
+        Default: ="App Header"
+    Properties:
+      Height: =64
+      Width: =App.Width
+    Children:
+      - HeaderContainer:
+          Control: GroupContainer
+          Variant: ManualLayout
+          Properties:
+            Fill: =RGBA(0, 120, 212, 1)
+            X: =0
+            Y: =0
+            Width: =Parent.Width
+            Height: =Parent.Height
+          Children:
+            - HeaderContainer.Title:
+                Control: Label
+                Properties:
+                  X: =24
+                  Y: =(Parent.Height - Self.Height) / 2
+                  Width: =Parent.Width - 200
+                  Height: =40
+                  Text: =ThisComponent.Title
+                  Color: =RGBA(255, 255, 255, 1)
+                  Size: =21
+                  FontWeight: =FontWeight.Bold
+                  Align: =Align.Left
+            
+            - HeaderContainer.UserInfo:
+                Control: Label
+                Properties:
+                  X: =Parent.Width - 170
+                  Y: =(Parent.Height - Self.Height) / 2
+                  Width: =150
+                  Height: =40
+                  Text: =LookUp(NguoiDung, Email = User().Email).HoTen
+                  Color: =RGBA(255, 255, 255, 1)
+                  Size: =14
+                  FontWeight: =FontWeight.Semibold
+                  Align: =Align.Right
+

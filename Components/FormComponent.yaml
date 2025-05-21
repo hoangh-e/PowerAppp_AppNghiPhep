@@ -1,0 +1,77 @@
+ComponentDefinitions:
+  FormComponent:
+    DefinitionType: CanvasComponent
+    AccessAppScope: true
+    CustomProperties:
+      FormTitle:
+        PropertyKind: Input
+        DisplayName: Form Title
+        Description: The title of the form
+        DataType: Text
+        Default: ="Thông tin đơn xin nghỉ"
+    Properties:
+      Height: =320
+      Width: =App.Width
+    Children:
+      - FormContainer:
+          Control: GroupContainer
+          Variant: ManualLayout
+          Properties:
+            Fill: =RGBA(240, 240, 240, 1)
+            X: =0
+            Y: =0
+            Width: =Parent.Width
+            Height: =Parent.Height
+          Children:
+            - FormContainer.TitleLabel:
+                Control: Label
+                Properties:
+                  X: =20
+                  Y: =16
+                  Width: =280
+                  Height: =40
+                  Text: =ThisComponent.FormTitle
+                  Color: =RGBA(51, 51, 51, 1)
+                  Size: =18
+                  FontWeight: =FontWeight.Bold
+            
+            - FormContainer.NameLabel:
+                Control: Label
+                Properties:
+                  X: =20
+                  Y: =70
+                  Width: =100
+                  Height: =32
+                  Text: ="Họ và tên:"
+                  Color: =RGBA(51, 51, 51, 1)
+                  Size: =14
+            
+            
+            - FormContainer.EmailLabel:
+                Control: Label
+                Properties:
+                  X: =20
+                  Y: =130
+                  Width: =100
+                  Height: =32
+                  Text: ="Email:"
+                  Color: =RGBA(51, 51, 51, 1)
+                  Size: =14
+            
+            - FormContainer.SubmitButton:
+                Control: Button
+                Properties:
+                  X: =130
+                  Y: =200
+                  Width: =120
+                  Height: =40
+                  Text: ="Gửi đơn"
+                  BorderColor: =RGBA(0, 120, 212, 1)
+                  Fill: =RGBA(0, 120, 212, 1)
+                  Color: =RGBA(255, 255, 255, 1)
+                  DisabledColor: =RGBA(166, 166, 166, 1)
+                  DisabledFill: =RGBA(244, 244, 244, 1)
+                  HoverFill: =RGBA(0, 98, 173, 1)
+                  Size: =14
+                  FontWeight: =FontWeight.Semibold
+                  OnSelect: =ThisComponent.OnSubmit 

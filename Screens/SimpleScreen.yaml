@@ -1,0 +1,36 @@
+ScreenDefinitions:
+  SimpleScreen:
+    DefinitionType: CanvasScreen
+    Properties:
+      Fill: =RGBA(245, 245, 245, 1)
+    Children:
+      - Header:
+          Control: HeaderComponent
+          Properties:
+            X: =0
+            Y: =0
+            Width: =Parent.Width
+            Height: =64
+            Title: ="Ứng dụng nghỉ phép"
+      
+      - Form:
+          Control: FormComponent
+          Properties:
+            X: =0
+            Y: =100
+            Width: =Parent.Width
+            Height: =320
+            FormTitle: ="Thông tin đơn xin nghỉ"
+            OnSubmit: =Notify("Đã gửi đơn thành công!")
+      
+      - Footer:
+          Control: Label
+          Properties:
+            X: =0
+            Y: =Parent.Height - Self.Height
+            Width: =Parent.Width
+            Height: =40
+            Text: ="© 2023 Power App Nghỉ Phép"
+            Size: =12
+            Align: =Align.Center
+            Color: =RGBA(80, 80, 80, 1) 

@@ -1,0 +1,198 @@
+FunctionDefinitions:
+  OnInitialize:
+    Function: |-
+      =ClearCollect(
+        colDocumentsData,
+        [
+          {
+            No: "01",
+            DocName: "Tailieugop.pdf",
+            DocType: "PDF",
+            Reason: "Tài liệu về giá sản phẩm"
+          },
+          {
+            No: "02",
+            DocName: "Bangkechietgia.xlsx",
+            DocType: "XLSX",
+            Reason: "Tài liệu về giá sản phẩm"
+          },
+          {
+            No: "03",
+            DocName: "Tailieugop.pdf",
+            DocType: "PDF",
+            Reason: "Tài liệu về giá sản phẩm"
+          },
+          {
+            No: "04",
+            DocName: "vb e-office",
+            DocType: "DOC",
+            Reason: "Hợp đồng"
+          }
+        ]
+      );
+      
+      ClearCollect(
+        colReviewersData,
+        [
+          {
+            No: "01",
+            Name: "Nguyễn Văn A",
+            Department: "Ban KĐTĐ",
+            Position: "Chuyên viên"
+          },
+          {
+            No: "02",
+            Name: "Nguyễn Văn B",
+            Department: "Ban KĐTĐ",
+            Position: "Chuyên viên"
+          },
+          {
+            No: "03",
+            Name: "Nguyễn Văn A",
+            Department: "Ban KĐTĐ",
+            Position: "Chuyên viên"
+          },
+          {
+            No: "04",
+            Name: "Nguyễn Văn A",
+            Department: "Ban KĐTĐ",
+            Position: "Chuyên viên"
+          }
+        ]
+      );
+      
+      ClearCollect(
+        colCCData,
+        [
+          {
+            No: "01",
+            Name: "Nguyễn Văn A",
+            Department: "Ban KĐTĐ",
+            Position: "Chuyên viên"
+          },
+          {
+            No: "02",
+            Name: "Nguyễn Văn B",
+            Department: "Ban KĐTĐ",
+            Position: "Chuyên viên"
+          }
+        ]
+      );
+      
+      Set(
+        gblProcessSteps,
+        [
+          {
+            StepNumber: 1,
+            StepTitle: "Dự thảo Tờ trình, Gửi thẩm ý kiến",
+            StepStatus: "Completed",
+            IsActive: true
+          },
+          {
+            StepNumber: 2,
+            StepTitle: "Dự thảo BCTR",
+            StepStatus: "Pending",
+            IsActive: false
+          },
+          {
+            StepNumber: 3,
+            StepTitle: "Trình Lãnh đạo phê duyệt",
+            StepStatus: "Pending",
+            IsActive: false
+          },
+          {
+            StepNumber: 4,
+            StepTitle: "Hoàn thành",
+            StepStatus: "Pending",
+            IsActive: false
+          }
+        ]
+      )
+
+  OnSave:
+    Function: |-
+      =Patch(
+        SharePointList,
+        {
+          Title: =txtTitle.Text,
+          Notes: =txtNotes.Text,
+          Deadline: =dtpDeadline.SelectedDate,
+          Status: ="Draft",
+          Documents: =JSON(colDocumentsData),
+          Reviewers: =JSON(colReviewersData),
+          CC: =JSON(colCCData)
+        }
+      );
+      Notify("Đã lưu thành công", NotificationType.Success);
+      Navigate(HomeScreen)
+
+  OnDocUpload:
+    Function: |-
+      =Set(
+        varUploadFile,
+        DocUpload.SelectedFile
+      );
+      If(
+        !IsBlank(varUploadFile),
+        Patch(
+          colDocumentsData,
+          Defaults(colDocumentsData),
+          {
+            No: =Text(CountRows(colDocumentsData) + 1, "00"),
+            DocName: =varUploadFile.Name,
+            DocType: =Upper(Right(varUploadFile.Name, 3)),
+            Reason: ="Tài liệu đính kèm"
+          }
+        )
+      )
+
+  OnDeleteDocument:
+    Function: |-
+      =Remove(
+        colDocumentsData,
+        ThisItem
+      );
+      ForAll(
+        Sort(colDocumentsData, No),
+        Patch(
+          colDocumentsData,
+          ThisRecord,
+          {
+            No: =Text(Index, "00")
+          }
+        )
+      )
+
+  OnDeleteReviewer:
+    Function: |-
+      =Remove(
+        colReviewersData,
+        ThisItem
+      );
+      ForAll(
+        Sort(colReviewersData, No),
+        Patch(
+          colReviewersData,
+          ThisRecord,
+          {
+            No: =Text(Index, "00")
+          }
+        )
+      )
+
+  OnDeleteCC:
+    Function: |-
+      =Remove(
+        colCCData,
+        ThisItem
+      );
+      ForAll(
+        Sort(colCCData, No),
+        Patch(
+          colCCData,
+          ThisRecord,
+          {
+            No: =Text(Index, "00")
+          }
+        )
+      ) 

@@ -1,0 +1,313 @@
+ComponentDefinitions:
+  NavigationMenuComponent:
+    DefinitionType: CanvasComponent
+    AccessAppScope: true
+    CustomProperties:
+      SelectedItem:
+        PropertyKind: Input
+        DisplayName: Selected Item
+        Description: The currently selected menu item
+        DataType: Text
+        Default: ="Home"
+      UserRole:
+        PropertyKind: Input
+        DisplayName: User Role
+        Description: The role of the current user
+        DataType: Text
+        Default: ="NhanVien"
+    Properties:
+      Height: =500
+      Width: =250
+    Children:
+      - MenuContainer:
+          Control: GroupContainer
+          Variant: ManualLayout
+          Properties:
+            Fill: =RGBA(240, 244, 249, 1)
+            X: =0
+            Y: =0
+            Width: =Parent.Width
+            Height: =Parent.Height
+            BorderColor: =RGBA(230, 230, 230, 1)
+            BorderThickness: =0 1 0 0
+          Children:
+            - UserInfoContainer:
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  Fill: =RGBA(0, 120, 212, 0.1)
+                  X: =0
+                  Y: =0
+                  Width: =Parent.Width
+                  Height: =150
+                  BorderColor: =RGBA(230, 230, 230, 1)
+                  BorderThickness: =0 0 1 0
+                Children:
+                  - UserInfoContainer.AvatarBackground:
+                      Control: Rectangle
+                      Properties:
+                        X: =(Parent.Width - 84) / 2
+                        Y: =18
+                        Width: =84
+                        Height: =84
+                        Fill: =RGBA(255, 255, 255, 1)
+                        BorderColor: =RGBA(0, 120, 212, 0.3)
+                        BorderThickness: =1
+                  
+                  - UserInfoContainer.Avatar:
+                      Control: Image
+                      Properties:
+                        X: =(Parent.Width - 80) / 2
+                        Y: =20
+                        Width: =80
+                        Height: =80
+                        BorderColor: =RGBA(0, 120, 212, 1)
+                        BorderThickness: =0
+                        Image: ="https://static.vecteezy.com/system/resources/previews/009/292/244/original/default-avatar-icon-of-social-media-user-vector.jpg"
+                  
+                  - UserInfoContainer.Name:
+                      Control: Label
+                      Properties:
+                        X: =0
+                        Y: =110
+                        Width: =Parent.Width
+                        Height: =30
+                        Text: ="Xin chào, " & LookUp(NguoiDung, Email = User().Email).HoTen
+                        Color: =RGBA(32, 54, 71, 1)
+                        Size: =13
+                        Align: =Align.Center
+                        FontWeight: =FontWeight.Semibold
+            
+            - MenuContainer.Separator:
+                Control: Rectangle
+                Properties:
+                  X: =20
+                  Y: =151
+                  Width: =Parent.Width - 40
+                  Height: =1
+                  Fill: =RGBA(230, 230, 230, 1)
+                  BorderColor: =RGBA(0, 0, 0, 0)
+            
+            - MenuContainer.HomeButton:
+                Control: Classic/Button
+                Properties:
+                  X: =0
+                  Y: =160
+                  Width: =Parent.Width
+                  Height: =48
+                  Text: ="   Trang chủ"
+                  Fill: =If(ThisComponent.SelectedItem = "Home", RGBA(0, 120, 212, 0.1), Transparent)
+                  Color: =If(ThisComponent.SelectedItem = "Home", RGBA(0, 120, 212, 1), RGBA(32, 54, 71, 1))
+                  Size: =14
+                  Align: =Align.Left
+                  PaddingLeft: =40
+                  BorderColor: =Transparent
+                  OnSelect: |
+                    =ThisComponent.OnNavigate({ScreenName: "HomeScreen"})
+            
+            - MenuContainer.HomeIcon:
+                Control: Classic/Icon
+                Properties:
+                  X: =14
+                  Y: =171
+                  Width: =24
+                  Height: =24
+                  Icon: ="Home"
+                  Color: =If(ThisComponent.SelectedItem = "Home", RGBA(0, 120, 212, 1), RGBA(32, 54, 71, 0.7))
+            
+            - MenuContainer.ProfileButton:
+                Control: Classic/Button
+                Properties:
+                  X: =0
+                  Y: =208
+                  Width: =Parent.Width
+                  Height: =48
+                  Text: ="   Thông tin cá nhân"
+                  Fill: =If(ThisComponent.SelectedItem = "Profile", RGBA(0, 120, 212, 0.1), Transparent)
+                  Color: =If(ThisComponent.SelectedItem = "Profile", RGBA(0, 120, 212, 1), RGBA(32, 54, 71, 1))
+                  Size: =14
+                  Align: =Align.Left
+                  PaddingLeft: =40
+                  BorderColor: =Transparent
+                  OnSelect: |
+                    =ThisComponent.OnNavigate({ScreenName: "ProfileScreen"})
+                  Visible: =true
+            
+            - MenuContainer.ProfileIcon:
+                Control: Classic/Icon
+                Properties:
+                  X: =14
+                  Y: =219
+                  Width: =24
+                  Height: =24
+                  Icon: ="Contact"
+                  Color: =If(ThisComponent.SelectedItem = "Profile", RGBA(0, 120, 212, 1), RGBA(32, 54, 71, 0.7))
+            
+            - MenuContainer.LeaveRequestButton:
+                Control: Classic/Button
+                Properties:
+                  X: =0
+                  Y: =256
+                  Width: =Parent.Width
+                  Height: =48
+                  Text: ="   Tạo đơn nghỉ phép"
+                  Fill: =If(ThisComponent.SelectedItem = "LeaveRequest", RGBA(0, 120, 212, 0.1), Transparent)
+                  Color: =If(ThisComponent.SelectedItem = "LeaveRequest", RGBA(0, 120, 212, 1), RGBA(32, 54, 71, 1))
+                  Size: =14
+                  Align: =Align.Left
+                  PaddingLeft: =40
+                  BorderColor: =Transparent
+                  OnSelect: |
+                    =ThisComponent.OnNavigate({ScreenName: "LeaveRequestScreen"})
+                  Visible: =ThisComponent.UserRole = "NhanVien" || ThisComponent.UserRole = "QuanLy" || ThisComponent.UserRole = "GiamDoc" || ThisComponent.UserRole = "NhanSu"
+            
+            - MenuContainer.LeaveRequestIcon:
+                Control: Classic/Icon
+                Properties:
+                  X: =14
+                  Y: =267
+                  Width: =24
+                  Height: =24
+                  Icon: ="Add"
+                  Color: =If(ThisComponent.SelectedItem = "LeaveRequest", RGBA(0, 120, 212, 1), RGBA(32, 54, 71, 0.7))
+            
+            - MenuContainer.CalendarButton:
+                Control: Classic/Button
+                Properties:
+                  X: =0
+                  Y: =304
+                  Width: =Parent.Width
+                  Height: =48
+                  Text: ="   Lịch cá nhân"
+                  Fill: =If(ThisComponent.SelectedItem = "Calendar", RGBA(0, 120, 212, 0.1), Transparent)
+                  Color: =If(ThisComponent.SelectedItem = "Calendar", RGBA(0, 120, 212, 1), RGBA(32, 54, 71, 1))
+                  Size: =14
+                  Align: =Align.Left
+                  PaddingLeft: =40
+                  BorderColor: =Transparent
+                  OnSelect: |
+                    =ThisComponent.OnNavigate({ScreenName: "PersonalCalendarScreen"})
+                  Visible: =ThisComponent.UserRole = "NhanVien" || ThisComponent.UserRole = "QuanLy" || ThisComponent.UserRole = "GiamDoc" || ThisComponent.UserRole = "NhanSu"
+            
+            - MenuContainer.CalendarIcon:
+                Control: Classic/Icon
+                Properties:
+                  X: =14
+                  Y: =315
+                  Width: =24
+                  Height: =24
+                  Icon: ="Calendar"
+                  Color: =If(ThisComponent.SelectedItem = "Calendar", RGBA(0, 120, 212, 1), RGBA(32, 54, 71, 0.7))
+            
+            - MenuContainer.TeamCalendarButton:
+                Control: Classic/Button
+                Properties:
+                  X: =0
+                  Y: =352
+                  Width: =Parent.Width
+                  Height: =48
+                  Text: ="   Lịch chung"
+                  Fill: =If(ThisComponent.SelectedItem = "TeamCalendar", RGBA(0, 120, 212, 0.1), Transparent)
+                  Color: =If(ThisComponent.SelectedItem = "TeamCalendar", RGBA(0, 120, 212, 1), RGBA(32, 54, 71, 1))
+                  Size: =14
+                  Align: =Align.Left
+                  PaddingLeft: =40
+                  BorderColor: =Transparent
+                  OnSelect: |
+                    =ThisComponent.OnNavigate({ScreenName: "TeamCalendarScreen"})
+                  Visible: =ThisComponent.UserRole = "QuanLy" || ThisComponent.UserRole = "GiamDoc" || ThisComponent.UserRole = "NhanSu"
+            
+            - MenuContainer.TeamCalendarIcon:
+                Control: Classic/Icon
+                Properties:
+                  X: =14
+                  Y: =363
+                  Width: =24
+                  Height: =24
+                  Icon: ="CalendarAgenda"
+                  Color: =If(ThisComponent.SelectedItem = "TeamCalendar", RGBA(0, 120, 212, 1), RGBA(32, 54, 71, 0.7))
+            
+            - MenuContainer.ApprovalButton:
+                Control: Classic/Button
+                Properties:
+                  X: =0
+                  Y: =400
+                  Width: =Parent.Width
+                  Height: =48
+                  Text: ="   Phê duyệt đơn nghỉ"
+                  Fill: =If(ThisComponent.SelectedItem = "Approval", RGBA(0, 120, 212, 0.1), Transparent)
+                  Color: =If(ThisComponent.SelectedItem = "Approval", RGBA(0, 120, 212, 1), RGBA(32, 54, 71, 1))
+                  Size: =14
+                  Align: =Align.Left
+                  PaddingLeft: =40
+                  BorderColor: =Transparent
+                  OnSelect: |
+                    =ThisComponent.OnNavigate({ScreenName: "ApprovalScreen"})
+                  Visible: =ThisComponent.UserRole = "QuanLy" || ThisComponent.UserRole = "GiamDoc" || ThisComponent.UserRole = "NhanSu"
+            
+            - MenuContainer.ApprovalIcon:
+                Control: Classic/Icon
+                Properties:
+                  X: =14
+                  Y: =411
+                  Width: =24
+                  Height: =24
+                  Icon: ="CheckMark"
+                  Color: =If(ThisComponent.SelectedItem = "Approval", RGBA(0, 120, 212, 1), RGBA(32, 54, 71, 0.7))
+            
+            - MenuContainer.UserManagementButton:
+                Control: Classic/Button
+                Properties:
+                  X: =0
+                  Y: =448
+                  Width: =Parent.Width
+                  Height: =48
+                  Text: ="   Quản lý người dùng"
+                  Fill: =If(ThisComponent.SelectedItem = "UserManagement", RGBA(0, 120, 212, 0.1), Transparent)
+                  Color: =If(ThisComponent.SelectedItem = "UserManagement", RGBA(0, 120, 212, 1), RGBA(32, 54, 71, 1))
+                  Size: =14
+                  Align: =Align.Left
+                  PaddingLeft: =40
+                  BorderColor: =Transparent
+                  OnSelect: |
+                    =ThisComponent.OnNavigate({ScreenName: "UserManagementScreen"})
+                  Visible: =ThisComponent.UserRole = "Admin"
+            
+            - MenuContainer.UserManagementIcon:
+                Control: Classic/Icon
+                Properties:
+                  X: =14
+                  Y: =459
+                  Width: =24
+                  Height: =24
+                  Icon: ="Group"
+                  Color: =If(ThisComponent.SelectedItem = "UserManagement", RGBA(0, 120, 212, 1), RGBA(32, 54, 71, 0.7))
+            
+            - MenuContainer.BottomSeparator:
+                Control: Rectangle
+                Properties:
+                  X: =20
+                  Y: =Parent.Height - 49
+                  Width: =Parent.Width - 40
+                  Height: =1
+                  Fill: =RGBA(230, 230, 230, 1)
+                  BorderColor: =RGBA(0, 0, 0, 0)
+                  Visible: =true
+            
+            - MenuContainer.LogoutButton:
+                Control: Classic/Button
+                Properties:
+                  X: =20
+                  Y: =Parent.Height - 40
+                  Width: =Parent.Width - 40
+                  Height: =32
+                  Text: ="Đăng xuất"
+                  Fill: =Transparent
+                  Color: =RGBA(209, 82, 55, 1)
+                  Size: =12
+                  Align: =Align.Center
+                  BorderColor: =RGBA(209, 82, 55, 0.5)
+                  BorderThickness: =1
+                  OnSelect: |
+                    =Navigate('LoginScreen')
+                  Visible: =true 
