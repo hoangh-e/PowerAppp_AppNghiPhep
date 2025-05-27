@@ -1,0 +1,326 @@
+Screens:
+  DashboardScreen:
+    Properties:
+      Fill: =RGBA(248, 250, 252, 1)
+      OnVisible: =Set(varActiveScreen, "Dashboard"); Set(varDemoStats, {TotalLeave: 12, UsedLeave: 3, RemainingLeave: 9, PendingRequests: 2, ApprovedRequests: 8, RejectedRequests: 1}); Set(varRecentRequests, Table({ID: "LR001", Date: "2024-01-15", Days: 3, Status: "Approved", Type: "Nghỉ phép năm"}, {ID: "LR002", Date: "2024-02-20", Days: 2, Status: "Pending", Type: "Nghỉ phép năm"}, {ID: "LR003", Date: "2024-03-10", Days: 1, Status: "Rejected", Type: "Nghỉ ốm"}))
+    Children:
+      - 'Dashboard.Header':
+          Control: HeaderComponent
+          Properties:
+            X: =0
+            Y: =0
+            Width: =Parent.Width
+            Height: =80
+            Title: ="Dashboard - Tổng quan"
+            UserName: =varCurrentUser.FullName
+            UserRole: =varCurrentUser.Role
+            ShowNotification: =true
+            NotificationCount: =varDemoStats.PendingRequests
+            
+      - 'Dashboard.Navigation':
+          Control: NavigationComponent
+          Properties:
+            X: =0
+            Y: ='Dashboard.Header'.Y + 'Dashboard.Header'.Height
+            Width: =250
+            Height: =Parent.Height - 'Dashboard.Header'.Height
+            UserRole: =varCurrentUser.Role
+            ActiveScreen: =varActiveScreen
+            OnNavigate: =Set(varNavigateAction, true)
+            
+      - 'Dashboard.Content.Container':
+          Control: GroupContainer
+          Variant: ManualLayout
+          Properties:
+            X: ='Dashboard.Navigation'.X + 'Dashboard.Navigation'.Width
+            Y: ='Dashboard.Header'.Y + 'Dashboard.Header'.Height
+            Width: =Parent.Width - 'Dashboard.Navigation'.Width
+            Height: =Parent.Height - 'Dashboard.Header'.Height
+            Fill: =RGBA(248, 250, 252, 1)
+          Children:
+            - 'Dashboard.Content.Title':
+                Control: Label
+                Properties:
+                  X: =Parent.X + 30
+                  Y: =Parent.Y + 30
+                  Width: =Parent.Width - 60
+                  Height: =40
+                  Text: ="Chào mừng, " & varCurrentUser.FullName
+                  Color: =RGBA(32, 54, 71, 1)
+                  Font: =Font.'Open Sans'
+                  FontWeight: =FontWeight.Bold
+                  Size: =24
+                  
+            - 'Dashboard.Content.Subtitle':
+                Control: Label
+                Properties:
+                  X: =Parent.X + 30
+                  Y: ='Dashboard.Content.Title'.Y + 'Dashboard.Content.Title'.Height
+                  Width: =Parent.Width - 60
+                  Height: =25
+                  Text: ="Tổng quan tình hình nghỉ phép của bạn"
+                  Color: =RGBA(108, 117, 125, 1)
+                  Font: =Font.'Open Sans'
+                  Size: =16
+                  
+            - 'Dashboard.Stats.Row1':
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =Parent.X + 30
+                  Y: ='Dashboard.Content.Subtitle'.Y + 'Dashboard.Content.Subtitle'.Height + 30
+                  Width: =Parent.Width - 60
+                  Height: =120
+                Children:
+                  - 'Dashboard.Stats.TotalLeave':
+                      Control: StatsCardComponent
+                      Properties:
+                        X: =Parent.X
+                        Y: =Parent.Y
+                        Width: =(Parent.Width - 40) / 3
+                        Height: =Parent.Height
+                        Title: ="Tổng số ngày phép"
+                        Value: =varDemoStats.TotalLeave
+                        Icon: ="Calendar"
+                        Color: =RGBA(0, 120, 212, 1)
+                        Subtitle: ="Năm 2024"
+                        
+                  - 'Dashboard.Stats.UsedLeave':
+                      Control: StatsCardComponent
+                      Properties:
+                        X: ='Dashboard.Stats.TotalLeave'.X + 'Dashboard.Stats.TotalLeave'.Width + 20
+                        Y: =Parent.Y
+                        Width: =(Parent.Width - 40) / 3
+                        Height: =Parent.Height
+                        Title: ="Đã sử dụng"
+                        Value: =varDemoStats.UsedLeave
+                        Icon: ="CheckBadge"
+                        Color: =RGBA(40, 167, 69, 1)
+                        Subtitle: ="Ngày đã nghỉ"
+                        
+                  - 'Dashboard.Stats.RemainingLeave':
+                      Control: StatsCardComponent
+                      Properties:
+                        X: ='Dashboard.Stats.UsedLeave'.X + 'Dashboard.Stats.UsedLeave'.Width + 20
+                        Y: =Parent.Y
+                        Width: =(Parent.Width - 40) / 3
+                        Height: =Parent.Height
+                        Title: ="Còn lại"
+                        Value: =varDemoStats.RemainingLeave
+                        Icon: ="Clock"
+                        Color: =RGBA(255, 193, 7, 1)
+                        Subtitle: ="Ngày có thể nghỉ"
+                        
+            - 'Dashboard.Stats.Row2':
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =Parent.X + 30
+                  Y: ='Dashboard.Stats.Row1'.Y + 'Dashboard.Stats.Row1'.Height + 20
+                  Width: =Parent.Width - 60
+                  Height: =120
+                Children:
+                  - 'Dashboard.Stats.PendingRequests':
+                      Control: StatsCardComponent
+                      Properties:
+                        X: =Parent.X
+                        Y: =Parent.Y
+                        Width: =(Parent.Width - 40) / 3
+                        Height: =Parent.Height
+                        Title: ="Chờ phê duyệt"
+                        Value: =varDemoStats.PendingRequests
+                        Icon: ="Clock"
+                        Color: =RGBA(255, 193, 7, 1)
+                        Subtitle: ="Đơn đang chờ"
+                        
+                  - 'Dashboard.Stats.ApprovedRequests':
+                      Control: StatsCardComponent
+                      Properties:
+                        X: ='Dashboard.Stats.PendingRequests'.X + 'Dashboard.Stats.PendingRequests'.Width + 20
+                        Y: =Parent.Y
+                        Width: =(Parent.Width - 40) / 3
+                        Height: =Parent.Height
+                        Title: ="Đã phê duyệt"
+                        Value: =varDemoStats.ApprovedRequests
+                        Icon: ="CheckBadge"
+                        Color: =RGBA(40, 167, 69, 1)
+                        Subtitle: ="Đơn được duyệt"
+                        
+                  - 'Dashboard.Stats.RejectedRequests':
+                      Control: StatsCardComponent
+                      Properties:
+                        X: ='Dashboard.Stats.ApprovedRequests'.X + 'Dashboard.Stats.ApprovedRequests'.Width + 20
+                        Y: =Parent.Y
+                        Width: =(Parent.Width - 40) / 3
+                        Height: =Parent.Height
+                        Title: ="Bị từ chối"
+                        Value: =varDemoStats.RejectedRequests
+                        Icon: ="Cancel"
+                        Color: =RGBA(220, 53, 69, 1)
+                        Subtitle: ="Đơn bị từ chối"
+                        
+            - 'Dashboard.RecentRequests.Title':
+                Control: Label
+                Properties:
+                  X: =Parent.X + 30
+                  Y: ='Dashboard.Stats.Row2'.Y + 'Dashboard.Stats.Row2'.Height + 40
+                  Width: =Parent.Width - 60
+                  Height: =30
+                  Text: ="Đơn nghỉ phép gần đây"
+                  Color: =RGBA(32, 54, 71, 1)
+                  Font: =Font.'Open Sans'
+                  FontWeight: =FontWeight.Bold
+                  Size: =18
+                  
+            - 'Dashboard.RecentRequests.Container':
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =Parent.X + 30
+                  Y: ='Dashboard.RecentRequests.Title'.Y + 'Dashboard.RecentRequests.Title'.Height + 10
+                  Width: =Parent.Width - 60
+                  Height: =200
+                  Fill: =RGBA(255, 255, 255, 1)
+                  BorderColor: =RGBA(230, 230, 230, 1)
+                  BorderThickness: =1
+                  DropShadow: =DropShadow.Light
+                Children:
+                  - 'Dashboard.RecentRequests.Gallery':
+                      Control: Gallery
+                      Variant: Vertical
+                      Properties:
+                        X: =Parent.X + 20
+                        Y: =Parent.Y + 20
+                        Width: =Parent.Width - 40
+                        Height: =Parent.Height - 40
+                        Items: =varRecentRequests
+                        TemplateSize: =50
+                        TemplatePadding: =5
+                      Children:
+                        - 'Gallery.Item.Container':
+                            Control: GroupContainer
+                            Variant: ManualLayout
+                            Properties:
+                              X: =0
+                              Y: =0
+                              Width: =Parent.TemplateWidth
+                              Height: =Parent.TemplateHeight
+                              Fill: =RGBA(248, 249, 250, 1)
+                            Children:
+                              - 'Gallery.Item.Status.Icon':
+                                  Control: Classic/Icon
+                                  Properties:
+                                    X: =Parent.X + 15
+                                    Y: =(Parent.Height - Self.Height) / 2
+                                    Width: =20
+                                    Height: =20
+                                    Icon: =Switch(ThisItem.Status,
+                                      "Approved", Icon.CheckBadge,
+                                      "Pending", Icon.Clock,
+                                      "Rejected", Icon.Cancel,
+                                      Icon.Calendar)
+                                    Color: =Switch(ThisItem.Status,
+                                      "Approved", RGBA(40, 167, 69, 1),
+                                      "Pending", RGBA(255, 193, 7, 1),
+                                      "Rejected", RGBA(220, 53, 69, 1),
+                                      RGBA(108, 117, 125, 1))
+                                      
+                              - 'Gallery.Item.Info':
+                                  Control: Label
+                                  Properties:
+                                    X: ='Gallery.Item.Status.Icon'.X + 'Gallery.Item.Status.Icon'.Width + 15
+                                    Y: =Parent.Y + 5
+                                    Width: =200
+                                    Height: =20
+                                    Text: =ThisItem.Type & " - " & ThisItem.Days & " ngày"
+                                    Color: =RGBA(32, 54, 71, 1)
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Size: =12
+                                    
+                              - 'Gallery.Item.Date':
+                                  Control: Label
+                                  Properties:
+                                    X: ='Gallery.Item.Info'.X
+                                    Y: ='Gallery.Item.Info'.Y + 'Gallery.Item.Info'.Height
+                                    Width: =200
+                                    Height: =15
+                                    Text: ="Ngày tạo: " & ThisItem.Date
+                                    Color: =RGBA(108, 117, 125, 1)
+                                    Font: =Font.'Open Sans'
+                                    Size: =10
+                                    
+                              - 'Gallery.Item.Status.Label':
+                                  Control: Label
+                                  Properties:
+                                    X: =Parent.Width - Self.Width - 15
+                                    Y: =(Parent.Height - Self.Height) / 2
+                                    Width: =80
+                                    Height: =25
+                                    Text: =Switch(ThisItem.Status,
+                                      "Approved", "Đã duyệt",
+                                      "Pending", "Chờ duyệt",
+                                      "Rejected", "Từ chối",
+                                      "Không xác định")
+                                    Color: =RGBA(255, 255, 255, 1)
+                                    Fill: =Switch(ThisItem.Status,
+                                      "Approved", RGBA(40, 167, 69, 1),
+                                      "Pending", RGBA(255, 193, 7, 1),
+                                      "Rejected", RGBA(220, 53, 69, 1),
+                                      RGBA(108, 117, 125, 1))
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Size: =10
+                                    Align: =Align.Center
+                                    
+            - 'Dashboard.QuickActions.Title':
+                Control: Label
+                Properties:
+                  X: =Parent.X + 30
+                  Y: ='Dashboard.RecentRequests.Container'.Y + 'Dashboard.RecentRequests.Container'.Height + 30
+                  Width: =Parent.Width - 60
+                  Height: =30
+                  Text: ="Thao tác nhanh"
+                  Color: =RGBA(32, 54, 71, 1)
+                  Font: =Font.'Open Sans'
+                  FontWeight: =FontWeight.Bold
+                  Size: =18
+                  
+            - 'Dashboard.QuickActions.Container':
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =Parent.X + 30
+                  Y: ='Dashboard.QuickActions.Title'.Y + 'Dashboard.QuickActions.Title'.Height + 10
+                  Width: =Parent.Width - 60
+                  Height: =80
+                Children:
+                  - 'Dashboard.QuickAction.NewRequest':
+                      Control: Classic/Button
+                      Properties:
+                        X: =Parent.X
+                        Y: =Parent.Y
+                        Width: =200
+                        Height: =Parent.Height
+                        Text: ="📝 Tạo đơn nghỉ phép"
+                        Fill: =RGBA(0, 120, 212, 1)
+                        Color: =RGBA(255, 255, 255, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Semibold
+                        Size: =14
+                        OnSelect: =Set(varActiveScreen, "LeaveRequest"); Navigate(LeaveRequestScreen)
+                        
+                  - 'Dashboard.QuickAction.ViewCalendar':
+                      Control: Classic/Button
+                      Properties:
+                        X: ='Dashboard.QuickAction.NewRequest'.X + 'Dashboard.QuickAction.NewRequest'.Width + 20
+                        Y: =Parent.Y
+                        Width: =200
+                        Height: =Parent.Height
+                        Text: ="📅 Xem lịch nghỉ phép"
+                        Fill: =RGBA(40, 167, 69, 1)
+                        Color: =RGBA(255, 255, 255, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Semibold
+                        Size: =14
+                        OnSelect: =Set(varActiveScreen, "Calendar"); Navigate(CalendarScreen) 

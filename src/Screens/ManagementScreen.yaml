@@ -1,0 +1,628 @@
+Screens:
+  ManagementScreen:
+    Properties:
+      Fill: =RGBA(248, 250, 252, 1)
+      OnVisible: =Set(varActiveScreen, "Management"); Set(varManagementTab, "Users"); Set(varUserList, Table({ID: "EMP001", FullName: "Nguyễn Văn An", Email: "an.nguyen@asiashine.com", Department: "Phòng Công nghệ thông tin", Position: "Nhân viên IT", Role: "Employee", Manager: "EMP002", Status: "Active"}, {ID: "EMP002", FullName: "Trần Thị Bình", Email: "binh.tran@asiashine.com", Department: "Phòng Công nghệ thông tin", Position: "Trưởng phòng IT", Role: "Manager", Manager: "EMP003", Status: "Active"}, {ID: "EMP003", FullName: "Lê Văn Cường", Email: "cuong.le@asiashine.com", Department: "Ban Giám đốc", Position: "Giám đốc Khối", Role: "Director", Manager: "EMP004", Status: "Active"}, {ID: "HR001", FullName: "Võ Thị Hoa", Email: "hoa.vo@asiashine.com", Department: "Phòng Nhân sự", Position: "Chuyên viên HR", Role: "HR", Manager: "EMP003", Status: "Active"})); Set(varLeaveQuotaList, Table({EmployeeID: "EMP001", EmployeeName: "Nguyễn Văn An", Year: 2024, TotalDays: 12, UsedDays: 3, RemainingDays: 9}, {EmployeeID: "EMP002", EmployeeName: "Trần Thị Bình", Year: 2024, TotalDays: 15, UsedDays: 5, RemainingDays: 10}, {EmployeeID: "EMP003", EmployeeName: "Lê Văn Cường", Year: 2024, TotalDays: 18, UsedDays: 2, RemainingDays: 16}, {EmployeeID: "HR001", EmployeeName: "Võ Thị Hoa", Year: 2024, TotalDays: 12, UsedDays: 1, RemainingDays: 11})); Set(varHolidayList, Table({Date: Date(2024,1,1), Name: "Tết Dương lịch", Type: "Public Holiday", Status: "Active"}, {Date: Date(2024,2,10), Name: "Tết Nguyên đán (Mùng 1)", Type: "Public Holiday", Status: "Active"}, {Date: Date(2024,2,11), Name: "Tết Nguyên đán (Mùng 2)", Type: "Public Holiday", Status: "Active"}, {Date: Date(2024,4,30), Name: "Ngày Giải phóng miền Nam", Type: "Public Holiday", Status: "Active"}, {Date: Date(2024,5,1), Name: "Ngày Quốc tế Lao động", Type: "Public Holiday", Status: "Active"})); Set(varApprovalWorkflow, Table({Level: 1, RoleName: "Manager", Description: "Trưởng nhóm/Trưởng phòng", RequiredFor: "All requests"}, {Level: 2, RoleName: "Director", Description: "Giám đốc Khối", RequiredFor: "Requests > 3 days"}, {Level: 3, RoleName: "Director", Description: "Giám đốc Điều hành", RequiredFor: "Requests > 5 days"})); Set(varSelectedUser, Blank()); Set(varIsProcessing, false)
+    Children:
+      - 'Management.Header':
+          Control: HeaderComponent
+          Properties:
+            X: =0
+            Y: =0
+            Width: =Parent.Width
+            Height: =80
+            Title: ="Quản lý hệ thống"
+            UserName: =varCurrentUser.FullName
+            UserRole: =varCurrentUser.Role
+            ShowNotification: =true
+            NotificationCount: =2
+            
+      - 'Management.Navigation':
+          Control: NavigationComponent
+          Properties:
+            X: =0
+            Y: ='Management.Header'.Y + 'Management.Header'.Height
+            Width: =250
+            Height: =Parent.Height - 'Management.Header'.Height
+            UserRole: =varCurrentUser.Role
+            ActiveScreen: =varActiveScreen
+            OnNavigate: =Set(varNavigateAction, true)
+            
+      - 'Management.Content.Container':
+          Control: GroupContainer
+          Variant: ManualLayout
+          Properties:
+            X: ='Management.Navigation'.X + 'Management.Navigation'.Width
+            Y: ='Management.Header'.Y + 'Management.Header'.Height
+            Width: =Parent.Width - 'Management.Navigation'.Width
+            Height: =Parent.Height - 'Management.Header'.Height
+            Fill: =RGBA(248, 250, 252, 1)
+          Children:
+            - 'Management.Content.Title':
+                Control: Label
+                Properties:
+                  X: =Parent.X + 30
+                  Y: =Parent.Y + 30
+                  Width: =Parent.Width - 60
+                  Height: =40
+                  Text: ="Quản lý hệ thống"
+                  Color: =RGBA(32, 54, 71, 1)
+                  Font: =Font.'Open Sans'
+                  FontWeight: =FontWeight.Bold
+                  Size: =24
+                  
+            - 'Management.Tabs.Container':
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =Parent.X + 30
+                  Y: ='Management.Content.Title'.Y + 'Management.Content.Title'.Height + 20
+                  Width: =Parent.Width - 60
+                  Height: =60
+                  Fill: =RGBA(255, 255, 255, 1)
+                  BorderColor: =RGBA(230, 230, 230, 1)
+                  BorderThickness: =1
+                  DropShadow: =DropShadow.Light
+                Children:
+                  - 'Management.Tab.Users':
+                      Control: Classic/Button
+                      Properties:
+                        X: =Parent.X + 20
+                        Y: =(Parent.Height - Self.Height) / 2
+                        Width: =150
+                        Height: =40
+                        Text: ="👥 Quản lý người dùng"
+                        Fill: =If(varManagementTab = "Users", RGBA(0, 120, 212, 1), RGBA(248, 249, 250, 1))
+                        Color: =If(varManagementTab = "Users", RGBA(255, 255, 255, 1), RGBA(32, 54, 71, 1))
+                        BorderColor: =RGBA(230, 230, 230, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Semibold
+                        Size: =12
+                        OnSelect: =Set(varManagementTab, "Users")
+                        
+                  - 'Management.Tab.LeaveQuota':
+                      Control: Classic/Button
+                      Properties:
+                        X: ='Management.Tab.Users'.X + 'Management.Tab.Users'.Width + 10
+                        Y: =(Parent.Height - Self.Height) / 2
+                        Width: =150
+                        Height: =40
+                        Text: ="📊 Số ngày phép"
+                        Fill: =If(varManagementTab = "LeaveQuota", RGBA(0, 120, 212, 1), RGBA(248, 249, 250, 1))
+                        Color: =If(varManagementTab = "LeaveQuota", RGBA(255, 255, 255, 1), RGBA(32, 54, 71, 1))
+                        BorderColor: =RGBA(230, 230, 230, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Semibold
+                        Size: =12
+                        OnSelect: =Set(varManagementTab, "LeaveQuota")
+                        
+                  - 'Management.Tab.Holidays':
+                      Control: Classic/Button
+                      Properties:
+                        X: ='Management.Tab.LeaveQuota'.X + 'Management.Tab.LeaveQuota'.Width + 10
+                        Y: =(Parent.Height - Self.Height) / 2
+                        Width: =150
+                        Height: =40
+                        Text: ="📅 Ngày lễ"
+                        Fill: =If(varManagementTab = "Holidays", RGBA(0, 120, 212, 1), RGBA(248, 249, 250, 1))
+                        Color: =If(varManagementTab = "Holidays", RGBA(255, 255, 255, 1), RGBA(32, 54, 71, 1))
+                        BorderColor: =RGBA(230, 230, 230, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Semibold
+                        Size: =12
+                        OnSelect: =Set(varManagementTab, "Holidays")
+                        
+                  - 'Management.Tab.Workflow':
+                      Control: Classic/Button
+                      Properties:
+                        X: ='Management.Tab.Holidays'.X + 'Management.Tab.Holidays'.Width + 10
+                        Y: =(Parent.Height - Self.Height) / 2
+                        Width: =150
+                        Height: =40
+                        Text: ="⚙️ Quy trình"
+                        Fill: =If(varManagementTab = "Workflow", RGBA(0, 120, 212, 1), RGBA(248, 249, 250, 1))
+                        Color: =If(varManagementTab = "Workflow", RGBA(255, 255, 255, 1), RGBA(32, 54, 71, 1))
+                        BorderColor: =RGBA(230, 230, 230, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Semibold
+                        Size: =12
+                        OnSelect: =Set(varManagementTab, "Workflow")
+                        
+            - 'Management.Users.Container':
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =Parent.X + 30
+                  Y: ='Management.Tabs.Container'.Y + 'Management.Tabs.Container'.Height + 20
+                  Width: =Parent.Width - 60
+                  Height: =Parent.Height - 180
+                  Fill: =RGBA(255, 255, 255, 1)
+                  BorderColor: =RGBA(230, 230, 230, 1)
+                  BorderThickness: =1
+                  DropShadow: =DropShadow.Light
+                  Visible: =varManagementTab = "Users"
+                Children:
+                  - 'Management.Users.Title':
+                      Control: Label
+                      Properties:
+                        X: =Parent.X + 20
+                        Y: =Parent.Y + 20
+                        Width: =Parent.Width - 200
+                        Height: =30
+                        Text: ="Quản lý người dùng"
+                        Color: =RGBA(32, 54, 71, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Bold
+                        Size: =16
+                        
+                  - 'Management.Users.AddButton':
+                      Control: Classic/Button
+                      Properties:
+                        X: =Parent.Width - 180
+                        Y: =Parent.Y + 20
+                        Width: =150
+                        Height: =35
+                        Text: ="➕ Thêm người dùng"
+                        Fill: =RGBA(40, 167, 69, 1)
+                        Color: =RGBA(255, 255, 255, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Semibold
+                        Size: =12
+                        OnSelect: =Notify("Chức năng thêm người dùng", NotificationType.Information)
+                        
+                  - 'Management.Users.Gallery':
+                      Control: Gallery
+                      Variant: Vertical
+                      Properties:
+                        X: =Parent.X + 20
+                        Y: ='Management.Users.Title'.Y + 'Management.Users.Title'.Height + 20
+                        Width: =Parent.Width - 40
+                        Height: =Parent.Height - 100
+                        Items: =varUserList
+                        TemplateSize: =80
+                        TemplatePadding: =10
+                      Children:
+                        - 'Gallery.User.Container':
+                            Control: GroupContainer
+                            Variant: ManualLayout
+                            Properties:
+                              X: =0
+                              Y: =0
+                              Width: =Parent.TemplateWidth
+                              Height: =Parent.TemplateHeight
+                              Fill: =RGBA(248, 249, 250, 1)
+                              BorderColor: =RGBA(230, 230, 230, 1)
+                              BorderThickness: =1
+                            Children:
+                              - 'Gallery.User.Info':
+                                  Control: Label
+                                  Properties:
+                                    X: =Parent.X + 15
+                                    Y: =Parent.Y + 10
+                                    Width: =Parent.Width - 200
+                                    Height: =60
+                                    Text: =ThisItem.ID & " - " & ThisItem.FullName & Char(10) & ThisItem.Department & " - " & ThisItem.Position & Char(10) & "Email: " & ThisItem.Email
+                                    Color: =RGBA(32, 54, 71, 1)
+                                    Font: =Font.'Open Sans'
+                                    Size: =12
+                                    
+                              - 'Gallery.User.Role':
+                                  Control: Label
+                                  Properties:
+                                    X: =Parent.Width - 180
+                                    Y: =Parent.Y + 10
+                                    Width: =80
+                                    Height: =25
+                                    Text: =ThisItem.Role
+                                    Color: =RGBA(255, 255, 255, 1)
+                                    Fill: =Switch(ThisItem.Role,
+                                      "Admin", RGBA(220, 53, 69, 1),
+                                      "HR", RGBA(255, 193, 7, 1),
+                                      "Director", RGBA(108, 117, 125, 1),
+                                      "Manager", RGBA(0, 120, 212, 1),
+                                      "Employee", RGBA(40, 167, 69, 1),
+                                      RGBA(108, 117, 125, 1))
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Size: =10
+                                    Align: =Align.Center
+                                    
+                              - 'Gallery.User.Status':
+                                  Control: Label
+                                  Properties:
+                                    X: =Parent.Width - 90
+                                    Y: =Parent.Y + 40
+                                    Width: =60
+                                    Height: =20
+                                    Text: =ThisItem.Status
+                                    Color: =If(ThisItem.Status = "Active", RGBA(40, 167, 69, 1), RGBA(220, 53, 69, 1))
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Size: =10
+                                    
+                              - 'Gallery.User.EditButton':
+                                  Control: Classic/Button
+                                  Properties:
+                                    X: =Parent.Width - 25
+                                    Y: =Parent.Y + 10
+                                    Width: =20
+                                    Height: =20
+                                    Text: ="✏️"
+                                    Fill: =RGBA(248, 249, 250, 1)
+                                    Color: =RGBA(0, 120, 212, 1)
+                                    BorderColor: =RGBA(0, 120, 212, 1)
+                                    Font: =Font.'Open Sans'
+                                    Size: =10
+                                    OnSelect: =Set(varSelectedUser, ThisItem); Notify("Chỉnh sửa " & ThisItem.FullName, NotificationType.Information)
+                                    
+            - 'Management.LeaveQuota.Container':
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =Parent.X + 30
+                  Y: ='Management.Tabs.Container'.Y + 'Management.Tabs.Container'.Height + 20
+                  Width: =Parent.Width - 60
+                  Height: =Parent.Height - 180
+                  Fill: =RGBA(255, 255, 255, 1)
+                  BorderColor: =RGBA(230, 230, 230, 1)
+                  BorderThickness: =1
+                  DropShadow: =DropShadow.Light
+                  Visible: =varManagementTab = "LeaveQuota"
+                Children:
+                  - 'Management.LeaveQuota.Title':
+                      Control: Label
+                      Properties:
+                        X: =Parent.X + 20
+                        Y: =Parent.Y + 20
+                        Width: =Parent.Width - 200
+                        Height: =30
+                        Text: ="Quản lý số ngày phép"
+                        Color: =RGBA(32, 54, 71, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Bold
+                        Size: =16
+                        
+                  - 'Management.LeaveQuota.ImportButton':
+                      Control: Classic/Button
+                      Properties:
+                        X: =Parent.Width - 180
+                        Y: =Parent.Y + 20
+                        Width: =150
+                        Height: =35
+                        Text: ="📁 Import Excel"
+                        Fill: =RGBA(40, 167, 69, 1)
+                        Color: =RGBA(255, 255, 255, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Semibold
+                        Size: =12
+                        OnSelect: =Notify("Chức năng import file Excel", NotificationType.Information)
+                        
+                  - 'Management.LeaveQuota.Gallery':
+                      Control: Gallery
+                      Variant: Vertical
+                      Properties:
+                        X: =Parent.X + 20
+                        Y: ='Management.LeaveQuota.Title'.Y + 'Management.LeaveQuota.Title'.Height + 20
+                        Width: =Parent.Width - 40
+                        Height: =Parent.Height - 100
+                        Items: =varLeaveQuotaList
+                        TemplateSize: =60
+                        TemplatePadding: =5
+                      Children:
+                        - 'Gallery.LeaveQuota.Container':
+                            Control: GroupContainer
+                            Variant: ManualLayout
+                            Properties:
+                              X: =0
+                              Y: =0
+                              Width: =Parent.TemplateWidth
+                              Height: =Parent.TemplateHeight
+                              Fill: =RGBA(248, 249, 250, 1)
+                              BorderColor: =RGBA(230, 230, 230, 1)
+                              BorderThickness: =1
+                            Children:
+                              - 'Gallery.LeaveQuota.Employee':
+                                  Control: Label
+                                  Properties:
+                                    X: =Parent.X + 15
+                                    Y: =Parent.Y + 5
+                                    Width: =200
+                                    Height: =20
+                                    Text: =ThisItem.EmployeeID & " - " & ThisItem.EmployeeName
+                                    Color: =RGBA(32, 54, 71, 1)
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Size: =12
+                                    
+                              - 'Gallery.LeaveQuota.Stats':
+                                  Control: Label
+                                  Properties:
+                                    X: =Parent.X + 15
+                                    Y: ='Gallery.LeaveQuota.Employee'.Y + 'Gallery.LeaveQuota.Employee'.Height + 2
+                                    Width: =300
+                                    Height: =25
+                                    Text: ="Năm " & ThisItem.Year & ": " & ThisItem.TotalDays & " ngày tổng • " & ThisItem.UsedDays & " đã dùng • " & ThisItem.RemainingDays & " còn lại"
+                                    Color: =RGBA(108, 117, 125, 1)
+                                    Font: =Font.'Open Sans'
+                                    Size: =11
+                                    
+                              - 'Gallery.LeaveQuota.Progress':
+                                  Control: Rectangle
+                                  Properties:
+                                    X: =Parent.Width - 120
+                                    Y: =Parent.Y + 15
+                                    Width: =100
+                                    Height: =8
+                                    Fill: =RGBA(230, 230, 230, 1)
+                                    
+                              - 'Gallery.LeaveQuota.ProgressBar':
+                                  Control: Rectangle
+                                  Properties:
+                                    X: =Parent.Width - 120
+                                    Y: =Parent.Y + 15
+                                    Width: =100 * (ThisItem.UsedDays / ThisItem.TotalDays)
+                                    Height: =8
+                                    Fill: =If(ThisItem.UsedDays / ThisItem.TotalDays > 0.8, RGBA(220, 53, 69, 1), If(ThisItem.UsedDays / ThisItem.TotalDays > 0.6, RGBA(255, 193, 7, 1), RGBA(40, 167, 69, 1)))
+                                    
+                              - 'Gallery.LeaveQuota.Percentage':
+                                  Control: Label
+                                  Properties:
+                                    X: =Parent.Width - 50
+                                    Y: =Parent.Y + 25
+                                    Width: =40
+                                    Height: =15
+                                    Text: =Text(ThisItem.UsedDays / ThisItem.TotalDays, "0%")
+                                    Color: =RGBA(108, 117, 125, 1)
+                                    Font: =Font.'Open Sans'
+                                    Size: =9
+                                    Align: =Align.Center
+                                    
+            - 'Management.Holidays.Container':
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =Parent.X + 30
+                  Y: ='Management.Tabs.Container'.Y + 'Management.Tabs.Container'.Height + 20
+                  Width: =Parent.Width - 60
+                  Height: =Parent.Height - 180
+                  Fill: =RGBA(255, 255, 255, 1)
+                  BorderColor: =RGBA(230, 230, 230, 1)
+                  BorderThickness: =1
+                  DropShadow: =DropShadow.Light
+                  Visible: =varManagementTab = "Holidays"
+                Children:
+                  - 'Management.Holidays.Title':
+                      Control: Label
+                      Properties:
+                        X: =Parent.X + 20
+                        Y: =Parent.Y + 20
+                        Width: =Parent.Width - 200
+                        Height: =30
+                        Text: ="Quản lý ngày lễ"
+                        Color: =RGBA(32, 54, 71, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Bold
+                        Size: =16
+                        
+                  - 'Management.Holidays.AddButton':
+                      Control: Classic/Button
+                      Properties:
+                        X: =Parent.Width - 180
+                        Y: =Parent.Y + 20
+                        Width: =150
+                        Height: =35
+                        Text: ="➕ Thêm ngày lễ"
+                        Fill: =RGBA(40, 167, 69, 1)
+                        Color: =RGBA(255, 255, 255, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Semibold
+                        Size: =12
+                        OnSelect: =Notify("Chức năng thêm ngày lễ", NotificationType.Information)
+                        
+                  - 'Management.Holidays.Gallery':
+                      Control: Gallery
+                      Variant: Vertical
+                      Properties:
+                        X: =Parent.X + 20
+                        Y: ='Management.Holidays.Title'.Y + 'Management.Holidays.Title'.Height + 20
+                        Width: =Parent.Width - 40
+                        Height: =Parent.Height - 100
+                        Items: =varHolidayList
+                        TemplateSize: =60
+                        TemplatePadding: =5
+                      Children:
+                        - 'Gallery.Holiday.Container':
+                            Control: GroupContainer
+                            Variant: ManualLayout
+                            Properties:
+                              X: =0
+                              Y: =0
+                              Width: =Parent.TemplateWidth
+                              Height: =Parent.TemplateHeight
+                              Fill: =RGBA(248, 249, 250, 1)
+                              BorderColor: =RGBA(230, 230, 230, 1)
+                              BorderThickness: =1
+                            Children:
+                              - 'Gallery.Holiday.Date':
+                                  Control: Label
+                                  Properties:
+                                    X: =Parent.X + 15
+                                    Y: =Parent.Y + 5
+                                    Width: =100
+                                    Height: =20
+                                    Text: =Text(ThisItem.Date, "dd/mm/yyyy")
+                                    Color: =RGBA(0, 120, 212, 1)
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Bold
+                                    Size: =12
+                                    
+                              - 'Gallery.Holiday.Name':
+                                  Control: Label
+                                  Properties:
+                                    X: ='Gallery.Holiday.Date'.X + 'Gallery.Holiday.Date'.Width + 20
+                                    Y: =Parent.Y + 5
+                                    Width: =300
+                                    Height: =20
+                                    Text: =ThisItem.Name
+                                    Color: =RGBA(32, 54, 71, 1)
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Size: =12
+                                    
+                              - 'Gallery.Holiday.Type':
+                                  Control: Label
+                                  Properties:
+                                    X: =Parent.X + 15
+                                    Y: ='Gallery.Holiday.Date'.Y + 'Gallery.Holiday.Date'.Height + 5
+                                    Width: =200
+                                    Height: =20
+                                    Text: =ThisItem.Type
+                                    Color: =RGBA(108, 117, 125, 1)
+                                    Font: =Font.'Open Sans'
+                                    Size: =11
+                                    
+                              - 'Gallery.Holiday.Status':
+                                  Control: Label
+                                  Properties:
+                                    X: =Parent.Width - 80
+                                    Y: =(Parent.Height - Self.Height) / 2
+                                    Width: =60
+                                    Height: =20
+                                    Text: =ThisItem.Status
+                                    Color: =If(ThisItem.Status = "Active", RGBA(40, 167, 69, 1), RGBA(220, 53, 69, 1))
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Size: =10
+                                    Align: =Align.Center
+                                    
+            - 'Management.Workflow.Container':
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =Parent.X + 30
+                  Y: ='Management.Tabs.Container'.Y + 'Management.Tabs.Container'.Height + 20
+                  Width: =Parent.Width - 60
+                  Height: =Parent.Height - 180
+                  Fill: =RGBA(255, 255, 255, 1)
+                  BorderColor: =RGBA(230, 230, 230, 1)
+                  BorderThickness: =1
+                  DropShadow: =DropShadow.Light
+                  Visible: =varManagementTab = "Workflow"
+                Children:
+                  - 'Management.Workflow.Title':
+                      Control: Label
+                      Properties:
+                        X: =Parent.X + 20
+                        Y: =Parent.Y + 20
+                        Width: =Parent.Width - 200
+                        Height: =30
+                        Text: ="Thiết lập quy trình phê duyệt"
+                        Color: =RGBA(32, 54, 71, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Bold
+                        Size: =16
+                        
+                  - 'Management.Workflow.SaveButton':
+                      Control: Classic/Button
+                      Properties:
+                        X: =Parent.Width - 180
+                        Y: =Parent.Y + 20
+                        Width: =150
+                        Height: =35
+                        Text: ="💾 Lưu cấu hình"
+                        Fill: =RGBA(40, 167, 69, 1)
+                        Color: =RGBA(255, 255, 255, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Semibold
+                        Size: =12
+                        OnSelect: =Notify("Đã lưu cấu hình quy trình phê duyệt", NotificationType.Success)
+                        
+                  - 'Management.Workflow.Info':
+                      Control: Label
+                      Properties:
+                        X: =Parent.X + 20
+                        Y: ='Management.Workflow.Title'.Y + 'Management.Workflow.Title'.Height + 20
+                        Width: =Parent.Width - 40
+                        Height: =60
+                        Text: ="Quy trình phê duyệt đơn nghỉ phép được thiết lập theo 3 cấp độ. Tùy thuộc vào số ngày nghỉ và vai trò của người tạo đơn, hệ thống sẽ tự động định tuyến đến các cấp phê duyệt phù hợp."
+                        Color: =RGBA(108, 117, 125, 1)
+                        Font: =Font.'Open Sans'
+                        Size: =12
+                        
+                  - 'Management.Workflow.Gallery':
+                      Control: Gallery
+                      Variant: Vertical
+                      Properties:
+                        X: =Parent.X + 20
+                        Y: ='Management.Workflow.Info'.Y + 'Management.Workflow.Info'.Height + 20
+                        Width: =Parent.Width - 40
+                        Height: =Parent.Height - 180
+                        Items: =varApprovalWorkflow
+                        TemplateSize: =80
+                        TemplatePadding: =10
+                      Children:
+                        - 'Gallery.Workflow.Container':
+                            Control: GroupContainer
+                            Variant: ManualLayout
+                            Properties:
+                              X: =0
+                              Y: =0
+                              Width: =Parent.TemplateWidth
+                              Height: =Parent.TemplateHeight
+                              Fill: =RGBA(240, 248, 255, 1)
+                              BorderColor: =RGBA(0, 120, 212, 1)
+                              BorderThickness: =2
+                            Children:
+                              - 'Gallery.Workflow.Level':
+                                  Control: Label
+                                  Properties:
+                                    X: =Parent.X + 15
+                                    Y: =Parent.Y + 10
+                                    Width: =100
+                                    Height: =25
+                                    Text: ="Cấp " & ThisItem.Level
+                                    Color: =RGBA(0, 120, 212, 1)
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Bold
+                                    Size: =14
+                                    
+                              - 'Gallery.Workflow.Role':
+                                  Control: Label
+                                  Properties:
+                                    X: ='Gallery.Workflow.Level'.X + 'Gallery.Workflow.Level'.Width + 20
+                                    Y: =Parent.Y + 10
+                                    Width: =200
+                                    Height: =25
+                                    Text: =ThisItem.RoleName & " - " & ThisItem.Description
+                                    Color: =RGBA(32, 54, 71, 1)
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Size: =12
+                                    
+                              - 'Gallery.Workflow.Condition':
+                                  Control: Label
+                                  Properties:
+                                    X: =Parent.X + 15
+                                    Y: ='Gallery.Workflow.Level'.Y + 'Gallery.Workflow.Level'.Height + 5
+                                    Width: =Parent.Width - 30
+                                    Height: =20
+                                    Text: ="Áp dụng cho: " & ThisItem.RequiredFor
+                                    Color: =RGBA(108, 117, 125, 1)
+                                    Font: =Font.'Open Sans'
+                                    Size: =11
+                                    
+                              - 'Gallery.Workflow.EditButton':
+                                  Control: Classic/Button
+                                  Properties:
+                                    X: =Parent.Width - 80
+                                    Y: =Parent.Y + 10
+                                    Width: =60
+                                    Height: =25
+                                    Text: ="Chỉnh sửa"
+                                    Fill: =RGBA(248, 249, 250, 1)
+                                    Color: =RGBA(0, 120, 212, 1)
+                                    BorderColor: =RGBA(0, 120, 212, 1)
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Size: =10
+                                    OnSelect: =Notify("Chỉnh sửa cấp " & ThisItem.Level, NotificationType.Information) 

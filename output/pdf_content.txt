@@ -1,0 +1,258 @@
+NỘI DUNG PDF
+==================================================
+
+--- TRANG 1 ---
+URD
+ỨNG DỤNG QUẢN LÝ NGHỈ PHÉP
+--- TRANG 2 ---
+MỤC LỤC
+I. Tổng quan ứng dụng ..........................................................................................................1
+1. Mục đích ...............................................................................................................................1
+II. Đối tượng sử dụng và các role phân chia .........................................................................1
+1. Role trong ứng dụng ...........................................................................................................1
+2. Role phê duyệt .....................................................................................................................2
+III. Chức năng và matrix ........................................................................................................2
+IV. Chi tiết chức năng ............................................................................................................3
+1. Quản lý thông tin ứng dụng (Master data) ..................................................................3
+a. Quản lý thông tin người dùng ...................................................................................3
+b. Quản lý số ngày nghỉ phép........................................................................................3
+c. Quản lý lịch nghỉ phép ...............................................................................................4
+2. Quản lý nghỉ phép .........................................................................................................4
+a. Tạo đơn nghỉ phép .....................................................................................................5
+b. Phê duyệt nghỉ phép ..................................................................................................6
+3. Dashboard báo cáo .......................................................................................................7
+a. Theo dõi nghỉ phép ....................................................................................................7
+b. Xuất file báo cáo .........................................................................................................8
+--- TRANG 3 ---
+Ngày hoàn
+Version Người thực hiện Người kiểm tra Ghi chú
+thành
+1.0 Võ Đỗ Thi Nhân 7/10/2023
+Cập nhật các nội dung sau
+sửa đổi của AsiaShine và
+1.1 Trần Văn Hậu Võ Đỗ Thi Nhân 11/10/2023
+sau cuộc họp giữa hai bên
+11/10/2023
+--- TRANG 4 ---
+I. Tổng quan ứng dụng
+1. Mục đích
+❖ Thống kê, theo dõi số ngày nghỉ phép
+❖ Số hóa quy trình nghỉ phép hiện tại
+❖ Phê duyệt nhanh chóng qua ứng dụng và mail
+2. Đối tượng áp dụng
+Toàn thể cán bộ nhân viên của Asia Shine
+3. Công nghệ sử dụng
+❖ Microsoft Power Apps & Power Automate: Xây dựng ứng dụng
+❖ Sharepoint: Nơi chứa dữ liệu
+4. Phạm vi
+Ứng dụng sẽ được sử dụng trực tiếp trên trang của Power Apps, trang portal sẽ chỉ
+hiện icon dẫn tới ứng dụng
+II. Đối tượng sử dụng và các role phân chia
+Người dùng sẽ được phân chia role theo hai hướng song song khi sử dụng ứng dụng, nhằm
+phục vụ cho quá trình phê duyệt và phân quyền dữ liệu, gồm role trong ứng dụng và role phê
+duyệt.
+Một role trong ứng dụng có thể gộp chung cho nhiều role phê duyệt.
+1. Role trong ứng dụng
+Là các role dùng để phân quyền trong ứng dụng, với mỗi role sẽ được truy cập chức năng
+và hiển thị dữ liệu khác nhau.
+STT Role Người dùng Ghi chú
+1 Employee Nhân viên
+Gồm Tổ trưởng/ Thủ kho/ Trưởng nhóm/
+2 Manager Trưởng đơn vị Trưởng bộ phận/ Trưởng phòng
+Chỉ quản lý thông tin đơn vị của mình
+Gồm Giám đốc Khối và Giám đốc Điều hành
+3 Director Ban giám đốc
+Quản lý thông tin của toàn bộ nhân viên
+Trang 1
+--- TRANG 5 ---
+Gồm các nhân sự phụ trách ghi nhận, kiểm
+4 HR C&B, HR soát dữ liệu nghỉ phép
+Có quyền truy cập toàn bộ dữ liệu
+Tài khoản dùng để thiết lập thông tin cho ứng
+5 Admin IT dụng
+Ví dụ: Thêm nhân viên vào ứng dụng
+2. Role phê duyệt
+Role phê duyệt dùng cho việc sắp xếp thứ tự phê duyệt, cả trong ứng dụng và qua mail, và
+tùy theo điều kiện mà yêu cầu phê duyệt sẽ được chuyển tới cấp tương ứng
+Role Cấp phê duyệt Ghi chú
+Trưởng nhóm/ Trưởng bộ
+1
+phận/ Trưởng phòng
+Giám đốc khối 2
+Giám đốc điều hành 3
+C&B / HR Chỉ ghi nhận chứ không phê duyệt
+III. Chức năng và matrix
+Bảng dưới liệt kê tất cả các chức năng sẽ có và quyền hạn truy cập tương ứng của từng role
+trong ứng dụng
+Người sử dụng
+STT Chức năng
+Employee Manager Director HR Admin
+Quản lý thông tin ứng dụng (master data)
+1 Quản lý thông tin người dùng x
+x
+2 Quản lý số ngày nghỉ phép
+3 Quản lý lịch nghỉ phép x x
+4 Quản lý quy trình phê duyệt x
+5 Quản lý role trong ứng dụng x
+Quản lý nghỉ phép
+6 Tạo nghỉ phép x x x x
+Trang 2
+--- TRANG 6 ---
+7 Xem thông tin nghỉ phép x x x x
+8 Phê duyệt nghỉ phép x x
+Dashboard báo cáo
+9 Theo dõi nghỉ phép x x x x
+10 Xuất file báo cáo x
+IV. Chi tiết chức năng
+1. Quản lý thông tin ứng dụng (Master data)
+a. Quản lý thông tin người dùng
+Mỗi người dùng trong ứng dụng sẽ có các trường thông tin sau
+STT Trường
+1 Mã Nhân viên
+2 Họ và tên
+3 Email
+4 Số điện thoại
+5 Chức danh
+6 Đơn vị
+Chức năng cho phép Admin thêm mới, cập nhật, chỉnh sửa thông tin của một người
+dùng cụ thể.
+b. Quản lý số ngày nghỉ phép
+Chức năng bao gồm các nội dung:
+Cho phép HR tải file excel vào ứng dụng vào để cập nhật số ngày nghỉ phép của cán bộ
+nhân viên mỗi năm. Nội dung file excel gồm các trường sau:
+STT Trường
+1 Mã Nhân viên
+2 Họ và tên
+3 Email
+Trang 3
+--- TRANG 7 ---
+4 Tổng ngày phép
+5 Năm
+Sau khi cập nhật xong, sẽ có mail thông báo gửi đến cho tất cả nhân viên.
+HR có thể xem thông tin số ngày nghỉ phép của cán bộ nhân viên trong ứng dụng:
+❖ Tổng số ngày phép trong năm
+❖ Tổng số ngày phép hữu dụng còn lại
+❖ Tổng số ngày phép đã dùng trong năm
+❖ Số ngày xin nghỉ không lương
+c. Quản lý lịch nghỉ phép
+HR hoặc Admin có thể thiết lập các thông tin liên qua đến lịch nghỉ phép, bao gồm:
+❖ Thêm, sửa, xóa các ngày nghỉ trong năm (chủ nhật được tự động cho nghỉ)
+❖ Thiết lập thời lượng nghỉ của các ngày trong tuần (một buổi, nửa buổi).
+d. Quản lý quy trình phê duyệt
+Admin có thể thiết lập người phê duyệt tương ứng cho từng cấp. Số lượng cấp phê
+duyệt sẽ được thống nhất là 3 cấp, theo role phê duyệt, không thay đổi.
+Quá trình thiết lập phải được thực hiện sau khi không còn yêu cầu nghỉ phép nào đang
+chờ phê duyệt.
+e. Quản lý role trong ứng dụng
+Cho phép admin thay đổi role hiện tại trong ứng dụng của một người dùng cụ thể. Sau
+khi thay đổi sẽ có mail thông báo gửi đến cho người dùng.
+2. Quản lý nghỉ phép
+Mỗi người dùng sẽ có một lịch cá nhân trên ứng dụng để theo dõi ngày phép của mình,
+riêng các role Manager, Director, HR sẽ có lịch theo dõi chung tương ứng với dữ liệu
+phân quyền.
+Trang 4
+--- TRANG 8 ---
+a. Tạo đơn nghỉ phép
+Tất cả người dùng đều có thể tạo đơn nghỉ phép.
+Nội dung đơn nghỉ phép gồm các thông tin sau:
+STT Trường Ghi chú
+1 Mã Nhân viên
+2 Họ & tên Tên người làm đơn
+3 Chức danh
+4 Đơn vị
+5 Thời gian nghỉ Ngày bắt đầu và kết thúc
+6 Số lượng nghỉ Tổng số ngày nghỉ
+7 Lý do nghỉ
+Người nhận bàn giao công
+8
+việc
+9 Nội dung công việc bàn giao
+10 File đính kèm
+Đơn nghỉ phép phải tuân thủ theo các điều kiện sau:
+❖ Nghỉ 0.5 - 2 ngày: thời gian tạo trước 1 ngày làm việc
+❖ Nghỉ 3 - 4 ngày: thời gian tạo trước 7 ngày làm việc
+❖ Nghỉ từ 5 ngày trở lên: thời gian tạo trước là 14 ngày làm việc
+Số ngày nghỉ phép khi tạo đơn phải tuân theo các điều kiện sau:
+❖ Số ngày được nghỉ tối đa sẽ tính bằng số ngày nghỉ còn lại hiện tại lúc tạo đơn
+cộng thêm số ngày phép của 3 tháng tiếp theo, từ tháng 9 trở đi sẽ được cộng
+thêm tất cả ngày nghỉ còn lại trong năm.
+❖ Nếu tổng số ngày phép được nghỉ là số thập phân, thì sẽ được tính như sau: phần
+thập phân bằng hoặc lớn hơn 0.5 thì làm tròn lên, ngược lại sẽ làm tròn xuống.
+Ví dụ: 1.46 sẽ được làm tròn thành 1, 1.5 sẽ được làm tròn thành 2
+Trang 5
+--- TRANG 9 ---
+❖ Nếu số ngày nghỉ vượt quá mức tối đa cho phép, phần vượt sẽ được tính là nghỉ
+phép không lương.
+Cho phép tạo các đơn nghỉ phép có khoảng thời gian trước ngày hiện tại đối với trường
+hợp đặc biệt không thể tạo đúng điều kiện quy định.
+Đơn nghỉ phép sau khi đã tạo thì không thể xóa hay chỉnh sửa.
+b. Phê duyệt nghỉ phép
+Phê duyệt sẽ được thực hiện song song theo hai hướng, người dùng có thể phê duyệt
+cả trong ứng dụng và phê duyệt qua mail.
+QUY TRÌNH PHÊ DUYỆT NGHỈ PHÉP
+Trưởng nhóm/
+Nhân viên Giám đốc Khối Giám đốc Điều hành C&B/ HR
+Trưởng bộ phận/ Trưởng phòng
+Đơn xin
+Nhận mail thông báo Nhận mail thông báo Nhận mail thông báo
+nghỉ phép ngày
+phê duyệt phê duyệt phê duyệt
+> 12 ngày
+Phê duyệt Phê duyệt Phê duyệt
+> 12 ngày
+ngày Nhận mail thông báo
+Không đồng ý
+Từ chối phép
+Ghi nhận phép
+Role Cấp Mô tả
+Sau khi người dùng tạo đơn nghỉ phép (≤ 12 ngày), mail chứa
+thông tin nghỉ phép sẽ được tự động gửi đến cho Trưởng nhóm/
+Trưởng bộ phận/ Trưởng phòng.
+Trưởng nhóm/ Trưởng bộ phận/ Trưởng phòng thực hiện xem
+Trưởng nhóm/ Trưởng
+1
+bộ phận/ Trưởng phòng xét thông tin và phê duyệt đơn nghỉ phép.
+Riêng người tạo là role này, thì sẽ tự động hoàn thành bước này.
+Sau khi phê duyệt:
+❖ Nếu từ chối sẽ tự động gửi mail tự động đến người gửi
+Trang 6
+--- TRANG 10 ---
+❖ Nếu đồng ý thì chuyển tiếp phê duyệt tới cấp tiếp theo
+Giám đốc khối thực hiện xem xét thông tin và phê duyệt đơn
+nghỉ phép.
+Riêng người tạo là role này, thì sẽ tự động hoàn thành bước này.
+Sau khi phê duyệt:
+Giám đốc Khối 2
+❖ Nếu từ chối sẽ tự động gửi mail đến người gửi
+❖ Nếu số ngày phép lớn hơn 12 ngày thì chuyển tiếp phê duyệt
+tới cấp tiếp theo, ngược lại sẽ tự động gửi mail chấp nhận
+phê duyệt đến người gửi và bộ phận C&B/HR để ghi nhận
+Giám đốc điều hành thực hiện xem xét thông tin và phê duyệt
+đơn nghỉ phép.
+Riêng người tạo là role này, thì sẽ tự động hoàn thành bước này.
+Sau khi phê duyệt:
+Giám đốc Điều hành 3
+❖ Nếu từ chối sẽ tự động gửi mail đến người gửi
+❖ Nếu phê duyệt sẽ tự động gửi mail chấp thuận đến người gửi
+và bộ phận C&B/HR để ghi nhận
+C&B / HR Nhận mail và thực hiện ghi nhận kết quả nghỉ phép
+Thời gian cho mỗi cấp phê duyệt là 1 ngày, nếu quá thời gian mà chưa duyệt, đơn
+nghỉ phép sẽ bị hủy và gửi mail thông báo về cho người gửi.
+3. Dashboard báo cáo
+Các role quản lý đều có thể theo dõi tình hình nghỉ phép của cán bộ nhân viên thông qua
+các biểu đồ thống kê (trừ Admin), và dữ liệu theo dõi sẽ được phân quyền theo role.
+a. Theo dõi nghỉ phép
+Cung cấp giao diện hiển thị tổng quan tình hình nghỉ phép của cán bộ nhân viên
+❖ Biểu đồ cột thể hiện tổng nghỉ phép trong năm theo tháng
+❖ Bộ lọc nâng cao cho phép các lựa chọn:
+• Hiển thị biểu đồ theo nhân viên cụ thể theo tháng
+• Hiển thị biểu đồ theo toàn bộ nhân viên và trong 1 tháng được chọn
+• Với các role HR, Director sẽ có thêm lựa chọn hiển thị theo phòng ban
+Trang 7
+--- TRANG 11 ---
+b. Xuất file báo cáo
+Cho phép xuất ra file CSV theo từng biểu đồ hiển thị.
+Cho phép xuất file CSV tổng chứa dữ liệu nghỉ phép tất cả nhân viên trong tháng và
+trong năm.
+- END -
+Trang 8

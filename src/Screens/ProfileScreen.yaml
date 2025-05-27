@@ -1,0 +1,578 @@
+Screens:
+  ProfileScreen:
+    Properties:
+      Fill: =RGBA(248, 250, 252, 1)
+      OnVisible: =Set(varActiveScreen, "Profile"); Set(varUserProfile, {ID: varCurrentUser.ID, FullName: varCurrentUser.FullName, Email: varCurrentUser.Email, Phone: "0901234567", Department: varCurrentUser.Department, Position: "Nhân viên IT", Role: varCurrentUser.Role, Manager: "Trần Thị Bình", JoinDate: "01/01/2023", Status: "Active"}); Set(varLeaveBalance, {Year: 2024, TotalDays: 12, UsedDays: 3, RemainingDays: 9, UnpaidDays: 0, CarryOverDays: 2}); Set(varLeaveHistory, Table({ID: "LR001", Date: "15/01/2024", EndDate: "17/01/2024", Days: 3, Type: "Nghỉ phép năm", Status: "Approved", Reason: "Nghỉ lễ Tết"}, {ID: "LR003", Date: "10/03/2024", EndDate: "15/03/2024", Days: 6, Type: "Nghỉ phép năm", Status: "Rejected", Reason: "Du lịch gia đình"}, {ID: "LR004", Date: "05/04/2024", EndDate: "05/04/2024", Days: 1, Type: "Nghỉ ốm", Status: "Approved", Reason: "Khám bệnh"}, {ID: "LR005", Date: "25/04/2024", EndDate: "26/04/2024", Days: 2, Type: "Nghỉ phép năm", Status: "Pending", Reason: "Nghỉ cuối tuần dài"})); Set(varIsEditing, false)
+    Children:
+      - 'Profile.Header':
+          Control: HeaderComponent
+          Properties:
+            X: =0
+            Y: =0
+            Width: =Parent.Width
+            Height: =80
+            Title: ="Thông tin cá nhân"
+            UserName: =varCurrentUser.FullName
+            UserRole: =varCurrentUser.Role
+            ShowNotification: =true
+            NotificationCount: =2
+            
+      - 'Profile.Navigation':
+          Control: NavigationComponent
+          Properties:
+            X: =0
+            Y: ='Profile.Header'.Y + 'Profile.Header'.Height
+            Width: =250
+            Height: =Parent.Height - 'Profile.Header'.Height
+            UserRole: =varCurrentUser.Role
+            ActiveScreen: =varActiveScreen
+            OnNavigate: =Set(varNavigateAction, true)
+            
+      - 'Profile.Content.Container':
+          Control: GroupContainer
+          Variant: ManualLayout
+          Properties:
+            X: ='Profile.Navigation'.X + 'Profile.Navigation'.Width
+            Y: ='Profile.Header'.Y + 'Profile.Header'.Height
+            Width: =Parent.Width - 'Profile.Navigation'.Width
+            Height: =Parent.Height - 'Profile.Header'.Height
+            Fill: =RGBA(248, 250, 252, 1)
+          Children:
+            - 'Profile.Content.Title':
+                Control: Label
+                Properties:
+                  X: =Parent.X + 30
+                  Y: =Parent.Y + 30
+                  Width: =Parent.Width - 60
+                  Height: =40
+                  Text: ="Thông tin cá nhân"
+                  Color: =RGBA(32, 54, 71, 1)
+                  Font: =Font.'Open Sans'
+                  FontWeight: =FontWeight.Bold
+                  Size: =24
+                  
+            - 'Profile.Main.Container':
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =Parent.X + 30
+                  Y: ='Profile.Content.Title'.Y + 'Profile.Content.Title'.Height + 20
+                  Width: =Parent.Width - 60
+                  Height: =Parent.Height - 120
+                Children:
+                  - 'Profile.Info.Container':
+                      Control: GroupContainer
+                      Variant: ManualLayout
+                      Properties:
+                        X: =Parent.X
+                        Y: =Parent.Y
+                        Width: =Parent.Width * 0.6 - 10
+                        Height: =Parent.Height
+                        Fill: =RGBA(255, 255, 255, 1)
+                        BorderColor: =RGBA(230, 230, 230, 1)
+                        BorderThickness: =1
+                        DropShadow: =DropShadow.Light
+                      Children:
+                        - 'Profile.Info.Header':
+                            Control: GroupContainer
+                            Variant: ManualLayout
+                            Properties:
+                              X: =Parent.X + 20
+                              Y: =Parent.Y + 20
+                              Width: =Parent.Width - 40
+                              Height: =60
+                            Children:
+                              - 'Profile.Info.Title':
+                                  Control: Label
+                                  Properties:
+                                    X: =Parent.X
+                                    Y: =Parent.Y
+                                    Width: =Parent.Width - 120
+                                    Height: =30
+                                    Text: ="Thông tin nhân viên"
+                                    Color: =RGBA(32, 54, 71, 1)
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Bold
+                                    Size: =16
+                                    
+                              - 'Profile.Info.EditButton':
+                                  Control: Classic/Button
+                                  Properties:
+                                    X: =Parent.Width - 100
+                                    Y: =Parent.Y
+                                    Width: =100
+                                    Height: =35
+                                    Text: =If(varIsEditing, "💾 Lưu", "✏️ Chỉnh sửa")
+                                    Fill: =If(varIsEditing, RGBA(40, 167, 69, 1), RGBA(0, 120, 212, 1))
+                                    Color: =RGBA(255, 255, 255, 1)
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Size: =12
+                                    OnSelect: =If(varIsEditing, Notify("Thông tin đã được cập nhật!", NotificationType.Success); Set(varIsEditing, false), Set(varIsEditing, true))
+                                      
+                        - 'Profile.Info.Avatar.Container':
+                            Control: GroupContainer
+                            Variant: ManualLayout
+                            Properties:
+                              X: =Parent.X + 20
+                              Y: ='Profile.Info.Header'.Y + 'Profile.Info.Header'.Height + 20
+                              Width: =Parent.Width - 40
+                              Height: =100
+                              Fill: =RGBA(240, 248, 255, 1)
+                            Children:
+                              - 'Profile.Info.Avatar':
+                                  Control: Circle
+                                  Properties:
+                                    X: =Parent.X + 20
+                                    Y: =(Parent.Height - Self.Height) / 2
+                                    Width: =60
+                                    Height: =60
+                                    Fill: =RGBA(0, 120, 212, 1)
+                                    
+                              - 'Profile.Info.Avatar.Icon':
+                                  Control: Classic/Icon
+                                  Properties:
+                                    X: ='Profile.Info.Avatar'.X + ('Profile.Info.Avatar'.Width - Self.Width) / 2
+                                    Y: ='Profile.Info.Avatar'.Y + ('Profile.Info.Avatar'.Height - Self.Height) / 2
+                                    Width: =30
+                                    Height: =30
+                                    Icon: =Icon.Person
+                                    Color: =RGBA(255, 255, 255, 1)
+                                    
+                              - 'Profile.Info.Avatar.Name':
+                                  Control: Label
+                                  Properties:
+                                    X: ='Profile.Info.Avatar'.X + 'Profile.Info.Avatar'.Width + 20
+                                    Y: =Parent.Y + 15
+                                    Width: =Parent.Width - 120
+                                    Height: =30
+                                    Text: =varUserProfile.FullName
+                                    Color: =RGBA(32, 54, 71, 1)
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Bold
+                                    Size: =18
+                                    
+                              - 'Profile.Info.Avatar.Role':
+                                  Control: Label
+                                  Properties:
+                                    X: ='Profile.Info.Avatar.Name'.X
+                                    Y: ='Profile.Info.Avatar.Name'.Y + 'Profile.Info.Avatar.Name'.Height
+                                    Width: =200
+                                    Height: =25
+                                    Text: =varUserProfile.Position & " - " & varUserProfile.Department
+                                    Color: =RGBA(108, 117, 125, 1)
+                                    Font: =Font.'Open Sans'
+                                    Size: =12
+                                    
+                              - 'Profile.Info.Avatar.Status':
+                                  Control: Label
+                                  Properties:
+                                    X: ='Profile.Info.Avatar.Name'.X
+                                    Y: ='Profile.Info.Avatar.Role'.Y + 'Profile.Info.Avatar.Role'.Height + 5
+                                    Width: =80
+                                    Height: =20
+                                    Text: =varUserProfile.Status
+                                    Color: =RGBA(255, 255, 255, 1)
+                                    Fill: =RGBA(40, 167, 69, 1)
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Size: =10
+                                    Align: =Align.Center
+                                    
+                        - 'Profile.Info.Details.Container':
+                            Control: GroupContainer
+                            Variant: ManualLayout
+                            Properties:
+                              X: =Parent.X + 20
+                              Y: ='Profile.Info.Avatar.Container'.Y + 'Profile.Info.Avatar.Container'.Height + 20
+                              Width: =Parent.Width - 40
+                              Height: =Parent.Height - 220
+                            Children:
+                              - 'Profile.Info.Field.ID':
+                                  Control: GroupContainer
+                                  Variant: ManualLayout
+                                  Properties:
+                                    X: =Parent.X
+                                    Y: =Parent.Y
+                                    Width: =Parent.Width
+                                    Height: =50
+                                  Children:
+                                    - 'Profile.Info.Field.ID.Label':
+                                        Control: Label
+                                        Properties:
+                                          X: =Parent.X
+                                          Y: =Parent.Y
+                                          Width: =120
+                                          Height: =25
+                                          Text: ="Mã nhân viên:"
+                                          Color: =RGBA(32, 54, 71, 1)
+                                          Font: =Font.'Open Sans'
+                                          FontWeight: =FontWeight.Semibold
+                                          Size: =12
+                                          
+                                    - 'Profile.Info.Field.ID.Value':
+                                        Control: Label
+                                        Properties:
+                                          X: ='Profile.Info.Field.ID.Label'.X + 'Profile.Info.Field.ID.Label'.Width
+                                          Y: =Parent.Y
+                                          Width: =Parent.Width - 120
+                                          Height: =25
+                                          Text: =varUserProfile.ID
+                                          Color: =RGBA(32, 54, 71, 1)
+                                          Font: =Font.'Open Sans'
+                                          Size: =12
+                                          
+                              - 'Profile.Info.Field.Email':
+                                  Control: GroupContainer
+                                  Variant: ManualLayout
+                                  Properties:
+                                    X: =Parent.X
+                                    Y: ='Profile.Info.Field.ID'.Y + 'Profile.Info.Field.ID'.Height
+                                    Width: =Parent.Width
+                                    Height: =50
+                                  Children:
+                                    - 'Profile.Info.Field.Email.Label':
+                                        Control: Label
+                                        Properties:
+                                          X: =Parent.X
+                                          Y: =Parent.Y
+                                          Width: =120
+                                          Height: =25
+                                          Text: ="Email:"
+                                          Color: =RGBA(32, 54, 71, 1)
+                                          Font: =Font.'Open Sans'
+                                          FontWeight: =FontWeight.Semibold
+                                          Size: =12
+                                          
+                                    - 'Profile.Info.Field.Email.Value':
+                                        Control: If(varIsEditing, Classic/TextInput, Label)
+                                        Properties:
+                                          X: ='Profile.Info.Field.Email.Label'.X + 'Profile.Info.Field.Email.Label'.Width
+                                          Y: =Parent.Y
+                                          Width: =Parent.Width - 120
+                                          Height: =25
+                                          Text: =varUserProfile.Email
+                                          Default: =varUserProfile.Email
+                                          Color: =RGBA(32, 54, 71, 1)
+                                          Font: =Font.'Open Sans'
+                                          Size: =12
+                                          BorderColor: =If(varIsEditing, RGBA(230, 230, 230, 1), RGBA(0, 0, 0, 0))
+                                          
+                              - 'Profile.Info.Field.Phone':
+                                  Control: GroupContainer
+                                  Variant: ManualLayout
+                                  Properties:
+                                    X: =Parent.X
+                                    Y: ='Profile.Info.Field.Email'.Y + 'Profile.Info.Field.Email'.Height
+                                    Width: =Parent.Width
+                                    Height: =50
+                                  Children:
+                                    - 'Profile.Info.Field.Phone.Label':
+                                        Control: Label
+                                        Properties:
+                                          X: =Parent.X
+                                          Y: =Parent.Y
+                                          Width: =120
+                                          Height: =25
+                                          Text: ="Số điện thoại:"
+                                          Color: =RGBA(32, 54, 71, 1)
+                                          Font: =Font.'Open Sans'
+                                          FontWeight: =FontWeight.Semibold
+                                          Size: =12
+                                          
+                                    - 'Profile.Info.Field.Phone.Value':
+                                        Control: If(varIsEditing, Classic/TextInput, Label)
+                                        Properties:
+                                          X: ='Profile.Info.Field.Phone.Label'.X + 'Profile.Info.Field.Phone.Label'.Width
+                                          Y: =Parent.Y
+                                          Width: =Parent.Width - 120
+                                          Height: =25
+                                          Text: =varUserProfile.Phone
+                                          Default: =varUserProfile.Phone
+                                          Color: =RGBA(32, 54, 71, 1)
+                                          Font: =Font.'Open Sans'
+                                          Size: =12
+                                          BorderColor: =If(varIsEditing, RGBA(230, 230, 230, 1), RGBA(0, 0, 0, 0))
+                                          
+                              - 'Profile.Info.Field.Manager':
+                                  Control: GroupContainer
+                                  Variant: ManualLayout
+                                  Properties:
+                                    X: =Parent.X
+                                    Y: ='Profile.Info.Field.Phone'.Y + 'Profile.Info.Field.Phone'.Height
+                                    Width: =Parent.Width
+                                    Height: =50
+                                  Children:
+                                    - 'Profile.Info.Field.Manager.Label':
+                                        Control: Label
+                                        Properties:
+                                          X: =Parent.X
+                                          Y: =Parent.Y
+                                          Width: =120
+                                          Height: =25
+                                          Text: ="Quản lý trực tiếp:"
+                                          Color: =RGBA(32, 54, 71, 1)
+                                          Font: =Font.'Open Sans'
+                                          FontWeight: =FontWeight.Semibold
+                                          Size: =12
+                                          
+                                    - 'Profile.Info.Field.Manager.Value':
+                                        Control: Label
+                                        Properties:
+                                          X: ='Profile.Info.Field.Manager.Label'.X + 'Profile.Info.Field.Manager.Label'.Width
+                                          Y: =Parent.Y
+                                          Width: =Parent.Width - 120
+                                          Height: =25
+                                          Text: =varUserProfile.Manager
+                                          Color: =RGBA(32, 54, 71, 1)
+                                          Font: =Font.'Open Sans'
+                                          Size: =12
+                                          
+                              - 'Profile.Info.Field.JoinDate':
+                                  Control: GroupContainer
+                                  Variant: ManualLayout
+                                  Properties:
+                                    X: =Parent.X
+                                    Y: ='Profile.Info.Field.Manager'.Y + 'Profile.Info.Field.Manager'.Height
+                                    Width: =Parent.Width
+                                    Height: =50
+                                  Children:
+                                    - 'Profile.Info.Field.JoinDate.Label':
+                                        Control: Label
+                                        Properties:
+                                          X: =Parent.X
+                                          Y: =Parent.Y
+                                          Width: =120
+                                          Height: =25
+                                          Text: ="Ngày vào làm:"
+                                          Color: =RGBA(32, 54, 71, 1)
+                                          Font: =Font.'Open Sans'
+                                          FontWeight: =FontWeight.Semibold
+                                          Size: =12
+                                          
+                                    - 'Profile.Info.Field.JoinDate.Value':
+                                        Control: Label
+                                        Properties:
+                                          X: ='Profile.Info.Field.JoinDate.Label'.X + 'Profile.Info.Field.JoinDate.Label'.Width
+                                          Y: =Parent.Y
+                                          Width: =Parent.Width - 120
+                                          Height: =25
+                                          Text: =varUserProfile.JoinDate
+                                          Color: =RGBA(32, 54, 71, 1)
+                                          Font: =Font.'Open Sans'
+                                          Size: =12
+                                          
+                  - 'Profile.Leave.Container':
+                      Control: GroupContainer
+                      Variant: ManualLayout
+                      Properties:
+                        X: ='Profile.Info.Container'.X + 'Profile.Info.Container'.Width + 20
+                        Y: =Parent.Y
+                        Width: =Parent.Width * 0.4 - 10
+                        Height: =Parent.Height
+                      Children:
+                        - 'Profile.Leave.Balance.Container':
+                            Control: GroupContainer
+                            Variant: ManualLayout
+                            Properties:
+                              X: =Parent.X
+                              Y: =Parent.Y
+                              Width: =Parent.Width
+                              Height: =300
+                              Fill: =RGBA(255, 255, 255, 1)
+                              BorderColor: =RGBA(230, 230, 230, 1)
+                              BorderThickness: =1
+                              DropShadow: =DropShadow.Light
+                            Children:
+                              - 'Profile.Leave.Balance.Title':
+                                  Control: Label
+                                  Properties:
+                                    X: =Parent.X + 20
+                                    Y: =Parent.Y + 20
+                                    Width: =Parent.Width - 40
+                                    Height: =30
+                                    Text: ="Số ngày phép năm " & varLeaveBalance.Year
+                                    Color: =RGBA(32, 54, 71, 1)
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Bold
+                                    Size: =16
+                                    
+                              - 'Profile.Leave.Balance.Stats':
+                                  Control: GroupContainer
+                                  Variant: ManualLayout
+                                  Properties:
+                                    X: =Parent.X + 20
+                                    Y: ='Profile.Leave.Balance.Title'.Y + 'Profile.Leave.Balance.Title'.Height + 20
+                                    Width: =Parent.Width - 40
+                                    Height: =200
+                                  Children:
+                                    - 'Profile.Leave.Balance.Total':
+                                        Control: StatsCardComponent
+                                        Properties:
+                                          X: =Parent.X
+                                          Y: =Parent.Y
+                                          Width: =Parent.Width
+                                          Height: =40
+                                          Title: ="Tổng số ngày"
+                                          Value: =varLeaveBalance.TotalDays
+                                          Icon: ="Calendar"
+                                          Color: =RGBA(0, 120, 212, 1)
+                                          
+                                    - 'Profile.Leave.Balance.Used':
+                                        Control: StatsCardComponent
+                                        Properties:
+                                          X: =Parent.X
+                                          Y: ='Profile.Leave.Balance.Total'.Y + 'Profile.Leave.Balance.Total'.Height + 10
+                                          Width: =Parent.Width
+                                          Height: =40
+                                          Title: ="Đã sử dụng"
+                                          Value: =varLeaveBalance.UsedDays
+                                          Icon: ="CheckBadge"
+                                          Color: =RGBA(40, 167, 69, 1)
+                                          
+                                    - 'Profile.Leave.Balance.Remaining':
+                                        Control: StatsCardComponent
+                                        Properties:
+                                          X: =Parent.X
+                                          Y: ='Profile.Leave.Balance.Used'.Y + 'Profile.Leave.Balance.Used'.Height + 10
+                                          Width: =Parent.Width
+                                          Height: =40
+                                          Title: ="Còn lại"
+                                          Value: =varLeaveBalance.RemainingDays
+                                          Icon: ="Clock"
+                                          Color: =RGBA(255, 193, 7, 1)
+                                          
+                                    - 'Profile.Leave.Balance.CarryOver':
+                                        Control: StatsCardComponent
+                                        Properties:
+                                          X: =Parent.X
+                                          Y: ='Profile.Leave.Balance.Remaining'.Y + 'Profile.Leave.Balance.Remaining'.Height + 10
+                                          Width: =Parent.Width
+                                          Height: =40
+                                          Title: ="Chuyển từ năm trước"
+                                          Value: =varLeaveBalance.CarryOverDays
+                                          Icon: ="People"
+                                          Color: =RGBA(108, 117, 125, 1)
+                                          
+                        - 'Profile.Leave.History.Container':
+                            Control: GroupContainer
+                            Variant: ManualLayout
+                            Properties:
+                              X: =Parent.X
+                              Y: ='Profile.Leave.Balance.Container'.Y + 'Profile.Leave.Balance.Container'.Height + 20
+                              Width: =Parent.Width
+                              Height: =Parent.Height - 320
+                              Fill: =RGBA(255, 255, 255, 1)
+                              BorderColor: =RGBA(230, 230, 230, 1)
+                              BorderThickness: =1
+                              DropShadow: =DropShadow.Light
+                            Children:
+                              - 'Profile.Leave.History.Title':
+                                  Control: Label
+                                  Properties:
+                                    X: =Parent.X + 20
+                                    Y: =Parent.Y + 20
+                                    Width: =Parent.Width - 40
+                                    Height: =30
+                                    Text: ="Lịch sử nghỉ phép"
+                                    Color: =RGBA(32, 54, 71, 1)
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Bold
+                                    Size: =16
+                                    
+                              - 'Profile.Leave.History.Gallery':
+                                  Control: Gallery
+                                  Variant: Vertical
+                                  Properties:
+                                    X: =Parent.X + 20
+                                    Y: ='Profile.Leave.History.Title'.Y + 'Profile.Leave.History.Title'.Height + 10
+                                    Width: =Parent.Width - 40
+                                    Height: =Parent.Height - 80
+                                    Items: =varLeaveHistory
+                                    TemplateSize: =80
+                                    TemplatePadding: =5
+                                  Children:
+                                    - 'Gallery.History.Container':
+                                        Control: GroupContainer
+                                        Variant: ManualLayout
+                                        Properties:
+                                          X: =0
+                                          Y: =0
+                                          Width: =Parent.TemplateWidth
+                                          Height: =Parent.TemplateHeight
+                                          Fill: =RGBA(248, 249, 250, 1)
+                                          BorderColor: =RGBA(230, 230, 230, 1)
+                                          BorderThickness: =1
+                                        Children:
+                                          - 'Gallery.History.ID':
+                                              Control: Label
+                                              Properties:
+                                                X: =Parent.X + 10
+                                                Y: =Parent.Y + 5
+                                                Width: =60
+                                                Height: =20
+                                                Text: =ThisItem.ID
+                                                Color: =RGBA(0, 120, 212, 1)
+                                                Font: =Font.'Open Sans'
+                                                FontWeight: =FontWeight.Bold
+                                                Size: =10
+                                                
+                                          - 'Gallery.History.Status':
+                                              Control: Label
+                                              Properties:
+                                                X: =Parent.Width - 60
+                                                Y: =Parent.Y + 5
+                                                Width: =50
+                                                Height: =20
+                                                Text: =Switch(ThisItem.Status,
+                                                  "Approved", "Đã duyệt",
+                                                  "Pending", "Chờ duyệt",
+                                                  "Rejected", "Từ chối",
+                                                  "Không xác định")
+                                                Color: =RGBA(255, 255, 255, 1)
+                                                Fill: =Switch(ThisItem.Status,
+                                                  "Approved", RGBA(40, 167, 69, 1),
+                                                  "Pending", RGBA(255, 193, 7, 1),
+                                                  "Rejected", RGBA(220, 53, 69, 1),
+                                                  RGBA(108, 117, 125, 1))
+                                                Font: =Font.'Open Sans'
+                                                FontWeight: =FontWeight.Semibold
+                                                Size: =8
+                                                Align: =Align.Center
+                                                
+                                          - 'Gallery.History.Period':
+                                              Control: Label
+                                              Properties:
+                                                X: =Parent.X + 10
+                                                Y: ='Gallery.History.ID'.Y + 'Gallery.History.ID'.Height + 2
+                                                Width: =Parent.Width - 20
+                                                Height: =18
+                                                Text: =ThisItem.Date & " - " & ThisItem.EndDate & " (" & ThisItem.Days & " ngày)"
+                                                Color: =RGBA(32, 54, 71, 1)
+                                                Font: =Font.'Open Sans'
+                                                FontWeight: =FontWeight.Semibold
+                                                Size: =10
+                                                
+                                          - 'Gallery.History.Type':
+                                              Control: Label
+                                              Properties:
+                                                X: =Parent.X + 10
+                                                Y: ='Gallery.History.Period'.Y + 'Gallery.History.Period'.Height + 2
+                                                Width: =Parent.Width - 20
+                                                Height: =15
+                                                Text: =ThisItem.Type
+                                                Color: =RGBA(108, 117, 125, 1)
+                                                Font: =Font.'Open Sans'
+                                                Size: =9
+                                                
+                                          - 'Gallery.History.Reason':
+                                              Control: Label
+                                              Properties:
+                                                X: =Parent.X + 10
+                                                Y: ='Gallery.History.Type'.Y + 'Gallery.History.Type'.Height + 2
+                                                Width: =Parent.Width - 20
+                                                Height: =15
+                                                Text: =ThisItem.Reason
+                                                Color: =RGBA(134, 142, 150, 1)
+                                                Font: =Font.'Open Sans'
+                                                Size: =9 

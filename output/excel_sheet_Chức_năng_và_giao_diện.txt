@@ -1,0 +1,26 @@
+SHEET: Chức năng và giao diện
+==================================================
+Các chức năng trong giao diện                  Unnamed: 1                      Unnamed: 2    Unnamed: 3                              Unnamed: 4
+                          STT                      Screen                              UI STT chức năng                               Chức năng
+                            1                   Trang chủ           Menu điều hướng chung           1.1      Điều hướng đến các chức năng chính
+                            2                   Đăng nhập                  Form đăng nhập           2.1                     Xác thực người dùng
+                            3           Thông tin cá nhân           Form hồ sơ người dùng           3.1                   Xem thông tin cá nhân
+                          NaN                         NaN                             NaN           3.2           Xem số ngày nghỉ phép còn lại
+                            4           Tạo đơn nghỉ phép          Form tạo đơn nghỉ phép           4.1                       Tạo đơn nghỉ phép
+                          NaN                         NaN                             NaN           4.2            Kiểm tra điều kiện ngày nghỉ
+                          NaN                         NaN                             NaN           4.3                   Gửi yêu cầu phê duyệt
+                            5           Lịch nghỉ cá nhân                   Calendar view           5.1              Xem lịch nghỉ phép cá nhân
+                            6     Lịch nghỉ toàn hệ thống                   Calendar view           6.1 Xem lịch nghỉ toàn công ty (theo quyền)
+                            7     Phê duyệt đơn nghỉ phép  Danh sách đơn + Form phê duyệt           7.1               Phê duyệt cấp 1 (Manager)
+                          NaN                         NaN                             NaN           7.2         Phê duyệt cấp 2 (Giám đốc khối)
+                          NaN                         NaN                             NaN           7.3    Phê duyệt cấp 3 (Giám đốc điều hành)
+                            8          Quản lý người dùng Danh sách + Form chỉnh sửa user           8.1            Tạo/Sửa thông tin người dùng
+                            9           Nhập số ngày phép          Form upload file Excel           9.1          Cập nhật số ngày phép theo năm
+                           10 Quản lý lịch nghỉ & ngày lễ             Danh sách ngày nghỉ          10.1          Thêm/Sửa/Xóa ngày nghỉ cố định
+                          NaN                         NaN                             NaN          10.2  Cấu hình buổi/ngày làm việc trong tuần
+                           11  Thiết lập quy trình & role    Form chọn người duyệt & role          11.1     Thiết lập quy trình phê duyệt 3 cấp
+                          NaN                         NaN                             NaN          11.2           Gán/chỉnh sửa role người dùng
+                           12           Dashboard báo cáo                Biểu đồ + bộ lọc          12.1        Xem tổng số ngày nghỉ theo tháng
+                          NaN                         NaN                             NaN          12.2            Xem theo nhân viên/phòng ban
+                           13                Xuất báo cáo          Popup lọc + nút export          13.1   Xuất file CSV tổng hợp theo tháng/năm
+                          NaN                         NaN                             NaN          13.2      Xuất chi tiết theo từng người dùng

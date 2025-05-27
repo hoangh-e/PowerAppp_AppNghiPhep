@@ -1,0 +1,30 @@
+error PA2108 : Unknown property 'RadiusBottomLeft' for control type 'Rectangle'.
+error PA2108 : Unknown property 'RadiusBottomRight' for control type 'Rectangle'.
+error PA2108 : Unknown property 'RadiusTopLeft' for control type 'Rectangle'.
+error PA2108 : Unknown property 'RadiusTopRight' for control type 'Rectangle'.
+error PA2108 : Unknown property 'RadiusTopRight' for control type 'Rectangle'.
+error PA2108 : Unknown property 'BorderRadius' for control type 'Classic/Button'.
+error PA1001 : An error occurred while parsing PaYaml. Error code: YamlInvalidSyntax; Reason: While scanning a plain scalar value, found invalid mapping.
+    Example Error:  HoverFill: =If(
+                          IsBlank(LoginContainer.FormSection.UsernameInput.Text) || IsBlank(LoginContainer.FormSection.PasswordInput.Text),
+                          RGBA(166, 166, 166, 1),
+                          ColorFade(RGBA(0, 120, 212, 1), -20%)
+                        )
+    Fix Error:  HoverFill: =If(IsBlank(LoginContainer.FormSection.UsernameInput.Text) || IsBlank(LoginContainer.FormSection.PasswordInput.Text),
+                          RGBA(166, 166, 166, 1),
+                          ColorFade(RGBA(0, 120, 212, 1), -20%))
+error PA2108 : Unknown property 'Disabled' for control type 'Classic/Button'.
+error PA1001 : Reason: Property 'Align' not found on type 'Microsoft.PowerPlatform.PowerApps.Persistence.PaYaml.Models.SchemaV3.ControlInstance'.
+error Name isn't valid. 'Focused' isn't recognized. Name isn't valid. 'IsHovered' isn't recognized.
+    Error Code:"
+    - LoginContainer.FormSection.UsernameInput:
+        Control: Classic/TextInput
+        Properties:
+            BorderColor: =If(Self.Focused, RGBA(0, 120, 212, 1), If(Self.IsHovered, RGBA(0, 120, 212, 0.7), RGBA(200, 200, 200, 1)))
+            BorderThickness: =If(Self.Focused, 2, 1)"
+error: The '.' operator cannot be used on Error values.
+    Example Error: Control.Text: = LoginCard.FormSection.UsernameInput.Text
+    Fix Error:Control.Text: = 'LoginCard.FormSection.UsernameInput'.Text
+error: Reason: While scanning a plain scalar value, found invalid mapping.
+    Example Error: Control.Text: = "Nhân viên: ID (1-16)"
+    Fix Error: Control.Text: = "Nhân viên:ID (1-16)"

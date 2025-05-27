@@ -1,0 +1,160 @@
+Screens:
+  LoginScreen:
+    Properties:
+      Fill: =RGBA(248, 250, 252, 1)
+      OnVisible: =Set(varCurrentUser, Blank()); Set(varLoginError, ""); Set(varIsLoading, false)
+    Children:
+      - 'Login.Background':
+          Control: Rectangle
+          Properties:
+            X: =0
+            Y: =0
+            Width: =Parent.Width
+            Height: =Parent.Height
+            Fill: =RGBA(0, 120, 212, 1)
+            
+      - 'Login.Container':
+          Control: GroupContainer
+          Variant: ManualLayout
+          Properties:
+            X: =(Parent.Width - Self.Width) / 2
+            Y: =(Parent.Height - Self.Height) / 2
+            Width: =400
+            Height: =500
+            Fill: =RGBA(255, 255, 255, 1)
+            DropShadow: =DropShadow.Bold
+          Children:
+            - 'Login.Logo':
+                Control: Classic/Icon
+                Properties:
+                  X: =(Parent.Width - Self.Width) / 2
+                  Y: =Parent.Y + 40
+                  Width: =80
+                  Height: =80
+                  Icon: =Icon.Calendar
+                  Color: =RGBA(0, 120, 212, 1)
+                  
+            - 'Login.Title':
+                Control: Label
+                Properties:
+                  X: =Parent.X + 20
+                  Y: ='Login.Logo'.Y + 'Login.Logo'.Height + 20
+                  Width: =Parent.Width - 40
+                  Height: =40
+                  Text: ="Ứng dụng Quản lý Nghỉ phép"
+                  Color: =RGBA(32, 54, 71, 1)
+                  Font: =Font.'Open Sans'
+                  FontWeight: =FontWeight.Bold
+                  Size: =20
+                  Align: =Align.Center
+                  
+            - 'Login.Subtitle':
+                Control: Label
+                Properties:
+                  X: =Parent.X + 20
+                  Y: ='Login.Title'.Y + 'Login.Title'.Height
+                  Width: =Parent.Width - 40
+                  Height: =25
+                  Text: ="Đăng nhập để tiếp tục"
+                  Color: =RGBA(108, 117, 125, 1)
+                  Font: =Font.'Open Sans'
+                  Size: =14
+                  Align: =Align.Center
+                  
+            - 'Login.Email.Label':
+                Control: Label
+                Properties:
+                  X: =Parent.X + 30
+                  Y: ='Login.Subtitle'.Y + 'Login.Subtitle'.Height + 30
+                  Width: =Parent.Width - 60
+                  Height: =25
+                  Text: ="Email"
+                  Color: =RGBA(32, 54, 71, 1)
+                  Font: =Font.'Open Sans'
+                  FontWeight: =FontWeight.Semibold
+                  Size: =14
+                  
+            - 'Login.Email.Input':
+                Control: Classic/TextInput
+                Properties:
+                  X: =Parent.X + 30
+                  Y: ='Login.Email.Label'.Y + 'Login.Email.Label'.Height + 5
+                  Width: =Parent.Width - 60
+                  Height: =45
+                  Default: ="an.nguyen@asiashine.com"
+                  HintText: ="Nhập email của bạn"
+                  BorderColor: =RGBA(230, 230, 230, 1)
+                  Font: =Font.'Open Sans'
+                  Size: =14
+                  PaddingLeft: =15
+                  
+            - 'Login.Password.Label':
+                Control: Label
+                Properties:
+                  X: =Parent.X + 30
+                  Y: ='Login.Email.Input'.Y + 'Login.Email.Input'.Height + 20
+                  Width: =Parent.Width - 60
+                  Height: =25
+                  Text: ="Mật khẩu"
+                  Color: =RGBA(32, 54, 71, 1)
+                  Font: =Font.'Open Sans'
+                  FontWeight: =FontWeight.Semibold
+                  Size: =14
+                  
+            - 'Login.Password.Input':
+                Control: Classic/TextInput
+                Properties:
+                  X: =Parent.X + 30
+                  Y: ='Login.Password.Label'.Y + 'Login.Password.Label'.Height + 5
+                  Width: =Parent.Width - 60
+                  Height: =45
+                  Default: ="123456"
+                  HintText: ="Nhập mật khẩu"
+                  Mode: =TextMode.Password
+                  BorderColor: =RGBA(230, 230, 230, 1)
+                  Font: =Font.'Open Sans'
+                  Size: =14
+                  PaddingLeft: =15
+                  
+            - 'Login.Error.Message':
+                Control: Label
+                Properties:
+                  X: =Parent.X + 30
+                  Y: ='Login.Password.Input'.Y + 'Login.Password.Input'.Height + 10
+                  Width: =Parent.Width - 60
+                  Height: =25
+                  Text: =varLoginError
+                  Color: =RGBA(220, 53, 69, 1)
+                  Font: =Font.'Open Sans'
+                  Size: =12
+                  Align: =Align.Center
+                  Visible: =Not(IsBlank(varLoginError))
+                  
+            - 'Login.Button':
+                Control: Classic/Button
+                Properties:
+                  X: =Parent.X + 30
+                  Y: ='Login.Password.Input'.Y + 'Login.Password.Input'.Height + If(Not(IsBlank(varLoginError)), 40, 30)
+                  Width: =Parent.Width - 60
+                  Height: =50
+                  Text: =If(varIsLoading, "Đang đăng nhập...", "Đăng nhập")
+                  Fill: =RGBA(0, 120, 212, 1)
+                  Color: =RGBA(255, 255, 255, 1)
+                  Font: =Font.'Open Sans'
+                  FontWeight: =FontWeight.Semibold
+                  Size: =16
+                  DisplayMode: =If(varIsLoading, DisplayMode.Disabled, DisplayMode.Edit)
+                  OnSelect: =Set(varIsLoading, true); Set(varLoginError, ""); If(And(Not(IsBlank('Login.Email.Input'.Text)), Not(IsBlank('Login.Password.Input'.Text))), Set(varCurrentUser, {ID: "EMP001", FullName: "Nguyễn Văn An", Email: 'Login.Email.Input'.Text, Role: "Employee", Department: "Phòng Công nghệ thông tin"}); Set(varIsLoading, false); Navigate(DashboardScreen), Set(varLoginError, "Email hoặc mật khẩu không đúng"); Set(varIsLoading, false))
+                    
+            - 'Login.Demo.Info':
+                Control: Label
+                Properties:
+                  X: =Parent.X + 20
+                  Y: ='Login.Button'.Y + 'Login.Button'.Height + 20
+                  Width: =Parent.Width - 40
+                  Height: =40
+                  Text: ="Demo:Sử dụng email bất kỳ và mật khẩu để đăng nhập"
+                  Color: =RGBA(108, 117, 125, 1)
+                  Font: =Font.'Open Sans'
+                  Size: =12
+                  Align: =Align.Center 

@@ -1,0 +1,427 @@
+Screens:
+  LeaveConfirmationScreen:
+    Properties:
+      Fill: =RGBA(248, 250, 252, 1)
+      OnVisible: =Set(varActiveScreen, "LeaveConfirmation"); Set(varApprovedLeaves, Table({ID: "LR001", EmployeeID: "EMP001", EmployeeName: "Nguyễn Văn An", Department: "Phòng Công nghệ thông tin", StartDate: "15/01/2024", EndDate: "17/01/2024", Days: 3, Type: "Nghỉ phép năm", Status: "Approved", ApprovedDate: "14/01/2024", ConfirmationStatus: "Pending"}, {ID: "LR004", EmployeeID: "EMP003", EmployeeName: "Lê Văn Cường", Department: "Ban Giám đốc", StartDate: "05/04/2024", EndDate: "05/04/2024", Days: 1, Type: "Nghỉ ốm", Status: "Approved", ApprovedDate: "04/04/2024", ConfirmationStatus: "Confirmed"}, {ID: "LR007", EmployeeID: "EMP002", EmployeeName: "Trần Thị Bình", Department: "Phòng Công nghệ thông tin", StartDate: "20/03/2024", EndDate: "22/03/2024", Days: 3, Type: "Nghỉ phép năm", Status: "Approved", ApprovedDate: "18/03/2024", ConfirmationStatus: "Pending"})); Set(varSelectedLeave, Blank()); Set(varConfirmationNote, ""); Set(varIsProcessing, false)
+    Children:
+      - 'LeaveConfirmation.Header':
+          Control: HeaderComponent
+          Properties:
+            X: =0
+            Y: =0
+            Width: =Parent.Width
+            Height: =80
+            Title: ="Ghi nhận kết quả nghỉ phép"
+            UserName: =varCurrentUser.FullName
+            UserRole: =varCurrentUser.Role
+            ShowNotification: =true
+            NotificationCount: =CountRows(Filter(varApprovedLeaves, ConfirmationStatus = "Pending"))
+            
+      - 'LeaveConfirmation.Navigation':
+          Control: NavigationComponent
+          Properties:
+            X: =0
+            Y: ='LeaveConfirmation.Header'.Y + 'LeaveConfirmation.Header'.Height
+            Width: =250
+            Height: =Parent.Height - 'LeaveConfirmation.Header'.Height
+            UserRole: =varCurrentUser.Role
+            ActiveScreen: =varActiveScreen
+            OnNavigate: =Set(varNavigateAction, true)
+            
+      - 'LeaveConfirmation.Content.Container':
+          Control: GroupContainer
+          Variant: ManualLayout
+          Properties:
+            X: ='LeaveConfirmation.Navigation'.X + 'LeaveConfirmation.Navigation'.Width
+            Y: ='LeaveConfirmation.Header'.Y + 'LeaveConfirmation.Header'.Height
+            Width: =Parent.Width - 'LeaveConfirmation.Navigation'.Width
+            Height: =Parent.Height - 'LeaveConfirmation.Header'.Height
+            Fill: =RGBA(248, 250, 252, 1)
+          Children:
+            - 'LeaveConfirmation.Content.Title':
+                Control: Label
+                Properties:
+                  X: =Parent.X + 30
+                  Y: =Parent.Y + 30
+                  Width: =Parent.Width - 60
+                  Height: =40
+                  Text: ="Ghi nhận kết quả nghỉ phép đã phê duyệt"
+                  Color: =RGBA(32, 54, 71, 1)
+                  Font: =Font.'Open Sans'
+                  FontWeight: =FontWeight.Bold
+                  Size: =24
+                  
+            - 'LeaveConfirmation.Stats.Container':
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =Parent.X + 30
+                  Y: ='LeaveConfirmation.Content.Title'.Y + 'LeaveConfirmation.Content.Title'.Height + 20
+                  Width: =Parent.Width - 60
+                  Height: =80
+                Children:
+                  - 'LeaveConfirmation.Stats.Pending':
+                      Control: StatsCardComponent
+                      Properties:
+                        X: =Parent.X
+                        Y: =Parent.Y
+                        Width: =(Parent.Width - 40) / 3
+                        Height: =Parent.Height
+                        Title: ="Chờ ghi nhận"
+                        Value: =CountRows(Filter(varApprovedLeaves, ConfirmationStatus = "Pending"))
+                        Icon: ="Clock"
+                        Color: =RGBA(255, 193, 7, 1)
+                        Subtitle: ="Đơn cần xác nhận"
+                        
+                  - 'LeaveConfirmation.Stats.Confirmed':
+                      Control: StatsCardComponent
+                      Properties:
+                        X: ='LeaveConfirmation.Stats.Pending'.X + 'LeaveConfirmation.Stats.Pending'.Width + 20
+                        Y: =Parent.Y
+                        Width: =(Parent.Width - 40) / 3
+                        Height: =Parent.Height
+                        Title: ="Đã ghi nhận"
+                        Value: =CountRows(Filter(varApprovedLeaves, ConfirmationStatus = "Confirmed"))
+                        Icon: ="CheckBadge"
+                        Color: =RGBA(40, 167, 69, 1)
+                        Subtitle: ="Đã hoàn thành"
+                        
+                  - 'LeaveConfirmation.Stats.Total':
+                      Control: StatsCardComponent
+                      Properties:
+                        X: ='LeaveConfirmation.Stats.Confirmed'.X + 'LeaveConfirmation.Stats.Confirmed'.Width + 20
+                        Y: =Parent.Y
+                        Width: =(Parent.Width - 40) / 3
+                        Height: =Parent.Height
+                        Title: ="Tổng số đơn"
+                        Value: =CountRows(varApprovedLeaves)
+                        Icon: ="Calendar"
+                        Color: =RGBA(0, 120, 212, 1)
+                        Subtitle: ="Đã phê duyệt"
+                        
+            - 'LeaveConfirmation.Main.Container':
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =Parent.X + 30
+                  Y: ='LeaveConfirmation.Stats.Container'.Y + 'LeaveConfirmation.Stats.Container'.Height + 20
+                  Width: =Parent.Width - 60
+                  Height: =Parent.Height - 180
+                Children:
+                  - 'LeaveConfirmation.List.Container':
+                      Control: GroupContainer
+                      Variant: ManualLayout
+                      Properties:
+                        X: =Parent.X
+                        Y: =Parent.Y
+                        Width: =Parent.Width * 0.6
+                        Height: =Parent.Height
+                        Fill: =RGBA(255, 255, 255, 1)
+                        BorderColor: =RGBA(230, 230, 230, 1)
+                        BorderThickness: =1
+                        DropShadow: =DropShadow.Light
+                      Children:
+                        - 'LeaveConfirmation.List.Title':
+                            Control: Label
+                            Properties:
+                              X: =Parent.X + 20
+                              Y: =Parent.Y + 20
+                              Width: =Parent.Width - 40
+                              Height: =30
+                              Text: ="Danh sách đơn nghỉ phép đã phê duyệt"
+                              Color: =RGBA(32, 54, 71, 1)
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Bold
+                              Size: =16
+                              
+                        - 'LeaveConfirmation.Filter.Container':
+                            Control: GroupContainer
+                            Variant: ManualLayout
+                            Properties:
+                              X: =Parent.X + 20
+                              Y: ='LeaveConfirmation.List.Title'.Y + 'LeaveConfirmation.List.Title'.Height + 10
+                              Width: =Parent.Width - 40
+                              Height: =40
+                            Children:
+                              - 'LeaveConfirmation.Filter.Label':
+                                  Control: Label
+                                  Properties:
+                                    X: =Parent.X
+                                    Y: =Parent.Y + 5
+                                    Width: =80
+                                    Height: =20
+                                    Text: ="Trạng thái:"
+                                    Color: =RGBA(32, 54, 71, 1)
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Size: =12
+                                    
+                              - 'LeaveConfirmation.Filter.Dropdown':
+                                  Control: Classic/DropDown
+                                  Properties:
+                                    X: ='LeaveConfirmation.Filter.Label'.X + 'LeaveConfirmation.Filter.Label'.Width + 10
+                                    Y: =Parent.Y
+                                    Width: =150
+                                    Height: =30
+                                    Items: =["Tất cả", "Chờ ghi nhận", "Đã ghi nhận"]
+                                    Default: ="Tất cả"
+                                    BorderColor: =RGBA(230, 230, 230, 1)
+                                    Font: =Font.'Open Sans'
+                                    Size: =12
+                                    
+                        - 'LeaveConfirmation.List.Gallery':
+                            Control: Gallery
+                            Variant: Vertical
+                            Properties:
+                              X: =Parent.X + 20
+                              Y: ='LeaveConfirmation.Filter.Container'.Y + 'LeaveConfirmation.Filter.Container'.Height + 10
+                              Width: =Parent.Width - 40
+                              Height: =Parent.Height - 120
+                              Items: =Filter(varApprovedLeaves, 
+                                If('LeaveConfirmation.Filter.Dropdown'.Selected.Value = "Chờ ghi nhận", ConfirmationStatus = "Pending",
+                                   If('LeaveConfirmation.Filter.Dropdown'.Selected.Value = "Đã ghi nhận", ConfirmationStatus = "Confirmed", true)))
+                              TemplateSize: =100
+                              TemplatePadding: =10
+                            Children:
+                              - 'Gallery.Leave.Container':
+                                  Control: GroupContainer
+                                  Variant: ManualLayout
+                                  Properties:
+                                    X: =0
+                                    Y: =0
+                                    Width: =Parent.TemplateWidth
+                                    Height: =Parent.TemplateHeight
+                                    Fill: =If(varSelectedLeave.ID = ThisItem.ID, RGBA(240, 248, 255, 1), RGBA(248, 249, 250, 1))
+                                    BorderColor: =If(varSelectedLeave.ID = ThisItem.ID, RGBA(0, 120, 212, 1), RGBA(230, 230, 230, 1))
+                                    BorderThickness: =If(varSelectedLeave.ID = ThisItem.ID, 2, 1)
+                                    OnSelect: =Set(varSelectedLeave, ThisItem)
+                                  Children:
+                                    - 'Gallery.Leave.Header':
+                                        Control: GroupContainer
+                                        Variant: ManualLayout
+                                        Properties:
+                                          X: =Parent.X + 15
+                                          Y: =Parent.Y + 10
+                                          Width: =Parent.Width - 30
+                                          Height: =25
+                                        Children:
+                                          - 'Gallery.Leave.ID':
+                                              Control: Label
+                                              Properties:
+                                                X: =Parent.X
+                                                Y: =Parent.Y
+                                                Width: =80
+                                                Height: =25
+                                                Text: =ThisItem.ID
+                                                Color: =RGBA(0, 120, 212, 1)
+                                                Font: =Font.'Open Sans'
+                                                FontWeight: =FontWeight.Bold
+                                                Size: =12
+                                                
+                                          - 'Gallery.Leave.ConfirmationStatus':
+                                              Control: Label
+                                              Properties:
+                                                X: =Parent.Width - Self.Width
+                                                Y: =Parent.Y
+                                                Width: =100
+                                                Height: =25
+                                                Text: =If(ThisItem.ConfirmationStatus = "Pending", "⏳ Chờ ghi nhận", "✅ Đã ghi nhận")
+                                                Color: =If(ThisItem.ConfirmationStatus = "Pending", RGBA(255, 193, 7, 1), RGBA(40, 167, 69, 1))
+                                                Font: =Font.'Open Sans'
+                                                FontWeight: =FontWeight.Semibold
+                                                Size: =10
+                                                Align: =Align.Right
+                                                
+                                    - 'Gallery.Leave.Employee':
+                                        Control: Label
+                                        Properties:
+                                          X: =Parent.X + 15
+                                          Y: ='Gallery.Leave.Header'.Y + 'Gallery.Leave.Header'.Height + 5
+                                          Width: =Parent.Width - 30
+                                          Height: =20
+                                          Text: =ThisItem.EmployeeName & " - " & ThisItem.Department
+                                          Color: =RGBA(32, 54, 71, 1)
+                                          Font: =Font.'Open Sans'
+                                          FontWeight: =FontWeight.Semibold
+                                          Size: =12
+                                          
+                                    - 'Gallery.Leave.Period':
+                                        Control: Label
+                                        Properties:
+                                          X: =Parent.X + 15
+                                          Y: ='Gallery.Leave.Employee'.Y + 'Gallery.Leave.Employee'.Height + 2
+                                          Width: =Parent.Width - 30
+                                          Height: =18
+                                          Text: =ThisItem.StartDate & " - " & ThisItem.EndDate & " (" & ThisItem.Days & " ngày)"
+                                          Color: =RGBA(108, 117, 125, 1)
+                                          Font: =Font.'Open Sans'
+                                          Size: =11
+                                          
+                                    - 'Gallery.Leave.TypeAndApproved':
+                                        Control: Label
+                                        Properties:
+                                          X: =Parent.X + 15
+                                          Y: ='Gallery.Leave.Period'.Y + 'Gallery.Leave.Period'.Height + 2
+                                          Width: =Parent.Width - 30
+                                          Height: =18
+                                          Text: =ThisItem.Type & " • Duyệt: " & ThisItem.ApprovedDate
+                                          Color: =RGBA(108, 117, 125, 1)
+                                          Font: =Font.'Open Sans'
+                                          Size: =10
+                                          
+                  - 'LeaveConfirmation.Detail.Container':
+                      Control: GroupContainer
+                      Variant: ManualLayout
+                      Properties:
+                        X: ='LeaveConfirmation.List.Container'.X + 'LeaveConfirmation.List.Container'.Width + 20
+                        Y: =Parent.Y
+                        Width: =Parent.Width - 'LeaveConfirmation.List.Container'.Width - 20
+                        Height: =Parent.Height
+                        Fill: =RGBA(255, 255, 255, 1)
+                        BorderColor: =RGBA(230, 230, 230, 1)
+                        BorderThickness: =1
+                        DropShadow: =DropShadow.Light
+                        Visible: =Not(IsBlank(varSelectedLeave))
+                      Children:
+                        - 'LeaveConfirmation.Detail.Title':
+                            Control: Label
+                            Properties:
+                              X: =Parent.X + 20
+                              Y: =Parent.Y + 20
+                              Width: =Parent.Width - 40
+                              Height: =30
+                              Text: ="Ghi nhận kết quả nghỉ phép"
+                              Color: =RGBA(32, 54, 71, 1)
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Bold
+                              Size: =16
+                              
+                        - 'LeaveConfirmation.Detail.Info.Container':
+                            Control: GroupContainer
+                            Variant: ManualLayout
+                            Properties:
+                              X: =Parent.X + 20
+                              Y: ='LeaveConfirmation.Detail.Title'.Y + 'LeaveConfirmation.Detail.Title'.Height + 15
+                              Width: =Parent.Width - 40
+                              Height: =180
+                              Fill: =RGBA(248, 249, 250, 1)
+                            Children:
+                              - 'LeaveConfirmation.Detail.LeaveInfo':
+                                  Control: Label
+                                  Properties:
+                                    X: =Parent.X + 15
+                                    Y: =Parent.Y + 15
+                                    Width: =Parent.Width - 30
+                                    Height: =80
+                                    Text: ="📋 Mã đơn: " & varSelectedLeave.ID & Char(10) & "👤 Nhân viên: " & varSelectedLeave.EmployeeName & Char(10) & "🏢 Phòng ban: " & varSelectedLeave.Department & Char(10) & "📅 Thời gian: " & varSelectedLeave.StartDate & " - " & varSelectedLeave.EndDate
+                                    Color: =RGBA(32, 54, 71, 1)
+                                    Font: =Font.'Open Sans'
+                                    Size: =12
+                                    
+                              - 'LeaveConfirmation.Detail.StatusInfo':
+                                  Control: Label
+                                  Properties:
+                                    X: =Parent.X + 15
+                                    Y: ='LeaveConfirmation.Detail.LeaveInfo'.Y + 'LeaveConfirmation.Detail.LeaveInfo'.Height + 10
+                                    Width: =Parent.Width - 30
+                                    Height: =60
+                                    Text: ="⏰ Số ngày: " & varSelectedLeave.Days & " ngày" & Char(10) & "📝 Loại: " & varSelectedLeave.Type & Char(10) & "✅ Ngày phê duyệt: " & varSelectedLeave.ApprovedDate
+                                    Color: =RGBA(32, 54, 71, 1)
+                                    Font: =Font.'Open Sans'
+                                    Size: =12
+                                    
+                              - 'LeaveConfirmation.Detail.CurrentStatus':
+                                  Control: Label
+                                  Properties:
+                                    X: =Parent.X + 15
+                                    Y: ='LeaveConfirmation.Detail.StatusInfo'.Y + 'LeaveConfirmation.Detail.StatusInfo'.Height + 10
+                                    Width: =Parent.Width - 30
+                                    Height: =25
+                                    Text: ="🔄 Trạng thái: " & If(varSelectedLeave.ConfirmationStatus = "Pending", "Chờ ghi nhận", "Đã ghi nhận")
+                                    Color: =If(varSelectedLeave.ConfirmationStatus = "Pending", RGBA(255, 193, 7, 1), RGBA(40, 167, 69, 1))
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Size: =12
+                                    
+                        - 'LeaveConfirmation.Detail.Note.Label':
+                            Control: Label
+                            Properties:
+                              X: =Parent.X + 20
+                              Y: ='LeaveConfirmation.Detail.Info.Container'.Y + 'LeaveConfirmation.Detail.Info.Container'.Height + 20
+                              Width: =Parent.Width - 40
+                              Height: =25
+                              Text: ="Ghi chú xác nhận:"
+                              Color: =RGBA(32, 54, 71, 1)
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Semibold
+                              Size: =14
+                              
+                        - 'LeaveConfirmation.Detail.Note.Input':
+                            Control: Classic/TextInput
+                            Properties:
+                              X: =Parent.X + 20
+                              Y: ='LeaveConfirmation.Detail.Note.Label'.Y + 'LeaveConfirmation.Detail.Note.Label'.Height + 5
+                              Width: =Parent.Width - 40
+                              Height: =80
+                              HintText: ="Nhập ghi chú xác nhận nghỉ phép..."
+                              Mode: =TextMode.MultiLine
+                              BorderColor: =RGBA(230, 230, 230, 1)
+                              Font: =Font.'Open Sans'
+                              Size: =12
+                              PaddingLeft: =15
+                              PaddingTop: =15
+                              OnChange: =Set(varConfirmationNote, Self.Text)
+                              DisplayMode: =If(varSelectedLeave.ConfirmationStatus = "Confirmed", DisplayMode.Disabled, DisplayMode.Edit)
+                              
+                        - 'LeaveConfirmation.Detail.Actions.Container':
+                            Control: GroupContainer
+                            Variant: ManualLayout
+                            Properties:
+                              X: =Parent.X + 20
+                              Y: ='LeaveConfirmation.Detail.Note.Input'.Y + 'LeaveConfirmation.Detail.Note.Input'.Height + 20
+                              Width: =Parent.Width - 40
+                              Height: =60
+                              Visible: =varSelectedLeave.ConfirmationStatus = "Pending"
+                            Children:
+                              - 'LeaveConfirmation.Detail.Confirm.Button':
+                                  Control: Classic/Button
+                                  Properties:
+                                    X: =Parent.X
+                                    Y: =Parent.Y
+                                    Width: =Parent.Width
+                                    Height: =50
+                                    Text: =If(varIsProcessing, "Đang xử lý...", "✅ Xác nhận nghỉ phép")
+                                    Fill: =RGBA(40, 167, 69, 1)
+                                    Color: =RGBA(255, 255, 255, 1)
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Size: =14
+                                    DisplayMode: =If(varIsProcessing, DisplayMode.Disabled, DisplayMode.Edit)
+                                    OnSelect: =Set(varIsProcessing, true); If(Not(IsBlank(varSelectedLeave)), Set(varApprovedLeaves, ForAll(varApprovedLeaves, If(ID = varSelectedLeave.ID, {ID: ID, EmployeeID: EmployeeID, EmployeeName: EmployeeName, Department: Department, StartDate: StartDate, EndDate: EndDate, Days: Days, Type: Type, Status: Status, ApprovedDate: ApprovedDate, ConfirmationStatus: "Confirmed"}, ThisRecord))); Notify("Đã xác nhận nghỉ phép cho " & varSelectedLeave.EmployeeName & "!", NotificationType.Success); Set(varSelectedLeave, Blank()); Set(varConfirmationNote, ""); Set(varIsProcessing, false), Notify("Vui lòng chọn đơn cần xác nhận!", NotificationType.Error); Set(varIsProcessing, false))
+                                      
+                  - 'LeaveConfirmation.NoSelection.Container':
+                      Control: GroupContainer
+                      Variant: ManualLayout
+                      Properties:
+                        X: ='LeaveConfirmation.List.Container'.X + 'LeaveConfirmation.List.Container'.Width + 20
+                        Y: =Parent.Y
+                        Width: =Parent.Width - 'LeaveConfirmation.List.Container'.Width - 20
+                        Height: =Parent.Height
+                        Fill: =RGBA(255, 255, 255, 1)
+                        BorderColor: =RGBA(230, 230, 230, 1)
+                        BorderThickness: =1
+                        DropShadow: =DropShadow.Light
+                        Visible: =IsBlank(varSelectedLeave)
+                      Children:
+                        - 'LeaveConfirmation.NoSelection.Message':
+                            Control: Label
+                            Properties:
+                              X: =Parent.X + 20
+                              Y: =Parent.Y + (Parent.Height / 2) - 50
+                              Width: =Parent.Width - 40
+                              Height: =100
+                              Text: ="📋 Chọn đơn nghỉ phép" & Char(10) & Char(10) & "Vui lòng chọn một đơn nghỉ phép đã được phê duyệt từ danh sách bên trái để thực hiện ghi nhận kết quả."
+                              Color: =RGBA(108, 117, 125, 1)
+                              Font: =Font.'Open Sans'
+                              Size: =14
+                              Align: =Align.Center 

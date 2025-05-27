@@ -48,12 +48,9 @@ Screens:
                   PaddingLeft: =2
                   PaddingRight: =2
                   PaddingTop: =2
-                  RadiusBottomLeft: =0
-                  RadiusBottomRight: =0
-                  RadiusTopLeft: =0
-                  RadiusTopRight: =0
+
                   Width: =Parent.Width
-                  X: =
+                  X: =0
                 Children:
                   - HeaderComponent_1:
                       Control: CanvasComponent

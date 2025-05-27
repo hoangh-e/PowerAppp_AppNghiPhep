@@ -1,0 +1,19 @@
+SHEET: Các chức năng
+==================================================
+Các chức năng                                  Unnamed: 1 Unnamed: 2 Unnamed: 3 Unnamed: 4 Unnamed: 5 Unnamed: 6
+          STT                                   Chúc năng   Employee    Manager   Director         HR      Admin
+            1                Quản lý thông tin người dùng        NaN        NaN        NaN        NaN          x
+            2                   Quản lý số ngày nghỉ phép        NaN        NaN        NaN          x        NaN
+            3                      Quản lý lịch nghỉ phép        NaN        NaN          x          x          x
+            4                 Quản lý quy trình phê duyệt        NaN        NaN        NaN        NaN          x
+            5                 Quản lý role trong ứng dụng        NaN        NaN        NaN        NaN          x
+            6                           Tạo đơn nghỉ phép          x          x          x          x        NaN
+            7  Tạo đơn nghỉ phép vượt quy định (đặc biệt)          x          x          x          x        NaN
+            8             Xem thông tin lịch nghỉ cá nhân          x          x          x          x        NaN
+            9            Xem lịch nghỉ phép toàn hệ thống        NaN          x          x          x        NaN
+           10 Phê duyệt cấp 1 (Trưởng nhóm/phòng/bộ phận)        NaN          x        NaN        NaN        NaN
+           11             Phê duyệt cấp 2 (Giám đốc khối)        NaN        NaN          x        NaN        NaN
+           12        Phê duyệt cấp 3 (Giám đốc điều hành)        NaN        NaN          x        NaN        NaN
+           13          Ghi nhận nghỉ phép (sau phê duyệt)        NaN        NaN        NaN          x        NaN
+           14    Theo dõi tình hình nghỉ phép (Dashboard)          x          x          x          x        NaN
+           15 Xuất báo cáo thống kê (CSV, theo tháng/năm)        NaN        NaN        NaN          x        NaN

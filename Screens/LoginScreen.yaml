@@ -1,15 +1,81 @@
 Screens:
   LoginScreen:
     Properties:
-      Fill: =RGBA(242, 246, 249, 1)
+      Fill: =RGBA(245, 248, 251, 1)
+      OnVisible: |-
+        =Set(varLoginError, false);
+        Set(varLoginMessage, "");
+        Set(varCurrentUser, Blank())
     Children:
-      - BackgroundElements:
+      - BackgroundGradient:
           Control: Rectangle
           Properties:
             Height: =Parent.Height
             Width: =Parent.Width
-            Fill: =RGBA(242, 246, 249, 1)
+            Fill: =RGBA(245, 248, 251, 1)
             BorderColor: =RGBA(0, 0, 0, 0)
+      
+      - 'Background.Pattern':
+          Control: Rectangle
+          Properties:
+            X: =0
+            Y: =0
+            Width: =Parent.Width
+            Height: =Parent.Height
+            Fill: =RGBA(0, 120, 212, 0.03)
+            BorderColor: =RGBA(0, 0, 0, 0)
+      
+      - 'Header.Brand':
+          Control: GroupContainer
+          Variant: ManualLayout
+          Properties:
+            X: =(Parent.Width - 500) / 2
+            Y: =60
+            Width: =500
+            Height: =80
+            Fill: =RGBA(0, 0, 0, 0)
+          Children:
+            - 'Header.Brand.Logo':
+                Control: Rectangle
+                Properties:
+                  X: =0
+                  Y: =10
+                  Width: =60
+                  Height: =60
+                  Fill: =RGBA(0, 120, 212, 1)
+            
+            - 'Header.Brand.LogoIcon':
+                Control: Classic/Icon
+                Properties:
+                  Icon: ="Building"
+                  X: =15
+                  Y: =25
+                  Width: =30
+                  Height: =30
+                  Color: =RGBA(255, 255, 255, 1)
+            
+            - 'Header.Brand.Title':
+                Control: Label
+                Properties:
+                  X: =80
+                  Y: =15
+                  Width: =400
+                  Height: =35
+                  Text: ="AsiaShine"
+                  Size: =28
+                  FontWeight: =FontWeight.Bold
+                  Color: =RGBA(32, 54, 71, 1)
+            
+            - 'Header.Brand.Subtitle':
+                Control: Label
+                Properties:
+                  X: =80
+                  Y: =45
+                  Width: =400
+                  Height: =25
+                  Text: ="Hệ thống quản lý nghỉ phép"
+                  Size: =14
+                  Color: =RGBA(71, 110, 140, 1)
       
       - LoginContainer:
           Control: GroupContainer
@@ -18,143 +84,225 @@ Screens:
             BorderColor: =RGBA(230, 230, 230, 1)
             BorderThickness: =1
             Fill: =RGBA(255, 255, 255, 1)
-            Height: =340
-            RadiusBottomLeft: =12
-            RadiusBottomRight: =12
-            RadiusTopLeft: =12
-            RadiusTopRight: =12
-            Width: =400
-            X: =(Parent.Width - 400) / 2
-            Y: =150
-            DropShadow: =DropShadow.Medium
+            Height: =420
+
+            Width: =450
+            X: =(Parent.Width - 450) / 2
+            Y: =170
+            DropShadow: =DropShadow.Light
           Children:
-            - LoginContainer.Title:
+            - 'LoginContainer.Header':
+                Control: Rectangle
+                Properties:
+                  X: =0
+                  Y: =0
+                  Width: =Parent.Width
+                  Height: =80
+                  Fill: =RGBA(0, 120, 212, 0.05)
+                  BorderColor: =RGBA(0, 0, 0, 0)
+            
+            - 'LoginContainer.Title':
                 Control: Label
                 Properties:
                   Align: =Align.Center
                   Color: =RGBA(32, 54, 71, 1)
                   FontWeight: =FontWeight.Bold
-                  Size: =20
+                  Size: =22
                   Text: ="Đăng nhập hệ thống"
                   Width: =Parent.Width
-                  Y: =30
-                  PaddingBottom: =10
+                  Y: =25
+                  Height: =30
             
-            - LoginContainer.UsernameLabel:
+            - 'LoginContainer.WelcomeText':
                 Control: Label
                 Properties:
+                  Align: =Align.Center
                   Color: =RGBA(71, 110, 140, 1)
-                  Height: =32
                   Size: =14
-                  Text: ="Tên đăng nhập:"
-                  Width: =160
-                  X: =40
-                  Y: =90
-                  FontWeight: =FontWeight.Semibold
+                  Text: ="Vui lòng nhập thông tin để tiếp tục"
+                  Width: =Parent.Width
+                  Y: =50
+                  Height: =20
             
-            - LoginContainer.UsernameInput:
-                Control: Classic/TextInput
+            - 'LoginContainer.UsernameGroup':
+                Control: GroupContainer
+                Variant: ManualLayout
                 Properties:
-                  BorderColor: =If(Self.IsHovered, RGBA(0, 120, 212, 1), RGBA(200, 200, 200, 1))
-                  BorderThickness: =If(Self.IsHovered, 2, 1)
-                  Default: =""
-                  HintText: ="Nhập tên đăng nhập"
-                  RadiusBottomLeft: =6
-                  RadiusBottomRight: =6
-                  RadiusTopLeft: =6
-                  RadiusTopRight: =6
-                  Width: =Parent.Width - 80
-                  Height: =38
                   X: =40
-                  Y: =122
-                  Fill: =RGBA(248, 250, 253, 1)
-                  HoverFill: =RGBA(255, 255, 255, 1)
-                  PaddingLeft: =10
+                  Y: =110
+                  Width: =Parent.Width - 80
+                  Height: =70
+                  Fill: =RGBA(0, 0, 0, 0)
+                Children:
+                  - 'LoginContainer.UsernameGroup.Label':
+                      Control: Label
+                      Properties:
+                        Color: =RGBA(71, 110, 140, 1)
+                        Height: =25
+                        Size: =14
+                        Text: ="Tên đăng nhập"
+                        Width: =Parent.Width
+                        X: =0
+                        Y: =0
+                        FontWeight: =FontWeight.Semibold
+                  
+                  - 'LoginContainer.UsernameGroup.Input':
+                      Control: Classic/TextInput
+                      Properties:
+                        BorderColor: =If(Self.Hover || Self.Focus, RGBA(0, 120, 212, 1), RGBA(200, 200, 200, 1))
+                        BorderThickness: =If(Self.Hover || Self.Focus, 2, 1)
+                        Default: =""
+                        HintText: ="Nhập ID nhân viên hoặc 'admin'"
+                        Width: =Parent.Width
+                        Height: =42
+                        X: =0
+                        Y: =28
+                        Fill: =RGBA(248, 250, 253, 1)
+                        HoverFill: =RGBA(255, 255, 255, 1)
+                        PaddingLeft: =12
+                        PaddingRight: =12
+                        Size: =14
             
-            - LoginContainer.PasswordLabel:
+            - 'LoginContainer.PasswordGroup':
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =40
+                  Y: =190
+                  Width: =Parent.Width - 80
+                  Height: =70
+                  Fill: =RGBA(0, 0, 0, 0)
+                Children:
+                  - 'LoginContainer.PasswordGroup.Label':
+                      Control: Label
+                      Properties:
+                        Color: =RGBA(71, 110, 140, 1)
+                        Height: =25
+                        Size: =14
+                        Text: ="Mật khẩu"
+                        Width: =Parent.Width
+                        X: =0
+                        Y: =0
+                        FontWeight: =FontWeight.Semibold
+                  
+                  - 'LoginContainer.PasswordGroup.Input':
+                      Control: Classic/TextInput
+                      Properties:
+                        BorderColor: =If(Self.Hover || Self.Focus, RGBA(0, 120, 212, 1), RGBA(200, 200, 200, 1))
+                        BorderThickness: =If(Self.Hover || Self.Focus, 2, 1)
+                        Default: =""
+                        HintText: ="Nhập mật khẩu"
+                        Mode: =TextMode.Password
+                        Width: =Parent.Width
+                        Height: =42
+                        X: =0
+                        Y: =28
+                        Fill: =RGBA(248, 250, 253, 1)
+                        HoverFill: =RGBA(255, 255, 255, 1)
+                        PaddingLeft: =12
+                        PaddingRight: =12
+                        Size: =14
+            
+            - 'LoginContainer.ErrorMessage':
                 Control: Label
                 Properties:
-                  Color: =RGBA(71, 110, 140, 1)
-                  Height: =32
-                  Size: =14
-                  Text: ="Mật khẩu:"
-                  Width: =160
                   X: =40
-                  Y: =172
+                  Y: =270
+                  Width: =Parent.Width - 80
+                  Height: =25
+                  Text: =If(varLoginError, varLoginMessage, "")
+                  Color: =RGBA(220, 53, 69, 1)
+                  Size: =12
+                  Visible: =varLoginError
                   FontWeight: =FontWeight.Semibold
             
-            - LoginContainer.PasswordInput:
-                Control: Classic/TextInput
+            - 'LoginContainer.HelpText':
+                Control: Label
                 Properties:
-                  BorderColor: =If(Self.IsHovered, RGBA(0, 120, 212, 1), RGBA(200, 200, 200, 1))
-                  BorderThickness: =If(Self.IsHovered, 2, 1)
-                  Default: =""
-                  HintText: ="Nhập mật khẩu"
-                  Mode: =TextMode.Password
-                  RadiusBottomLeft: =6
-                  RadiusBottomRight: =6
-                  RadiusTopLeft: =6
-                  RadiusTopRight: =6
-                  Width: =Parent.Width - 80
-                  Height: =38
                   X: =40
-                  Y: =204
-                  Fill: =RGBA(248, 250, 253, 1)
-                  HoverFill: =RGBA(255, 255, 255, 1)
-                  PaddingLeft: =10
+                  Y: =270
+                  Width: =Parent.Width - 80
+                  Height: =40
+                  Text: ="Hướng dẫn:Nhân viên dùng ID (1-16) với mật khẩu '123456'. Admin dùng 'admin'/'admin123'"
+                  Color: =RGBA(108, 117, 125, 1)
+                  Size: =11
+                  Visible: =!varLoginError
             
-            - LoginContainer.LoginButton:
+            - 'LoginContainer.LoginButton':
                 Control: Classic/Button
                 Properties:
                   Color: =RGBA(255, 255, 255, 1)
                   Fill: =RGBA(0, 120, 212, 1)
                   OnSelect: |-
                     =If(
-                        !IsBlank(LoginContainer.UsernameInput.Text) && !IsBlank(LoginContainer.PasswordInput.Text),
-                        Navigate(HomeScreen),
-                        Notify("Vui lòng nhập đầy đủ thông tin đăng nhập", NotificationType.Error)
+                        IsBlank('LoginContainer.UsernameGroup.Input'.Text) || IsBlank('LoginContainer.PasswordGroup.Input'.Text),
+                        Set(varLoginError, true); Set(varLoginMessage, "Vui lòng nhập đầy đủ thông tin đăng nhập"),
+                        // Giả lập xác thực
+                        If(
+                            ('LoginContainer.UsernameGroup.Input'.Text = "admin" && 'LoginContainer.PasswordGroup.Input'.Text = "admin123") ||
+                            (IsNumeric('LoginContainer.UsernameGroup.Input'.Text) && Value('LoginContainer.UsernameGroup.Input'.Text) >= 1 && Value('LoginContainer.UsernameGroup.Input'.Text) <= 16 && 'LoginContainer.PasswordGroup.Input'.Text = "123456"),
+                            Set(varCurrentUser, {
+                                Username: 'LoginContainer.UsernameGroup.Input'.Text,
+                                Role: If('LoginContainer.UsernameGroup.Input'.Text = "admin", "Admin", "Employee"),
+                                LoginTime: Now()
+                            });
+                            Set(varLoginError, false);
+                            Navigate(HomeScreen, ScreenTransition.Fade),
+                            Set(varLoginError, true); Set(varLoginMessage, "Tên đăng nhập hoặc mật khẩu không đúng")
+                        )
                     )
-                  RadiusBottomLeft: =6
-                  RadiusBottomRight: =6
-                  RadiusTopLeft: =6
-                  RadiusTopRight: =6
                   Text: ="Đăng nhập"
-                  Width: =200
-                  Height: =40
-                  X: =(Parent.Width - 200) / 2
-                  Y: =265
-                  HoverFill: =ColorFade(RGBA(0, 120, 212, 1), -20%)
+                  Width: =220
+                  Height: =44
+                  X: =(Parent.Width - 220) / 2
+                  Y: =320
+                  HoverFill: =ColorFade(RGBA(0, 120, 212, 1), -15%)
                   FontWeight: =FontWeight.Semibold
                   DisabledFill: =RGBA(166, 166, 166, 1)
-                  PaddingTop: =0
-                  PaddingBottom: =0
+                  Size: =15
+            
+            - 'LoginContainer.ForgotPassword':
+                Control: Classic/Button
+                Properties:
+                  X: =(Parent.Width - 150) / 2
+                  Y: =375
+                  Width: =150
+                  Height: =30
+                  Text: ="Quên mật khẩu?"
+                  Color: =RGBA(0, 120, 212, 1)
+                  Fill: =RGBA(0, 0, 0, 0)
+                  BorderColor: =RGBA(0, 0, 0, 0)
+                  HoverFill: =RGBA(0, 120, 212, 0.1)
+                  Size: =12
+                  OnSelect: =Notify("Vui lòng liên hệ quản trị viên để được hỗ trợ", NotificationType.Information)
       
-      - DecorativeElement1:
-          Control: Rectangle
+      - 'Decorative.LeftCircle':
+          Control: Circle
           Properties:
-            X: =0
-            Y: =Parent.Height - 100
-            Width: =Parent.Width * 0.6
-            Height: =100
-            Fill: =RGBA(0, 120, 212, 0.05)
+            X: =-100
+            Y: =100
+            Width: =200
+            Height: =200
+            Fill: =RGBA(0, 120, 212, 0.08)
             BorderColor: =RGBA(0, 0, 0, 0)
       
-      - DecorativeElement2:
-          Control: Rectangle
+      - 'Decorative.RightCircle':
+          Control: Circle
           Properties:
-            X: =Parent.Width * 0.7
-            Y: =0
-            Width: =Parent.Width * 0.3
-            Height: =70
-            Fill: =RGBA(0, 120, 212, 0.08)
+            X: =Parent.Width - 100
+            Y: =Parent.Height - 200
+            Width: =200
+            Height: =200
+            Fill: =RGBA(0, 120, 212, 0.06)
             BorderColor: =RGBA(0, 0, 0, 0)
       
       - Footer:
           Control: Label
           Properties:
             Align: =Align.Center
-            Color: =RGBA(71, 110, 140, 1)
+            Color: =RGBA(108, 117, 125, 1)
             Size: =12
-            Text: ="© 2023 AsiaShine - Ứng dụng nghỉ phép"
+            Text: ="© 2024 AsiaShine - Ứng dụng quản lý nghỉ phép v1.0"
             Width: =Parent.Width
-            Y: =Parent.Height - Self.Height - 10
+            Y: =Parent.Height - 40
+            Height: =20

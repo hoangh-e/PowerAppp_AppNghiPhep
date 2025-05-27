@@ -118,10 +118,6 @@ Screens:
                         Width: =16
                         Height: =16
                         Fill: =RGBA(76, 209, 55, 1)
-                        RadiusTopLeft: =8
-                        RadiusTopRight: =8
-                        RadiusBottomLeft: =8
-                        RadiusBottomRight: =8
                   
                   - StatusRow.StatusText:
                       Control: Label
@@ -145,10 +141,6 @@ Screens:
                         Text: ="Tạo đơn nghỉ phép"
                         Color: =RGBA(255, 255, 255, 1)
                         Fill: =RGBA(0, 120, 212, 1)
-                        RadiusTopLeft: =19
-                        RadiusTopRight: =19
-                        RadiusBottomLeft: =19
-                        RadiusBottomRight: =19
                         HoverFill: =ColorFade(RGBA(0, 120, 212, 1), -20%)
                         OnSelect: |
                           =Navigate(LeaveRequestScreen)
@@ -172,10 +164,6 @@ Screens:
                         Width: =(Parent.Width - 40) / 3
                         Height: =220
                         Fill: =RGBA(255, 255, 255, 1)
-                        RadiusTopLeft: =12
-                        RadiusTopRight: =12
-                        RadiusBottomLeft: =12
-                        RadiusBottomRight: =12
                         BorderColor: =RGBA(0, 0, 0, 0)
                         DropShadow: =DropShadow.Small
                   
@@ -187,8 +175,6 @@ Screens:
                         Width: =(Parent.Width - 40) / 3
                         Height: =60
                         Fill: =RGBA(0, 120, 212, 0.1)
-                        RadiusTopLeft: =12
-                        RadiusTopRight: =12
                         BorderColor: =RGBA(0, 0, 0, 0)
                   
                   - LeaveBalanceCard.HeaderTitle:
@@ -221,10 +207,6 @@ Screens:
                         Width: =110
                         Height: =110
                         Fill: =RGBA(0, 120, 212, 0.1)
-                        RadiusTopLeft: =55
-                        RadiusTopRight: =55
-                        RadiusBottomLeft: =55
-                        RadiusBottomRight: =55
                         BorderColor: =RGBA(0, 0, 0, 0)
                   
                   - LeaveBalanceCard.Value:
@@ -262,10 +244,6 @@ Screens:
                         Width: =(Parent.Width - 40) / 3
                         Height: =220
                         Fill: =RGBA(255, 255, 255, 1)
-                        RadiusTopLeft: =12
-                        RadiusTopRight: =12
-                        RadiusBottomLeft: =12
-                        RadiusBottomRight: =12
                         BorderColor: =RGBA(0, 0, 0, 0)
                         DropShadow: =DropShadow.Small
                   
@@ -277,8 +255,6 @@ Screens:
                         Width: =(Parent.Width - 40) / 3
                         Height: =60
                         Fill: =RGBA(255, 191, 0, 0.1)
-                        RadiusTopLeft: =12
-                        RadiusTopRight: =12
                         BorderColor: =RGBA(0, 0, 0, 0)
                   
                   - PendingRequestsCard.HeaderTitle:
@@ -311,10 +287,6 @@ Screens:
                         Width: =110
                         Height: =110
                         Fill: =RGBA(255, 191, 0, 0.1)
-                        RadiusTopLeft: =55
-                        RadiusTopRight: =55
-                        RadiusBottomLeft: =55
-                        RadiusBottomRight: =55
                         BorderColor: =RGBA(0, 0, 0, 0)
                   
                   - PendingRequestsCard.Value:
@@ -352,10 +324,6 @@ Screens:
                         Width: =(Parent.Width - 40) / 3
                         Height: =220
                         Fill: =RGBA(255, 255, 255, 1)
-                        RadiusTopLeft: =12
-                        RadiusTopRight: =12
-                        RadiusBottomLeft: =12
-                        RadiusBottomRight: =12
                         BorderColor: =RGBA(0, 0, 0, 0)
                         DropShadow: =DropShadow.Small
                   
@@ -367,8 +335,6 @@ Screens:
                         Width: =(Parent.Width - 40) / 3
                         Height: =60
                         Fill: =RGBA(135, 100, 184, 0.1)
-                        RadiusTopLeft: =12
-                        RadiusTopRight: =12
                         BorderColor: =RGBA(0, 0, 0, 0)
                   
                   - TeamStatusCard.HeaderTitle:
@@ -492,10 +458,6 @@ Screens:
                         Width: =Parent.Width
                         Height: =Parent.Height - 50
                         Fill: =RGBA(255, 255, 255, 1)
-                        RadiusTopLeft: =12
-                        RadiusTopRight: =12
-                        RadiusBottomLeft: =12
-                        RadiusBottomRight: =12
                         BorderColor: =RGBA(0, 0, 0, 0)
                         DropShadow: =DropShadow.Small
                   
@@ -508,7 +470,7 @@ Screens:
                         Y: =70
                         Width: =Parent.Width - 40
                         Height: =80
-                        Fill: =If(Self.IsHovered, RGBA(243, 246, 248, 1), Transparent)
+                        Fill: =If(Self.Hover, RGBA(243, 246, 248, 1), Transparent)
                         HoverFill: =RGBA(243, 246, 248, 1)
                       Children:
                         - ActivityItem1.Indicator:
@@ -557,10 +519,6 @@ Screens:
                               Fill: =RGBA(76, 209, 55, 0.1)
                               BorderColor: =RGBA(76, 209, 55, 1)
                               BorderThickness: =1
-                              RadiusTopLeft: =15
-                              RadiusTopRight: =15
-                              RadiusBottomLeft: =15
-                              RadiusBottomRight: =15
                               Align: =Align.Center
                               VerticalAlign: =VerticalAlign.Middle
                   
@@ -573,7 +531,7 @@ Screens:
                         Y: =150
                         Width: =Parent.Width - 40
                         Height: =80
-                        Fill: =If(Self.IsHovered, RGBA(243, 246, 248, 1), Transparent)
+                        Fill: =If(Self.Hover, RGBA(243, 246, 248, 1), Transparent)
                         HoverFill: =RGBA(243, 246, 248, 1)
                       Children:
                         - ActivityItem2.Indicator:
@@ -622,10 +580,6 @@ Screens:
                               Fill: =RGBA(255, 191, 0, 0.1)
                               BorderColor: =RGBA(255, 191, 0, 1)
                               BorderThickness: =1
-                              RadiusTopLeft: =15
-                              RadiusTopRight: =15
-                              RadiusBottomLeft: =15
-                              RadiusBottomRight: =15
                               Align: =Align.Center
                               VerticalAlign: =VerticalAlign.Middle
                   
@@ -638,7 +592,7 @@ Screens:
                         Y: =230
                         Width: =Parent.Width - 40
                         Height: =80
-                        Fill: =If(Self.IsHovered, RGBA(243, 246, 248, 1), Transparent)
+                        Fill: =If(Self.Hover, RGBA(243, 246, 248, 1), Transparent)
                         HoverFill: =RGBA(243, 246, 248, 1)
                       Children:
                         - ActivityItem3.Indicator:
@@ -687,9 +641,5 @@ Screens:
                               Fill: =RGBA(209, 82, 55, 0.1)
                               BorderColor: =RGBA(209, 82, 55, 1)
                               BorderThickness: =1
-                              RadiusTopLeft: =15
-                              RadiusTopRight: =15
-                              RadiusBottomLeft: =15
-                              RadiusBottomRight: =15
                               Align: =Align.Center
                               VerticalAlign: =VerticalAlign.Middle 

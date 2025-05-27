@@ -1,0 +1,210 @@
+BẢNG TRONG PDF
+==================================================
+
+Trang 3, Bảng 1:
+------------------------------
+Version | Người thực hiện | Người kiểm tra | Ngày hoàn
+thành | Ghi chú
+1.0 | Võ Đỗ Thi Nhân |  | 7/10/2023 | 
+1.1 | Trần Văn Hậu | Võ Đỗ Thi Nhân | 11/10/2023 | Cập nhật các nội dung sau
+sửa đổi của AsiaShine và
+sau cuộc họp giữa hai bên
+11/10/2023
+ |  |  |  | 
+
+
+Trang 4, Bảng 1:
+------------------------------
+STT | Role | Người dùng | Ghi chú
+1 | Employee | Nhân viên | 
+2 | Manager | Trưởng đơn vị | Gồm Tổ trưởng/ Thủ kho/ Trưởng nhóm/
+Trưởng bộ phận/ Trưởng phòng
+Chỉ quản lý thông tin đơn vị của mình
+3 | Director | Ban giám đốc | Gồm Giám đốc Khối và Giám đốc Điều hành
+Quản lý thông tin của toàn bộ nhân viên
+
+
+Trang 4, Bảng 2:
+------------------------------
+Gồm Giám đốc Khối và Giám đốc Điều hành
+Quản lý thông tin của toàn bộ nhân viên
+
+
+Trang 5, Bảng 1:
+------------------------------
+4 | HR | C&B, HR | Gồm các nhân sự phụ trách ghi nhận, kiểm
+soát dữ liệu nghỉ phép
+Có quyền truy cập toàn bộ dữ liệu
+5 | Admin | IT | Tài khoản dùng để thiết lập thông tin cho ứng
+dụng
+Ví dụ: Thêm nhân viên vào ứng dụng
+
+
+Trang 5, Bảng 2:
+------------------------------
+Tài khoản dùng để thiết lập thông tin cho ứng
+dụng
+Ví dụ: Thêm nhân viên vào ứng dụng
+
+
+Trang 5, Bảng 3:
+------------------------------
+Role | Cấp phê duyệt | Ghi chú
+Trưởng nhóm/ Trưởng bộ
+phận/ Trưởng phòng | 1 | 
+Giám đốc khối | 2 | 
+Giám đốc điều hành | 3 | 
+C&B / HR |  | Chỉ ghi nhận chứ không phê duyệt
+
+
+Trang 5, Bảng 4:
+------------------------------
+Trưởng nhóm/ Trưởng bộ
+phận/ Trưởng phòng
+
+
+Trang 5, Bảng 5:
+------------------------------
+STT | Chức năng | Người sử dụng |  |  |  | 
+ |  | Employee | Manager | Director | HR | Admin
+ | Quản lý thông tin ứng dụng (master data) |  |  |  |  | 
+1 | Quản lý thông tin người dùng |  |  |  |  | x
+2 | Quản lý số ngày nghỉ phép |  |  |  | x | 
+3 | Quản lý lịch nghỉ phép |  |  |  | x | x
+4 | Quản lý quy trình phê duyệt |  |  |  |  | x
+5 | Quản lý role trong ứng dụng |  |  |  |  | x
+ | Quản lý nghỉ phép |  |  |  |  | 
+6 | Tạo nghỉ phép | x | x | x | x | 
+
+
+Trang 6, Bảng 1:
+------------------------------
+7 | Xem thông tin nghỉ phép | x | x | x | x | 
+8 | Phê duyệt nghỉ phép |  | x | x |  | 
+ | Dashboard báo cáo |  |  |  |  | 
+9 | Theo dõi nghỉ phép | x | x | x | x | 
+10 | Xuất file báo cáo |  |  |  | x | 
+
+
+Trang 6, Bảng 2:
+------------------------------
+STT | Trường
+1 | Mã Nhân viên
+2 | Họ và tên
+3 | Email
+4 | Số điện thoại
+5 | Chức danh
+6 | Đơn vị
+
+
+Trang 6, Bảng 3:
+------------------------------
+STT | Trường
+1 | Mã Nhân viên
+2 | Họ và tên
+3 | Email
+
+
+Trang 7, Bảng 1:
+------------------------------
+4 | Tổng ngày phép
+5 | Năm
+
+
+Trang 8, Bảng 1:
+------------------------------
+STT | Trường | Ghi chú
+1 | Mã Nhân viên | 
+2 | Họ & tên | Tên người làm đơn
+3 | Chức danh | 
+4 | Đơn vị | 
+5 | Thời gian nghỉ | Ngày bắt đầu và kết thúc
+6 | Số lượng nghỉ | Tổng số ngày nghỉ
+7 | Lý do nghỉ | 
+8 | Người nhận bàn giao công
+việc | 
+9 | Nội dung công việc bàn giao | 
+10 | File đính kèm | 
+
+
+Trang 9, Bảng 1:
+------------------------------
+QUY TRÌNH PHÊ DUYỆT NGHỈ PHÉP |  |  |  |  |  |  | 
+ | Nhân viên | Trưởng nhóm/
+Trưởng bộ phận/ Trưởng phòng | Giám đốc Khối |  |  | Giám đốc Điều hành | C&B/ HR
+ | Đơn xin
+nghỉ phép ng
+Từ chối phép | Nhận mail thông báo
+ày
+phê duyệt
+Phê duyệt
+> 12 ngày
+Không đồng ý | Nhận mail thông báo
+phê duyệt
+> 12
+Phê duyệt |  |  | Nhận mail thông báo
+phê duyệt
+ngày
+Phê duyệt | Nhận mail thông báo
+Ghi nhận phép
+ |  |  |  |  |  |  | 
+ |  |  |  | > 12 |  | ngày | 
+ |  |  |  |  |  |  | 
+ |  |  |  |  |  |  | 
+ |  | > 12 ngày |  |  |  |  | 
+ |  |  |  |  |  | ngày | 
+ |  |  |  |  |  |  | 
+
+
+Trang 9, Bảng 2:
+------------------------------
+
+ng
+
+
+Trang 9, Bảng 3:
+------------------------------
+
+> 12 ngày
+
+
+Trang 9, Bảng 4:
+------------------------------
+
+ngày
+
+
+Trang 9, Bảng 5:
+------------------------------
+Role | Cấp | Mô tả
+Trưởng nhóm/ Trưởng
+bộ phận/ Trưởng phòng | 1 | Sau khi người dùng tạo đơn nghỉ phép (≤ 12 ngày), mail chứa
+thông tin nghỉ phép sẽ được tự động gửi đến cho Trưởng nhóm/
+Trưởng bộ phận/ Trưởng phòng.
+Trưởng nhóm/ Trưởng bộ phận/ Trưởng phòng thực hiện xem
+xét thông tin và phê duyệt đơn nghỉ phép.
+Riêng người tạo là role này, thì sẽ tự động hoàn thành bước này.
+Sau khi phê duyệt:
+❖ Nếu từ chối sẽ tự động gửi mail tự động đến người gửi
+
+
+Trang 10, Bảng 1:
+------------------------------
+ |  | ❖ Nếu đồng ý thì chuyển tiếp phê duyệt tới cấp tiếp theo
+Giám đốc Khối | 2 | Giám đốc khối thực hiện xem xét thông tin và phê duyệt đơn
+nghỉ phép.
+Riêng người tạo là role này, thì sẽ tự động hoàn thành bước này.
+Sau khi phê duyệt:
+❖ Nếu từ chối sẽ tự động gửi mail đến người gửi
+❖ Nếu số ngày phép lớn hơn 12 ngày thì chuyển tiếp phê duyệt
+tới cấp tiếp theo, ngược lại sẽ tự động gửi mail chấp nhận
+phê duyệt đến người gửi và bộ phận C&B/HR để ghi nhận
+Giám đốc Điều hành | 3 | Giám đốc điều hành thực hiện xem xét thông tin và phê duyệt
+đơn nghỉ phép.
+Riêng người tạo là role này, thì sẽ tự động hoàn thành bước này.
+Sau khi phê duyệt:
+❖ Nếu từ chối sẽ tự động gửi mail đến người gửi
+❖ Nếu phê duyệt sẽ tự động gửi mail chấp thuận đến người gửi
+và bộ phận C&B/HR để ghi nhận
+C&B / HR |  | Nhận mail và thực hiện ghi nhận kết quả nghỉ phép
+

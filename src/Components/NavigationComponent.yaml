@@ -1,0 +1,244 @@
+ComponentDefinitions:
+  NavigationComponent:
+    DefinitionType: CanvasComponent
+    CustomProperties:
+      UserRole:
+        PropertyKind: Input
+        DisplayName: UserRole
+        Description: "Vai trò của người dùng"
+        DataType: Text
+        Default: ="Employee"
+      ActiveScreen:
+        PropertyKind: Input
+        DisplayName: ActiveScreen
+        Description: "Màn hình hiện tại"
+        DataType: Text
+        Default: ="Dashboard"
+      OnNavigate:
+        PropertyKind: Event
+        DisplayName: OnNavigate
+        Description: "Sự kiện khi chuyển màn hình"
+        ReturnType: None
+        Default: =false
+        Parameters:
+          - ScreenName:
+              Description: "Tên màn hình"
+              DataType: Text
+              IsOptional: true
+              Default: ="Dashboard"
+    Properties:
+      Height: =App.Height
+      Width: =App.Width
+    Children:
+    - 'Navigation.Container':
+        Control: GroupContainer
+        Variant: ManualLayout
+        Properties:
+          X: =0
+          Y: =0
+          Width: =250
+          Height: =Parent.Height
+          Fill: =RGBA(248, 249, 250, 1)
+          BorderColor: =RGBA(230, 230, 230, 1)
+          BorderThickness: =1
+        Children:
+          - 'Navigation.Menu.Dashboard':
+              Control: Classic/Button
+              Properties:
+                X: =Parent.X + 10
+                Y: =Parent.Y + 20
+                Width: =Parent.Width - 20
+                Height: =50
+                Text: ="📊 Dashboard"
+                Fill: =If(NavigationComponent.ActiveScreen = "Dashboard", RGBA(0, 120, 212, 1), RGBA(255, 255, 255, 1))
+                Color: =If(NavigationComponent.ActiveScreen = "Dashboard", RGBA(255, 255, 255, 1), RGBA(32, 54, 71, 1))
+                BorderColor: =RGBA(230, 230, 230, 1)
+                Font: =Font.'Open Sans'
+                FontWeight: =FontWeight.Semibold
+                Size: =14
+                PaddingLeft: =20
+                OnSelect: =NavigationComponent.OnNavigate(); Set(varActiveScreen, "Dashboard")
+                
+          - 'Navigation.Menu.LeaveRequest':
+              Control: Classic/Button
+              Properties:
+                X: =Parent.X + 10
+                Y: ='Navigation.Menu.Dashboard'.Y + 'Navigation.Menu.Dashboard'.Height + 10
+                Width: =Parent.Width - 20
+                Height: =50
+                Text: ="📝 Tạo đơn nghỉ phép"
+                Fill: =If(NavigationComponent.ActiveScreen = "LeaveRequest", RGBA(0, 120, 212, 1), RGBA(255, 255, 255, 1))
+                Color: =If(NavigationComponent.ActiveScreen = "LeaveRequest", RGBA(255, 255, 255, 1), RGBA(32, 54, 71, 1))
+                BorderColor: =RGBA(230, 230, 230, 1)
+                Font: =Font.'Open Sans'
+                FontWeight: =FontWeight.Semibold
+                Size: =14
+                PaddingLeft: =20
+                OnSelect: =NavigationComponent.OnNavigate(); Set(varActiveScreen, "LeaveRequest")
+                
+          - 'Navigation.Menu.MyLeaves':
+              Control: Classic/Button
+              Properties:
+                X: =Parent.X + 10
+                Y: ='Navigation.Menu.LeaveRequest'.Y + 'Navigation.Menu.LeaveRequest'.Height + 10
+                Width: =Parent.Width - 20
+                Height: =50
+                Text: ="📋 Đơn nghỉ của tôi"
+                Fill: =If(NavigationComponent.ActiveScreen = "MyLeaves", RGBA(0, 120, 212, 1), RGBA(255, 255, 255, 1))
+                Color: =If(NavigationComponent.ActiveScreen = "MyLeaves", RGBA(255, 255, 255, 1), RGBA(32, 54, 71, 1))
+                BorderColor: =RGBA(230, 230, 230, 1)
+                Font: =Font.'Open Sans'
+                FontWeight: =FontWeight.Semibold
+                Size: =14
+                PaddingLeft: =20
+                OnSelect: =NavigationComponent.OnNavigate(); Set(varActiveScreen, "MyLeaves")
+                
+          - 'Navigation.Menu.Calendar':
+              Control: Classic/Button
+              Properties:
+                X: =Parent.X + 10
+                Y: ='Navigation.Menu.MyLeaves'.Y + 'Navigation.Menu.MyLeaves'.Height + 10
+                Width: =Parent.Width - 20
+                Height: =50
+                Text: ="📅 Lịch nghỉ phép"
+                Fill: =If(NavigationComponent.ActiveScreen = "Calendar", RGBA(0, 120, 212, 1), RGBA(255, 255, 255, 1))
+                Color: =If(NavigationComponent.ActiveScreen = "Calendar", RGBA(255, 255, 255, 1), RGBA(32, 54, 71, 1))
+                BorderColor: =RGBA(230, 230, 230, 1)
+                Font: =Font.'Open Sans'
+                FontWeight: =FontWeight.Semibold
+                Size: =14
+                PaddingLeft: =20
+                OnSelect: =NavigationComponent.OnNavigate(); Set(varActiveScreen, "Calendar")
+                
+          - 'Navigation.Menu.Approval':
+              Control: Classic/Button
+              Properties:
+                X: =Parent.X + 10
+                Y: ='Navigation.Menu.Calendar'.Y + 'Navigation.Menu.Calendar'.Height + 10
+                Width: =Parent.Width - 20
+                Height: =50
+                Text: ="✅ Phê duyệt"
+                Fill: =If(NavigationComponent.ActiveScreen = "Approval", RGBA(0, 120, 212, 1), RGBA(255, 255, 255, 1))
+                Color: =If(NavigationComponent.ActiveScreen = "Approval", RGBA(255, 255, 255, 1), RGBA(32, 54, 71, 1))
+                BorderColor: =RGBA(230, 230, 230, 1)
+                Font: =Font.'Open Sans'
+                FontWeight: =FontWeight.Semibold
+                Size: =14
+                PaddingLeft: =20
+                Visible: =Or(NavigationComponent.UserRole = "Manager", NavigationComponent.UserRole = "Director")
+                OnSelect: =NavigationComponent.OnNavigate(); Set(varActiveScreen, "Approval")
+                
+          - 'Navigation.Menu.Reports':
+              Control: Classic/Button
+              Properties:
+                X: =Parent.X + 10
+                Y: ='Navigation.Menu.Approval'.Y + If('Navigation.Menu.Approval'.Visible, 'Navigation.Menu.Approval'.Height + 10, 0)
+                Width: =Parent.Width - 20
+                Height: =50
+                Text: ="📊 Báo cáo"
+                Fill: =If(NavigationComponent.ActiveScreen = "Reports", RGBA(0, 120, 212, 1), RGBA(255, 255, 255, 1))
+                Color: =If(NavigationComponent.ActiveScreen = "Reports", RGBA(255, 255, 255, 1), RGBA(32, 54, 71, 1))
+                BorderColor: =RGBA(230, 230, 230, 1)
+                Font: =Font.'Open Sans'
+                FontWeight: =FontWeight.Semibold
+                Size: =14
+                PaddingLeft: =20
+                Visible: =Or(NavigationComponent.UserRole = "HR", NavigationComponent.UserRole = "Director")
+                OnSelect: =NavigationComponent.OnNavigate(); Set(varActiveScreen, "Reports")
+                
+          - 'Navigation.Menu.LeaveConfirmation':
+              Control: Classic/Button
+              Properties:
+                X: =Parent.X + 10
+                Y: ='Navigation.Menu.Reports'.Y + If('Navigation.Menu.Reports'.Visible, 'Navigation.Menu.Reports'.Height + 10, 0)
+                Width: =Parent.Width - 20
+                Height: =50
+                Text: ="📝 Ghi nhận nghỉ phép"
+                Fill: =If(NavigationComponent.ActiveScreen = "LeaveConfirmation", RGBA(0, 120, 212, 1), RGBA(255, 255, 255, 1))
+                Color: =If(NavigationComponent.ActiveScreen = "LeaveConfirmation", RGBA(255, 255, 255, 1), RGBA(32, 54, 71, 1))
+                BorderColor: =RGBA(230, 230, 230, 1)
+                Font: =Font.'Open Sans'
+                FontWeight: =FontWeight.Semibold
+                Size: =14
+                PaddingLeft: =20
+                Visible: =NavigationComponent.UserRole = "HR"
+                OnSelect: =NavigationComponent.OnNavigate(); Set(varActiveScreen, "LeaveConfirmation")
+                
+          - 'Navigation.Menu.Attachment':
+              Control: Classic/Button
+              Properties:
+                X: =Parent.X + 10
+                Y: ='Navigation.Menu.LeaveConfirmation'.Y + If('Navigation.Menu.LeaveConfirmation'.Visible, 'Navigation.Menu.LeaveConfirmation'.Height + 10, 0)
+                Width: =Parent.Width - 20
+                Height: =50
+                Text: ="📎 File đính kèm"
+                Fill: =If(NavigationComponent.ActiveScreen = "Attachment", RGBA(0, 120, 212, 1), RGBA(255, 255, 255, 1))
+                Color: =If(NavigationComponent.ActiveScreen = "Attachment", RGBA(255, 255, 255, 1), RGBA(32, 54, 71, 1))
+                BorderColor: =RGBA(230, 230, 230, 1)
+                Font: =Font.'Open Sans'
+                FontWeight: =FontWeight.Semibold
+                Size: =14
+                PaddingLeft: =20
+                Visible: =Or(NavigationComponent.UserRole = "HR", NavigationComponent.UserRole = "Admin")
+                OnSelect: =NavigationComponent.OnNavigate(); Set(varActiveScreen, "Attachment")
+                
+          - 'Navigation.Menu.Management':
+              Control: Classic/Button
+              Properties:
+                X: =Parent.X + 10
+                Y: ='Navigation.Menu.Attachment'.Y + If('Navigation.Menu.Attachment'.Visible, 'Navigation.Menu.Attachment'.Height + 10, 0)
+                Width: =Parent.Width - 20
+                Height: =50
+                Text: ="⚙️ Quản lý hệ thống"
+                Fill: =If(NavigationComponent.ActiveScreen = "Management", RGBA(0, 120, 212, 1), RGBA(255, 255, 255, 1))
+                Color: =If(NavigationComponent.ActiveScreen = "Management", RGBA(255, 255, 255, 1), RGBA(32, 54, 71, 1))
+                BorderColor: =RGBA(230, 230, 230, 1)
+                Font: =Font.'Open Sans'
+                FontWeight: =FontWeight.Semibold
+                Size: =14
+                PaddingLeft: =20
+                Visible: =Or(NavigationComponent.UserRole = "Admin", NavigationComponent.UserRole = "HR")
+                OnSelect: =NavigationComponent.OnNavigate(); Set(varActiveScreen, "Management")
+                
+          - 'Navigation.Divider':
+              Control: Rectangle
+              Properties:
+                X: =Parent.X + 20
+                Y: ='Navigation.Menu.Management'.Y + If('Navigation.Menu.Management'.Visible, 'Navigation.Menu.Management'.Height + 20, 20)
+                Width: =Parent.Width - 40
+                Height: =1
+                Fill: =RGBA(230, 230, 230, 1)
+                
+          - 'Navigation.Menu.Profile':
+              Control: Classic/Button
+              Properties:
+                X: =Parent.X + 10
+                Y: ='Navigation.Divider'.Y + 'Navigation.Divider'.Height + 20
+                Width: =Parent.Width - 20
+                Height: =50
+                Text: ="👤 Thông tin cá nhân"
+                Fill: =If(NavigationComponent.ActiveScreen = "Profile", RGBA(0, 120, 212, 1), RGBA(255, 255, 255, 1))
+                Color: =If(NavigationComponent.ActiveScreen = "Profile", RGBA(255, 255, 255, 1), RGBA(32, 54, 71, 1))
+                BorderColor: =RGBA(230, 230, 230, 1)
+                Font: =Font.'Open Sans'
+                FontWeight: =FontWeight.Semibold
+                Size: =14
+                PaddingLeft: =20
+                OnSelect: =NavigationComponent.OnNavigate(); Set(varActiveScreen, "Profile")
+                
+          - 'Navigation.Menu.Logout':
+              Control: Classic/Button
+              Properties:
+                X: =Parent.X + 10
+                Y: ='Navigation.Menu.Profile'.Y + 'Navigation.Menu.Profile'.Height + 10
+                Width: =Parent.Width - 20
+                Height: =50
+                Text: ="🚪 Đăng xuất"
+                Fill: =RGBA(220, 53, 69, 1)
+                Color: =RGBA(255, 255, 255, 1)
+                BorderColor: =RGBA(220, 53, 69, 1)
+                Font: =Font.'Open Sans'
+                FontWeight: =FontWeight.Semibold
+                Size: =14
+                PaddingLeft: =20
+                OnSelect: =NavigationComponent.OnNavigate(); Set(varActiveScreen, "Login") 

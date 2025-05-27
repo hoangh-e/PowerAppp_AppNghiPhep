@@ -52,7 +52,6 @@ ComponentDefinitions:
                   Height: =30
                   ZIndex: =1
                   Fill: =If(ThisComponent.StepStatus = "Completed", RGBA(76, 202, 80, 1), RGBA(166, 166, 166, 1))
-                  BorderRadius: =15
                 Children:
                   - lblStepNumber:
                       Control: Label

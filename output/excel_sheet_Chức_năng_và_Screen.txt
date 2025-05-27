@@ -1,0 +1,19 @@
+SHEET: Chức năng và Screen
+==================================================
+Chức năng và màn hình (project plan)                    Unnamed: 1                      Unnamed: 2                                                                Unnamed: 3
+                                 STT             Màn hình / Screen                 Vai trò sử dụng                                                 Ghi chú / Chức năng chính
+                                   1   Trang chủ & Menu điều hướng                          Tất cả                              Điều hướng đến các chức năng theo phân quyền
+                                   2                     Đăng nhập                          Tất cả                                                       Xác thực người dùng
+                                   3             Thông tin cá nhân Employee, Manager, Director, HR                                          Xem hồ sơ + số ngày phép còn lại
+                                   4             Tạo đơn nghỉ phép Employee, Manager, Director, HR  Tạo đơn nghỉ phép + xử lý trường hợp đặc biệt (ví dụ: nghỉ quá quy định)
+                                   5             Lịch nghỉ cá nhân Employee, Manager, Director, HR                                      Xem lịch nghỉ cá nhân theo thời gian
+                                   6        Lịch nghỉ toàn công ty           Manager, Director, HR             Hiển thị lịch nghỉ toàn bộ hệ thống (phân quyền theo vai trò)
+                                   7  Phê duyệt nghỉ phép (đa cấp)               Manager, Director                              Giao diện phê duyệt cấp 1-2-3 (theo vai trò)
+                                   8    Ghi nhận kết quả nghỉ phép                              HR      Giao diện HR xác nhận nghỉ đã phê duyệt (không phải người phê duyệt)
+                                   9  Quản lý thông tin người dùng                           Admin                                       Tạo / chỉnh sửa thông tin nhân viên
+                                  10             Nhập số ngày phép                              HR                        Import file Excel cập nhật tổng ngày phép hàng năm
+                                  11    Quản lý lịch nghỉ, ngày lễ                       HR, Admin                    Thêm / xóa ngày nghỉ, thiết lập nửa buổi, nghỉ cố định
+                                  12 Thiết lập quy trình phê duyệt                           Admin                                    Chọn người duyệt theo từng cấp (1 → 3)
+                                  13    Quản lý vai trò người dùng                           Admin                       Giao diện riêng gán / sửa role người dùng trong app
+                                  14   Dashboard báo cáo nghỉ phép           Manager, Director, HR Biểu đồ theo dõi tình hình nghỉ phép (theo tháng / nhân viên / phòng ban)
+                                  15        Xuất báo cáo nghỉ phép                              HR                Export CSV theo biểu đồ hoặc xuất toàn bộ theo tháng / năm

@@ -1,0 +1,142 @@
+ComponentDefinitions:
+  HeaderComponent:
+    DefinitionType: CanvasComponent
+    CustomProperties:
+      Title:
+        PropertyKind: Input
+        DisplayName: Title
+        Description: "Tiêu đề của header"
+        DataType: Text
+        Default: ="Ứng dụng Quản lý Nghỉ phép"
+      UserName:
+        PropertyKind: Input
+        DisplayName: UserName
+        Description: "Tên người dùng"
+        DataType: Text
+        Default: ="Người dùng"
+      UserRole:
+        PropertyKind: Input
+        DisplayName: UserRole
+        Description: "Vai trò người dùng"
+        DataType: Text
+        Default: ="Employee"
+      ShowNotification:
+        PropertyKind: Input
+        DisplayName: ShowNotification
+        Description: "Hiển thị thông báo"
+        DataType: Boolean
+        Default: =false
+      NotificationCount:
+        PropertyKind: Input
+        DisplayName: NotificationCount
+        Description: "Số lượng thông báo"
+        DataType: Number
+        Default: =0
+    Properties:
+      Height: =App.Height
+      Width: =App.Width
+    Children:
+      - 'Header.Container':
+          Control: GroupContainer
+          Variant: ManualLayout
+          Properties:
+            X: =0
+            Y: =0
+            Width: =Parent.Width
+            Height: =80
+            Fill: =RGBA(0, 120, 212, 1)
+            DropShadow: =DropShadow.Light
+          Children:
+            - 'Header.Logo':
+                Control: Classic/Icon
+                Properties:
+                  X: =Parent.X + 20
+                  Y: =(Parent.Height - Self.Height) / 2
+                  Width: =40
+                  Height: =40
+                  Icon: =Icon.Calendar
+                  Color: =RGBA(255, 255, 255, 1)
+                  
+            - 'Header.Title':
+                Control: Label
+                Properties:
+                  X: ='Header.Logo'.X + 'Header.Logo'.Width + 15
+                  Y: =(Parent.Height - Self.Height) / 2
+                  Width: =Parent.Width * 0.4
+                  Height: =40
+                  Text: =HeaderComponent.Title
+                  Color: =RGBA(255, 255, 255, 1)
+                  Font: =Font.'Open Sans'
+                  FontWeight: =FontWeight.Semibold
+                  Size: =18
+                  
+            - 'Header.UserInfo.Container':
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =Parent.Width - Self.Width - 20
+                  Y: =(Parent.Height - Self.Height) / 2
+                  Width: =250
+                  Height: =50
+                  Fill: =RGBA(255, 255, 255, 0.1)
+                Children:
+                  - 'Header.UserInfo.Avatar':
+                      Control: Classic/Icon
+                      Properties:
+                        X: =Parent.X + 10
+                        Y: =(Parent.Height - Self.Height) / 2
+                        Width: =30
+                        Height: =30
+                        Icon: =Icon.Person
+                        Color: =RGBA(255, 255, 255, 1)
+                        
+                  - 'Header.UserInfo.Name':
+                      Control: Label
+                      Properties:
+                        X: ='Header.UserInfo.Avatar'.X + 'Header.UserInfo.Avatar'.Width + 10
+                        Y: =Parent.Y + 5
+                        Width: =120
+                        Height: =20
+                        Text: =HeaderComponent.UserName
+                        Color: =RGBA(255, 255, 255, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Semibold
+                        Size: =12
+                        
+                  - 'Header.UserInfo.Role':
+                      Control: Label
+                      Properties:
+                        X: ='Header.UserInfo.Name'.X
+                        Y: ='Header.UserInfo.Name'.Y + 'Header.UserInfo.Name'.Height
+                        Width: =120
+                        Height: =15
+                        Text: =HeaderComponent.UserRole
+                        Color: =RGBA(255, 255, 255, 0.8)
+                        Font: =Font.'Open Sans'
+                        Size: =10
+                        
+                  - 'Header.Notification.Icon':
+                      Control: Classic/Icon
+                      Properties:
+                        X: =Parent.X + Parent.Width - 40
+                        Y: =(Parent.Height - Self.Height) / 2
+                        Width: =24
+                        Height: =24
+                        Icon: =Icon.Bell
+                        Color: =RGBA(255, 255, 255, 1)
+                        Visible: =HeaderComponent.ShowNotification
+                        
+                  - 'Header.Notification.Badge':
+                      Control: Label
+                      Properties:
+                        X: ='Header.Notification.Icon'.X + 15
+                        Y: ='Header.Notification.Icon'.Y - 5
+                        Width: =20
+                        Height: =20
+                        Text: =Text(HeaderComponent.NotificationCount)
+                        Color: =RGBA(255, 255, 255, 1)
+                        Fill: =RGBA(220, 53, 69, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Bold
+                        Size: =10
+                        Visible: =And(HeaderComponent.ShowNotification, HeaderComponent.NotificationCount > 0) 

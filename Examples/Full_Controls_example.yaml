@@ -1,0 +1,1101 @@
+Screens:
+  Full_Controls:
+    Properties:
+      Fill: =RGBA(255, 255, 255, 1)
+      LoadingSpinnerColor: =RGBA(100, 118, 132, 1)
+    Children:
+      - Label1:
+          Control: Label@2.5.1
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            Font: =Font.'Open Sans'
+            X: =40
+            Y: =40
+      - Form1:
+          Control: Form@2.4.3
+          Variant: Classic
+          Layout: Vertical
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            X: =60
+            Y: =60
+      - TextInput1:
+          Control: Classic/TextInput@2.3.2
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            Font: =Font.'Open Sans'
+            HoverBorderColor: =RGBA(32, 54, 71, 1)
+            HoverFill: =RGBA(205, 209, 213, 1)
+            X: =80
+            Y: =80
+      - Gallery1:
+          Control: Gallery@2.15.0
+          Variant: BrowseLayout_Vertical_TwoTextOneImageVariant_ver5.0
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            X: =100
+            Y: =100
+          Children:
+            - Image2:
+                Control: Image@2.2.3
+                Properties:
+                  BorderColor: =RGBA(32, 54, 71, 1)
+                  Height: =72
+                  OnSelect: =Select(Parent)
+                  Width: =72
+                  X: =16
+                  Y: =(Parent.TemplateHeight / 2) - (Self.Height / 2)
+            - Title1:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 0, 0, 1)
+                  Color: =RGBA(50, 49, 48, 1)
+                  Font: =Font.'Open Sans'
+                  FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                  Height: =Self.Size * 1.8
+                  OnSelect: =Select(Parent)
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =14
+                  Text: =ThisItem.SampleHeading
+                  VerticalAlign: =VerticalAlign.Top
+                  Width: =Parent.TemplateWidth - 173
+                  X: =103
+                  Y: =(Parent.TemplateHeight - (Self.Size * 1.8 + Subtitle1.Size * 1.8)) / 2
+            - Subtitle1:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 0, 0, 1)
+                  Font: =Font.'Open Sans'
+                  FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                  Height: =Self.Size * 1.8
+                  OnSelect: =Select(Parent)
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =12
+                  Text: =ThisItem.SampleText
+                  VerticalAlign: =VerticalAlign.Top
+                  Width: =Title1.Width
+                  X: =Title1.X
+                  Y: =Title1.Y + Title1.Height
+            - NextArrow1:
+                Control: Classic/Icon@2.5.0
+                Properties:
+                  AccessibleLabel: =Self.Tooltip
+                  BorderColor: =RGBA(0, 0, 0, 1)
+                  Color: =RGBA(166, 166, 166, 1)
+                  DisabledBorderColor: =RGBA(56, 56, 56, 1)
+                  DisabledColor: =RGBA(119, 119, 119, 1)
+                  Height: =50
+                  Icon: =Icon.ChevronRight
+                  OnSelect: =Select(Parent)
+                  PaddingBottom: =16
+                  PaddingLeft: =16
+                  PaddingRight: =16
+                  PaddingTop: =16
+                  Tooltip: ="View item details"
+                  Width: =50
+                  X: =Parent.TemplateWidth - Self.Width - 12
+                  Y: =(Parent.TemplateHeight / 2) - (Self.Height / 2)
+            - Separator1:
+                Control: Rectangle@2.3.0
+                Properties:
+                  BorderColor: =RGBA(32, 54, 71, 1)
+                  Fill: =RGBA(255, 255, 255, 1)
+                  Height: =8
+                  OnSelect: =Select(Parent)
+                  Width: =Parent.TemplateWidth
+                  Y: =Parent.TemplateHeight - Self.Height
+            - Rectangle1:
+                Control: Rectangle@2.3.0
+                Properties:
+                  BorderColor: =RGBA(32, 54, 71, 1)
+                  Fill: =RGBA(32, 54, 71, 1)
+                  Height: =Parent.TemplateHeight - Separator1.Height
+                  OnSelect: =Select(Parent)
+                  Visible: =ThisItem.IsSelected
+                  Width: =4
+      - Rectangle2:
+          Control: Rectangle@2.3.0
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            Fill: =RGBA(100, 118, 132, 1)
+            X: =120
+            Y: =120
+      - DatePicker1:
+          Control: Classic/DatePicker@2.6.0
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            Font: =Font.'Open Sans'
+            IconBackground: =RGBA(100, 118, 132, 1)
+            IconFill: =RGBA(255, 255, 255, 1)
+            X: =140
+            Y: =140
+      - Button2:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderColor: =ColorFade(Self.Fill, -15%)
+            Color: =RGBA(255, 255, 255, 1)
+            DisabledBorderColor: =RGBA(166, 166, 166, 1)
+            Fill: =RGBA(100, 118, 132, 1)
+            Font: =Font.'Open Sans'
+            HoverBorderColor: =ColorFade(Self.BorderColor, 20%)
+            HoverColor: =RGBA(255, 255, 255, 1)
+            HoverFill: =ColorFade(RGBA(100, 118, 132, 1), -20%)
+            PressedBorderColor: =Self.Fill
+            PressedColor: =Self.Fill
+            PressedFill: =Self.Color
+            X: =160
+            Y: =160
+      - TextInput2:
+          Control: Classic/TextInput@2.3.2
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            Font: =Font.'Open Sans'
+            HoverBorderColor: =RGBA(32, 54, 71, 1)
+            HoverFill: =RGBA(205, 209, 213, 1)
+            X: =180
+            Y: =180
+      - PenInput1:
+          Control: PenInput@2.3.0
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            X: =200
+            Y: =200
+      - Dropdown1:
+          Control: Classic/DropDown@2.3.1
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            ChevronBackground: =RGBA(100, 118, 132, 1)
+            ChevronFill: =RGBA(255, 255, 255, 1)
+            ChevronHoverBackground: =ColorFade(RGBA(100, 118, 132, 1), -20%)
+            ChevronHoverFill: =RGBA(255, 255, 255, 1)
+            Font: =Font.'Open Sans'
+            HoverFill: =RGBA(205, 209, 213, 1)
+            Items.Value: =Value
+            PressedColor: =RGBA(255, 255, 255, 1)
+            PressedFill: =RGBA(32, 54, 71, 1)
+            SelectionColor: =RGBA(255, 255, 255, 1)
+            SelectionFill: =RGBA(100, 118, 132, 1)
+            X: =220
+            Y: =220
+      - ComboBox1:
+          Control: Classic/ComboBox@2.4.0
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            ChevronBackground: =RGBA(100, 118, 132, 1)
+            ChevronFill: =RGBA(255, 255, 255, 1)
+            ChevronHoverBackground: =ColorFade(RGBA(100, 118, 132, 1), -20%)
+            ChevronHoverFill: =RGBA(255, 255, 255, 1)
+            Font: =Font.'Open Sans'
+            HoverFill: =RGBA(205, 209, 213, 1)
+            PressedColor: =RGBA(255, 255, 255, 1)
+            PressedFill: =RGBA(32, 54, 71, 1)
+            SelectionColor: =RGBA(255, 255, 255, 1)
+            SelectionFill: =RGBA(100, 118, 132, 1)
+            X: =240
+            Y: =240
+      - DatePicker2:
+          Control: Classic/DatePicker@2.6.0
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            Font: =Font.'Open Sans'
+            IconBackground: =RGBA(100, 118, 132, 1)
+            IconFill: =RGBA(255, 255, 255, 1)
+            X: =260
+            Y: =260
+      - ListBox1:
+          Control: ListBox@2.2.0
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            Font: =Font.'Open Sans'
+            HoverFill: =RGBA(205, 209, 213, 1)
+            Items.Value: =Value
+            PressedColor: =RGBA(255, 255, 255, 1)
+            PressedFill: =RGBA(32, 54, 71, 1)
+            SelectionColor: =RGBA(255, 255, 255, 1)
+            SelectionFill: =RGBA(100, 118, 132, 1)
+            X: =280
+            Y: =280
+      - Checkbox1:
+          Control: Classic/CheckBox@2.1.0
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            CheckboxBorderColor: =RGBA(32, 54, 71, 1)
+            CheckmarkFill: =RGBA(0, 0, 0, 1)
+            Font: =Font.'Open Sans'
+            HoverColor: =RGBA(32, 54, 71, 1)
+            X: =300
+            Y: =300
+      - Radio1:
+          Control: Classic/Radio@2.3.0
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            Font: =Font.'Open Sans'
+            HoverColor: =RGBA(32, 54, 71, 1)
+            Items.Value: =Value
+            RadioBorderColor: =RGBA(32, 54, 71, 1)
+            RadioSelectionFill: =RGBA(0, 0, 0, 1)
+            X: =320
+            Y: =320
+      - Toggle1:
+          Control: Classic/Toggle@2.1.0
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            Font: =Font.'Open Sans'
+            TrueFill: =RGBA(100, 118, 132, 1)
+            X: =340
+            Y: =340
+      - Slider1:
+          Control: Classic/Slider@2.1.0
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            ValueFill: =RGBA(32, 54, 71, 1)
+            X: =360
+            Y: =360
+      - Rating1:
+          Control: Rating@2.1.0
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            RatingFill: =RGBA(32, 54, 71, 1)
+            X: =380
+            Y: =380
+      - Timer1:
+          Control: Timer@2.1.0
+          Properties:
+            BorderColor: =ColorFade(Self.Fill, -15%)
+            Color: =RGBA(255, 255, 255, 1)
+            DisabledBorderColor: =ColorFade(Self.BorderColor, 70%)
+            DisabledColor: =ColorFade(Self.Fill, 90%)
+            DisabledFill: =ColorFade(Self.Fill, 70%)
+            Fill: =RGBA(100, 118, 132, 1)
+            Font: =Font.'Open Sans'
+            HoverBorderColor: =ColorFade(Self.BorderColor, 20%)
+            HoverColor: =RGBA(255, 255, 255, 1)
+            HoverFill: =ColorFade(RGBA(100, 118, 132, 1), -20%)
+            PressedBorderColor: =Self.Fill
+            PressedColor: =Self.Fill
+            PressedFill: =Self.Color
+            X: =400
+            Y: =400
+      - Form2:
+          Control: Form@2.4.3
+          Variant: Classic
+          Layout: Vertical
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            X: =420
+            Y: =268
+      - FormViewer1:
+          Control: FormViewer@2.3.4
+          Layout: Vertical
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            X: =440
+            Y: =268
+      - RichTextEditor1:
+          Control: RichTextEditor@2.7.0
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            X: =460
+            Y: =460
+      - Label2:
+          Control: Label@2.5.1
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            Font: =Font.'Open Sans'
+            X: =480
+            Y: =480
+      - HtmlText1:
+          Control: HtmlViewer@2.1.0
+          Properties:
+            Font: =Font.'Open Sans'
+            X: =500
+            Y: =500
+      - Gallery2:
+          Control: Gallery@2.15.0
+          Variant: BrowseLayout_Vertical_TwoTextOneImageVariant_ver5.0
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            X: =520
+            Y: =193
+          Children:
+            - Image3:
+                Control: Image@2.2.3
+                Properties:
+                  BorderColor: =RGBA(32, 54, 71, 1)
+                  Height: =72
+                  OnSelect: =Select(Parent)
+                  Width: =72
+                  X: =16
+                  Y: =(Parent.TemplateHeight / 2) - (Self.Height / 2)
+            - Title2:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 0, 0, 1)
+                  Color: =RGBA(50, 49, 48, 1)
+                  Font: =Font.'Open Sans'
+                  FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                  Height: =Self.Size * 1.8
+                  OnSelect: =Select(Parent)
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =14
+                  Text: =ThisItem.SampleHeading
+                  VerticalAlign: =VerticalAlign.Top
+                  Width: =Parent.TemplateWidth - 173
+                  X: =103
+                  Y: =(Parent.TemplateHeight - (Self.Size * 1.8 + Subtitle2.Size * 1.8)) / 2
+            - Subtitle2:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 0, 0, 1)
+                  Font: =Font.'Open Sans'
+                  FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                  Height: =Self.Size * 1.8
+                  OnSelect: =Select(Parent)
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =12
+                  Text: =ThisItem.SampleText
+                  VerticalAlign: =VerticalAlign.Top
+                  Width: =Title2.Width
+                  X: =Title2.X
+                  Y: =Title2.Y + Title2.Height
+            - NextArrow2:
+                Control: Classic/Icon@2.5.0
+                Properties:
+                  AccessibleLabel: =Self.Tooltip
+                  BorderColor: =RGBA(0, 0, 0, 1)
+                  Color: =RGBA(166, 166, 166, 1)
+                  DisabledBorderColor: =RGBA(56, 56, 56, 1)
+                  DisabledColor: =RGBA(119, 119, 119, 1)
+                  Height: =50
+                  Icon: =Icon.ChevronRight
+                  OnSelect: =Select(Parent)
+                  PaddingBottom: =16
+                  PaddingLeft: =16
+                  PaddingRight: =16
+                  PaddingTop: =16
+                  Tooltip: ="View item details"
+                  Width: =50
+                  X: =Parent.TemplateWidth - Self.Width - 12
+                  Y: =(Parent.TemplateHeight / 2) - (Self.Height / 2)
+            - Separator2:
+                Control: Rectangle@2.3.0
+                Properties:
+                  BorderColor: =RGBA(32, 54, 71, 1)
+                  Fill: =RGBA(255, 255, 255, 1)
+                  Height: =8
+                  OnSelect: =Select(Parent)
+                  Width: =Parent.TemplateWidth
+                  Y: =Parent.TemplateHeight - Self.Height
+            - Rectangle3:
+                Control: Rectangle@2.3.0
+                Properties:
+                  BorderColor: =RGBA(32, 54, 71, 1)
+                  Fill: =RGBA(32, 54, 71, 1)
+                  Height: =Parent.TemplateHeight - Separator2.Height
+                  OnSelect: =Select(Parent)
+                  Visible: =ThisItem.IsSelected
+                  Width: =4
+      - Gallery3:
+          Control: Gallery@2.15.0
+          Variant: BrowseLayout_Horizontal_TwoTextOneImageVariant_ver5.0
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            X: =540
+            Y: =193
+          Children:
+            - Image4:
+                Control: Image@2.2.3
+                Properties:
+                  BorderColor: =RGBA(32, 54, 71, 1)
+                  Height: =296
+                  ImagePosition: =ImagePosition.Fill
+                  OnSelect: =Select(Parent)
+                  Width: =Parent.TemplateWidth - 32
+                  X: =(Parent.TemplateWidth / 2) - (Self.Width / 2)
+                  Y: =16
+            - Title3:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 0, 0, 1)
+                  Color: =RGBA(50, 49, 48, 1)
+                  Font: =Font.'Open Sans'
+                  FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                  Height: =Self.Size * 1.8
+                  OnSelect: =Select(Parent)
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =14
+                  Text: =ThisItem.SampleHeading
+                  VerticalAlign: =VerticalAlign.Top
+                  Width: =Parent.TemplateWidth - 64
+                  X: =32
+                  Y: =Image4.Y + Image4.Height + 16
+            - Subtitle3:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 0, 0, 1)
+                  Font: =Font.'Open Sans'
+                  FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                  Height: =Self.Size * 1.8
+                  OnSelect: =Select(Parent)
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =12
+                  Text: =ThisItem.SampleText
+                  VerticalAlign: =VerticalAlign.Top
+                  Width: =Title3.Width
+                  X: =Title3.X
+                  Y: =Title3.Y + Title3.Height + 8
+      - Gallery4:
+          Control: Gallery@2.15.0
+          Variant: BrowseLayout_Vertical_TwoTextOneImageVariant_ver5.0
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            X: =560
+            Y: =193
+          Children:
+            - Image5:
+                Control: Image@2.2.3
+                Properties:
+                  BorderColor: =RGBA(32, 54, 71, 1)
+                  Height: =72
+                  OnSelect: =Select(Parent)
+                  Width: =72
+                  X: =16
+                  Y: =(Parent.TemplateHeight / 2) - (Self.Height / 2)
+            - Title4:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 0, 0, 1)
+                  Color: =RGBA(50, 49, 48, 1)
+                  Font: =Font.'Open Sans'
+                  FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                  Height: =Self.Size * 1.8
+                  OnSelect: =Select(Parent)
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =14
+                  Text: =ThisItem.SampleHeading
+                  VerticalAlign: =VerticalAlign.Top
+                  Width: =Parent.TemplateWidth - 173
+                  X: =103
+                  Y: =(Parent.TemplateHeight - (Self.Size * 1.8 + Subtitle4.Size * 1.8)) / 2
+            - Subtitle4:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 0, 0, 1)
+                  Font: =Font.'Open Sans'
+                  FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                  Height: =Self.Size * 1.8
+                  OnSelect: =Select(Parent)
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =12
+                  Text: =ThisItem.SampleText
+                  VerticalAlign: =VerticalAlign.Top
+                  Width: =Title4.Width
+                  X: =Title4.X
+                  Y: =Title4.Y + Title4.Height
+            - NextArrow3:
+                Control: Classic/Icon@2.5.0
+                Properties:
+                  AccessibleLabel: =Self.Tooltip
+                  BorderColor: =RGBA(0, 0, 0, 1)
+                  Color: =RGBA(166, 166, 166, 1)
+                  DisabledBorderColor: =RGBA(56, 56, 56, 1)
+                  DisabledColor: =RGBA(119, 119, 119, 1)
+                  Height: =50
+                  Icon: =Icon.ChevronRight
+                  OnSelect: =Select(Parent)
+                  PaddingBottom: =16
+                  PaddingLeft: =16
+                  PaddingRight: =16
+                  PaddingTop: =16
+                  Tooltip: ="View item details"
+                  Width: =50
+                  X: =Parent.TemplateWidth - Self.Width - 12
+                  Y: =(Parent.TemplateHeight / 2) - (Self.Height / 2)
+            - Separator3:
+                Control: Rectangle@2.3.0
+                Properties:
+                  BorderColor: =RGBA(32, 54, 71, 1)
+                  Fill: =RGBA(255, 255, 255, 1)
+                  Height: =8
+                  OnSelect: =Select(Parent)
+                  Width: =Parent.TemplateWidth
+                  Y: =Parent.TemplateHeight - Self.Height
+            - Rectangle4:
+                Control: Rectangle@2.3.0
+                Properties:
+                  BorderColor: =RGBA(32, 54, 71, 1)
+                  Fill: =RGBA(32, 54, 71, 1)
+                  Height: =Parent.TemplateHeight - Separator3.Height
+                  OnSelect: =Select(Parent)
+                  Visible: =ThisItem.IsSelected
+                  Width: =4
+      - Gallery5:
+          Control: Gallery@2.15.0
+          Variant: BrowseLayout_Horizontal_TwoTextOneImageVariant_ver5.0
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            X: =580
+            Y: =193
+          Children:
+            - Image6:
+                Control: Image@2.2.3
+                Properties:
+                  BorderColor: =RGBA(32, 54, 71, 1)
+                  Height: =296
+                  ImagePosition: =ImagePosition.Fill
+                  OnSelect: =Select(Parent)
+                  Width: =Parent.TemplateWidth - 32
+                  X: =(Parent.TemplateWidth / 2) - (Self.Width / 2)
+                  Y: =16
+            - Title5:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 0, 0, 1)
+                  Color: =RGBA(50, 49, 48, 1)
+                  Font: =Font.'Open Sans'
+                  FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                  Height: =Self.Size * 1.8
+                  OnSelect: =Select(Parent)
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =14
+                  Text: =ThisItem.SampleHeading
+                  VerticalAlign: =VerticalAlign.Top
+                  Width: =Parent.TemplateWidth - 64
+                  X: =32
+                  Y: =Image6.Y + Image6.Height + 16
+            - Subtitle5:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 0, 0, 1)
+                  Font: =Font.'Open Sans'
+                  FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                  Height: =Self.Size * 1.8
+                  OnSelect: =Select(Parent)
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =12
+                  Text: =ThisItem.SampleText
+                  VerticalAlign: =VerticalAlign.Top
+                  Width: =Title5.Width
+                  X: =Title5.X
+                  Y: =Title5.Y + Title5.Height + 8
+      - Gallery6:
+          Control: Gallery@2.15.0
+          Variant: BrowseLayout_Flexible_SocialFeed_ver5.0
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            X: =600
+            Y: =193
+          Children:
+            - ProfileImage1:
+                Control: Image@2.2.3
+                Properties:
+                  BorderColor: =RGBA(32, 54, 71, 1)
+                  Height: =64
+                  ImagePosition: =ImagePosition.Fill
+                  OnSelect: =Select(Parent)
+                  Width: =64
+                  X: =16
+                  Y: =16
+            - Title6:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 0, 0, 1)
+                  Color: =RGBA(50, 49, 48, 1)
+                  Font: =Font.'Open Sans'
+                  FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                  Height: =Self.Size * 1.8
+                  OnSelect: =Select(Parent)
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =14
+                  Text: =ThisItem.SampleHeading
+                  VerticalAlign: =VerticalAlign.Top
+                  Width: =Parent.TemplateWidth - 112
+                  X: =96
+                  Y: =ProfileImage1.Y + (ProfileImage1.Height / 2) - (Self.Height / 2)
+            - Image7:
+                Control: Image@2.2.3
+                Properties:
+                  BorderColor: =RGBA(32, 54, 71, 1)
+                  Height: =Min(Self.Width, Parent.TemplateHeight - 180)
+                  ImagePosition: =ImagePosition.Fill
+                  OnSelect: =Select(Parent)
+                  Width: =Parent.TemplateWidth - 32
+                  X: =16
+                  Y: =96
+            - Body1:
+                Control: Label@2.5.1
+                Properties:
+                  AutoHeight: =true
+                  BorderColor: =RGBA(0, 0, 0, 1)
+                  Font: =Font.'Open Sans'
+                  FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                  Height: =Self.Size * 4
+                  OnSelect: =Select(Parent)
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =12
+                  Text: =ThisItem.SampleText
+                  VerticalAlign: =VerticalAlign.Top
+                  Width: =Parent.TemplateWidth - 32
+                  X: =16
+                  Y: =Image7.Y + Image7.Height + 16
+      - Gallery7:
+          Control: Gallery@2.15.0
+          Variant: Vertical
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            X: =620
+            Y: =193
+      - Gallery8:
+          Control: Gallery@2.15.0
+          Variant: Horizontal
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            X: =640
+            Y: =193
+      - Gallery9:
+          Control: Gallery@2.15.0
+          Variant: VariableHeight
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            X: =660
+            Y: =193
+      - DataTable1:
+          Control: DataTable@1.0.3
+          Variant: DataTable
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            Font: =Font.'Open Sans'
+            HeadingColor: =RGBA(255, 255, 255, 1)
+            HeadingFill: =RGBA(100, 118, 132, 1)
+            HeadingFont: =Font.'Open Sans'
+            HoverFill: =RGBA(205, 209, 213, .2)
+            SelectedFill: =RGBA(100, 118, 132, .2)
+            X: =566
+            Y: =268
+      - Container1:
+          Control: GroupContainer@1.3.0
+          Variant: AutoLayout
+          Properties:
+            LayoutDirection: =LayoutDirection.Horizontal
+            X: =680
+            Y: =568
+          Children:
+            - Container2:
+                Control: GroupContainer@1.3.0
+                Variant: AutoLayout
+                Properties:
+                  LayoutDirection: =LayoutDirection.Horizontal
+                Children:
+                  - Container3:
+                      Control: GroupContainer@1.3.0
+                      Variant: AutoLayout
+                      Properties:
+                        LayoutDirection: =LayoutDirection.Vertical
+                      Children:
+                        - Container8:
+                            Control: GroupContainer@1.3.0
+                            Variant: ManualLayout
+                            Children:
+                              - Image8:
+                                  Control: Image@2.2.3
+                                  Properties:
+                                    BorderColor: =RGBA(32, 54, 71, 1)
+                                    X: =40
+                                    Y: =40
+      - UploadedImage1:
+          Control: Image@2.2.3
+          Group: AddMediaWithImage1
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            Height: =AddMediaButton1.Height
+            Image: =If(IsBlank(AddMediaButton1.Media), SampleImage, AddMediaButton1.Media)
+            ImagePosition: =ImagePosition.Fill
+            Width: =AddMediaButton1.Width
+            X: =AddMediaButton1.X
+            Y: =AddMediaButton1.Y
+      - AddMediaButton1:
+          Control: AddMedia@2.2.1
+          Group: AddMediaWithImage1
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            Size: =25
+            X: =700
+            Y: =522
+      - Import1:
+          Control: Import@2.1.0
+          Properties:
+            BorderColor: =ColorFade(Self.Fill, -15%)
+            Color: =RGBA(255, 255, 255, 1)
+            DisabledBorderColor: =RGBA(56, 56, 56, 1)
+            Fill: =RGBA(100, 118, 132, 1)
+            Font: =Font.'Open Sans'
+            HoverBorderColor: =ColorFade(Self.BorderColor, 20%)
+            HoverColor: =RGBA(255, 255, 255, 1)
+            HoverFill: =ColorFade(RGBA(100, 118, 132, 1), -20%)
+            PressedBorderColor: =ColorFade(Self.BorderColor, -20%)
+            PressedFill: =ColorFade(Self.Fill, -20%)
+            X: =720
+            Y: =720
+      - Export1:
+          Control: Export@2.1.0
+          Properties:
+            BorderColor: =ColorFade(Self.Fill, -15%)
+            Color: =RGBA(255, 255, 255, 1)
+            DisabledBorderColor: =RGBA(56, 56, 56, 1)
+            Fill: =RGBA(100, 118, 132, 1)
+            Font: =Font.'Open Sans'
+            HoverBorderColor: =ColorFade(Self.BorderColor, 20%)
+            HoverColor: =RGBA(255, 255, 255, 1)
+            HoverFill: =ColorFade(RGBA(100, 118, 132, 1), -20%)
+            PressedBorderColor: =ColorFade(Self.BorderColor, -20%)
+            PressedFill: =ColorFade(Self.Fill, -20%)
+            X: =740
+            Y: =728
+      - Export2:
+          Control: Export@2.1.0
+          Properties:
+            BorderColor: =ColorFade(Self.Fill, -15%)
+            Color: =RGBA(255, 255, 255, 1)
+            DisabledBorderColor: =RGBA(56, 56, 56, 1)
+            Fill: =RGBA(100, 118, 132, 1)
+            Font: =Font.'Open Sans'
+            HoverBorderColor: =ColorFade(Self.BorderColor, 20%)
+            HoverColor: =RGBA(255, 255, 255, 1)
+            HoverFill: =ColorFade(RGBA(100, 118, 132, 1), -20%)
+            PressedBorderColor: =ColorFade(Self.BorderColor, -20%)
+            PressedFill: =ColorFade(Self.Fill, -20%)
+            X: =760
+            Y: =728
+      - PdfViewer1:
+          Control: PDFViewer@2.5.0
+          Properties:
+            X: =726
+            Y: =288
+      - Icon1:
+          Control: Classic/Icon@2.5.0
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            Color: =RGBA(32, 54, 71, 1)
+            Icon: =Icon.Add
+            X: =780
+            Y: =704
+      - Icon2:
+          Control: Classic/Icon@2.5.0
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            Color: =RGBA(32, 54, 71, 1)
+            Icon: =Icon.AddDocument
+            X: =800
+            Y: =704
+      - Icon3:
+          Control: Classic/Icon@2.5.0
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            Color: =RGBA(32, 54, 71, 1)
+            Icon: =Icon.AddLibrary
+            X: =820
+            Y: =704
+      - Icon4:
+          Control: Classic/Icon@2.5.0
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            Color: =RGBA(32, 54, 71, 1)
+            Icon: =Icon.AddToCalendar
+            X: =840
+            Y: =704
+      - Icon5:
+          Control: Classic/Icon@2.5.0
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            Color: =RGBA(32, 54, 71, 1)
+            Icon: =Icon.AddUser
+            X: =860
+            Y: =704
+      - Icon6:
+          Control: Classic/Icon@2.5.0
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            Color: =RGBA(32, 54, 71, 1)
+            Icon: =Icon.Airplane
+            X: =880
+            Y: =704
+      - Arrow1:
+          Control: Arrow@2.3.0
+          Variant: BackArrow
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            Fill: =RGBA(100, 118, 132, 1)
+            X: =900
+            Y: =718
+      - Arrow2:
+          Control: Arrow@2.3.0
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            Fill: =RGBA(100, 118, 132, 1)
+            X: =920
+            Y: =718
+      - Circle1:
+          Control: Circle@2.3.0
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            Fill: =RGBA(100, 118, 132, 1)
+            X: =940
+            Y: =668
+      - PartialCircle1:
+          Control: PartialCircle@2.3.0
+          Variant: QuarterCircle
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            Fill: =RGBA(100, 118, 132, 1)
+            X: =960
+            Y: =668
+      - PartialCircle2:
+          Control: PartialCircle@2.3.0
+          Variant: HalfCircle
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            Fill: =RGBA(100, 118, 132, 1)
+            X: =980
+            Y: =668
+      - PartialCircle3:
+          Control: PartialCircle@2.3.0
+          Variant: ThreeQuarterCircle
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            Fill: =RGBA(100, 118, 132, 1)
+            X: =1000
+            Y: =668
+      - Rectangle5:
+          Control: Rectangle@2.3.0
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            Fill: =RGBA(100, 118, 132, 1)
+            X: =1020
+            Y: =668
+      - Triangle1:
+          Control: Triangle@2.3.0
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            Fill: =RGBA(100, 118, 132, 1)
+            X: =1040
+            Y: =668
+      - Rectangle6:
+          Control: Rectangle@2.3.0
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            Fill: =RGBA(100, 118, 132, 1)
+            X: =1060
+            Y: =668
+      - Triangle2:
+          Control: Triangle@2.3.0
+          Variant: RightAngled
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            Fill: =RGBA(100, 118, 132, 1)
+            X: =1080
+            Y: =668
+      - Pentagon1:
+          Control: Pentagon@2.3.0
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            Fill: =RGBA(100, 118, 132, 1)
+            X: =1100
+            Y: =668
+      - Octagon1:
+          Control: Octagon@2.3.0
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            Fill: =RGBA(100, 118, 132, 1)
+            X: =1120
+            Y: =668
+      - Star1:
+          Control: Star@2.4.0
+          Variant: 5Points
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            Fill: =RGBA(100, 118, 132, 1)
+            X: =1140
+            Y: =668
+      - Star2:
+          Control: Star@2.4.0
+          Variant: 6Points
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            Fill: =RGBA(100, 118, 132, 1)
+            X: =1160
+            Y: =668
+      - Star3:
+          Control: Star@2.4.0
+          Variant: 8Points
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            Fill: =RGBA(100, 118, 132, 1)
+            X: =1180
+            Y: =668
+      - Star4:
+          Control: Star@2.4.0
+          Variant: 12Points
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            Fill: =RGBA(100, 118, 132, 1)
+            X: =1200
+            Y: =668
+      - Title7:
+          Control: Label@2.5.1
+          Group: CompositeColumnChart1
+          Properties:
+            Align: =Align.Center
+            BorderColor: =RGBA(0, 0, 0, 1)
+            Font: =Font.'Open Sans'
+            Height: =25
+            Size: =14
+            Text: ="Chart Title"
+            Width: =400
+            X: =966
+            Y: =743
+      - ColumnChart1:
+          Control: BarChart@2.3.0
+          Group: CompositeColumnChart1
+          Properties:
+            BorderColor: =RGBA(56, 56, 56, 1)
+            Items.Labels: =City
+            Items.Series1: =Area
+            Items.Series2: =Density
+            Items.Series3: =Population
+            Items.Series4: =Population
+            Items.Series5: =Population
+            Items.Series6: =Population
+            Items.Series7: =Population
+            Items.Series8: =Population
+            Items.Series9: =Population
+            X: =966
+            Y: =368
+      - Legend1:
+          Control: Legend@2.1.0
+          Group: CompositeColumnChart1
+          Properties:
+            Font: =Font.'Open Sans'
+            Height: =80
+            ItemColorSet: =ColumnChart1.ItemColorSet
+            Items: =ColumnChart1.SeriesLabels
+            Items.Value: =Value
+            Width: =320
+            X: =1046
+            Y: =688
+      - Title8:
+          Control: Label@2.5.1
+          Group: CompositeLineChart1
+          Properties:
+            Align: =Align.Center
+            BorderColor: =RGBA(0, 0, 0, 1)
+            Font: =Font.'Open Sans'
+            Height: =25
+            Size: =14
+            Text: ="Chart Title"
+            Width: =400
+            X: =966
+            Y: =743
+      - LineChart1:
+          Control: LineChart@2.3.0
+          Group: CompositeLineChart1
+          Properties:
+            Items.Labels: =City
+            Items.Series1: =Area
+            Items.Series2: =Density
+            Items.Series3: =Population
+            Items.Series4: =Population
+            Items.Series5: =Population
+            Items.Series6: =Population
+            Items.Series7: =Population
+            Items.Series8: =Population
+            Items.Series9: =Population
+            X: =966
+            Y: =368
+      - Legend2:
+          Control: Legend@2.1.0
+          Group: CompositeLineChart1
+          Properties:
+            Font: =Font.'Open Sans'
+            Height: =80
+            ItemColorSet: =LineChart1.ItemColorSet
+            Items: =LineChart1.SeriesLabels
+            Items.Value: =Value
+            Width: =320
+            X: =1046
+            Y: =688
+      - Title9:
+          Control: Label@2.5.1
+          Group: CompositePieChart1
+          Properties:
+            Align: =Align.Center
+            BorderColor: =RGBA(0, 0, 0, 1)
+            Font: =Font.'Open Sans'
+            Height: =25
+            Size: =14
+            Text: ="Chart Title"
+            Width: =400
+            X: =966
+            Y: =743
+      - PieChart1:
+          Control: PieChart@2.2.0
+          Group: CompositePieChart1
+          Properties:
+            Items.Labels: =City
+            Items.Series: =Area
+            X: =966
+            Y: =368
+      - Legend3:
+          Control: Legend@2.1.0
+          Group: CompositePieChart1
+          Properties:
+            Font: =Font.'Open Sans'
+            Height: =200
+            ItemColorSet: =PieChart1.ItemColorSet
+            Items: =PieChart1.SeriesLabels
+            Items.Value: =Value
+            Size: =16
+            Width: =400
+            X: =966
+            Y: =568
+      - PowerBI1:
+          Control: PowerBI@2.4.0
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            X: =726
+            Y: =288

@@ -1,0 +1,55 @@
+SHEET: Cơ sở dữ liệu
+==================================================
+Cơ sở dữ liệu (SharePoint)        Unnamed: 1          Unnamed: 2                                                 Unnamed: 3                Unnamed: 4
+                  Tên bảng    Tên thuộc tính        Kiểu dữ liệu                                           Mô tả thuộc tính                   Quan hệ
+                     DonVi           MaDonVi                text                              Mã đơn vị, định danh duy nhất                Khóa chính
+                       NaN          TenDonVi                text                                      Tên đầy đủ của đơn vị                       NaN
+                       NaN          DonViCha                text                                       Mã đơn vị cha nếu có        FK → DonVi.MaDonVi
+                 NguoiDung        MaNhanVien                text                                               Mã nhân viên                Khóa chính
+                       NaN             HoTen                text                                       Họ và tên người dùng                       NaN
+                       NaN             Email                text                                                      Email                       NaN
+                       NaN       SoDienThoai                text                                              Số điện thoại                       NaN
+                       NaN          ChucDanh                text                                    Chức danh trong tổ chức                       NaN
+                       NaN           MaDonVi                text                                         Mã đơn vị công tác        FK → DonVi.MaDonVi
+                       NaN            VaiTro              choice              Vai trò trong ứng dụng (Employee, Manager...)                       NaN
+                  LoaiNghi            MaLoai                text                                          Mã loại nghỉ phép                Khóa chính
+                       NaN           TenLoai                text          Tên loại nghỉ (VD: Nghỉ phép năm, Không lương...)                       NaN
+                       NaN           CoLuong             boolean                                    Có tính lương hay không                       NaN
+                       NaN              MoTa                text                                                 Mô tả thêm                       NaN
+                    NgayLe          MaNgayLe       number (auto)                                       Mã định danh tự tăng                Khóa chính
+                       NaN              Ngay                date                                               Ngày nghỉ lễ                       NaN
+                       NaN         TenNgayLe                text                                                Tên ngày lễ                       NaN
+                       NaN              Buoi              choice                            Buổi nghỉ: Cả ngày, sáng, chiều                       NaN
+                       NaN               Nam              number                                                Năm áp dụng                       NaN
+                SoNgayPhep          MaSoPhep       number (auto)                                            ID số phép nghỉ                Khóa chính
+                       NaN        MaNhanVien                text                                               Mã nhân viên FK → NguoiDung.MaNhanVien
+                       NaN               Nam              number                                                Năm áp dụng                       NaN
+                       NaN  TongNgayDuocPhep              number                           Tổng số ngày được nghỉ trong năm                       NaN
+                       NaN      SoNgayDaNghi              number                                    Số ngày đã nghỉ thực tế                       NaN
+                       NaN      SoNgayConLai number (calculated)                                            Số ngày còn lại calculate(Tổng - Đã nghỉ)
+                       NaN  SoNgayKhongLuong              number                                      Ngày nghỉ không lương                       NaN
+               DonNghiPhep             MaDon                GUID                                     Mã đơn nghỉ (duy nhất)                Khóa chính
+                       NaN        MaNhanVien                text                                          Nhân viên tạo đơn FK → NguoiDung.MaNhanVien
+                       NaN        NgayBatDau                date                                          Ngày bắt đầu nghỉ                       NaN
+                       NaN       NgayKetThuc                date                                         Ngày kết thúc nghỉ                       NaN
+                       NaN        SoNgayNghi              number                                               Số ngày nghỉ                       NaN
+                       NaN            MaLoai                text                                               Mã loại nghỉ      FK → LoaiNghi.MaLoai
+                       NaN              LyDo         text (long)                                                 Lý do nghỉ                       NaN
+                       NaN      NguoiBanGiao                text                                     Mã người nhận bàn giao FK → NguoiDung.MaNhanVien
+                       NaN    NoiDungBanGiao         text (long)                                Nội dung công việc bàn giao                       NaN
+                       NaN        TepDinhKem   image / file path                                     Đường dẫn tệp đính kèm                       NaN
+                       NaN         TrangThai              choice                 Trạng thái đơn ('ChoDuyet', 'DaDuyet',...)                       NaN
+                       NaN           NgayTao            datetime                                          Thời điểm tạo đơn                       NaN
+               PheDuyetDon        MaPheDuyet       number (auto)                                               ID phê duyệt                Khóa chính
+                       NaN             MaDon                GUID                                      Liên kết đến đơn nghỉ    FK → DonNghiPhep.MaDon
+                       NaN               Cap              number                                       Cấp phê duyệt: 1-2-3                       NaN
+                       NaN      MaNguoiDuyet                text                                            Người phê duyệt FK → NguoiDung.MaNhanVien
+                       NaN         QuyetDinh              choice               Trạng thái: 'DaDuyet', 'TuChoi', 'HetHan'...                       NaN
+                       NaN         NgayDuyet            datetime                                             Ngày phê duyệt                       NaN
+                       NaN            GhiChu         text (long)                                          Ghi chú khi duyệt                       NaN
+             QuyTrinhDuyet        MaQuyTrinh       number (auto)                                     Mã quy trình phê duyệt                Khóa chính
+                       NaN           MaDonVi                text                                             Đơn vị áp dụng        FK → DonVi.MaDonVi
+                       NaN               Cap              number                                 Cấp phê duyệt trong đơn vị                       NaN
+                       NaN            VaiTro              choice Vai trò phê duyệt tương ứng: 'QuanLy', 'GiamDoc', 'NhanSu'                       NaN
+                       NaN NguoiDuyetMacDinh                text                                   Người phê duyệt mặc định FK → NguoiDung.MaNhanVien
+                       NaN      DangHoatDong             boolean                                        Đang dùng hay không                       NaN
