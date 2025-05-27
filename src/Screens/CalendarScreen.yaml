@@ -1,24 +1,27 @@
-Screens:
+﻿Screens:
   CalendarScreen:
     Properties:
       Fill: =RGBA(248, 250, 252, 1)
-      OnVisible: =Set(varActiveScreen, "Calendar"); Set(varSelectedMonth, Month(Today())); Set(varSelectedYear, Year(Today())); Set(varCalendarData, Table({Date: Date(2024,1,15), Type: "Nghỉ phép năm", Employee: "Nguyễn Văn An", Status: "Approved", Color: RGBA(40, 167, 69, 1)}, {Date: Date(2024,1,16), Type: "Nghỉ phép năm", Employee: "Nguyễn Văn An", Status: "Approved", Color: RGBA(40, 167, 69, 1)}, {Date: Date(2024,1,17), Type: "Nghỉ phép năm", Employee: "Nguyễn Văn An", Status: "Approved", Color: RGBA(40, 167, 69, 1)}, {Date: Date(2024,2,20), Type: "Nghỉ phép năm", Employee: "Trần Thị Bình", Status: "Pending", Color: RGBA(255, 193, 7, 1)}, {Date: Date(2024,2,21), Type: "Nghỉ phép năm", Employee: "Trần Thị Bình", Status: "Pending", Color: RGBA(255, 193, 7, 1)}, {Date: Date(2024,3,10), Type: "Nghỉ ốm", Employee: "Lê Văn Cường", Status: "Approved", Color: RGBA(40, 167, 69, 1)})); Set(varHolidays, Table({Date: Date(2024,1,1), Name: "Tết Dương lịch", Type: "Holiday"}, {Date: Date(2024,2,10), Name: "Tết Nguyên đán", Type: "Holiday"}, {Date: Date(2024,4,30), Name: "Ngày Giải phóng", Type: "Holiday"}, {Date: Date(2024,5,1), Name: "Ngày Quốc tế Lao động", Type: "Holiday"}, {Date: Date(2024,9,2), Name: "Ngày Quốc khánh", Type: "Holiday"})); Set(varViewMode, "Personal")
+      OnVisible: |
+        =Set(varActiveScreen, "Calendar"); Set(varSelectedMonth, Month(Today())); Set(varSelectedYear, Year(Today())); Set(varCalendarData, Table({Date: Date(2024,1,15), Type: "Ngh峄?ph茅p n膬m", Employee: "Nguy峄卬 V膬n An", Status: "Approved", Color: RGBA(40, 167, 69, 1)}, {Date: Date(2024,1,16), Type: "Ngh峄?ph茅p n膬m", Employee: "Nguy峄卬 V膬n An", Status: "Approved", Color: RGBA(40, 167, 69, 1)}, {Date: Date(2024,1,17), Type: "Ngh峄?ph茅p n膬m", Employee: "Nguy峄卬 V膬n An", Status: "Approved", Color: RGBA(40, 167, 69, 1)}, {Date: Date(2024,2,20), Type: "Ngh峄?ph茅p n膬m", Employee: "Tr岷 Th峄?B矛nh", Status: "Pending", Color: RGBA(255, 193, 7, 1)}, {Date: Date(2024,2,21), Type: "Ngh峄?ph茅p n膬m", Employee: "Tr岷 Th峄?B矛nh", Status: "Pending", Color: RGBA(255, 193, 7, 1)}, {Date: Date(2024,3,10), Type: "Ngh峄?峄憁", Employee: "L锚 V膬n C瓢峄漬g", Status: "Approved", Color: RGBA(40, 167, 69, 1)})); Set(varHolidays, Table({Date: Date(2024,1,1), Name: "T岷縯 D瓢啤ng l峄媍h", Type: "Holiday"}, {Date: Date(2024,2,10), Name: "T岷縯 Nguy锚n 膽谩n", Type: "Holiday"}, {Date: Date(2024,4,30), Name: "Ng脿y Gi岷 ph贸ng", Type: "Holiday"}, {Date: Date(2024,5,1), Name: "Ng脿y Qu峄慶 t岷?Lao 膽峄檔g", Type: "Holiday"}, {Date: Date(2024,9,2), Name: "Ng脿y Qu峄慶 kh谩nh", Type: "Holiday"})); Set(varViewMode, "Personal")
     Children:
       - 'Calendar.Header':
-          Control: HeaderComponent
+          Control: CanvasComponent
+          ComponentName: HeaderComponent
           Properties:
             X: =0
             Y: =0
             Width: =Parent.Width
             Height: =80
-            Title: ="Lịch nghỉ phép"
+            Title: ="L峄媍h ngh峄?ph茅p"
             UserName: =varCurrentUser.FullName
             UserRole: =varCurrentUser.Role
             ShowNotification: =true
             NotificationCount: =2
             
       - 'Calendar.Navigation':
-          Control: NavigationComponent
+          Control: CanvasComponent
+          ComponentName: NavigationComponent
           Properties:
             X: =0
             Y: ='Calendar.Header'.Y + 'Calendar.Header'.Height
@@ -45,7 +48,7 @@ Screens:
                   Y: =Parent.Y + 30
                   Width: =Parent.Width - 60
                   Height: =40
-                  Text: ="Lịch nghỉ phép"
+                  Text: ="L峄媍h ngh峄?ph茅p"
                   Color: =RGBA(32, 54, 71, 1)
                   Font: =Font.'Open Sans'
                   FontWeight: =FontWeight.Bold
@@ -71,7 +74,7 @@ Screens:
                         Y: =Parent.Y + 10
                         Width: =100
                         Height: =20
-                        Text: ="Chế độ xem:"
+                        Text: ="Ch岷?膽峄?xem:"
                         Color: =RGBA(32, 54, 71, 1)
                         Font: =Font.'Open Sans'
                         FontWeight: =FontWeight.Semibold
@@ -85,13 +88,13 @@ Screens:
                         Width: =180
                         Height: =35
                         Items: =If(Or(varCurrentUser.Role = "Manager", varCurrentUser.Role = "Director", varCurrentUser.Role = "HR"), 
-                          ["Cá nhân", "Toàn công ty"], 
-                          ["Cá nhân"])
-                        Default: ="Cá nhân"
+                          ["C谩 nh芒n", "To脿n c么ng ty"], 
+                          ["C谩 nh芒n"])
+                        Default: ="C谩 nh芒n"
                         BorderColor: =RGBA(230, 230, 230, 1)
                         Font: =Font.'Open Sans'
                         Size: =12
-                        OnChange: =Set(varViewMode, If(Self.Selected.Value = "Cá nhân", "Personal", "Company"))
+                        OnChange: =Set(varViewMode, If(Self.Selected.Value = "C谩 nh芒n", "Personal", "Company"))
                         
                   - 'Calendar.MonthYear.Label':
                       Control: Label
@@ -100,7 +103,7 @@ Screens:
                         Y: =Parent.Y + 10
                         Width: =100
                         Height: =20
-                        Text: ="Tháng/Năm:"
+                        Text: ="Th谩ng/N膬m:"
                         Color: =RGBA(32, 54, 71, 1)
                         Font: =Font.'Open Sans'
                         FontWeight: =FontWeight.Semibold
@@ -150,7 +153,7 @@ Screens:
                               Y: =Parent.Y
                               Width: =60
                               Height: =20
-                              Text: ="Chú thích:"
+                              Text: ="Ch煤 th铆ch:"
                               Color: =RGBA(32, 54, 71, 1)
                               Font: =Font.'Open Sans'
                               FontWeight: =FontWeight.Semibold
@@ -172,7 +175,7 @@ Screens:
                               Y: =Parent.Y
                               Width: =60
                               Height: =20
-                              Text: ="Đã duyệt"
+                              Text: ="膼茫 duy峄噒"
                               Color: =RGBA(32, 54, 71, 1)
                               Font: =Font.'Open Sans'
                               Size: =10
@@ -193,7 +196,7 @@ Screens:
                               Y: =Parent.Y
                               Width: =60
                               Height: =20
-                              Text: ="Chờ duyệt"
+                              Text: ="Ch峄?duy峄噒"
                               Color: =RGBA(32, 54, 71, 1)
                               Font: =Font.'Open Sans'
                               Size: =10
@@ -214,7 +217,7 @@ Screens:
                               Y: =Parent.Y
                               Width: =40
                               Height: =20
-                              Text: ="Ngày lễ"
+                              Text: ="Ng脿y l峄?
                               Color: =RGBA(32, 54, 71, 1)
                               Font: =Font.'Open Sans'
                               Size: =10
@@ -249,7 +252,7 @@ Screens:
                               Y: =(Parent.Height - Self.Height) / 2
                               Width: =Parent.Width / 7
                               Height: =25
-                              Text: ="T2"
+                              Text:" & " " & "="T2"
                               Color: =RGBA(32, 54, 71, 1)
                               Font: =Font.'Open Sans'
                               FontWeight: =FontWeight.Bold
@@ -356,7 +359,7 @@ Screens:
                               Y: =Parent.Y + 50
                               Width: =Parent.Width
                               Height: =100
-                              Text: ="📅 Lịch nghỉ phép tháng " & varSelectedMonth & "/" & varSelectedYear & Char(10) & Char(10) & "Chế độ xem: " & If(varViewMode = "Personal", "Cá nhân", "Toàn công ty") & Char(10) & Char(10) & "💡 Tip: Chọn tháng/năm để xem lịch nghỉ phép chi tiết"
+                              Text: ="馃搮 L峄媍h ngh峄?ph茅p th谩ng " & varSelectedMonth & "/" & varSelectedYear & Char(10) & Char(10) & "Ch岷?膽峄?xem: " & If(varViewMode = "Personal", "C谩 nh芒n", "To脿n c么ng ty") & Char(10) & Char(10) & "馃挕 Tip: Ch峄峮 th谩ng/n膬m 膽峄?xem l峄媍h ngh峄?ph茅p chi ti岷縯"
                               Color: =RGBA(108, 117, 125, 1)
                               Font: =Font.'Open Sans'
                               Size: =14
@@ -440,10 +443,10 @@ Screens:
                                           Width: =80
                                           Height: =25
                                           Text: =Switch(ThisItem.Status,
-                                            "Approved", "Đã duyệt",
-                                            "Pending", "Chờ duyệt",
-                                            "Rejected", "Từ chối",
-                                            "Không xác định")
+                                            "Approved", "膼茫 duy峄噒",
+                                            "Pending", "Ch峄?duy峄噒",
+                                            "Rejected", "T峄?ch峄慽",
+                                            "Kh么ng x谩c 膽峄媙h")
                                           Color: =RGBA(255, 255, 255, 1)
                                           Fill: =RGBA(255, 255, 255, 0.2)
                                           Font: =Font.'Open Sans'

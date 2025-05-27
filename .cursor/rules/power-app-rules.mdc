@@ -15,9 +15,10 @@ alwaysApply: false
 3. [Position & Size Rules](mdc:#3-position--size-rules)
 4. [Allowed Controls](mdc:#4-allowed-controls)
 5. [Properties Guidelines](mdc:#5-properties-guidelines)
-6. [Naming Conventions](mdc:#6-naming-conventions)
-7. [Common Mistakes](mdc:#7-common-mistakes)
-8. [Best Practices](mdc:#8-best-practices)
+6. [Icon Guidelines](mdc:#6-icon-guidelines)
+7. [Naming Conventions](mdc:#7-naming-conventions)
+8. [Common Mistakes](mdc:#8-common-mistakes)
+9. [Best Practices](mdc:#9-best-practices)
 
 ---
 
@@ -133,12 +134,24 @@ Control: GroupContainer
 Control: GroupContainer@1.3.0
 ```
 
-### 2.2 Forbidden Properties
+### 2.2 Component Control Declarations
+**CRITICAL**: Use correct syntax for component references
+
+```yaml
+# ✅ CORRECT - Component Usage
+Control: CanvasComponent
+ComponentName: HeaderComponent
+
+# ❌ WRONG - Direct Component Reference
+Control: HeaderComponent
+```
+
+### 2.3 Forbidden Properties
 **NEVER USE** these properties:
 - `ZIndex` - Not supported
 - `DropShadow` - Use only when certain the control supports it
 
-### 2.3 Forbidden Properties by Control Type
+### 2.4 Forbidden Properties by Control Type
 **Rectangle Control** - NEVER use these properties:
 - `RadiusBottomLeft` - Not supported
 - `RadiusBottomRight` - Not supported  
@@ -155,7 +168,7 @@ Control: GroupContainer@1.3.0
 - `Self.Focused` - Not recognized, use `Self.Focus` instead
 - `Self.IsHovered` - Not recognized, use hover events instead
 
-### 2.4 Required Properties for All Controls
+### 2.5 Required Properties for All Controls
 Every control MUST have these properties when applicable:
 - `X` - Horizontal position (relative to parent)
 - `Y` - Vertical position (relative to parent)  
@@ -197,7 +210,54 @@ X: 100
 Y: 50
 ```
 
-### 3.3 Screen-Level Properties
+### 3.3 Arithmetic Operations - AVOID FIXED NUMBERS
+**CRITICAL**: Minimize use of fixed numbers in positioning/sizing calculations. Prefer relative calculations.
+
+```yaml
+# ✅ PREFERRED - Relative calculations
+Height: =Parent.Height / 2 - Control1.Height / 4
+Width: =Parent.Width * 0.8 - SidePanel.Width
+X: =Self.Width + Parent.X
+Y: =HeaderControl.Y + HeaderControl.Height * 1.2
+Size: =Parent.Width / 20
+
+# ⚠️ DISCOURAGED - Fixed numbers (use sparingly)
+Height: =Parent.Height / 2 - 4
+Width: =Parent.Width - 20
+X: =Self.Width + 10
+Y: =HeaderControl.Y + 5
+Size: =14
+
+# ❌ WRONG - Pure fixed values
+Height: 200
+Width: 300
+X: 50
+Y: 100
+```
+
+**GUIDELINES for Arithmetic Operations**:
+- **PREFER**: Multiplication (`*`) and division (`/`) with percentages/ratios
+- **PREFER**: Addition (`+`) and subtraction (`-`) with other control properties
+- **DISCOURAGE**: Addition (`+`) and subtraction (`-`) with fixed numbers
+- **AVOID**: Pure fixed number values
+
+**ACCEPTABLE Fixed Number Usage**:
+- Small spacing adjustments (< 10 pixels): `X: =Parent.X + 5`
+- Standard margins/padding: `Width: =Parent.Width - 20`
+- Font sizes: `Size: =14` (when not relative to screen size)
+
+**PREFERRED Alternatives**:
+```yaml
+# Instead of fixed spacing
+X: =Parent.X + Parent.Width * 0.01  # 1% of parent width
+Width: =Parent.Width * 0.95         # 95% of parent width
+
+# Instead of fixed margins
+X: =Parent.X + Self.Height / 4      # Quarter of own height
+Y: =PrevControl.Y + PrevControl.Height / 2  # Half of previous control height
+```
+
+### 3.4 Screen-Level Properties
 For screens, use these specific properties:
 
 ```yaml
@@ -262,7 +322,14 @@ Control: FormViewer
 Control: DataTable
 ```
 
-### 4.4 Shape Controls
+### 4.4 Component Controls
+```yaml
+# Canvas Components
+Control: CanvasComponent
+ComponentName: ComponentName
+```
+
+### 4.5 Shape Controls
 ```yaml
 Control: Circle
 Control: Triangle
@@ -273,7 +340,7 @@ Control: Arrow
 Control: PartialCircle
 ```
 
-### 4.5 Chart Controls
+### 4.6 Chart Controls
 ```yaml
 Control: BarChart
 Control: LineChart
@@ -281,7 +348,7 @@ Control: PieChart
 Control: Legend
 ```
 
-### 4.6 Media & Data Controls
+### 4.7 Media & Data Controls
 ```yaml
 # Media
 Control: AddMedia
@@ -340,7 +407,34 @@ Visible: varShowControl
 Text: "Static text" # Use this only for truly static text
 ```
 
-### 5.5 Variants for Controls
+### 5.5 Icon Properties
+**ONLY** use valid icon references:
+
+```yaml
+# ✅ CORRECT - Valid Icons
+Icon: =Icon.CalendarBlank
+Icon: =Icon.CheckBadge
+Icon: =Icon.Clock
+Icon: =Icon.Cancel
+
+# ❌ WRONG - Invalid Icons
+Icon: =Icon.Calendar  # Does not exist
+```
+
+### 5.6 Text Formatting
+**PROPER** text concatenation formatting:
+
+```yaml
+# ✅ CORRECT - Proper spacing
+Text: ="Email:" & " " & ThisItem.Email
+Text: ="Status:" & " " & ThisItem.Status
+
+# ❌ WRONG - Space inside quotes
+Text: ="Email: " & ThisItem.Email
+Text: ="Status: " & ThisItem.Status
+```
+
+### 5.7 Variants for Controls
 ```yaml
 # GroupContainer
 Variant: ManualLayout
@@ -366,9 +460,168 @@ Variant: 12Points
 
 ---
 
-## 6. NAMING CONVENTIONS
+## 6. ICON GUIDELINES
 
-### 6.1 Special Character Handling
+### 6.1 Allowed Icons
+**CRITICAL**: Icons can ONLY be used from this approved list. Using any icon not in this list will cause errors.
+
+**ALLOWED ICONS:**
+```yaml
+# Navigation & Actions
+Icon.Add, Icon.AddDocument, Icon.AddLibrary, Icon.AddToCalendar, Icon.AddUser
+Icon.ArrowDown, Icon.ArrowLeft, Icon.ArrowRight, Icon.ArrowUp, Icon.BackArrow
+Icon.NextArrow, Icon.SkipBack, Icon.SkipForward, Icon.SkipNext, Icon.SkipPrevious
+
+# Communication & Alerts
+Icon.Bell, Icon.Mail, Icon.Message, Icon.Phone, Icon.Phonebook
+Icon.Warning, Icon.Error, Icon.Information, Icon.Help
+
+# User Interface
+Icon.Check, Icon.CheckBadge, Icon.Cancel, Icon.CancelBadge, Icon.Close
+Icon.ChevronDown, Icon.ChevronLeft, Icon.ChevronRight, Icon.ChevronUp
+Icon.Hamburger, Icon.More, Icon.OptionsList, Icon.Settings
+
+# Files & Documents
+Icon.Document, Icon.DocumentPDF, Icon.DocumentWithContent, Icon.Folder
+Icon.Download, Icon.Upload, Icon.Export, Icon.Import, Icon.Save
+Icon.Copy, Icon.Cut, Icon.Paste, Icon.Print, Icon.Printing3D
+
+# Media & Content
+Icon.Camera, Icon.CameraAperture, Icon.Video, Icon.Pictures, Icon.Microphone
+Icon.Draw, Icon.Edit, Icon.Compose, Icon.Text, Icon.Note, Icon.Notebook
+
+# System & Tools
+Icon.Search, Icon.Filter, Icon.FilterFlat, Icon.FilterFlatFilled, Icon.Sort
+Icon.Reload, Icon.Sync, Icon.Undo, Icon.Redo, Icon.Tools, Icon.Calculator
+
+# Location & Travel
+Icon.Location, Icon.Globe, Icon.GlobeChangesPending, Icon.GlobeError
+Icon.GlobeNotConnected, Icon.GlobeRefresh, Icon.GlobeWarning
+Icon.Airplane, Icon.Bus, Icon.Cars, Icon.Train, Icon.Transportation
+
+# Business & Commerce
+Icon.Money, Icon.Currency, Icon.Shop, Icon.ShoppingCart, Icon.Manufacture
+
+# People & Social
+Icon.People, Icon.Person, Icon.Heart, Icon.LikeDislike
+Icon.ThumbsUp, Icon.ThumbsUpFilled, Icon.ThumbsDown, Icon.ThumbsDownFilled
+
+# Time & Calendar
+Icon.Clock, Icon.CalendarBlank, Icon.Alarm, Icon.History
+
+# Status & Indicators
+Icon.Star, Icon.StarFilled, Icon.Flag, Icon.Bookmark, Icon.BookmarkFilled
+Icon.Pin, Icon.Tag, Icon.Trending, Icon.TrendingHashtag, Icon.TrendingUpwards
+
+# Devices & Technology
+Icon.ComputerDesktop, Icon.Laptop, Icon.Mobile, Icon.Tablet, Icon.Controller
+Icon.Devices, Icon.Database, Icon.Site, Icon.Link
+
+# Health & Medical
+Icon.Health, Icon.Medical, Icon.Hospital
+
+# Emotions
+Icon.EmojiFrown, Icon.EmojiHappy, Icon.EmojiNeutral, Icon.EmojiSad, Icon.EmojiSmile
+
+# Layout & Design
+Icon.CollapseView, Icon.ExpandView, Icon.Split, Icon.SplitHorizontal, Icon.SplitVertical
+Icon.View, Icon.Show, Icon.Hide, Icon.ZoomIn, Icon.ZoomOut
+
+# Miscellaneous
+Icon.Key, Icon.Lock, Icon.Unlock, Icon.Blocked, Icon.Bug, Icon.Diamond
+Icon.ForkKnife, Icon.Shirt, Icon.Weather, Icon.Lightbulb, Icon.LightningBolt
+Icon.Airplane, Icon.Alarm, Icon.Blocked, Icon.Bookmark, Icon.BookmarkFilled
+Icon.Bug, Icon.Bus, Icon.Calculator, Icon.Camera, Icon.CameraAperture
+Icon.Cars, Icon.ClearDrawing, Icon.Clock, Icon.CollapseView, Icon.ColorPicker
+Icon.ComputerDesktop, Icon.Controller, Icon.Crop, Icon.Currency, Icon.Database
+Icon.DetailList, Icon.Devices, Icon.Diamond, Icon.DockCheckProperties
+Icon.DockLeft, Icon.DockRight, Icon.DocumentText, Icon.Enhance, Icon.Erase
+Icon.ExpandView, Icon.FilterFlat, Icon.FilterFlatFilled, Icon.ForkKnife
+Icon.GlobeChangesPending, Icon.GlobeError, Icon.GlobeNotConnected
+Icon.GlobeRefresh, Icon.GlobeWarning, Icon.HalfFilledCircle, Icon.Health
+Icon.Hide, Icon.History, Icon.Home, Icon.HorizontalLine, Icon.Hospital
+Icon.Items, Icon.Journal, Icon.Key, Icon.Laptop, Icon.Leave
+Icon.LevelsLayersItems, Icon.Lightbulb, Icon.LightningBolt, Icon.LikeDislike
+Icon.LineWeight, Icon.Link, Icon.ListScrollEmpty, Icon.ListScrollWatchlist
+Icon.ListWatchlistRemind, Icon.Location, Icon.Lock, Icon.LogJournal
+Icon.Manufacture, Icon.Medical, Icon.Microphone, Icon.Mobile, Icon.Money
+Icon.More, Icon.Newspaper, Icon.Note, Icon.Notebook, Icon.OpenInNewWindow
+Icon.OptionsList, Icon.PaperClip, Icon.Paste, Icon.People, Icon.Person
+Icon.Phone, Icon.Phonebook, Icon.Pictures, Icon.Pin, Icon.Post, Icon.Print
+Icon.Printing3D, Icon.Publish, Icon.QuestionMark, Icon.RadarActivityMonitor
+Icon.Redo, Icon.Reload, Icon.Save, Icon.Scan, Icon.Search, Icon.Send
+Icon.Settings, Icon.Share, Icon.Shirt, Icon.Shop, Icon.ShoppingCart
+Icon.Show, Icon.ShowDrawing, Icon.SignOut, Icon.Site, Icon.SkipBack
+Icon.SkipForward, Icon.SkipNext, Icon.SkipPrevious, Icon.Slider, Icon.Sort
+Icon.Speed, Icon.Split, Icon.SplitHorizontal, Icon.SplitVertical, Icon.Star
+Icon.StarFilled, Icon.Stop, Icon.Strikethrough, Icon.Subtract, Icon.Support
+Icon.Sync, Icon.Tablet, Icon.Tag, Icon.Text, Icon.ThumbsDown
+Icon.ThumbsDownFilled, Icon.ThumbsUp, Icon.ThumbsUpFilled, Icon.Tools
+Icon.Train, Icon.Transportation, Icon.Trash, Icon.Tray, Icon.Trending
+Icon.TrendingHashtag, Icon.TrendingUpwards, Icon.Undo, Icon.Unlock
+Icon.VerticalLine, Icon.Video, Icon.View, Icon.Waffle, Icon.Warning
+Icon.Waypoint, Icon.Weather, Icon.ZoomIn, Icon.ZoomOut
+```
+
+### 6.2 Icon Usage Examples
+```yaml
+# ✅ CORRECT - Using allowed icons
+Icon: =Icon.CalendarBlank
+Icon: =Icon.Person
+Icon: =Icon.Settings
+Icon: =Icon.Search
+Icon: =Icon.Add
+
+# ❌ WRONG - Using non-allowed icons
+Icon: =Icon.CustomIcon      # Not in allowed list
+Icon: =Icon.MyIcon         # Not in allowed list
+Icon: =Icon.SpecialIcon    # Not in allowed list
+```
+
+### 6.3 Icon Mapping for Common Use Cases
+```yaml
+# User/Profile related
+"User" → Icon.Person
+"Profile" → Icon.Person
+"Account" → Icon.Person
+
+# Calendar/Date related
+"Calendar" → Icon.CalendarBlank
+"Date" → Icon.CalendarBlank
+"Schedule" → Icon.CalendarBlank
+
+# Communication
+"Email" → Icon.Mail
+"Message" → Icon.Message
+"Call" → Icon.Phone
+
+# Actions
+"Add" → Icon.Add
+"Edit" → Icon.Edit
+"Delete" → Icon.Cancel
+"Save" → Icon.Save
+"Search" → Icon.Search
+
+# Navigation
+"Back" → Icon.BackArrow
+"Next" → Icon.NextArrow
+"Up" → Icon.ChevronUp
+"Down" → Icon.ChevronDown
+"Left" → Icon.ChevronLeft
+"Right" → Icon.ChevronRight
+
+# Status
+"Success" → Icon.CheckBadge
+"Error" → Icon.Error
+"Warning" → Icon.Warning
+"Info" → Icon.Information
+```
+
+---
+
+## 7. NAMING CONVENTIONS
+
+### 7.1 Special Character Handling
 **REQUIRED**: Wrap names with special characters in single quotes:
 
 ```yaml
@@ -385,7 +638,7 @@ Variant: 12Points
 - UserInfo:
 ```
 
-### 6.2 Naming Best Practices
+### 7.2 Naming Best Practices
 ```yaml
 # Use descriptive, hierarchical names
 - 'Header.UserInfo.Avatar':
@@ -396,9 +649,9 @@ Variant: 12Points
 
 ---
 
-## 7. COMMON MISTAKES TO AVOID
+## 8. COMMON MISTAKES TO AVOID
 
-### 7.1 Component Definition Structure Errors
+### 8.1 Component Definition Structure Errors
 **CRITICAL**: Use the correct component structure:
 
 ```yaml
@@ -427,7 +680,27 @@ ComponentDefinitions:
       Width: =App.Width
 ```
 
-### 7.2 Custom Properties Errors
+### 8.2 Component Control Declaration Errors
+**CRITICAL**: Use correct component control syntax:
+
+```yaml
+# ❌ WRONG - Direct Component Reference
+Control: HeaderComponent
+Control: NavigationComponent
+Control: StatsCardComponent
+
+# ✅ CORRECT - Proper Component Usage
+Control: CanvasComponent
+ComponentName: HeaderComponent
+
+Control: CanvasComponent
+ComponentName: NavigationComponent
+
+Control: CanvasComponent
+ComponentName: StatsCardComponent
+```
+
+### 8.3 Custom Properties Errors
 **NEVER USE** these old property names:
 - `PropertyType` → Use `PropertyKind`
 - `PropertyDataType` → Use `DataType`
@@ -439,7 +712,7 @@ ComponentDefinitions:
 - `DataType` - Data type
 - `Default` - Default value
 
-### 7.3 Event Property Errors
+### 8.4 Event Property Errors
 **WRONG** event structure:
 ```yaml
 # ❌ WRONG
@@ -466,7 +739,7 @@ OnNavigate:
         Default: ="Dashboard"
 ```
 
-### 7.4 Event Call Syntax Errors
+### 8.5 Event Call Syntax Errors
 **WRONG** event call syntax:
 ```yaml
 # ❌ WRONG
@@ -479,18 +752,20 @@ OnSelect: =NavigationComponent.OnNavigate; Set(varActiveScreen, "Dashboard")
 OnSelect: =NavigationComponent.OnNavigate(); Set(varActiveScreen, "Dashboard")
 ```
 
-### 7.5 Text Property Formatting
+### 8.6 Text Property Formatting
 **AVOID** spaces after colons in text content:
 
 ```yaml
 # ✅ CORRECT
-Text: ="Demo:Phần lớn của ứng dụng"
+Text: ="Demo:" & " " & "Phần lớn của ứng dụng"
+Text: ="Email:" & " " & ThisItem.Email
 
 # ❌ WRONG  
 Text: ="Demo: Phần lớn của ứng dụng"
+Text: ="Email: " & ThisItem.Email
 ```
 
-### 7.6 Absolute Positioning
+### 8.7 Absolute Positioning
 **NEVER** use absolute values for positioning:
 
 ```yaml
@@ -507,7 +782,37 @@ Width: =Parent.Width - 40
 Height: =Parent.Height / 4
 ```
 
-### 7.7 Missing Required Properties
+### 8.8 Fixed Numbers in Calculations
+**CRITICAL**: Avoid excessive use of fixed numbers in positioning/sizing calculations:
+
+```yaml
+# ❌ DISCOURAGED - Too many fixed numbers
+X: =Parent.X + 20
+Y: =HeaderControl.Y + 50
+Width: =Parent.Width - 40
+Height: =Parent.Height / 2 - 30
+Size: =16
+
+# ✅ PREFERRED - Relative calculations
+X: =Parent.X + Parent.Width * 0.02
+Y: =HeaderControl.Y + HeaderControl.Height * 1.5
+Width: =Parent.Width * 0.95
+Height: =Parent.Height / 2 - HeaderControl.Height / 3
+Size: =Parent.Width / 50
+
+# ✅ ACCEPTABLE - Small fixed adjustments
+X: =Parent.X + 5        # Small spacing
+Width: =Parent.Width - 10   # Standard margin
+Size: =14               # Standard font size
+```
+
+**RULES for Fixed Numbers**:
+- **AVOID**: Large fixed numbers (> 20 pixels)
+- **MINIMIZE**: Small fixed numbers (< 10 pixels)
+- **PREFER**: Percentage-based calculations
+- **USE**: Relative calculations with other control properties
+
+### 8.9 Missing Required Properties
 **ALWAYS** include these for positioned controls:
 
 ```yaml
@@ -519,7 +824,7 @@ Properties:
   # Other properties...
 ```
 
-### 7.8 Missing Component-Level Properties
+### 8.10 Missing Component-Level Properties
 **ALWAYS** include these for components:
 
 ```yaml
@@ -535,22 +840,37 @@ ComponentDefinitions:
       # Child controls here
 ```
 
-### 7.9 YAML Syntax Errors with Multi-line Formulas
-**CRITICAL**: Multi-line formulas MUST be written on single line:
+### 8.11 YAML Syntax for Multi-line Formulas
+**CRITICAL**: Use correct YAML syntax for formulas:
 
+#### For Short Formulas (Single Line):
 ```yaml
-# ❌ WRONG - Multi-line formula causes YAML parsing error
-HoverFill: =If(
-              IsBlank(LoginContainer.FormSection.UsernameInput.Text) || IsBlank(LoginContainer.FormSection.PasswordInput.Text),
-              RGBA(166, 166, 166, 1),
-              ColorFade(RGBA(0, 120, 212, 1), -20%)
-            )
-
 # ✅ CORRECT - Single line formula
-HoverFill: =If(IsBlank(LoginContainer.FormSection.UsernameInput.Text) || IsBlank(LoginContainer.FormSection.PasswordInput.Text), RGBA(166, 166, 166, 1), ColorFade(RGBA(0, 120, 212, 1), -20%))
+OnSelect: =Set(varExample, true); Navigate(NextScreen)
 ```
 
-### 7.10 Control Reference Errors
+#### For Long Formulas (Multi-line with Pipe Operator):
+```yaml
+# ✅ CORRECT - Multi-line formula with pipe operator
+OnVisible: |
+  =Set(varActiveScreen, "Dashboard"); Set(varDemoStats, {TotalLeave: 12, UsedLeave: 3, RemainingLeave: 9}); Set(varRecentRequests, Table({ID: "LR001", Date: "2024-01-15", Days: 3, Status: "Approved"}))
+
+OnSelect: |
+  =Set(varIsLoading, true); Set(varLoginError, ""); If(And(Not(IsBlank('Login.Email.Input'.Text)), Not(IsBlank('Login.Password.Input'.Text))), Set(varCurrentUser, {ID: "EMP001", FullName: "Nguyễn Văn An", Email: 'Login.Email.Input'.Text, Role: "Employee", Department: "Phòng Công nghệ thông tin"}); Set(varIsLoading, false); Navigate(DashboardScreen), Set(varLoginError, "Email hoặc mật khẩu không đúng"); Set(varIsLoading, false))
+
+# ❌ WRONG - Multi-line without pipe operator causes YAML parsing error
+OnVisible: =Set(varActiveScreen, "Dashboard"); Set(varDemoStats, {TotalLeave: 12, UsedLeave: 3, RemainingLeave: 9}); 
+          Set(varRecentRequests, Table({ID: "LR001", Date: "2024-01-15", Days: 3, Status: "Approved"}))
+```
+
+**RULES for Multi-line Formulas:**
+- **ALWAYS** use pipe operator (`|`) for formulas longer than 120 characters
+- **ALWAYS** place the pipe operator (`|`) immediately after the property name and colon
+- **ALWAYS** indent the formula content with proper spacing (typically 2 spaces)
+- **NEVER** split formula without using pipe operator
+- **ESPECIALLY** use for `OnSelect`, `OnChange`, `OnVisible` with complex logic
+
+### 8.12 Control Reference Errors
 **CRITICAL**: Use single quotes for control names with dots:
 
 ```yaml
@@ -561,7 +881,7 @@ Text: =LoginCard.FormSection.UsernameInput.Text
 Text: ='LoginCard.FormSection.UsernameInput'.Text
 ```
 
-### 7.11 Invalid Self Properties
+### 8.13 Invalid Self Properties
 **NEVER USE** these invalid Self properties:
 
 ```yaml
@@ -574,7 +894,7 @@ BorderColor: =If(Self.Focus, RGBA(0, 120, 212, 1), RGBA(200, 200, 200, 1))
 # Use OnHover events instead of Self.IsHovered
 ```
 
-### 7.12 Button Property Errors
+### 8.14 Button Property Errors
 **NEVER USE** these properties for Classic/Button:
 
 ```yaml
@@ -591,7 +911,7 @@ Properties:
   # Use Fill and other styling properties instead
 ```
 
-### 7.13 Rectangle Radius Errors
+### 8.15 Rectangle Radius Errors
 **NEVER USE** individual corner radius properties for Rectangle:
 
 ```yaml
@@ -607,36 +927,144 @@ Properties:
   BorderRadius: =8
 ```
 
+### 8.16 Invalid Icon References
+**NEVER USE** non-existent icons:
+
+```yaml
+# ❌ WRONG - Non-existent icons
+Icon: =Icon.Calendar        # Should be Icon.CalendarBlank
+Icon: =Icon.BarChart        # Should be Icon.BarChart4
+Icon: =Icon.Document        # Should be Icon.DocumentText
+Icon: =Icon.CustomIcon      # Not in Power Apps
+Icon: =Icon.MyIcon         # Not in Power Apps
+
+# ✅ CORRECT - Valid icon references
+Icon: =Icon.CalendarBlank
+Icon: =Icon.BarChart4
+Icon: =Icon.DocumentText
+Icon: =Icon.Person
+Icon: =Icon.Settings
+```
+
+### 8.17 Invalid Icon Usage from Approved List
+**CRITICAL**: Only use icons from the approved list in section 6.1:
+
+```yaml
+# ❌ WRONG - Using non-approved icons (even if they exist in Power Apps)
+Icon: =Icon.CustomIcon
+Icon: =Icon.MySpecialIcon
+Icon: =Icon.UndefinedIcon
+Icon: =Icon.RandomIcon
+
+# ✅ CORRECT - Using approved icons only
+Icon: =Icon.CalendarBlank
+Icon: =Icon.Person
+Icon: =Icon.Settings
+Icon: =Icon.Search
+Icon: =Icon.Add
+Icon: =Icon.Edit
+Icon: =Icon.Cancel
+Icon: =Icon.Save
+```
+
+### 8.18 Text Function with RGBA Values
+**CRITICAL**: Never use Text() function with RGBA values:
+
+```yaml
+# ❌ WRONG - Text() cannot convert RGBA values
+Text: =Concatenate("Color: ", Text(RGBA(255, 0, 0, 1)))
+Text: =Text(RGBA(59, 130, 246, 1))
+
+# ✅ CORRECT - Use string literals for RGBA in text
+Text: =Concatenate("Color: RGBA(255, 0, 0, 1)")
+Text: ="Primary: RGBA(59, 130, 246, 1)"
+```
+
+### 8.19 Invalid Focus Properties for TextInput
+**CRITICAL**: Use correct focus properties for Classic/TextInput:
+
+```yaml
+# ❌ WRONG - .Focus does not exist for Classic/TextInput
+Visible: ='MyTextInput'.Focus
+BorderColor: =If('MyTextInput'.Focus, RGBA(0, 120, 212, 1), RGBA(200, 200, 200, 1))
+
+# ✅ CORRECT - Use .Focused for Classic/TextInput
+Visible: ='MyTextInput'.Focused
+BorderColor: =If('MyTextInput'.Focused, RGBA(0, 120, 212, 1), RGBA(200, 200, 200, 1))
+```
+
+### 8.20 Multi-line Formula Syntax Errors
+**CRITICAL**: Avoid pipe operator (|) in YAML - use single line formulas:
+
+```yaml
+# ❌ WRONG - Pipe operator causes YAML parsing issues
+Text: |
+  =Concatenate(
+    "Line 1",
+    "Line 2"
+  )
+
+# ✅ CORRECT - Single line formula
+Text: =Concatenate("Line 1", "Line 2")
+```
+
 ---
 
-## 8. BEST PRACTICES
+## 9. BEST PRACTICES
 
-### 8.1 Component Structure Best Practices
+### 9.1 Component Structure Best Practices
 - Always use `ComponentDefinitions` (plural) as root
 - Include component name as child of `ComponentDefinitions`
 - Always include `Properties` section with `Height` and `Width`
 - Use descriptive `DisplayName` and `Description` for all custom properties
 - Group related custom properties logically
 
-### 8.2 Custom Properties Best Practices
+### 9.2 Component Control Declaration Best Practices
+- Always use `Control: CanvasComponent` for component references
+- Always include `ComponentName: ComponentName` property
+- Never use direct component references like `Control: HeaderComponent`
+- Maintain consistent indentation for component properties
+
+### 9.3 Custom Properties Best Practices
 - Use `Input` for most custom properties
 - Use `Event` for callback functions
 - Use `Output` for computed values
 - Always provide meaningful default values
 - Include parameter definitions for event properties
 
-### 8.3 Event Handling Best Practices
+### 9.4 Event Handling Best Practices
 - Always call event properties with parentheses: `ComponentName.EventName()`
 - Define parameters for events when needed
 - Use `ReturnType: None` for most events
 - Mark optional parameters with `IsOptional: true`
 
-### 8.4 Consistency
+### 9.5 Multi-line Formula Best Practices
+- Use pipe operator (`|`) for formulas longer than 120 characters
+- Maintain consistent indentation (2 spaces recommended)
+- Keep the entire formula logic on the indented line after the pipe
+- Use for complex `OnSelect`, `OnChange`, `OnVisible` properties
+- Apply to both OnVisible and OnSelect formulas consistently
+
+### 9.6 Text Formatting Best Practices
+- Always separate colon and space in text concatenation
+- Use `"Label:" & " " & Value` instead of `"Label: " & Value`
+- Maintain consistency across all text properties
+- Avoid spaces after colons in quoted strings
+
+### 9.7 Icon Reference Best Practices
+- Always verify icon names exist in Power Apps
+- Use `Icon.CalendarBlank` instead of `Icon.Calendar`
+- Use `Icon.CheckBadge` for checkmarks
+- Use `Icon.Cancel` for cancel/close actions
+- Test icon references in Power Apps Studio
+
+### 9.8 Consistency
 - Use consistent naming patterns across similar controls
 - Apply consistent spacing and sizing formulas
 - Use consistent color schemes (RGBA values)
+- Maintain consistent component declaration patterns
 
-### 8.5 Relative References
+### 9.9 Relative References
 **ALWAYS** use relative references:
 ```yaml
 # Parent references
@@ -650,12 +1078,47 @@ Height: =Self.Size * 1.2
 Y: =HeaderControl.Y + HeaderControl.Height + 10
 ```
 
-### 8.6 Hierarchy Maintenance
+### 9.10 Relative Calculations Best Practices
+**CRITICAL**: Minimize fixed numbers in favor of relative calculations:
+
+```yaml
+# ✅ EXCELLENT - Fully relative
+X: =Parent.X + Parent.Width * 0.05
+Y: =HeaderControl.Y + HeaderControl.Height * 1.2
+Width: =Parent.Width * 0.9
+Height: =Parent.Height / 3 - SidePanel.Height / 4
+
+# ✅ GOOD - Mostly relative with minimal fixed numbers
+X: =Parent.X + 5
+Y: =HeaderControl.Y + HeaderControl.Height + 2
+Width: =Parent.Width - 10
+Height: =Parent.Height / 3
+
+# ⚠️ ACCEPTABLE - Some fixed numbers for standard spacing
+X: =Parent.X + 20
+Width: =Parent.Width - 40
+Size: =14
+
+# ❌ POOR - Too many fixed numbers
+X: =Parent.X + 50
+Y: =100
+Width: =Parent.Width - 80
+Height: =200
+```
+
+**CALCULATION PREFERENCES** (in order):
+1. **Percentage/Ratio calculations**: `Width: =Parent.Width * 0.8`
+2. **Relative to other controls**: `Y: =Control1.Y + Control1.Height`
+3. **Mathematical relationships**: `Height: =Self.Width / 2`
+4. **Small fixed adjustments**: `X: =Parent.X + 5`
+5. **Standard fixed values**: `Size: =14` (fonts, borders)
+
+### 9.11 Hierarchy Maintenance
 - Maintain clear parent-child relationships
 - Use logical grouping with GroupContainer
 - Keep related controls together in the YAML structure
 
-### 8.7 Property Organization
+### 9.12 Property Organization
 Organize properties in this order:
 1. Position (X, Y)
 2. Size (Width, Height)  
@@ -695,6 +1158,11 @@ Properties:
 11. **VALID SELF PROPERTIES** - Never use `Self.Focused` or `Self.IsHovered`
 12. **BUTTON PROPERTIES** - Never use `BorderRadius`, `Disabled`, or `Align` for Classic/Button
 13. **RECTANGLE RADIUS** - Use `BorderRadius` only, not individual corner properties
+14. **APPROVED ICONS ONLY** - Only use icons from the approved list in section 6.1
+15. **VALID ICON NAMES** - Verify all icon references exist in Power Apps
+16. **TEXT FUNCTION WITH RGBA** - Never use Text() function with RGBA values
+17. **TEXTINPUT FOCUS PROPERTY** - Use `.Focused` not `.Focus` for Classic/TextInput
+18. **NO PIPE OPERATOR** - Avoid pipe operator (|) in YAML formulas
 
 **Agent must follow these rules ABSOLUTELY when generating Power App YAML code.**
 

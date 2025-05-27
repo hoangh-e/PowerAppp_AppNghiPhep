@@ -149,8 +149,8 @@ Screens:
                   - 'LoginContainer.UsernameGroup.Input':
                       Control: Classic/TextInput
                       Properties:
-                        BorderColor: =If(Self.Hover || Self.Focus, RGBA(0, 120, 212, 1), RGBA(200, 200, 200, 1))
-                        BorderThickness: =If(Self.Hover || Self.Focus, 2, 1)
+                        BorderColor: =If(Self.Hover || Self.Focused, RGBA(0, 120, 212, 1), RGBA(200, 200, 200, 1))
+                        BorderThickness: =If(Self.Hover || Self.Focused, 2, 1)
                         Default: =""
                         HintText: ="Nhập ID nhân viên hoặc 'admin'"
                         Width: =Parent.Width
@@ -188,8 +188,8 @@ Screens:
                   - 'LoginContainer.PasswordGroup.Input':
                       Control: Classic/TextInput
                       Properties:
-                        BorderColor: =If(Self.Hover || Self.Focus, RGBA(0, 120, 212, 1), RGBA(200, 200, 200, 1))
-                        BorderThickness: =If(Self.Hover || Self.Focus, 2, 1)
+                        BorderColor: =If(Self.Hover || Self.Focused, RGBA(0, 120, 212, 1), RGBA(200, 200, 200, 1))
+                        BorderThickness: =If(Self.Hover || Self.Focused, 2, 1)
                         Default: =""
                         HintText: ="Nhập mật khẩu"
                         Mode: =TextMode.Password

@@ -1,24 +1,27 @@
-Screens:
+﻿Screens:
   LeaveConfirmationScreen:
     Properties:
       Fill: =RGBA(248, 250, 252, 1)
-      OnVisible: =Set(varActiveScreen, "LeaveConfirmation"); Set(varApprovedLeaves, Table({ID: "LR001", EmployeeID: "EMP001", EmployeeName: "Nguyễn Văn An", Department: "Phòng Công nghệ thông tin", StartDate: "15/01/2024", EndDate: "17/01/2024", Days: 3, Type: "Nghỉ phép năm", Status: "Approved", ApprovedDate: "14/01/2024", ConfirmationStatus: "Pending"}, {ID: "LR004", EmployeeID: "EMP003", EmployeeName: "Lê Văn Cường", Department: "Ban Giám đốc", StartDate: "05/04/2024", EndDate: "05/04/2024", Days: 1, Type: "Nghỉ ốm", Status: "Approved", ApprovedDate: "04/04/2024", ConfirmationStatus: "Confirmed"}, {ID: "LR007", EmployeeID: "EMP002", EmployeeName: "Trần Thị Bình", Department: "Phòng Công nghệ thông tin", StartDate: "20/03/2024", EndDate: "22/03/2024", Days: 3, Type: "Nghỉ phép năm", Status: "Approved", ApprovedDate: "18/03/2024", ConfirmationStatus: "Pending"})); Set(varSelectedLeave, Blank()); Set(varConfirmationNote, ""); Set(varIsProcessing, false)
+      OnVisible: |
+        =Set(varActiveScreen, "LeaveConfirmation"); Set(varApprovedLeaves, Table({ID: "LR001", EmployeeID: "EMP001", EmployeeName: "Nguy峄卬 V膬n An", Department: "Ph貌ng C么ng ngh峄?th么ng tin", StartDate: "15/01/2024", EndDate: "17/01/2024", Days: 3, Type: "Ngh峄?ph茅p n膬m", Status: "Approved", ApprovedDate: "14/01/2024", ConfirmationStatus: "Pending"}, {ID: "LR004", EmployeeID: "EMP003", EmployeeName: "L锚 V膬n C瓢峄漬g", Department: "Ban Gi谩m 膽峄慶", StartDate: "05/04/2024", EndDate: "05/04/2024", Days: 1, Type: "Ngh峄?峄憁", Status: "Approved", ApprovedDate: "04/04/2024", ConfirmationStatus: "Confirmed"}, {ID: "LR007", EmployeeID: "EMP002", EmployeeName: "Tr岷 Th峄?B矛nh", Department: "Ph貌ng C么ng ngh峄?th么ng tin", StartDate: "20/03/2024", EndDate: "22/03/2024", Days: 3, Type: "Ngh峄?ph茅p n膬m", Status: "Approved", ApprovedDate: "18/03/2024", ConfirmationStatus: "Pending"})); Set(varSelectedLeave, Blank()); Set(varConfirmationNote, ""); Set(varIsProcessing, false)
     Children:
       - 'LeaveConfirmation.Header':
-          Control: HeaderComponent
+          Control: CanvasComponent
+          ComponentName: HeaderComponent
           Properties:
             X: =0
             Y: =0
             Width: =Parent.Width
             Height: =80
-            Title: ="Ghi nhận kết quả nghỉ phép"
+            Title: ="Ghi nh岷璶 k岷縯 qu岷?ngh峄?ph茅p"
             UserName: =varCurrentUser.FullName
             UserRole: =varCurrentUser.Role
             ShowNotification: =true
             NotificationCount: =CountRows(Filter(varApprovedLeaves, ConfirmationStatus = "Pending"))
             
       - 'LeaveConfirmation.Navigation':
-          Control: NavigationComponent
+          Control: CanvasComponent
+          ComponentName: NavigationComponent
           Properties:
             X: =0
             Y: ='LeaveConfirmation.Header'.Y + 'LeaveConfirmation.Header'.Height
@@ -45,7 +48,7 @@ Screens:
                   Y: =Parent.Y + 30
                   Width: =Parent.Width - 60
                   Height: =40
-                  Text: ="Ghi nhận kết quả nghỉ phép đã phê duyệt"
+                  Text: ="Ghi nh岷璶 k岷縯 qu岷?ngh峄?ph茅p 膽茫 ph锚 duy峄噒"
                   Color: =RGBA(32, 54, 71, 1)
                   Font: =Font.'Open Sans'
                   FontWeight: =FontWeight.Bold
@@ -61,43 +64,46 @@ Screens:
                   Height: =80
                 Children:
                   - 'LeaveConfirmation.Stats.Pending':
-                      Control: StatsCardComponent
+                      Control: CanvasComponent
+          ComponentName: StatsCardComponent
                       Properties:
                         X: =Parent.X
                         Y: =Parent.Y
                         Width: =(Parent.Width - 40) / 3
                         Height: =Parent.Height
-                        Title: ="Chờ ghi nhận"
+                        Title: ="Ch峄?ghi nh岷璶"
                         Value: =CountRows(Filter(varApprovedLeaves, ConfirmationStatus = "Pending"))
                         Icon: ="Clock"
                         Color: =RGBA(255, 193, 7, 1)
-                        Subtitle: ="Đơn cần xác nhận"
+                        Subtitle: ="膼啤n c岷 x谩c nh岷璶"
                         
                   - 'LeaveConfirmation.Stats.Confirmed':
-                      Control: StatsCardComponent
+                      Control: CanvasComponent
+          ComponentName: StatsCardComponent
                       Properties:
                         X: ='LeaveConfirmation.Stats.Pending'.X + 'LeaveConfirmation.Stats.Pending'.Width + 20
                         Y: =Parent.Y
                         Width: =(Parent.Width - 40) / 3
                         Height: =Parent.Height
-                        Title: ="Đã ghi nhận"
+                        Title: ="膼茫 ghi nh岷璶"
                         Value: =CountRows(Filter(varApprovedLeaves, ConfirmationStatus = "Confirmed"))
                         Icon: ="CheckBadge"
                         Color: =RGBA(40, 167, 69, 1)
-                        Subtitle: ="Đã hoàn thành"
+                        Subtitle: ="膼茫 ho脿n th脿nh"
                         
                   - 'LeaveConfirmation.Stats.Total':
-                      Control: StatsCardComponent
+                      Control: CanvasComponent
+          ComponentName: StatsCardComponent
                       Properties:
                         X: ='LeaveConfirmation.Stats.Confirmed'.X + 'LeaveConfirmation.Stats.Confirmed'.Width + 20
                         Y: =Parent.Y
                         Width: =(Parent.Width - 40) / 3
                         Height: =Parent.Height
-                        Title: ="Tổng số đơn"
+                        Title: ="T峄昻g s峄?膽啤n"
                         Value: =CountRows(varApprovedLeaves)
                         Icon: ="Calendar"
                         Color: =RGBA(0, 120, 212, 1)
-                        Subtitle: ="Đã phê duyệt"
+                        Subtitle: ="膼茫 ph锚 duy峄噒"
                         
             - 'LeaveConfirmation.Main.Container':
                 Control: GroupContainer
@@ -128,7 +134,7 @@ Screens:
                               Y: =Parent.Y + 20
                               Width: =Parent.Width - 40
                               Height: =30
-                              Text: ="Danh sách đơn nghỉ phép đã phê duyệt"
+                              Text: ="Danh s谩ch 膽啤n ngh峄?ph茅p 膽茫 ph锚 duy峄噒"
                               Color: =RGBA(32, 54, 71, 1)
                               Font: =Font.'Open Sans'
                               FontWeight: =FontWeight.Bold
@@ -150,7 +156,7 @@ Screens:
                                     Y: =Parent.Y + 5
                                     Width: =80
                                     Height: =20
-                                    Text: ="Trạng thái:"
+                                    Text: ="Tr岷g th谩i:"
                                     Color: =RGBA(32, 54, 71, 1)
                                     Font: =Font.'Open Sans'
                                     FontWeight: =FontWeight.Semibold
@@ -163,8 +169,8 @@ Screens:
                                     Y: =Parent.Y
                                     Width: =150
                                     Height: =30
-                                    Items: =["Tất cả", "Chờ ghi nhận", "Đã ghi nhận"]
-                                    Default: ="Tất cả"
+                                    Items: =["T岷 c岷?, "Ch峄?ghi nh岷璶", "膼茫 ghi nh岷璶"]
+                                    Default: ="T岷 c岷?
                                     BorderColor: =RGBA(230, 230, 230, 1)
                                     Font: =Font.'Open Sans'
                                     Size: =12
@@ -178,8 +184,8 @@ Screens:
                               Width: =Parent.Width - 40
                               Height: =Parent.Height - 120
                               Items: =Filter(varApprovedLeaves, 
-                                If('LeaveConfirmation.Filter.Dropdown'.Selected.Value = "Chờ ghi nhận", ConfirmationStatus = "Pending",
-                                   If('LeaveConfirmation.Filter.Dropdown'.Selected.Value = "Đã ghi nhận", ConfirmationStatus = "Confirmed", true)))
+                                If('LeaveConfirmation.Filter.Dropdown'.Selected.Value = "Ch峄?ghi nh岷璶", ConfirmationStatus = "Pending",
+                                   If('LeaveConfirmation.Filter.Dropdown'.Selected.Value = "膼茫 ghi nh岷璶", ConfirmationStatus = "Confirmed", true)))
                               TemplateSize: =100
                               TemplatePadding: =10
                             Children:
@@ -225,7 +231,7 @@ Screens:
                                                 Y: =Parent.Y
                                                 Width: =100
                                                 Height: =25
-                                                Text: =If(ThisItem.ConfirmationStatus = "Pending", "⏳ Chờ ghi nhận", "✅ Đã ghi nhận")
+                                                Text: =If(ThisItem.ConfirmationStatus = "Pending", "鈴?Ch峄?ghi nh岷璶", "鉁?膼茫 ghi nh岷璶")
                                                 Color: =If(ThisItem.ConfirmationStatus = "Pending", RGBA(255, 193, 7, 1), RGBA(40, 167, 69, 1))
                                                 Font: =Font.'Open Sans'
                                                 FontWeight: =FontWeight.Semibold
@@ -252,7 +258,7 @@ Screens:
                                           Y: ='Gallery.Leave.Employee'.Y + 'Gallery.Leave.Employee'.Height + 2
                                           Width: =Parent.Width - 30
                                           Height: =18
-                                          Text: =ThisItem.StartDate & " - " & ThisItem.EndDate & " (" & ThisItem.Days & " ngày)"
+                                          Text: =ThisItem.StartDate & " - " & ThisItem.EndDate & " (" & ThisItem.Days & " ng脿y)"
                                           Color: =RGBA(108, 117, 125, 1)
                                           Font: =Font.'Open Sans'
                                           Size: =11
@@ -264,7 +270,7 @@ Screens:
                                           Y: ='Gallery.Leave.Period'.Y + 'Gallery.Leave.Period'.Height + 2
                                           Width: =Parent.Width - 30
                                           Height: =18
-                                          Text: =ThisItem.Type & " • Duyệt: " & ThisItem.ApprovedDate
+                                          Text: =ThisItem.Type & " 鈥?Duy峄噒: " & ThisItem.ApprovedDate
                                           Color: =RGBA(108, 117, 125, 1)
                                           Font: =Font.'Open Sans'
                                           Size: =10
@@ -290,7 +296,7 @@ Screens:
                               Y: =Parent.Y + 20
                               Width: =Parent.Width - 40
                               Height: =30
-                              Text: ="Ghi nhận kết quả nghỉ phép"
+                              Text: ="Ghi nh岷璶 k岷縯 qu岷?ngh峄?ph茅p"
                               Color: =RGBA(32, 54, 71, 1)
                               Font: =Font.'Open Sans'
                               FontWeight: =FontWeight.Bold
@@ -313,7 +319,7 @@ Screens:
                                     Y: =Parent.Y + 15
                                     Width: =Parent.Width - 30
                                     Height: =80
-                                    Text: ="📋 Mã đơn: " & varSelectedLeave.ID & Char(10) & "👤 Nhân viên: " & varSelectedLeave.EmployeeName & Char(10) & "🏢 Phòng ban: " & varSelectedLeave.Department & Char(10) & "📅 Thời gian: " & varSelectedLeave.StartDate & " - " & varSelectedLeave.EndDate
+                                    Text: ="馃搵 M茫 膽啤n:" & " " & "" & varSelectedLeave.ID & Char(10) & "馃懁 Nh芒n vi锚n: " & varSelectedLeave.EmployeeName & Char(10) & "馃彚 Ph貌ng ban: " & varSelectedLeave.Department & Char(10) & "馃搮 Th峄漣 gian: " & varSelectedLeave.StartDate & " - " & varSelectedLeave.EndDate
                                     Color: =RGBA(32, 54, 71, 1)
                                     Font: =Font.'Open Sans'
                                     Size: =12
@@ -325,7 +331,7 @@ Screens:
                                     Y: ='LeaveConfirmation.Detail.LeaveInfo'.Y + 'LeaveConfirmation.Detail.LeaveInfo'.Height + 10
                                     Width: =Parent.Width - 30
                                     Height: =60
-                                    Text: ="⏰ Số ngày: " & varSelectedLeave.Days & " ngày" & Char(10) & "📝 Loại: " & varSelectedLeave.Type & Char(10) & "✅ Ngày phê duyệt: " & varSelectedLeave.ApprovedDate
+                                    Text: ="鈴?S峄?ng脿y:" & " " & "" & varSelectedLeave.Days & " ng脿y" & Char(10) & "馃摑 Lo岷: " & varSelectedLeave.Type & Char(10) & "鉁?Ng脿y ph锚 duy峄噒: " & varSelectedLeave.ApprovedDate
                                     Color: =RGBA(32, 54, 71, 1)
                                     Font: =Font.'Open Sans'
                                     Size: =12
@@ -337,7 +343,7 @@ Screens:
                                     Y: ='LeaveConfirmation.Detail.StatusInfo'.Y + 'LeaveConfirmation.Detail.StatusInfo'.Height + 10
                                     Width: =Parent.Width - 30
                                     Height: =25
-                                    Text: ="🔄 Trạng thái: " & If(varSelectedLeave.ConfirmationStatus = "Pending", "Chờ ghi nhận", "Đã ghi nhận")
+                                    Text: ="馃攧 Tr岷g th谩i:" & " " & "" & If(varSelectedLeave.ConfirmationStatus = "Pending", "Ch峄?ghi nh岷璶", "膼茫 ghi nh岷璶")
                                     Color: =If(varSelectedLeave.ConfirmationStatus = "Pending", RGBA(255, 193, 7, 1), RGBA(40, 167, 69, 1))
                                     Font: =Font.'Open Sans'
                                     FontWeight: =FontWeight.Semibold
@@ -350,7 +356,7 @@ Screens:
                               Y: ='LeaveConfirmation.Detail.Info.Container'.Y + 'LeaveConfirmation.Detail.Info.Container'.Height + 20
                               Width: =Parent.Width - 40
                               Height: =25
-                              Text: ="Ghi chú xác nhận:"
+                              Text: ="Ghi ch煤 x谩c nh岷璶:"
                               Color: =RGBA(32, 54, 71, 1)
                               Font: =Font.'Open Sans'
                               FontWeight: =FontWeight.Semibold
@@ -363,7 +369,7 @@ Screens:
                               Y: ='LeaveConfirmation.Detail.Note.Label'.Y + 'LeaveConfirmation.Detail.Note.Label'.Height + 5
                               Width: =Parent.Width - 40
                               Height: =80
-                              HintText: ="Nhập ghi chú xác nhận nghỉ phép..."
+                              HintText: ="Nh岷璸 ghi ch煤 x谩c nh岷璶 ngh峄?ph茅p..."
                               Mode: =TextMode.MultiLine
                               BorderColor: =RGBA(230, 230, 230, 1)
                               Font: =Font.'Open Sans'
@@ -390,14 +396,15 @@ Screens:
                                     Y: =Parent.Y
                                     Width: =Parent.Width
                                     Height: =50
-                                    Text: =If(varIsProcessing, "Đang xử lý...", "✅ Xác nhận nghỉ phép")
+                                    Text: =If(varIsProcessing, "膼ang x峄?l媒...", "鉁?X谩c nh岷璶 ngh峄?ph茅p")
                                     Fill: =RGBA(40, 167, 69, 1)
                                     Color: =RGBA(255, 255, 255, 1)
                                     Font: =Font.'Open Sans'
                                     FontWeight: =FontWeight.Semibold
                                     Size: =14
                                     DisplayMode: =If(varIsProcessing, DisplayMode.Disabled, DisplayMode.Edit)
-                                    OnSelect: =Set(varIsProcessing, true); If(Not(IsBlank(varSelectedLeave)), Set(varApprovedLeaves, ForAll(varApprovedLeaves, If(ID = varSelectedLeave.ID, {ID: ID, EmployeeID: EmployeeID, EmployeeName: EmployeeName, Department: Department, StartDate: StartDate, EndDate: EndDate, Days: Days, Type: Type, Status: Status, ApprovedDate: ApprovedDate, ConfirmationStatus: "Confirmed"}, ThisRecord))); Notify("Đã xác nhận nghỉ phép cho " & varSelectedLeave.EmployeeName & "!", NotificationType.Success); Set(varSelectedLeave, Blank()); Set(varConfirmationNote, ""); Set(varIsProcessing, false), Notify("Vui lòng chọn đơn cần xác nhận!", NotificationType.Error); Set(varIsProcessing, false))
+                                    OnSelect: |
+                                      =Set(varIsProcessing, true); If(Not(IsBlank(varSelectedLeave)), Set(varApprovedLeaves, ForAll(varApprovedLeaves, If(ID = varSelectedLeave.ID, {ID: ID, EmployeeID: EmployeeID, EmployeeName: EmployeeName, Department: Department, StartDate: StartDate, EndDate: EndDate, Days: Days, Type: Type, Status: Status, ApprovedDate: ApprovedDate, ConfirmationStatus: "Confirmed"}, ThisRecord))); Notify("膼茫 x谩c nh岷璶 ngh峄?ph茅p cho " & varSelectedLeave.EmployeeName & "!", NotificationType.Success); Set(varSelectedLeave, Blank()); Set(varConfirmationNote, ""); Set(varIsProcessing, false), Notify("Vui l貌ng ch峄峮 膽啤n c岷 x谩c nh岷璶!", NotificationType.Error); Set(varIsProcessing, false))
                                       
                   - 'LeaveConfirmation.NoSelection.Container':
                       Control: GroupContainer
@@ -420,7 +427,7 @@ Screens:
                               Y: =Parent.Y + (Parent.Height / 2) - 50
                               Width: =Parent.Width - 40
                               Height: =100
-                              Text: ="📋 Chọn đơn nghỉ phép" & Char(10) & Char(10) & "Vui lòng chọn một đơn nghỉ phép đã được phê duyệt từ danh sách bên trái để thực hiện ghi nhận kết quả."
+                              Text: ="馃搵 Ch峄峮 膽啤n ngh峄?ph茅p" & Char(10) & Char(10) & "Vui l貌ng ch峄峮 m峄檛 膽啤n ngh峄?ph茅p 膽茫 膽瓢峄 ph锚 duy峄噒 t峄?danh s谩ch b锚n tr谩i 膽峄?th峄眂 hi峄噉 ghi nh岷璶 k岷縯 qu岷?"
                               Color: =RGBA(108, 117, 125, 1)
                               Font: =Font.'Open Sans'
                               Size: =14

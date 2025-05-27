@@ -156,8 +156,8 @@ Screens:
                               Items: =varLeaveTypes.Name
                               Default: =""
                               HintText: ="Chọn loại nghỉ phép"
-                              BorderColor: =If(Self.Hover || Self.Focus, RGBA(0, 120, 212, 1), RGBA(200, 200, 200, 1))
-                              BorderThickness: =If(Self.Hover || Self.Focus, 2, 1)
+                              BorderColor: =If(Self.Hover || Self.Focused, RGBA(0, 120, 212, 1), RGBA(200, 200, 200, 1))
+                              BorderThickness: =If(Self.Hover || Self.Focused, 2, 1)
                               Fill: =RGBA(248, 250, 253, 1)
                               HoverFill: =RGBA(255, 255, 255, 1)
                               OnChange: =Set(varSelectedLeaveType, LookUp(varLeaveTypes, Name = Self.Selected.Value))
@@ -205,8 +205,8 @@ Screens:
                               Width: =(Parent.Width - 20) / 2
                               Height: =42
                               DefaultDate: =Today()
-                              BorderColor: =If(Self.Hover || Self.Focus, RGBA(0, 120, 212, 1), RGBA(200, 200, 200, 1))
-                              BorderThickness: =If(Self.Hover || Self.Focus, 2, 1)
+                              BorderColor: =If(Self.Hover || Self.Focused, RGBA(0, 120, 212, 1), RGBA(200, 200, 200, 1))
+                              BorderThickness: =If(Self.Hover || Self.Focused, 2, 1)
                               Fill: =RGBA(248, 250, 253, 1)
                               HoverFill: =RGBA(255, 255, 255, 1)
                               OnChange: =Set(varStartDate, Self.SelectedDate)
@@ -219,8 +219,8 @@ Screens:
                               Width: =(Parent.Width - 20) / 2
                               Height: =42
                               DefaultDate: =Today()
-                              BorderColor: =If(Self.Hover || Self.Focus, RGBA(0, 120, 212, 1), RGBA(200, 200, 200, 1))
-                              BorderThickness: =If(Self.Hover || Self.Focus, 2, 1)
+                              BorderColor: =If(Self.Hover || Self.Focused, RGBA(0, 120, 212, 1), RGBA(200, 200, 200, 1))
+                              BorderThickness: =If(Self.Hover || Self.Focused, 2, 1)
                               Fill: =RGBA(248, 250, 253, 1)
                               HoverFill: =RGBA(255, 255, 255, 1)
                               OnChange: =Set(varEndDate, Self.SelectedDate)
@@ -258,8 +258,8 @@ Screens:
                               Default: =""
                               HintText: ="Nhập lý do nghỉ phép chi tiết..."
                               Mode: =TextMode.MultiLine
-                              BorderColor: =If(Self.Hover || Self.Focus, RGBA(0, 120, 212, 1), RGBA(200, 200, 200, 1))
-                              BorderThickness: =If(Self.Hover || Self.Focus, 2, 1)
+                              BorderColor: =If(Self.Hover || Self.Focused, RGBA(0, 120, 212, 1), RGBA(200, 200, 200, 1))
+                              BorderThickness: =If(Self.Hover || Self.Focused, 2, 1)
                               Fill: =RGBA(248, 250, 253, 1)
                               HoverFill: =RGBA(255, 255, 255, 1)
                               PaddingLeft: =12

@@ -1,24 +1,27 @@
-Screens:
+﻿Screens:
   AttachmentScreen:
     Properties:
       Fill: =RGBA(248, 250, 252, 1)
-      OnVisible: =Set(varActiveScreen, "Attachment"); Set(varAttachments, Table({ID: "ATT001", LeaveRequestID: "LR001", FileName: "Giay_xac_nhan_benh.pdf", FileSize: "2.3 MB", UploadDate: "14/01/2024", UploadBy: "Nguyễn Văn An", FileType: "PDF"}, {ID: "ATT002", LeaveRequestID: "LR002", FileName: "Hop_dong_cong_tac.docx", FileSize: "1.8 MB", UploadDate: "20/02/2024", UploadBy: "Trần Thị Bình", FileType: "Word"}, {ID: "ATT003", LeaveRequestID: "LR003", FileName: "Giay_moi_dam_cuoi.jpg", FileSize: "3.2 MB", UploadDate: "15/03/2024", UploadBy: "Lê Văn Cường", FileType: "Image"})); Set(varSelectedAttachment, Blank()); Set(varUploadFile, Blank())
+      OnVisible: |
+        =Set(varActiveScreen, "Attachment"); Set(varAttachments, Table({ID: "ATT001", LeaveRequestID: "LR001", FileName: "Giay_xac_nhan_benh.pdf", FileSize: "2.3 MB", UploadDate: "14/01/2024", UploadBy: "Nguy峄卬 V膬n An", FileType: "PDF"}, {ID: "ATT002", LeaveRequestID: "LR002", FileName: "Hop_dong_cong_tac.docx", FileSize: "1.8 MB", UploadDate: "20/02/2024", UploadBy: "Tr岷 Th峄?B矛nh", FileType: "Word"}, {ID: "ATT003", LeaveRequestID: "LR003", FileName: "Giay_moi_dam_cuoi.jpg", FileSize: "3.2 MB", UploadDate: "15/03/2024", UploadBy: "L锚 V膬n C瓢峄漬g", FileType: "Image"})); Set(varSelectedAttachment, Blank()); Set(varUploadFile, Blank())
     Children:
       - 'Attachment.Header':
-          Control: HeaderComponent
+          Control: CanvasComponent
+          ComponentName: HeaderComponent
           Properties:
             X: =0
             Y: =0
             Width: =Parent.Width
             Height: =80
-            Title: ="Quản lý file đính kèm"
+            Title: ="Qu岷 l媒 file 膽铆nh k猫m"
             UserName: =varCurrentUser.FullName
             UserRole: =varCurrentUser.Role
             ShowNotification: =true
             NotificationCount: =CountRows(varAttachments)
             
       - 'Attachment.Navigation':
-          Control: NavigationComponent
+          Control: CanvasComponent
+          ComponentName: NavigationComponent
           Properties:
             X: =0
             Y: ='Attachment.Header'.Y + 'Attachment.Header'.Height
@@ -45,7 +48,7 @@ Screens:
                   Y: =Parent.Y + 30
                   Width: =Parent.Width - 60
                   Height: =40
-                  Text: ="Quản lý file đính kèm đơn nghỉ phép"
+                  Text: ="Qu岷 l媒 file 膽铆nh k猫m 膽啤n ngh峄?ph茅p"
                   Color: =RGBA(32, 54, 71, 1)
                   Font: =Font.'Open Sans'
                   FontWeight: =FontWeight.Bold
@@ -71,7 +74,7 @@ Screens:
                         Y: =Parent.Y + 15
                         Width: =Parent.Width - 40
                         Height: =25
-                        Text: ="📎 Tải lên file đính kèm"
+                        Text: ="馃搸 T岷 l锚n file 膽铆nh k猫m"
                         Color: =RGBA(32, 54, 71, 1)
                         Font: =Font.'Open Sans'
                         FontWeight: =FontWeight.Bold
@@ -84,7 +87,7 @@ Screens:
                         Y: ='Attachment.Upload.Title'.Y + 'Attachment.Upload.Title'.Height + 5
                         Width: =Parent.Width - 200
                         Height: =40
-                        Text: ="Chọn file để đính kèm vào đơn nghỉ phép. Hỗ trợ: PDF, Word, Excel, Image" & Char(10) & "Kích thước tối đa: 10MB"
+                        Text: ="Ch峄峮 file 膽峄?膽铆nh k猫m v脿o 膽啤n ngh峄?ph茅p. H峄?tr峄? PDF, Word, Excel, Image" & Char(10) & "K铆ch th瓢峄沜 t峄慽 膽a: 10MB"
                         Color: =RGBA(108, 117, 125, 1)
                         Font: =Font.'Open Sans'
                         Size: =12
@@ -96,13 +99,13 @@ Screens:
                         Y: ='Attachment.Upload.Title'.Y + 10
                         Width: =140
                         Height: =40
-                        Text: ="📁 Chọn file"
+                        Text: ="馃搧 Ch峄峮 file"
                         Fill: =RGBA(0, 120, 212, 1)
                         Color: =RGBA(255, 255, 255, 1)
                         Font: =Font.'Open Sans'
                         FontWeight: =FontWeight.Semibold
                         Size: =12
-                        OnSelect: =Notify("Chức năng upload file sẽ được tích hợp với SharePoint", NotificationType.Information)
+                        OnSelect: =Notify("Ch峄ヽ n膬ng upload file s岷?膽瓢峄 t铆ch h峄 v峄沬 SharePoint", NotificationType.Information)
                         
                   - 'Attachment.Upload.Status':
                       Control: Label
@@ -111,7 +114,7 @@ Screens:
                         Y: ='Attachment.Upload.Info'.Y + 'Attachment.Upload.Info'.Height + 5
                         Width: =Parent.Width - 40
                         Height: =20
-                        Text: =If(IsBlank(varUploadFile), "", "✅ Đã chọn file: " & varUploadFile)
+                        Text: =If(IsBlank(varUploadFile), "", "鉁?膼茫 ch峄峮 file: " & varUploadFile)
                         Color: =RGBA(40, 167, 69, 1)
                         Font: =Font.'Open Sans'
                         FontWeight: =FontWeight.Semibold
@@ -138,7 +141,7 @@ Screens:
                         Y: =Parent.Y + 20
                         Width: =Parent.Width - 40
                         Height: =30
-                        Text: ="📋 Danh sách file đính kèm"
+                        Text: ="馃搵 Danh s谩ch file 膽铆nh k猫m"
                         Color: =RGBA(32, 54, 71, 1)
                         Font: =Font.'Open Sans'
                         FontWeight: =FontWeight.Bold
@@ -176,7 +179,7 @@ Screens:
                                     Y: =Parent.Y + 15
                                     Width: =40
                                     Height: =40
-                                    Text: =If(ThisItem.FileType = "PDF", "📄", If(ThisItem.FileType = "Word", "📝", If(ThisItem.FileType = "Image", "🖼️", "📁")))
+                                    Text: =If(ThisItem.FileType = "PDF", "馃搫", If(ThisItem.FileType = "Word", "馃摑", If(ThisItem.FileType = "Image", "馃柤锔?, "馃搧")))
                                     Color: =If(ThisItem.FileType = "PDF", RGBA(220, 53, 69, 1), If(ThisItem.FileType = "Word", RGBA(0, 120, 212, 1), If(ThisItem.FileType = "Image", RGBA(40, 167, 69, 1), RGBA(108, 117, 125, 1))))
                                     Font: =Font.'Open Sans'
                                     Size: =24
@@ -211,7 +214,7 @@ Screens:
                                           Y: ='Gallery.Attachment.FileName'.Y + 'Gallery.Attachment.FileName'.Height + 2
                                           Width: =Parent.Width
                                           Height: =15
-                                          Text: =ThisItem.FileSize & " • " & ThisItem.UploadDate & " • " & ThisItem.UploadBy
+                                          Text: =ThisItem.FileSize & " 鈥?" & ThisItem.UploadDate & " 鈥?" & ThisItem.UploadBy
                                           Color: =RGBA(108, 117, 125, 1)
                                           Font: =Font.'Open Sans'
                                           Size: =10
@@ -223,7 +226,7 @@ Screens:
                                           Y: ='Gallery.Attachment.Details'.Y + 'Gallery.Attachment.Details'.Height + 2
                                           Width: =Parent.Width
                                           Height: =15
-                                          Text: ="Đơn: " & ThisItem.LeaveRequestID
+                                          Text: ="膼啤n:" & " " & "" & ThisItem.LeaveRequestID
                                           Color: =RGBA(0, 120, 212, 1)
                                           Font: =Font.'Open Sans'
                                           FontWeight: =FontWeight.Semibold
@@ -245,12 +248,12 @@ Screens:
                                           Y: =Parent.Y
                                           Width: =30
                                           Height: =30
-                                          Text: ="⬇️"
+                                          Text: ="猬囷笍"
                                           Fill: =RGBA(40, 167, 69, 1)
                                           Color: =RGBA(255, 255, 255, 1)
                                           Font: =Font.'Open Sans'
                                           Size: =12
-                                          OnSelect: =Notify("Tải xuống file: " & ThisItem.FileName, NotificationType.Success)
+                                          OnSelect: =Notify("T岷 xu峄憂g file: " & ThisItem.FileName, NotificationType.Success)
                                           
                                     - 'Gallery.Attachment.Delete':
                                         Control: Classic/Button
@@ -259,13 +262,14 @@ Screens:
                                           Y: =Parent.Y
                                           Width: =30
                                           Height: =30
-                                          Text: ="🗑️"
+                                          Text: ="馃棏锔?
                                           Fill: =RGBA(220, 53, 69, 1)
                                           Color: =RGBA(255, 255, 255, 1)
                                           Font: =Font.'Open Sans'
                                           Size: =12
-                                          Visible: =Or(varCurrentUser.Role = "Admin", varCurrentUser.Role = "HR")
-                                          OnSelect: =If(Confirm("Bạn có chắc chắn muốn xóa file này?"), Set(varAttachments, Filter(varAttachments, ID <> ThisItem.ID)); Notify("Đã xóa file: " & ThisItem.FileName, NotificationType.Warning), "")
+                                          Visible:" & " " & "=Or(varCurrentUser.Role = "Admin", varCurrentUser.Role = "HR")
+                                          OnSelect: |
+                          =If(Confirm("B岷 c贸 ch岷痗 ch岷痭 mu峄憂 x贸a file n脿y?"), Set(varAttachments, Filter(varAttachments, ID <> ThisItem.ID)); Notify("膼茫 x贸a file: " & ThisItem.FileName, NotificationType.Warning), "")
                                             
                                     - 'Gallery.Attachment.View':
                                         Control: Classic/Button
@@ -274,9 +278,9 @@ Screens:
                                           Y: ='Gallery.Attachment.Download'.Y + 'Gallery.Attachment.Download'.Height + 5
                                           Width: =65
                                           Height: =25
-                                          Text: ="👁️ Xem"
+                                          Text: ="馃憗锔?Xem"
                                           Fill: =RGBA(0, 120, 212, 1)
                                           Color: =RGBA(255, 255, 255, 1)
                                           Font: =Font.'Open Sans'
                                           Size: =10
-                                          OnSelect: =Notify("Mở file: " & ThisItem.FileName, NotificationType.Information) 
+                                          OnSelect: =Notify("M峄?file: " & ThisItem.FileName, NotificationType.Information) 

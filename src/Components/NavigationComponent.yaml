@@ -14,6 +14,12 @@ ComponentDefinitions:
         Description: "Màn hình hiện tại"
         DataType: Text
         Default: ="Dashboard"
+      IsCollapsed:
+        PropertyKind: Input
+        DisplayName: IsCollapsed
+        Description: "Trạng thái thu gọn navigation"
+        DataType: Boolean
+        Default: =false
       OnNavigate:
         PropertyKind: Event
         DisplayName: OnNavigate
@@ -26,6 +32,12 @@ ComponentDefinitions:
               DataType: Text
               IsOptional: true
               Default: ="Dashboard"
+      OnToggleCollapse:
+        PropertyKind: Event
+        DisplayName: OnToggleCollapse
+        Description: "Sự kiện khi toggle collapse"
+        ReturnType: None
+        Default: =false
     Properties:
       Height: =App.Height
       Width: =App.Width
@@ -34,211 +46,458 @@ ComponentDefinitions:
         Control: GroupContainer
         Variant: ManualLayout
         Properties:
-          X: =0
-          Y: =0
-          Width: =250
+          X: =Parent.X
+          Y: =Parent.Y
+          Width: =If(App.Width < 768, 
+            If(varMobileMenuOpen, App.Width * 0.75, App.Width * 0.001),
+            If(NavigationComponent.IsCollapsed, Parent.Width * 0.06, Parent.Width * 0.2))
           Height: =Parent.Height
-          Fill: =RGBA(248, 249, 250, 1)
-          BorderColor: =RGBA(230, 230, 230, 1)
-          BorderThickness: =1
+          Fill: =RGBA(248, 250, 252, 1)
+          BorderColor: =RGBA(224, 224, 224, 1)
+          BorderThickness: =Parent.Height * 0.0005
+          DropShadow: =If(App.Width < 768, DropShadow.Light, DropShadow.Semilight)
         Children:
-          - 'Navigation.Menu.Dashboard':
-              Control: Classic/Button
+          # Header Section - Compact
+          - 'Navigation.Header.Container':
+              Control: GroupContainer
+              Variant: ManualLayout
               Properties:
-                X: =Parent.X + 10
-                Y: =Parent.Y + 20
-                Width: =Parent.Width - 20
-                Height: =50
-                Text: ="📊 Dashboard"
-                Fill: =If(NavigationComponent.ActiveScreen = "Dashboard", RGBA(0, 120, 212, 1), RGBA(255, 255, 255, 1))
-                Color: =If(NavigationComponent.ActiveScreen = "Dashboard", RGBA(255, 255, 255, 1), RGBA(32, 54, 71, 1))
-                BorderColor: =RGBA(230, 230, 230, 1)
-                Font: =Font.'Open Sans'
-                FontWeight: =FontWeight.Semibold
-                Size: =14
-                PaddingLeft: =20
-                OnSelect: =NavigationComponent.OnNavigate(); Set(varActiveScreen, "Dashboard")
-                
-          - 'Navigation.Menu.LeaveRequest':
-              Control: Classic/Button
+                X: =Parent.X
+                Y: =Parent.Y
+                Width: =Parent.Width
+                Height: =Parent.Height * 0.06
+                Fill: =RGBA(255, 255, 255, 1)
+                BorderColor: =RGBA(224, 224, 224, 1)
+                BorderThickness: =Parent.Height * 0.0005
+              Children:
+                # Logo Section - Compact
+                - 'Navigation.Logo.Container':
+                    Control: GroupContainer
+                    Variant: ManualLayout
+                    Properties:
+                      X: =Parent.X + Parent.Width * 0.03
+                      Y: =(Parent.Height - Self.Height) / 2
+                      Width: =If(NavigationComponent.IsCollapsed, Parent.Width * 0.8, Parent.Width * 0.7)
+                      Height: =Parent.Height * 0.6
+                    Children:
+                      - 'Navigation.Logo.Icon':
+                          Control: Classic/Icon
+                          Properties:
+                            X: =Parent.X
+                            Y: =(Parent.Height - Self.Height) / 2
+                            Width: =Parent.Height * 0.7
+                            Height: =Parent.Height * 0.7
+                            Icon: =Icon.CalendarBlank
+                            Color: =RGBA(33, 150, 243, 1)
+                            
+                      - 'Navigation.Logo.Text':
+                          Control: Label
+                          Properties:
+                            X: ='Navigation.Logo.Icon'.X + 'Navigation.Logo.Icon'.Width + Parent.Width * 0.08
+                            Y: =(Parent.Height - Self.Height) / 2
+                            Width: =Parent.Width * 0.8
+                            Height: =Parent.Height * 0.5
+                            Text: ="Leave App"
+                            Color: =RGBA(55, 65, 81, 1)
+                            Font: =Font.'Open Sans'
+                            FontWeight: =FontWeight.Semibold
+                            Size: =Parent.Height * 0.28
+                            Visible: =Not(NavigationComponent.IsCollapsed)
+                            
+                # Collapse Toggle Button - Smaller
+                - 'Navigation.Toggle.Button':
+                    Control: Classic/Button
+                    Properties:
+                      X: =Parent.Width - Self.Width - Parent.Width * 0.03
+                      Y: =(Parent.Height - Self.Height) / 2
+                      Width: =Parent.Height * 0.5
+                      Height: =Parent.Height * 0.5
+                      Text: =If(NavigationComponent.IsCollapsed, "→", "←")
+                      Fill: =RGBA(245, 245, 245, 1)
+                      Color: =RGBA(107, 114, 128, 1)
+                      BorderColor: =RGBA(224, 224, 224, 1)
+                      BorderThickness: =Parent.Height * 0.001
+                      Font: =Font.'Open Sans'
+                      FontWeight: =FontWeight.Bold
+                      Size: =Parent.Height * 0.2
+                      Visible: =App.Width >= 768
+                      OnSelect: =NavigationComponent.OnToggleCollapse()
+                      
+                # Mobile Close Button - Smaller
+                - 'Navigation.Mobile.CloseButton':
+                    Control: Classic/Button
+                    Properties:
+                      X: =Parent.Width - Self.Width - Parent.Width * 0.03
+                      Y: =(Parent.Height - Self.Height) / 2
+                      Width: =Parent.Height * 0.5
+                      Height: =Parent.Height * 0.5
+                      Text: ="✕"
+                      Fill: =RGBA(245, 245, 245, 1)
+                      Color: =RGBA(107, 114, 128, 1)
+                      BorderColor: =RGBA(224, 224, 224, 1)
+                      BorderThickness: =Parent.Height * 0.001
+                      Font: =Font.'Open Sans'
+                      FontWeight: =FontWeight.Bold
+                      Size: =Parent.Height * 0.2
+                      Visible: =App.Width < 768
+                      OnSelect: =Set(varMobileMenuOpen, false)
+                      
+          # Menu Items Container - Compact
+          - 'Navigation.Menu.Container':
+              Control: GroupContainer
+              Variant: ManualLayout
               Properties:
-                X: =Parent.X + 10
-                Y: ='Navigation.Menu.Dashboard'.Y + 'Navigation.Menu.Dashboard'.Height + 10
-                Width: =Parent.Width - 20
-                Height: =50
-                Text: ="📝 Tạo đơn nghỉ phép"
-                Fill: =If(NavigationComponent.ActiveScreen = "LeaveRequest", RGBA(0, 120, 212, 1), RGBA(255, 255, 255, 1))
-                Color: =If(NavigationComponent.ActiveScreen = "LeaveRequest", RGBA(255, 255, 255, 1), RGBA(32, 54, 71, 1))
-                BorderColor: =RGBA(230, 230, 230, 1)
-                Font: =Font.'Open Sans'
-                FontWeight: =FontWeight.Semibold
-                Size: =14
-                PaddingLeft: =20
-                OnSelect: =NavigationComponent.OnNavigate(); Set(varActiveScreen, "LeaveRequest")
-                
-          - 'Navigation.Menu.MyLeaves':
-              Control: Classic/Button
+                X: =Parent.X
+                Y: ='Navigation.Header.Container'.Y + 'Navigation.Header.Container'.Height
+                Width: =Parent.Width
+                Height: =Parent.Height - 'Navigation.Header.Container'.Height - Parent.Height * 0.05
+                Fill: =RGBA(0, 0, 0, 0)
+              Children:
+                # Dashboard Menu Item - Compact
+                - 'Navigation.Menu.Dashboard':
+                    Control: GroupContainer
+                    Variant: ManualLayout
+                    Properties:
+                      X: =Parent.X + Parent.Width * 0.015
+                      Y: =Parent.Y + Parent.Height * 0.015
+                      Width: =Parent.Width * 0.97
+                      Height: =Parent.Height * 0.06
+                      Fill: =If(NavigationComponent.ActiveScreen = "Dashboard", 
+                        RGBA(227, 242, 253, 1), 
+                        RGBA(0, 0, 0, 0))
+                      BorderColor: =If(NavigationComponent.ActiveScreen = "Dashboard", 
+                        RGBA(187, 222, 251, 1), 
+                        RGBA(0, 0, 0, 0))
+                      BorderThickness: =If(NavigationComponent.ActiveScreen = "Dashboard", 
+                        Parent.Width * 0.002, 
+                        Parent.Width * 0.0005)
+                    Children:
+                      - 'Navigation.Menu.Dashboard.Icon':
+                          Control: Classic/Icon
+                          Properties:
+                            X: =Parent.X + Parent.Width * 0.06
+                            Y: =(Parent.Height - Self.Height) / 2
+                            Width: =Parent.Height * 0.4
+                            Height: =Parent.Height * 0.4
+                            Icon: =Icon.BarChart4
+                            Color: =If(NavigationComponent.ActiveScreen = "Dashboard", 
+                              RGBA(33, 150, 243, 1), 
+                              RGBA(107, 114, 128, 1))
+                              
+                      - 'Navigation.Menu.Dashboard.Text':
+                          Control: Label
+                          Properties:
+                            X: ='Navigation.Menu.Dashboard.Icon'.X + 'Navigation.Menu.Dashboard.Icon'.Width + Parent.Width * 0.06
+                            Y: =(Parent.Height - Self.Height) / 2
+                            Width: =Parent.Width * 0.7
+                            Height: =Parent.Height * 0.5
+                            Text: ="Dashboard"
+                            Color: =If(NavigationComponent.ActiveScreen = "Dashboard", 
+                              RGBA(33, 150, 243, 1), 
+                              RGBA(55, 65, 81, 1))
+                            Font: =Font.'Open Sans'
+                            FontWeight: =If(NavigationComponent.ActiveScreen = "Dashboard", 
+                              FontWeight.Semibold, 
+                              FontWeight.Normal)
+                            Size: =Parent.Height * 0.22
+                            Visible: =Not(NavigationComponent.IsCollapsed)
+                            
+                      - 'Navigation.Menu.Dashboard.Button':
+                          Control: Classic/Button
+                          Properties:
+                            X: =Parent.X
+                            Y: =Parent.Y
+                            Width: =Parent.Width
+                            Height: =Parent.Height
+                            Text: =""
+                            Fill: =RGBA(0, 0, 0, 0)
+                            BorderColor: =RGBA(0, 0, 0, 0)
+                            BorderThickness: =Parent.Height * 0.001
+                            OnSelect: =NavigationComponent.OnNavigate(); Set(varActiveScreen, "Dashboard")
+                            
+                # Leave Request Menu Item - Compact
+                - 'Navigation.Menu.LeaveRequest':
+                    Control: GroupContainer
+                    Variant: ManualLayout
+                    Properties:
+                      X: =Parent.X + Parent.Width * 0.015
+                      Y: ='Navigation.Menu.Dashboard'.Y + 'Navigation.Menu.Dashboard'.Height + Parent.Height * 0.008
+                      Width: =Parent.Width * 0.97
+                      Height: =Parent.Height * 0.06
+                      Fill: =If(NavigationComponent.ActiveScreen = "LeaveRequest", 
+                        RGBA(252, 228, 236, 1), 
+                        RGBA(0, 0, 0, 0))
+                      BorderColor: =If(NavigationComponent.ActiveScreen = "LeaveRequest", 
+                        RGBA(248, 187, 208, 1), 
+                        RGBA(0, 0, 0, 0))
+                      BorderThickness: =If(NavigationComponent.ActiveScreen = "LeaveRequest", 
+                        Parent.Width * 0.002, 
+                        Parent.Width * 0.0005)
+                    Children:
+                      - 'Navigation.Menu.LeaveRequest.Icon':
+                          Control: Classic/Icon
+                          Properties:
+                            X: =Parent.X + Parent.Width * 0.06
+                            Y: =(Parent.Height - Self.Height) / 2
+                            Width: =Parent.Height * 0.4
+                            Height: =Parent.Height * 0.4
+                            Icon: =Icon.Edit
+                            Color: =If(NavigationComponent.ActiveScreen = "LeaveRequest", 
+                              RGBA(233, 30, 99, 1), 
+                              RGBA(107, 114, 128, 1))
+                              
+                      - 'Navigation.Menu.LeaveRequest.Text':
+                          Control: Label
+                          Properties:
+                            X: ='Navigation.Menu.LeaveRequest.Icon'.X + 'Navigation.Menu.LeaveRequest.Icon'.Width + Parent.Width * 0.06
+                            Y: =(Parent.Height - Self.Height) / 2
+                            Width: =Parent.Width * 0.7
+                            Height: =Parent.Height * 0.5
+                            Text: ="Tạo đơn nghỉ phép"
+                            Color: =If(NavigationComponent.ActiveScreen = "LeaveRequest", 
+                              RGBA(233, 30, 99, 1), 
+                              RGBA(55, 65, 81, 1))
+                            Font: =Font.'Open Sans'
+                            FontWeight: =If(NavigationComponent.ActiveScreen = "LeaveRequest", 
+                              FontWeight.Semibold, 
+                              FontWeight.Normal)
+                            Size: =Parent.Height * 0.22
+                            Visible: =Not(NavigationComponent.IsCollapsed)
+                            
+                      - 'Navigation.Menu.LeaveRequest.Button':
+                          Control: Classic/Button
+                          Properties:
+                            X: =Parent.X
+                            Y: =Parent.Y
+                            Width: =Parent.Width
+                            Height: =Parent.Height
+                            Text: =""
+                            Fill: =RGBA(0, 0, 0, 0)
+                            BorderColor: =RGBA(0, 0, 0, 0)
+                            BorderThickness: =Parent.Height * 0.001
+                            OnSelect: =NavigationComponent.OnNavigate(); Set(varActiveScreen, "LeaveRequest")
+                            
+                # My Leaves Menu Item - Compact
+                - 'Navigation.Menu.MyLeaves':
+                    Control: GroupContainer
+                    Variant: ManualLayout
+                    Properties:
+                      X: =Parent.X + Parent.Width * 0.015
+                      Y: ='Navigation.Menu.LeaveRequest'.Y + 'Navigation.Menu.LeaveRequest'.Height + Parent.Height * 0.008
+                      Width: =Parent.Width * 0.97
+                      Height: =Parent.Height * 0.06
+                      Fill: =If(NavigationComponent.ActiveScreen = "MyLeaves", 
+                        RGBA(232, 245, 233, 1), 
+                        RGBA(0, 0, 0, 0))
+                      BorderColor: =If(NavigationComponent.ActiveScreen = "MyLeaves", 
+                        RGBA(200, 230, 201, 1), 
+                        RGBA(0, 0, 0, 0))
+                      BorderThickness: =If(NavigationComponent.ActiveScreen = "MyLeaves", 
+                        Parent.Width * 0.002, 
+                        Parent.Width * 0.0005)
+                    Children:
+                      - 'Navigation.Menu.MyLeaves.Icon':
+                          Control: Classic/Icon
+                          Properties:
+                            X: =Parent.X + Parent.Width * 0.06
+                            Y: =(Parent.Height - Self.Height) / 2
+                            Width: =Parent.Height * 0.4
+                            Height: =Parent.Height * 0.4
+                            Icon: =Icon.DocumentText
+                            Color: =If(NavigationComponent.ActiveScreen = "MyLeaves", 
+                              RGBA(76, 175, 80, 1), 
+                              RGBA(107, 114, 128, 1))
+                              
+                      - 'Navigation.Menu.MyLeaves.Text':
+                          Control: Label
+                          Properties:
+                            X: ='Navigation.Menu.MyLeaves.Icon'.X + 'Navigation.Menu.MyLeaves.Icon'.Width + Parent.Width * 0.06
+                            Y: =(Parent.Height - Self.Height) / 2
+                            Width: =Parent.Width * 0.7
+                            Height: =Parent.Height * 0.5
+                            Text: ="Đơn nghỉ của tôi"
+                            Color: =If(NavigationComponent.ActiveScreen = "MyLeaves", 
+                              RGBA(76, 175, 80, 1), 
+                              RGBA(55, 65, 81, 1))
+                            Font: =Font.'Open Sans'
+                            FontWeight: =If(NavigationComponent.ActiveScreen = "MyLeaves", 
+                              FontWeight.Semibold, 
+                              FontWeight.Normal)
+                            Size: =Parent.Height * 0.22
+                            Visible: =Not(NavigationComponent.IsCollapsed)
+                            
+                      - 'Navigation.Menu.MyLeaves.Button':
+                          Control: Classic/Button
+                          Properties:
+                            X: =Parent.X
+                            Y: =Parent.Y
+                            Width: =Parent.Width
+                            Height: =Parent.Height
+                            Text: =""
+                            Fill: =RGBA(0, 0, 0, 0)
+                            BorderColor: =RGBA(0, 0, 0, 0)
+                            BorderThickness: =Parent.Height * 0.001
+                            OnSelect: =NavigationComponent.OnNavigate(); Set(varActiveScreen, "MyLeaves")
+                            
+                # Profile Menu Item - Compact
+                - 'Navigation.Menu.Profile':
+                    Control: GroupContainer
+                    Variant: ManualLayout
+                    Properties:
+                      X: =Parent.X + Parent.Width * 0.015
+                      Y: ='Navigation.Menu.MyLeaves'.Y + 'Navigation.Menu.MyLeaves'.Height + Parent.Height * 0.008
+                      Width: =Parent.Width * 0.97
+                      Height: =Parent.Height * 0.06
+                      Fill: =If(NavigationComponent.ActiveScreen = "Profile", 
+                        RGBA(255, 243, 224, 1), 
+                        RGBA(0, 0, 0, 0))
+                      BorderColor: =If(NavigationComponent.ActiveScreen = "Profile", 
+                        RGBA(255, 224, 178, 1), 
+                        RGBA(0, 0, 0, 0))
+                      BorderThickness: =If(NavigationComponent.ActiveScreen = "Profile", 
+                        Parent.Width * 0.002, 
+                        Parent.Width * 0.0005)
+                    Children:
+                      - 'Navigation.Menu.Profile.Icon':
+                          Control: Classic/Icon
+                          Properties:
+                            X: =Parent.X + Parent.Width * 0.06
+                            Y: =(Parent.Height - Self.Height) / 2
+                            Width: =Parent.Height * 0.4
+                            Height: =Parent.Height * 0.4
+                            Icon: =Icon.Person
+                            Color: =If(NavigationComponent.ActiveScreen = "Profile", 
+                              RGBA(255, 152, 0, 1), 
+                              RGBA(107, 114, 128, 1))
+                              
+                      - 'Navigation.Menu.Profile.Text':
+                          Control: Label
+                          Properties:
+                            X: ='Navigation.Menu.Profile.Icon'.X + 'Navigation.Menu.Profile.Icon'.Width + Parent.Width * 0.06
+                            Y: =(Parent.Height - Self.Height) / 2
+                            Width: =Parent.Width * 0.7
+                            Height: =Parent.Height * 0.5
+                            Text: ="Thông tin cá nhân"
+                            Color: =If(NavigationComponent.ActiveScreen = "Profile", 
+                              RGBA(255, 152, 0, 1), 
+                              RGBA(55, 65, 81, 1))
+                            Font: =Font.'Open Sans'
+                            FontWeight: =If(NavigationComponent.ActiveScreen = "Profile", 
+                              FontWeight.Semibold, 
+                              FontWeight.Normal)
+                            Size: =Parent.Height * 0.22
+                            Visible: =Not(NavigationComponent.IsCollapsed)
+                            
+                      - 'Navigation.Menu.Profile.Button':
+                          Control: Classic/Button
+                          Properties:
+                            X: =Parent.X
+                            Y: =Parent.Y
+                            Width: =Parent.Width
+                            Height: =Parent.Height
+                            Text: =""
+                            Fill: =RGBA(0, 0, 0, 0)
+                            BorderColor: =RGBA(0, 0, 0, 0)
+                            BorderThickness: =Parent.Height * 0.001
+                            OnSelect: =NavigationComponent.OnNavigate(); Set(varActiveScreen, "Profile")
+                            
+                # Management Menu Item - Compact (Admin/HR only)
+                - 'Navigation.Menu.Management':
+                    Control: GroupContainer
+                    Variant: ManualLayout
+                    Properties:
+                      X: =Parent.X + Parent.Width * 0.015
+                      Y: ='Navigation.Menu.Profile'.Y + 'Navigation.Menu.Profile'.Height + Parent.Height * 0.015
+                      Width: =Parent.Width * 0.97
+                      Height: =Parent.Height * 0.06
+                      Fill: =If(NavigationComponent.ActiveScreen = "Management", 
+                        RGBA(243, 229, 245, 1), 
+                        RGBA(0, 0, 0, 0))
+                      BorderColor: =If(NavigationComponent.ActiveScreen = "Management", 
+                        RGBA(206, 147, 216, 1), 
+                        RGBA(0, 0, 0, 0))
+                      BorderThickness: =If(NavigationComponent.ActiveScreen = "Management", 
+                        Parent.Width * 0.002, 
+                        Parent.Width * 0.0005)
+                      Visible: =Or(NavigationComponent.UserRole = "Admin", NavigationComponent.UserRole = "HR")
+                    Children:
+                      - 'Navigation.Menu.Management.Icon':
+                          Control: Classic/Icon
+                          Properties:
+                            X: =Parent.X + Parent.Width * 0.06
+                            Y: =(Parent.Height - Self.Height) / 2
+                            Width: =Parent.Height * 0.4
+                            Height: =Parent.Height * 0.4
+                            Icon: =Icon.Settings
+                            Color: =If(NavigationComponent.ActiveScreen = "Management", 
+                              RGBA(156, 39, 176, 1), 
+                              RGBA(107, 114, 128, 1))
+                              
+                      - 'Navigation.Menu.Management.Text':
+                          Control: Label
+                          Properties:
+                            X: ='Navigation.Menu.Management.Icon'.X + 'Navigation.Menu.Management.Icon'.Width + Parent.Width * 0.06
+                            Y: =(Parent.Height - Self.Height) / 2
+                            Width: =Parent.Width * 0.7
+                            Height: =Parent.Height * 0.5
+                            Text: ="Quản lý hệ thống"
+                            Color: =If(NavigationComponent.ActiveScreen = "Management", 
+                              RGBA(156, 39, 176, 1), 
+                              RGBA(55, 65, 81, 1))
+                            Font: =Font.'Open Sans'
+                            FontWeight: =If(NavigationComponent.ActiveScreen = "Management", 
+                              FontWeight.Semibold, 
+                              FontWeight.Normal)
+                            Size: =Parent.Height * 0.22
+                            Visible: =Not(NavigationComponent.IsCollapsed)
+                            
+                      - 'Navigation.Menu.Management.Button':
+                          Control: Classic/Button
+                          Properties:
+                            X: =Parent.X
+                            Y: =Parent.Y
+                            Width: =Parent.Width
+                            Height: =Parent.Height
+                            Text: =""
+                            Fill: =RGBA(0, 0, 0, 0)
+                            BorderColor: =RGBA(0, 0, 0, 0)
+                            BorderThickness: =Parent.Height * 0.001
+                            OnSelect: =NavigationComponent.OnNavigate(); Set(varActiveScreen, "Management")
+                            
+          # Footer Section - Compact
+          - 'Navigation.Footer.Container':
+              Control: GroupContainer
+              Variant: ManualLayout
               Properties:
-                X: =Parent.X + 10
-                Y: ='Navigation.Menu.LeaveRequest'.Y + 'Navigation.Menu.LeaveRequest'.Height + 10
-                Width: =Parent.Width - 20
-                Height: =50
-                Text: ="📋 Đơn nghỉ của tôi"
-                Fill: =If(NavigationComponent.ActiveScreen = "MyLeaves", RGBA(0, 120, 212, 1), RGBA(255, 255, 255, 1))
-                Color: =If(NavigationComponent.ActiveScreen = "MyLeaves", RGBA(255, 255, 255, 1), RGBA(32, 54, 71, 1))
-                BorderColor: =RGBA(230, 230, 230, 1)
-                Font: =Font.'Open Sans'
-                FontWeight: =FontWeight.Semibold
-                Size: =14
-                PaddingLeft: =20
-                OnSelect: =NavigationComponent.OnNavigate(); Set(varActiveScreen, "MyLeaves")
-                
-          - 'Navigation.Menu.Calendar':
-              Control: Classic/Button
-              Properties:
-                X: =Parent.X + 10
-                Y: ='Navigation.Menu.MyLeaves'.Y + 'Navigation.Menu.MyLeaves'.Height + 10
-                Width: =Parent.Width - 20
-                Height: =50
-                Text: ="📅 Lịch nghỉ phép"
-                Fill: =If(NavigationComponent.ActiveScreen = "Calendar", RGBA(0, 120, 212, 1), RGBA(255, 255, 255, 1))
-                Color: =If(NavigationComponent.ActiveScreen = "Calendar", RGBA(255, 255, 255, 1), RGBA(32, 54, 71, 1))
-                BorderColor: =RGBA(230, 230, 230, 1)
-                Font: =Font.'Open Sans'
-                FontWeight: =FontWeight.Semibold
-                Size: =14
-                PaddingLeft: =20
-                OnSelect: =NavigationComponent.OnNavigate(); Set(varActiveScreen, "Calendar")
-                
-          - 'Navigation.Menu.Approval':
-              Control: Classic/Button
-              Properties:
-                X: =Parent.X + 10
-                Y: ='Navigation.Menu.Calendar'.Y + 'Navigation.Menu.Calendar'.Height + 10
-                Width: =Parent.Width - 20
-                Height: =50
-                Text: ="✅ Phê duyệt"
-                Fill: =If(NavigationComponent.ActiveScreen = "Approval", RGBA(0, 120, 212, 1), RGBA(255, 255, 255, 1))
-                Color: =If(NavigationComponent.ActiveScreen = "Approval", RGBA(255, 255, 255, 1), RGBA(32, 54, 71, 1))
-                BorderColor: =RGBA(230, 230, 230, 1)
-                Font: =Font.'Open Sans'
-                FontWeight: =FontWeight.Semibold
-                Size: =14
-                PaddingLeft: =20
-                Visible: =Or(NavigationComponent.UserRole = "Manager", NavigationComponent.UserRole = "Director")
-                OnSelect: =NavigationComponent.OnNavigate(); Set(varActiveScreen, "Approval")
-                
-          - 'Navigation.Menu.Reports':
-              Control: Classic/Button
-              Properties:
-                X: =Parent.X + 10
-                Y: ='Navigation.Menu.Approval'.Y + If('Navigation.Menu.Approval'.Visible, 'Navigation.Menu.Approval'.Height + 10, 0)
-                Width: =Parent.Width - 20
-                Height: =50
-                Text: ="📊 Báo cáo"
-                Fill: =If(NavigationComponent.ActiveScreen = "Reports", RGBA(0, 120, 212, 1), RGBA(255, 255, 255, 1))
-                Color: =If(NavigationComponent.ActiveScreen = "Reports", RGBA(255, 255, 255, 1), RGBA(32, 54, 71, 1))
-                BorderColor: =RGBA(230, 230, 230, 1)
-                Font: =Font.'Open Sans'
-                FontWeight: =FontWeight.Semibold
-                Size: =14
-                PaddingLeft: =20
-                Visible: =Or(NavigationComponent.UserRole = "HR", NavigationComponent.UserRole = "Director")
-                OnSelect: =NavigationComponent.OnNavigate(); Set(varActiveScreen, "Reports")
-                
-          - 'Navigation.Menu.LeaveConfirmation':
-              Control: Classic/Button
-              Properties:
-                X: =Parent.X + 10
-                Y: ='Navigation.Menu.Reports'.Y + If('Navigation.Menu.Reports'.Visible, 'Navigation.Menu.Reports'.Height + 10, 0)
-                Width: =Parent.Width - 20
-                Height: =50
-                Text: ="📝 Ghi nhận nghỉ phép"
-                Fill: =If(NavigationComponent.ActiveScreen = "LeaveConfirmation", RGBA(0, 120, 212, 1), RGBA(255, 255, 255, 1))
-                Color: =If(NavigationComponent.ActiveScreen = "LeaveConfirmation", RGBA(255, 255, 255, 1), RGBA(32, 54, 71, 1))
-                BorderColor: =RGBA(230, 230, 230, 1)
-                Font: =Font.'Open Sans'
-                FontWeight: =FontWeight.Semibold
-                Size: =14
-                PaddingLeft: =20
-                Visible: =NavigationComponent.UserRole = "HR"
-                OnSelect: =NavigationComponent.OnNavigate(); Set(varActiveScreen, "LeaveConfirmation")
-                
-          - 'Navigation.Menu.Attachment':
-              Control: Classic/Button
-              Properties:
-                X: =Parent.X + 10
-                Y: ='Navigation.Menu.LeaveConfirmation'.Y + If('Navigation.Menu.LeaveConfirmation'.Visible, 'Navigation.Menu.LeaveConfirmation'.Height + 10, 0)
-                Width: =Parent.Width - 20
-                Height: =50
-                Text: ="📎 File đính kèm"
-                Fill: =If(NavigationComponent.ActiveScreen = "Attachment", RGBA(0, 120, 212, 1), RGBA(255, 255, 255, 1))
-                Color: =If(NavigationComponent.ActiveScreen = "Attachment", RGBA(255, 255, 255, 1), RGBA(32, 54, 71, 1))
-                BorderColor: =RGBA(230, 230, 230, 1)
-                Font: =Font.'Open Sans'
-                FontWeight: =FontWeight.Semibold
-                Size: =14
-                PaddingLeft: =20
-                Visible: =Or(NavigationComponent.UserRole = "HR", NavigationComponent.UserRole = "Admin")
-                OnSelect: =NavigationComponent.OnNavigate(); Set(varActiveScreen, "Attachment")
-                
-          - 'Navigation.Menu.Management':
-              Control: Classic/Button
-              Properties:
-                X: =Parent.X + 10
-                Y: ='Navigation.Menu.Attachment'.Y + If('Navigation.Menu.Attachment'.Visible, 'Navigation.Menu.Attachment'.Height + 10, 0)
-                Width: =Parent.Width - 20
-                Height: =50
-                Text: ="⚙️ Quản lý hệ thống"
-                Fill: =If(NavigationComponent.ActiveScreen = "Management", RGBA(0, 120, 212, 1), RGBA(255, 255, 255, 1))
-                Color: =If(NavigationComponent.ActiveScreen = "Management", RGBA(255, 255, 255, 1), RGBA(32, 54, 71, 1))
-                BorderColor: =RGBA(230, 230, 230, 1)
-                Font: =Font.'Open Sans'
-                FontWeight: =FontWeight.Semibold
-                Size: =14
-                PaddingLeft: =20
-                Visible: =Or(NavigationComponent.UserRole = "Admin", NavigationComponent.UserRole = "HR")
-                OnSelect: =NavigationComponent.OnNavigate(); Set(varActiveScreen, "Management")
-                
-          - 'Navigation.Divider':
-              Control: Rectangle
-              Properties:
-                X: =Parent.X + 20
-                Y: ='Navigation.Menu.Management'.Y + If('Navigation.Menu.Management'.Visible, 'Navigation.Menu.Management'.Height + 20, 20)
-                Width: =Parent.Width - 40
-                Height: =1
-                Fill: =RGBA(230, 230, 230, 1)
-                
-          - 'Navigation.Menu.Profile':
-              Control: Classic/Button
-              Properties:
-                X: =Parent.X + 10
-                Y: ='Navigation.Divider'.Y + 'Navigation.Divider'.Height + 20
-                Width: =Parent.Width - 20
-                Height: =50
-                Text: ="👤 Thông tin cá nhân"
-                Fill: =If(NavigationComponent.ActiveScreen = "Profile", RGBA(0, 120, 212, 1), RGBA(255, 255, 255, 1))
-                Color: =If(NavigationComponent.ActiveScreen = "Profile", RGBA(255, 255, 255, 1), RGBA(32, 54, 71, 1))
-                BorderColor: =RGBA(230, 230, 230, 1)
-                Font: =Font.'Open Sans'
-                FontWeight: =FontWeight.Semibold
-                Size: =14
-                PaddingLeft: =20
-                OnSelect: =NavigationComponent.OnNavigate(); Set(varActiveScreen, "Profile")
-                
-          - 'Navigation.Menu.Logout':
-              Control: Classic/Button
-              Properties:
-                X: =Parent.X + 10
-                Y: ='Navigation.Menu.Profile'.Y + 'Navigation.Menu.Profile'.Height + 10
-                Width: =Parent.Width - 20
-                Height: =50
-                Text: ="🚪 Đăng xuất"
-                Fill: =RGBA(220, 53, 69, 1)
-                Color: =RGBA(255, 255, 255, 1)
-                BorderColor: =RGBA(220, 53, 69, 1)
-                Font: =Font.'Open Sans'
-                FontWeight: =FontWeight.Semibold
-                Size: =14
-                PaddingLeft: =20
-                OnSelect: =NavigationComponent.OnNavigate(); Set(varActiveScreen, "Login") 
+                X: =Parent.X
+                Y: =Parent.Height - Self.Height
+                Width: =Parent.Width
+                Height: =Parent.Height * 0.05
+                Fill: =RGBA(245, 245, 245, 1)
+                BorderColor: =RGBA(224, 224, 224, 1)
+                BorderThickness: =Parent.Height * 0.0005
+              Children:
+                - 'Navigation.Footer.Version':
+                    Control: Label
+                    Properties:
+                      X: =Parent.X + Parent.Width * 0.03
+                      Y: =(Parent.Height - Self.Height) / 2
+                      Width: =Parent.Width * 0.94
+                      Height: =Parent.Height * 0.4
+                      Text: =If(NavigationComponent.IsCollapsed, "v1.0", "Version 1.0.0")
+                      Color: =RGBA(158, 158, 158, 1)
+                      Font: =Font.'Open Sans'
+                      Size: =Parent.Height * 0.18
+                      Align: =Align.Center
+                      
+    # Mobile Overlay - Light
+    - 'Navigation.Mobile.Overlay':
+        Control: Rectangle
+        Properties:
+          X: =Parent.X
+          Y: =Parent.Y
+          Width: =Parent.Width
+          Height: =Parent.Height
+          Fill: =RGBA(0, 0, 0, 0.3)
+          Visible: =And(App.Width < 768, varMobileMenuOpen)
+          OnSelect: =Set(varMobileMenuOpen, false) 

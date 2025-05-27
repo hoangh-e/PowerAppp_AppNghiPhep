@@ -1,0 +1,325 @@
+ComponentDefinitions:
+  InputComponent:
+    DefinitionType: CanvasComponent
+    CustomProperties:
+      Label:
+        PropertyKind: Input
+        DisplayName: Label
+        Description: "Label của input field"
+        DataType: Text
+        Default: ="Label"
+      Placeholder:
+        PropertyKind: Input
+        DisplayName: Placeholder
+        Description: "Placeholder text"
+        DataType: Text
+        Default: ="Nhập thông tin..."
+      Value:
+        PropertyKind: Input
+        DisplayName: Value
+        Description: "Giá trị hiện tại"
+        DataType: Text
+        Default: =""
+      InputType:
+        PropertyKind: Input
+        DisplayName: InputType
+        Description: "Loại input: Text, Password, Email, Number, Multiline"
+        DataType: Text
+        Default: ="Text"
+      IsRequired:
+        PropertyKind: Input
+        DisplayName: IsRequired
+        Description: "Field bắt buộc"
+        DataType: Boolean
+        Default: =false
+      IsDisabled:
+        PropertyKind: Input
+        DisplayName: IsDisabled
+        Description: "Field bị disable"
+        DataType: Boolean
+        Default: =false
+      ValidationState:
+        PropertyKind: Input
+        DisplayName: ValidationState
+        Description: "Trạng thái validation: None, Success, Error, Warning"
+        DataType: Text
+        Default: ="None"
+      ErrorMessage:
+        PropertyKind: Input
+        DisplayName: ErrorMessage
+        Description: "Thông báo lỗi"
+        DataType: Text
+        Default: =""
+      HelperText:
+        PropertyKind: Input
+        DisplayName: HelperText
+        Description: "Text hướng dẫn"
+        DataType: Text
+        Default: =""
+      Icon:
+        PropertyKind: Input
+        DisplayName: Icon
+        Description: "Icon hiển thị bên trái"
+        DataType: Text
+        Default: =""
+      ShowCharacterCount:
+        PropertyKind: Input
+        DisplayName: ShowCharacterCount
+        Description: "Hiển thị số ký tự"
+        DataType: Boolean
+        Default: =false
+      MaxLength:
+        PropertyKind: Input
+        DisplayName: MaxLength
+        Description: "Số ký tự tối đa"
+        DataType: Number
+        Default: =255
+      OnChange:
+        PropertyKind: Event
+        DisplayName: OnChange
+        Description: "Sự kiện khi thay đổi giá trị"
+        ReturnType: None
+        Default: =false
+        Parameters:
+          - NewValue:
+              Description: "Giá trị mới"
+              DataType: Text
+              IsOptional: true
+              Default: =""
+      OnFocus:
+        PropertyKind: Event
+        DisplayName: OnFocus
+        Description: "Sự kiện khi focus"
+        ReturnType: None
+        Default: =false
+      OnBlur:
+        PropertyKind: Event
+        DisplayName: OnBlur
+        Description: "Sự kiện khi blur"
+        ReturnType: None
+        Default: =false
+    Properties:
+      Height: =App.Height
+      Width: =App.Width
+    Children:
+      - 'Input.Container':
+          Control: GroupContainer
+          Variant: ManualLayout
+          Properties:
+            X: =Parent.X
+            Y: =Parent.Y
+            Width: =Parent.Width
+            Height: =Switch(InputComponent.InputType,
+              "Multiline", Parent.Height * 0.1,
+              Parent.Height * 0.08)
+            Fill: =RGBA(0, 0, 0, 0)
+          Children:
+            # Floating Label - Compact
+            - 'Input.Label':
+                Control: Label
+                Properties:
+                  X: =Parent.X + Parent.Width * 0.015
+                  Y: =If(Or('Input.Field'.Focused, Not(IsBlank(InputComponent.Value))),
+                    Parent.Y,
+                    Parent.Y + Parent.Height * 0.3)
+                  Width: =Parent.Width * 0.85
+                  Height: =Parent.Height * 0.22
+                  Text: =InputComponent.Label & If(InputComponent.IsRequired, " *", "")
+                  Color: =If(InputComponent.IsDisabled,
+                    RGBA(158, 158, 158, 1),
+                    Switch(InputComponent.ValidationState,
+                      "Error", RGBA(244, 67, 54, 1),
+                      "Success", RGBA(76, 175, 80, 1),
+                      "Warning", RGBA(255, 152, 0, 1),
+                      If(Or('Input.Field'.Focused, Not(IsBlank(InputComponent.Value))),
+                        RGBA(33, 150, 243, 1),
+                        RGBA(107, 114, 128, 1))))
+                  Font: =Font.'Open Sans'
+                  FontWeight: =If(Or('Input.Field'.Focused, Not(IsBlank(InputComponent.Value))),
+                    FontWeight.Semibold,
+                    FontWeight.Normal)
+                  Size: =If(Or('Input.Field'.Focused, Not(IsBlank(InputComponent.Value))),
+                    Parent.Height * 0.1,
+                    Parent.Height * 0.12)
+                    
+            # Input Field Container - Compact
+            - 'Input.Field.Container':
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =Parent.X
+                  Y: =Parent.Y + Parent.Height * 0.22
+                  Width: =Parent.Width
+                  Height: =Switch(InputComponent.InputType,
+                    "Multiline", Parent.Height * 0.6,
+                    Parent.Height * 0.35)
+                  Fill: =If(InputComponent.IsDisabled,
+                    RGBA(248, 250, 252, 1),
+                    RGBA(255, 255, 255, 1))
+                  BorderColor: =If(InputComponent.IsDisabled,
+                    RGBA(224, 224, 224, 1),
+                    Switch(InputComponent.ValidationState,
+                      "Error", RGBA(255, 205, 210, 1),
+                      "Success", RGBA(200, 230, 201, 1),
+                      "Warning", RGBA(255, 224, 178, 1),
+                      If('Input.Field'.Focused,
+                        RGBA(187, 222, 251, 1),
+                        RGBA(224, 224, 224, 1))))
+                  BorderThickness: =If('Input.Field'.Focused,
+                    Parent.Height * 0.002,
+                    Parent.Height * 0.001)
+                  DropShadow: =If('Input.Field'.Focused,
+                    DropShadow.Semilight,
+                    DropShadow.None)
+                Children:
+                  # Icon - Smaller
+                  - 'Input.Icon':
+                      Control: Classic/Icon
+                      Properties:
+                        X: =Parent.X + Parent.Width * 0.02
+                        Y: =(Parent.Height - Self.Height) / 2
+                        Width: =Parent.Height * 0.35
+                        Height: =Parent.Height * 0.35
+                        Icon: =Switch(InputComponent.Icon,
+                          "User", Icon.Person,
+                          "Mail", Icon.Mail,
+                          "Phone", Icon.Phone,
+                          "Lock", Icon.Lock,
+                          "Search", Icon.Search,
+                          "Calendar", Icon.CalendarBlank,
+                          "Location", Icon.Location,
+                          "Globe", Icon.Globe,
+                          "Document", Icon.DocumentText,
+                          Icon.Person)
+                        Color: =If(InputComponent.IsDisabled,
+                          RGBA(158, 158, 158, 1),
+                          Switch(InputComponent.ValidationState,
+                            "Error", RGBA(244, 67, 54, 1),
+                            "Success", RGBA(76, 175, 80, 1),
+                            "Warning", RGBA(255, 152, 0, 1),
+                            RGBA(107, 114, 128, 1)))
+                        Visible: =Not(IsBlank(InputComponent.Icon))
+                        
+                  # Input Field - Compact
+                  - 'Input.Field':
+                      Control: Classic/TextInput
+                      Properties:
+                        X: =If(Not(IsBlank(InputComponent.Icon)),
+                          'Input.Icon'.X + 'Input.Icon'.Width + Parent.Width * 0.015,
+                          Parent.X + Parent.Width * 0.02)
+                        Y: =Parent.Y
+                        Width: =If(Not(IsBlank(InputComponent.Icon)),
+                          Parent.Width * 0.88,
+                          Parent.Width * 0.96)
+                        Height: =Parent.Height
+                        Default: =InputComponent.Value
+                        HintText: =If(Or(Self.Focused, Not(IsBlank(InputComponent.Value))),
+                          "",
+                          InputComponent.Placeholder)
+                        Mode: =Switch(InputComponent.InputType,
+                          "Password", TextMode.Password,
+                          "Email", TextMode.Email,
+                          "Number", TextMode.Number,
+                          "Multiline", TextMode.MultiLine,
+                          TextMode.Text)
+                        Format: =Switch(InputComponent.InputType,
+                          "Number", TextFormat.Number,
+                          TextFormat.Text)
+                        Fill: =RGBA(0, 0, 0, 0)
+                        BorderColor: =RGBA(0, 0, 0, 0)
+                        BorderThickness: =Parent.Height * 0.001
+                        Color: =If(InputComponent.IsDisabled,
+                          RGBA(158, 158, 158, 1),
+                          RGBA(17, 24, 39, 1))
+                        Font: =Font.'Open Sans'
+                        Size: =Parent.Height * 0.22
+                        DisplayMode: =If(InputComponent.IsDisabled,
+                          DisplayMode.Disabled,
+                          DisplayMode.Edit)
+                        OnChange: =InputComponent.OnChange()
+                        
+            # Helper Text / Error Message - Compact
+            - 'Input.Helper.Container':
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =Parent.X
+                  Y: ='Input.Field.Container'.Y + 'Input.Field.Container'.Height + Parent.Height * 0.015
+                  Width: =Parent.Width
+                  Height: =Parent.Height * 0.18
+                  Fill: =RGBA(0, 0, 0, 0)
+                  Visible: =Or(
+                    Not(IsBlank(InputComponent.ErrorMessage)),
+                    Not(IsBlank(InputComponent.HelperText)),
+                    InputComponent.ShowCharacterCount)
+                Children:
+                  # Error/Helper Message - Smaller
+                  - 'Input.Helper.Text':
+                      Control: Label
+                      Properties:
+                        X: =Parent.X + Parent.Width * 0.015
+                        Y: =Parent.Y
+                        Width: =If(InputComponent.ShowCharacterCount,
+                          Parent.Width * 0.7,
+                          Parent.Width * 0.97)
+                        Height: =Parent.Height
+                        Text: =If(Not(IsBlank(InputComponent.ErrorMessage)),
+                          InputComponent.ErrorMessage,
+                          InputComponent.HelperText)
+                        Color: =Switch(InputComponent.ValidationState,
+                          "Error", RGBA(244, 67, 54, 1),
+                          "Success", RGBA(76, 175, 80, 1),
+                          "Warning", RGBA(255, 152, 0, 1),
+                          RGBA(107, 114, 128, 1))
+                        Font: =Font.'Open Sans'
+                        Size: =Parent.Height * 0.55
+                        
+                  # Character Count - Smaller
+                  - 'Input.Character.Count':
+                      Control: Label
+                      Properties:
+                        X: =Parent.Width * 0.75
+                        Y: =Parent.Y
+                        Width: =Parent.Width * 0.23
+                        Height: =Parent.Height
+                        Text: =Len(InputComponent.Value) & "/" & InputComponent.MaxLength
+                        Color: =If(Len(InputComponent.Value) > InputComponent.MaxLength,
+                          RGBA(244, 67, 54, 1),
+                          RGBA(107, 114, 128, 1))
+                        Font: =Font.'Open Sans'
+                        Size: =Parent.Height * 0.55
+                        Align: =Align.Right
+                        Visible: =InputComponent.ShowCharacterCount
+                        
+            # Validation Icon - Smaller
+            - 'Input.Validation.Icon':
+                Control: Classic/Icon
+                Properties:
+                  X: =Parent.Width - Self.Width - Parent.Width * 0.02
+                  Y: ='Input.Field.Container'.Y + ('Input.Field.Container'.Height - Self.Height) / 2
+                  Width: ='Input.Field.Container'.Height * 0.25
+                  Height: ='Input.Field.Container'.Height * 0.25
+                  Icon: =Switch(InputComponent.ValidationState,
+                    "Success", Icon.Check,
+                    "Error", Icon.Cancel,
+                    "Warning", Icon.Warning,
+                    Icon.Check)
+                  Color: =Switch(InputComponent.ValidationState,
+                    "Success", RGBA(76, 175, 80, 1),
+                    "Error", RGBA(244, 67, 54, 1),
+                    "Warning", RGBA(255, 152, 0, 1),
+                    RGBA(107, 114, 128, 1))
+                  Visible: =InputComponent.ValidationState <> "None"
+                  
+            # Focus Ring - Light
+            - 'Input.Focus.Ring':
+                Control: Rectangle
+                Properties:
+                  X: ='Input.Field.Container'.X - Parent.Width * 0.001
+                  Y: ='Input.Field.Container'.Y - Parent.Height * 0.001
+                  Width: ='Input.Field.Container'.Width + Parent.Width * 0.002
+                  Height: ='Input.Field.Container'.Height + Parent.Height * 0.002
+                  Fill: =RGBA(0, 0, 0, 0)
+                  BorderColor: =RGBA(187, 222, 251, 0.6)
+                  BorderThickness: =Parent.Height * 0.003
+                  Visible: ='Input.Field'.Focused 

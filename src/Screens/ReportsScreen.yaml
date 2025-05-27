@@ -1,24 +1,27 @@
-Screens:
+﻿Screens:
   ReportsScreen:
     Properties:
       Fill: =RGBA(248, 250, 252, 1)
-      OnVisible: =Set(varActiveScreen, "Reports"); Set(varReportPeriod, "Month"); Set(varSelectedMonth, Month(Today())); Set(varSelectedYear, Year(Today())); Set(varSelectedDepartment, "All"); Set(varMonthlyStats, Table({Month: "01/2024", TotalRequests: 15, ApprovedRequests: 12, PendingRequests: 2, RejectedRequests: 1, TotalDays: 45, Employees: 25}, {Month: "02/2024", TotalRequests: 18, ApprovedRequests: 15, PendingRequests: 1, RejectedRequests: 2, TotalDays: 52, Employees: 28}, {Month: "03/2024", TotalRequests: 12, ApprovedRequests: 10, PendingRequests: 1, RejectedRequests: 1, TotalDays: 36, Employees: 22}, {Month: "04/2024", TotalRequests: 20, ApprovedRequests: 18, PendingRequests: 0, RejectedRequests: 2, TotalDays: 65, Employees: 30})); Set(varDepartmentStats, Table({Department: "Phòng Công nghệ thông tin", TotalRequests: 25, TotalDays: 78, AvgDays: 3.1, Employees: 8}, {Department: "Phòng Nhân sự", TotalRequests: 18, TotalDays: 54, AvgDays: 3.0, Employees: 6}, {Department: "Phòng Kế toán", TotalRequests: 22, TotalDays: 66, AvgDays: 3.0, Employees: 7}, {Department: "Ban Giám đốc", TotalRequests: 10, TotalDays: 40, AvgDays: 4.0, Employees: 4})); Set(varEmployeeStats, Table({Employee: "Nguyễn Văn An", Department: "Phòng Công nghệ thông tin", TotalRequests: 5, TotalDays: 15, RemainingDays: 9, UsageRate: 62.5}, {Employee: "Trần Thị Bình", Department: "Phòng Công nghệ thông tin", TotalRequests: 4, TotalDays: 12, RemainingDays: 8, UsageRate: 60.0}, {Employee: "Lê Văn Cường", Department: "Ban Giám đốc", TotalRequests: 3, TotalDays: 18, RemainingDays: 12, UsageRate: 60.0}, {Employee: "Phạm Thị Dung", Department: "Ban Giám đốc", TotalRequests: 6, TotalDays: 22, RemainingDays: 8, UsageRate: 73.3})); Set(varIsExporting, false)
+      OnVisible: |
+        =Set(varActiveScreen, "Reports"); Set(varReportPeriod, "Month"); Set(varSelectedMonth, Month(Today())); Set(varSelectedYear, Year(Today())); Set(varSelectedDepartment, "All"); Set(varMonthlyStats, Table({Month: "01/2024", TotalRequests: 15, ApprovedRequests: 12, PendingRequests: 2, RejectedRequests: 1, TotalDays: 45, Employees: 25}, {Month: "02/2024", TotalRequests: 18, ApprovedRequests: 15, PendingRequests: 1, RejectedRequests: 2, TotalDays: 52, Employees: 28}, {Month: "03/2024", TotalRequests: 12, ApprovedRequests: 10, PendingRequests: 1, RejectedRequests: 1, TotalDays: 36, Employees: 22}, {Month: "04/2024", TotalRequests: 20, ApprovedRequests: 18, PendingRequests: 0, RejectedRequests: 2, TotalDays: 65, Employees: 30})); Set(varDepartmentStats, Table({Department: "Ph貌ng C么ng ngh峄?th么ng tin", TotalRequests: 25, TotalDays: 78, AvgDays: 3.1, Employees: 8}, {Department: "Ph貌ng Nh芒n s峄?, TotalRequests: 18, TotalDays: 54, AvgDays: 3.0, Employees: 6}, {Department: "Ph貌ng K岷?to谩n", TotalRequests: 22, TotalDays: 66, AvgDays: 3.0, Employees: 7}, {Department: "Ban Gi谩m 膽峄慶", TotalRequests: 10, TotalDays: 40, AvgDays: 4.0, Employees: 4})); Set(varEmployeeStats, Table({Employee: "Nguy峄卬 V膬n An", Department: "Ph貌ng C么ng ngh峄?th么ng tin", TotalRequests: 5, TotalDays: 15, RemainingDays: 9, UsageRate: 62.5}, {Employee: "Tr岷 Th峄?B矛nh", Department: "Ph貌ng C么ng ngh峄?th么ng tin", TotalRequests: 4, TotalDays: 12, RemainingDays: 8, UsageRate: 60.0}, {Employee: "L锚 V膬n C瓢峄漬g", Department: "Ban Gi谩m 膽峄慶", TotalRequests: 3, TotalDays: 18, RemainingDays: 12, UsageRate: 60.0}, {Employee: "Ph岷 Th峄?Dung", Department: "Ban Gi谩m 膽峄慶", TotalRequests: 6, TotalDays: 22, RemainingDays: 8, UsageRate: 73.3})); Set(varIsExporting, false)
     Children:
       - 'Reports.Header':
-          Control: HeaderComponent
+          Control: CanvasComponent
+          ComponentName: HeaderComponent
           Properties:
             X: =0
             Y: =0
             Width: =Parent.Width
             Height: =80
-            Title: ="Báo cáo nghỉ phép"
+            Title: ="B谩o c谩o ngh峄?ph茅p"
             UserName: =varCurrentUser.FullName
             UserRole: =varCurrentUser.Role
             ShowNotification: =true
             NotificationCount: =2
             
       - 'Reports.Navigation':
-          Control: NavigationComponent
+          Control: CanvasComponent
+          ComponentName: NavigationComponent
           Properties:
             X: =0
             Y: ='Reports.Header'.Y + 'Reports.Header'.Height
@@ -45,7 +48,7 @@ Screens:
                   Y: =Parent.Y + 30
                   Width: =Parent.Width - 60
                   Height: =40
-                  Text: ="Dashboard báo cáo nghỉ phép"
+                  Text: ="Dashboard b谩o c谩o ngh峄?ph茅p"
                   Color: =RGBA(32, 54, 71, 1)
                   Font: =Font.'Open Sans'
                   FontWeight: =FontWeight.Bold
@@ -71,7 +74,7 @@ Screens:
                         Y: =Parent.Y + 10
                         Width: =100
                         Height: =20
-                        Text: ="Kỳ báo cáo:"
+                        Text: ="K峄?b谩o c谩o:"
                         Color: =RGBA(32, 54, 71, 1)
                         Font: =Font.'Open Sans'
                         FontWeight: =FontWeight.Semibold
@@ -98,7 +101,7 @@ Screens:
                         Y: =Parent.Y + 10
                         Width: =100
                         Height: =20
-                        Text: ="Phòng ban:"
+                        Text: ="Ph貌ng ban:"
                         Color: =RGBA(32, 54, 71, 1)
                         Font: =Font.'Open Sans'
                         FontWeight: =FontWeight.Semibold
@@ -111,7 +114,7 @@ Screens:
                         Y: ='Reports.Department.Label'.Y + 'Reports.Department.Label'.Height + 5
                         Width: =200
                         Height: =35
-                        Items: =["All", "Phòng Công nghệ thông tin", "Phòng Nhân sự", "Phòng Kế toán", "Ban Giám đốc"]
+                        Items: =["All", "Ph貌ng C么ng ngh峄?th么ng tin", "Ph貌ng Nh芒n s峄?, "Ph貌ng K岷?to谩n", "Ban Gi谩m 膽峄慶"]
                         Default: ="All"
                         BorderColor: =RGBA(230, 230, 230, 1)
                         Font: =Font.'Open Sans'
@@ -125,14 +128,15 @@ Screens:
                         Y: =(Parent.Height - Self.Height) / 2
                         Width: =150
                         Height: =40
-                        Text: =If(varIsExporting, "Đang xuất...", "📊 Xuất báo cáo")
+                        Text: =If(varIsExporting, "膼ang xu岷...", "馃搳 Xu岷 b谩o c谩o")
                         Fill: =RGBA(40, 167, 69, 1)
                         Color: =RGBA(255, 255, 255, 1)
                         Font: =Font.'Open Sans'
                         FontWeight: =FontWeight.Semibold
                         Size: =14
                         DisplayMode: =If(varIsExporting, DisplayMode.Disabled, DisplayMode.Edit)
-                        OnSelect: =Set(varIsExporting, true); Notify("Đang xuất báo cáo " & varReportPeriod & " cho " & If(varSelectedDepartment = "All", "tất cả phòng ban", varSelectedDepartment) & "...", NotificationType.Information); Set(varIsExporting, false); Notify("Báo cáo đã được xuất thành công!", NotificationType.Success)
+                        OnSelect: |
+                          =Set(varIsExporting, true); Notify("膼ang xu岷 b谩o c谩o " & varReportPeriod & " cho " & If(varSelectedDepartment = "All", "t岷 c岷?ph貌ng ban", varSelectedDepartment) & "...", NotificationType.Information); Set(varIsExporting, false); Notify("B谩o c谩o 膽茫 膽瓢峄 xu岷 th脿nh c么ng!", NotificationType.Success)
                           
             - 'Reports.Summary.Container':
                 Control: GroupContainer
@@ -144,56 +148,60 @@ Screens:
                   Height: =120
                 Children:
                   - 'Reports.Summary.TotalRequests':
-                      Control: StatsCardComponent
+                      Control: CanvasComponent
+          ComponentName: StatsCardComponent
                       Properties:
                         X: =Parent.X
                         Y: =Parent.Y
                         Width: =(Parent.Width - 60) / 4
                         Height: =Parent.Height
-                        Title: ="Tổng đơn nghỉ phép"
+                        Title: ="T峄昻g 膽啤n ngh峄?ph茅p"
                         Value: =Sum(varMonthlyStats, TotalRequests)
                         Icon: ="Calendar"
                         Color: =RGBA(0, 120, 212, 1)
-                        Subtitle: ="Tất cả các đơn"
+                        Subtitle: ="T岷 c岷?c谩c 膽啤n"
                         
                   - 'Reports.Summary.TotalDays':
-                      Control: StatsCardComponent
+                      Control: CanvasComponent
+          ComponentName: StatsCardComponent
                       Properties:
                         X: ='Reports.Summary.TotalRequests'.X + 'Reports.Summary.TotalRequests'.Width + 20
                         Y: =Parent.Y
                         Width: =(Parent.Width - 60) / 4
                         Height: =Parent.Height
-                        Title: ="Tổng ngày nghỉ"
+                        Title: ="T峄昻g ng脿y ngh峄?
                         Value: =Sum(varMonthlyStats, TotalDays)
                         Icon: ="Clock"
                         Color: =RGBA(255, 193, 7, 1)
-                        Subtitle: ="Ngày đã nghỉ"
+                        Subtitle: ="Ng脿y 膽茫 ngh峄?
                         
                   - 'Reports.Summary.AvgDays':
-                      Control: StatsCardComponent
+                      Control: CanvasComponent
+          ComponentName: StatsCardComponent
                       Properties:
                         X: ='Reports.Summary.TotalDays'.X + 'Reports.Summary.TotalDays'.Width + 20
                         Y: =Parent.Y
                         Width: =(Parent.Width - 60) / 4
                         Height: =Parent.Height
-                        Title: ="Trung bình/đơn"
+                        Title: ="Trung b矛nh/膽啤n"
                         Value: =Round(Sum(varMonthlyStats, TotalDays) / Sum(varMonthlyStats, TotalRequests), 1)
                         Icon: ="People"
                         Color: =RGBA(40, 167, 69, 1)
-                        Subtitle: ="Ngày/đơn"
+                        Subtitle: ="Ng脿y/膽啤n"
                         
                   - 'Reports.Summary.Employees':
-                      Control: StatsCardComponent
+                      Control: CanvasComponent
+          ComponentName: StatsCardComponent
                       Properties:
                         X: ='Reports.Summary.AvgDays'.X + 'Reports.Summary.AvgDays'.Width + 20
                         Y: =Parent.Y
                         Width: =(Parent.Width - 60) / 4
                         Height: =Parent.Height
-                        Title: ="Nhân viên tham gia"
+                        Title: ="Nh芒n vi锚n tham gia"
                         Value: =Max(varMonthlyStats, Employees)
                         Icon: ="People"
                         Color: =RGBA(108, 117, 125, 1)
-                        Subtitle: ="Người"
+                        Subtitle: ="Ng瓢峄漣"
                         
             - 'Reports.Charts.Container':
                 Control: GroupContainer
@@ -224,7 +232,7 @@ Screens:
                               Y: =Parent.Y + 20
                               Width: =Parent.Width - 40
                               Height: =30
-                              Text: ="Thống kê theo tháng"
+                              Text: ="Th峄憂g k锚 theo th谩ng"
                               Color: =RGBA(32, 54, 71, 1)
                               Font: =Font.'Open Sans'
                               FontWeight: =FontWeight.Bold
@@ -253,7 +261,7 @@ Screens:
                               Y: =Parent.Y + Parent.Height - 30
                               Width: =Parent.Width - 40
                               Height: =20
-                              Text: ="🔵 Tổng đơn  🟢 Đã duyệt  🔴 Từ chối"
+                              Text: ="馃數 T峄昻g 膽啤n  馃煝 膼茫 duy峄噒  馃敶 T峄?ch峄慽"
                               Color: =RGBA(108, 117, 125, 1)
                               Font: =Font.'Open Sans'
                               Size: =10
@@ -279,7 +287,7 @@ Screens:
                               Y: =Parent.Y + 20
                               Width: =Parent.Width - 40
                               Height: =30
-                              Text: ="Thống kê theo phòng ban"
+                              Text: ="Th峄憂g k锚 theo ph貌ng ban"
                               Color: =RGBA(32, 54, 71, 1)
                               Font: =Font.'Open Sans'
                               FontWeight: =FontWeight.Bold
@@ -303,7 +311,7 @@ Screens:
                               Y: =Parent.Y + Parent.Height - 30
                               Width: =Parent.Width - 40
                               Height: =20
-                              Text: ="Tổng ngày nghỉ theo phòng ban"
+                              Text: ="T峄昻g ng脿y ngh峄?theo ph貌ng ban"
                               Color: =RGBA(108, 117, 125, 1)
                               Font: =Font.'Open Sans'
                               Size: =10
@@ -338,7 +346,7 @@ Screens:
                               Y: =Parent.Y + 20
                               Width: =Parent.Width - 40
                               Height: =30
-                              Text: ="Chi tiết theo phòng ban"
+                              Text: ="Chi ti岷縯 theo ph貌ng ban"
                               Color: =RGBA(32, 54, 71, 1)
                               Font: =Font.'Open Sans'
                               FontWeight: =FontWeight.Bold
@@ -386,7 +394,7 @@ Screens:
                                           Y: ='Gallery.Department.Name'.Y + 'Gallery.Department.Name'.Height + 2
                                           Width: =Parent.Width - 30
                                           Height: =25
-                                          Text: =ThisItem.TotalRequests & " đơn • " & ThisItem.TotalDays & " ngày • " & ThisItem.Employees & " người"
+                                          Text: =ThisItem.TotalRequests & " 膽啤n 鈥?" & ThisItem.TotalDays & " ng脿y 鈥?" & ThisItem.Employees & " ng瓢峄漣"
                                           Color: =RGBA(108, 117, 125, 1)
                                           Font: =Font.'Open Sans'
                                           Size: =10
@@ -411,7 +419,7 @@ Screens:
                               Y: =Parent.Y + 20
                               Width: =Parent.Width - 40
                               Height: =30
-                              Text: ="Top nhân viên nghỉ nhiều"
+                              Text: ="Top nh芒n vi锚n ngh峄?nhi峄乽"
                               Color: =RGBA(32, 54, 71, 1)
                               Font: =Font.'Open Sans'
                               FontWeight: =FontWeight.Bold
@@ -473,7 +481,7 @@ Screens:
                                           Y: ='Gallery.Employee.Name'.Y + 'Gallery.Employee.Name'.Height + 2
                                           Width: =Parent.Width - 30
                                           Height: =25
-                                          Text: =ThisItem.TotalDays & " ngày nghỉ • " & ThisItem.RemainingDays & " ngày còn lại"
+                                          Text: =ThisItem.TotalDays & " ng脿y ngh峄?鈥?" & ThisItem.RemainingDays & " ng脿y c貌n l岷"
                                           Color: =RGBA(108, 117, 125, 1)
                                           Font: =Font.'Open Sans'
                                           Size: =10 
