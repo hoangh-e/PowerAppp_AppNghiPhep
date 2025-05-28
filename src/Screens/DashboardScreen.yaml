@@ -2,8 +2,7 @@ Screens:
   DashboardScreen:
     Properties:
       Fill: =RGBA(248, 250, 252, 1)
-      OnVisible: |
-        =Set(varActiveScreen, "Dashboard"); Set(varDemoStats, {TotalLeave: 12, UsedLeave: 3, RemainingLeave: 9, PendingRequests: 2, ApprovedRequests: 8, RejectedRequests: 1}); Set(varRecentRequests, Table({ID: "LR001", Date: "2024-01-15", Days: 3, Status: "Approved", Type: "Nghỉ phép năm"}, {ID: "LR002", Date: "2024-02-20", Days: 2, Status: "Pending", Type: "Nghỉ phép năm"}, {ID: "LR003", Date: "2024-03-10", Days: 1, Status: "Rejected", Type: "Nghỉ ốm"}))
+      OnVisible: =Set(varActiveScreen, "Dashboard"); Set(varDemoStats, {TotalLeave: 12, UsedLeave: 3, RemainingLeave: 9, PendingRequests: 2, ApprovedRequests: 8, RejectedRequests: 1}); Set(varRecentRequests, Table({ID: "LR001", Date: "2024-01-15", Days: 3, Status: "Approved", Type: "Nghỉ phép năm"}, {ID: "LR002", Date: "2024-02-20", Days: 2, Status: "Pending", Type: "Nghỉ phép năm"}, {ID: "LR003", Date: "2024-03-10", Days: 1, Status: "Rejected", Type: "Nghỉ ốm"}))
     Children:
       - 'Dashboard.Header':
           Control: CanvasComponent

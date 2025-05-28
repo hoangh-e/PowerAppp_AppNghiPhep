@@ -2,8 +2,7 @@
   LeaveRequestScreen:
     Properties:
       Fill: =RGBA(248, 250, 252, 1)
-      OnVisible: |
-        =Set(varActiveScreen, "LeaveRequest"); Set(varLeaveTypes, ["Ngh峄?ph茅p n膬m", "Ngh峄?峄憁", "Ngh峄?thai s岷", "Ngh峄?kh么ng l瓢啤ng", "Ngh峄?膽岷穋 bi峄噒"]); Set(varEmployees, Table({ID: "EMP001", Name: "Nguy峄卬 V膬n An"}, {ID: "EMP002", Name: "Tr岷 Th峄?B矛nh"}, {ID: "EMP003", Name: "L锚 V膬n C瓢峄漬g"})); Set(varFormData, {StartDate: Today(), EndDate: Today(), LeaveType: "Ngh峄?ph茅p n膬m", Reason: "", HandoverPerson: "", HandoverContent: ""}); Set(varFormErrors, {}); Set(varIsSubmitting, false)
+      OnVisible: =Set(varActiveScreen, "LeaveRequest"); Set(varLeaveTypes, ["Nghỉ phép năm", "Nghỉ ốm", "Nghỉ thai sản", "Nghỉ không lương", "Nghỉ đặc biệt"]); Set(varEmployees, Table({ID: "EMP001", Name: "Nguyễn Văn An"}, {ID: "EMP002", Name: "Trần Thị Bình"}, {ID: "EMP003", Name: "Lê Văn Cường"})); Set(varFormData, {StartDate: Today(), EndDate: Today(), LeaveType: "Nghỉ phép năm", Reason: "", HandoverPerson: "", HandoverContent: ""}); Set(varFormErrors, {}); Set(varIsSubmitting, false)
     Children:
       - 'LeaveRequest.Header':
           Control: CanvasComponent
@@ -13,7 +12,7 @@
             Y: =0
             Width: =Parent.Width
             Height: =80
-            Title: ="T岷 膽啤n ngh峄?ph茅p"
+            Title: ="Tổng quan Ứng viên nghỉ phép"
             UserName: =varCurrentUser.FullName
             UserRole: =varCurrentUser.Role
             ShowNotification: =true
@@ -48,7 +47,7 @@
                   Y: =Parent.Y + 30
                   Width: =Parent.Width - 60
                   Height: =40
-                  Text: ="T岷 膽啤n xin ngh峄?ph茅p"
+                  Text: ="Tổng quan xin nghỉ phép"
                   Color: =RGBA(32, 54, 71, 1)
                   Font: =Font.'Open Sans'
                   FontWeight: =FontWeight.Bold
@@ -74,7 +73,7 @@
                         Y: =Parent.Y + 30
                         Width: =Parent.Width - 60
                         Height: =30
-                        Text: ="Th么ng tin nh芒n vi锚n"
+                        Text: ="Thông tin nhận viên"
                         Color: =RGBA(32, 54, 71, 1)
                         Font: =Font.'Open Sans'
                         FontWeight: =FontWeight.Bold
@@ -97,7 +96,7 @@
                               Y: =Parent.Y + 15
                               Width: =150
                               Height: =25
-                              Text: ="M茫 nh芒n vi锚n:"
+                              Text: ="Mã nhận viên:"
                               Color: =RGBA(32, 54, 71, 1)
                               Font: =Font.'Open Sans'
                               FontWeight: =FontWeight.Semibold
@@ -122,7 +121,7 @@
                               Y: ='LeaveRequest.Form.EmployeeID.Label'.Y + 'LeaveRequest.Form.EmployeeID.Label'.Height + 5
                               Width: =150
                               Height: =25
-                              Text: ="H峄?v脿 t锚n:"
+                              Text: ="Họ và tên:"
                               Color: =RGBA(32, 54, 71, 1)
                               Font: =Font.'Open Sans'
                               FontWeight: =FontWeight.Semibold
@@ -147,7 +146,7 @@
                               Y: ='LeaveRequest.Form.EmployeeID.Label'.Y
                               Width: =150
                               Height: =25
-                              Text: ="膼啤n v峄?"
+                              Text: ="Phòng ban:"
                               Color: =RGBA(32, 54, 71, 1)
                               Font: =Font.'Open Sans'
                               FontWeight: =FontWeight.Semibold
@@ -172,7 +171,7 @@
                         Y: ='LeaveRequest.Form.EmployeeInfo.Container'.Y + 'LeaveRequest.Form.EmployeeInfo.Container'.Height + 30
                         Width: =Parent.Width - 60
                         Height: =30
-                        Text: ="Th么ng tin ngh峄?ph茅p"
+                        Text: ="Thông tin nghỉ phép"
                         Color: =RGBA(32, 54, 71, 1)
                         Font: =Font.'Open Sans'
                         FontWeight: =FontWeight.Bold
@@ -185,7 +184,7 @@
                         Y: ='LeaveRequest.Form.LeaveInfo.Title'.Y + 'LeaveRequest.Form.LeaveInfo.Title'.Height + 15
                         Width: =200
                         Height: =25
-                        Text: ="Lo岷 ngh峄?ph茅p *"
+                        Text: ="Loại nghỉ phép *"
                         Color: =RGBA(32, 54, 71, 1)
                         Font: =Font.'Open Sans'
                         FontWeight: =FontWeight.Semibold
@@ -199,7 +198,7 @@
                         Width: =300
                         Height: =45
                         Items: =varLeaveTypes
-                        Default: ="Ngh峄?ph茅p n膬m"
+                        Default: ="Nghỉ phép năm"
                         BorderColor: =RGBA(230, 230, 230, 1)
                         Font: =Font.'Open Sans'
                         Size: =14
@@ -211,7 +210,7 @@
                         Y: ='LeaveRequest.Form.LeaveType.Dropdown'.Y + 'LeaveRequest.Form.LeaveType.Dropdown'.Height + 20
                         Width: =200
                         Height: =25
-                        Text: ="Ng脿y b岷痶 膽岷 *"
+                        Text: ="Ngày bắt đầu Ứng viên *"
                         Color: =RGBA(32, 54, 71, 1)
                         Font: =Font.'Open Sans'
                         FontWeight: =FontWeight.Semibold
@@ -236,7 +235,7 @@
                         Y: ='LeaveRequest.Form.StartDate.Label'.Y
                         Width: =200
                         Height: =25
-                        Text: ="Ng脿y k岷縯 th煤c *"
+                        Text: ="Ngày kết thúc phép *"
                         Color: =RGBA(32, 54, 71, 1)
                         Font: =Font.'Open Sans'
                         FontWeight: =FontWeight.Semibold
@@ -261,7 +260,7 @@
                         Y: ='LeaveRequest.Form.EndDate.Label'.Y
                         Width: =150
                         Height: =25
-                        Text: ="T峄昻g s峄?ng脿y:"
+                        Text: ="Tổng số ngày:"
                         Color: =RGBA(32, 54, 71, 1)
                         Font: =Font.'Open Sans'
                         FontWeight: =FontWeight.Semibold
@@ -274,7 +273,7 @@
                         Y: ='LeaveRequest.Form.EndDate.Picker'.Y
                         Width: =150
                         Height: =45
-                        Text: =Text(DateDiff('LeaveRequest.Form.StartDate.Picker'.SelectedDate, 'LeaveRequest.Form.EndDate.Picker'.SelectedDate) + 1) & " ng脿y"
+                        Text: =Text(DateDiff('LeaveRequest.Form.StartDate.Picker'.SelectedDate, 'LeaveRequest.Form.EndDate.Picker'.SelectedDate) + 1) & " ngày"
                         Color: =RGBA(0, 120, 212, 1)
                         Fill: =RGBA(240, 248, 255, 1)
                         Font: =Font.'Open Sans'
@@ -289,7 +288,7 @@
                         Y: ='LeaveRequest.Form.StartDate.Picker'.Y + 'LeaveRequest.Form.StartDate.Picker'.Height + 20
                         Width: =200
                         Height: =25
-                        Text: ="L媒 do ngh峄?ph茅p *"
+                        Text: ="Lý do nghỉ phép *"
                         Color: =RGBA(32, 54, 71, 1)
                         Font: =Font.'Open Sans'
                         FontWeight: =FontWeight.Semibold
@@ -302,7 +301,7 @@
                         Y: ='LeaveRequest.Form.Reason.Label'.Y + 'LeaveRequest.Form.Reason.Label'.Height + 5
                         Width: =Parent.Width - 60
                         Height: =80
-                        HintText: ="Nh岷璸 l媒 do ngh峄?ph茅p..."
+                        HintText: ="Nhập lý do nghỉ phép..."
                         Mode: =TextMode.MultiLine
                         BorderColor: =RGBA(230, 230, 230, 1)
                         Font: =Font.'Open Sans'
@@ -317,7 +316,7 @@
                         Y: ='LeaveRequest.Form.Reason.Input'.Y + 'LeaveRequest.Form.Reason.Input'.Height + 20
                         Width: =200
                         Height: =25
-                        Text: ="Ng瓢峄漣 nh岷璶 b脿n giao *"
+                        Text: ="Người nhận việc *"
                         Color: =RGBA(32, 54, 71, 1)
                         Font: =Font.'Open Sans'
                         FontWeight: =FontWeight.Semibold
@@ -333,7 +332,7 @@
                         Items: =varEmployees
                         DisplayFields: =["Name"]
                         SearchFields: =["Name"]
-                        HintText: ="Ch峄峮 ng瓢峄漣 nh岷璶 b脿n giao..."
+                        HintText: ="Chọn người nhận việc..."
                         BorderColor: =RGBA(230, 230, 230, 1)
                         Font: =Font.'Open Sans'
                         Size: =14
@@ -345,7 +344,7 @@
                         Y: ='LeaveRequest.Form.HandoverPerson.Dropdown'.Y + 'LeaveRequest.Form.HandoverPerson.Dropdown'.Height + 20
                         Width: =200
                         Height: =25
-                        Text: ="N峄檌 dung b脿n giao *"
+                        Text: ="Nội dung giao việc *"
                         Color: =RGBA(32, 54, 71, 1)
                         Font: =Font.'Open Sans'
                         FontWeight: =FontWeight.Semibold
@@ -358,7 +357,7 @@
                         Y: ='LeaveRequest.Form.HandoverContent.Label'.Y + 'LeaveRequest.Form.HandoverContent.Label'.Height + 5
                         Width: =Parent.Width - 60
                         Height: =80
-                        HintText: ="M么 t岷?c么ng vi峄嘽 c岷 b脿n giao..."
+                        HintText: ="Mô tả công việc đã giao..."
                         Mode: =TextMode.MultiLine
                         BorderColor: =RGBA(230, 230, 230, 1)
                         Font: =Font.'Open Sans'
@@ -373,7 +372,7 @@
                         Y: ='LeaveRequest.Form.HandoverContent.Input'.Y + 'LeaveRequest.Form.HandoverContent.Input'.Height + 20
                         Width: =Parent.Width - 60
                         Height: =25
-                        Text: ="File 膽铆nh k猫m (t霉y ch峄峮):"
+                        Text: ="File đính kèm (tệp đã chọn):"
                         Color: =RGBA(32, 54, 71, 1)
                         Font: =Font.'Open Sans'
                         FontWeight: =FontWeight.Semibold
@@ -398,7 +397,7 @@
                               Y: =Parent.Y + 10
                               Width: =Parent.Width - 120
                               Height: =40
-                              Text: ="膼铆nh k猫m file h峄?tr峄?(gi岷 x谩c nh岷璶 b峄噉h, gi岷 m峄漣, v.v.)" & Char(10) & "膼峄媙h d岷g: PDF, Word, Excel, Image. T峄慽 膽a: 10MB"
+                              Text: ="Thông tin đính kèm tệp đã chọn (giời hạn xác định người nhận, giời hạn mở rộng, v.v.)" & Char(10) & "Hướng dẫn định dạng: PDF, Word, Excel, Image. Tệp đính kèm tối đa: 10MB"
                               Color: =RGBA(108, 117, 125, 1)
                               Font: =Font.'Open Sans'
                               Size: =11
@@ -410,12 +409,12 @@
                               Y: =Parent.Y + 15
                               Width: =80
                               Height: =30
-                              Text: ="馃搸 Ch峄峮 file"
+                              Text: ="Chọn tệp đính kèm"
                               Fill: =RGBA(108, 117, 125, 1)
                               Color: =RGBA(255, 255, 255, 1)
                               Font: =Font.'Open Sans'
                               Size: =10
-                              OnSelect: =Set(varAttachmentFile, "demo_file.pdf"); Notify("膼茫 ch峄峮 file: demo_file.pdf", NotificationType.Information)
+                              OnSelect: =Set(varAttachmentFile, "demo_file.pdf"); Notify("Thông báo chọn tệp đính kèm: demo_file.pdf", NotificationType.Information)
                         
                   - 'LeaveRequest.Form.SpecialCase.Container':
                       Control: GroupContainer
@@ -433,7 +432,7 @@
                               Y: =Parent.Y
                               Width: =Parent.Width
                               Height: =25
-                              Text: ="Tr瓢峄漬g h峄 膽岷穋 bi峄噒:"
+                              Text: ="Trường hợp đặc biệt Ứng viên:"
                               Color: =RGBA(32, 54, 71, 1)
                               Font: =Font.'Open Sans'
                               FontWeight: =FontWeight.Semibold
@@ -446,7 +445,7 @@
                               Y: ='LeaveRequest.Form.SpecialCase.Label'.Y + 'LeaveRequest.Form.SpecialCase.Label'.Height + 5
                               Width: =Parent.Width
                               Height: =30
-                              Text: ="膼啤n ngh峄?ph茅p v瓢峄 quy 膽峄媙h th峄漣 gian t岷 膽啤n (c岷 l媒 do 膽岷穋 bi峄噒)"
+                              Text: ="Ứng viên nghỉ phép với lý do đặc biệt quy định thời gian từ Ứng viên (có lý do buộc phải nghỉ phép)"
                               Color: =RGBA(32, 54, 71, 1)
                               Font: =Font.'Open Sans'
                               Size: =12
@@ -459,7 +458,7 @@
                               Y: ='LeaveRequest.Form.SpecialCase.Checkbox'.Y + 'LeaveRequest.Form.SpecialCase.Checkbox'.Height + 5
                               Width: =Parent.Width
                               Height: =40
-                              HintText: ="Nh岷璸 l媒 do 膽岷穋 bi峄噒 (b岷痶 bu峄檆 n岷縰 ch峄峮 tr瓢峄漬g h峄 膽岷穋 bi峄噒)..."
+                              HintText: ="Nhập lý do đặc biệt Ứng viên (buộc phải nghỉ phép)..."
                               BorderColor: =RGBA(230, 230, 230, 1)
                               Font: =Font.'Open Sans'
                               Size: =12
@@ -479,9 +478,9 @@
                           With(
                             {daysDiff: DateDiff(varStartDate, Today(), Days)},
                             If(
-                              varLeaveDays <= 2 && daysDiff < 1, "鈿狅笍 Ngh峄?0.5-2 ng脿y c岷 t岷 膽啤n tr瓢峄沜 1 ng脿y l脿m vi峄嘽",
-                              If(varLeaveDays >= 3 && varLeaveDays <= 4 && daysDiff < 7, "鈿狅笍 Ngh峄?3-4 ng脿y c岷 t岷 膽啤n tr瓢峄沜 7 ng脿y l脿m vi峄嘽",
-                                 If(varLeaveDays >= 5 && daysDiff < 14, "鈿狅笍 Ngh峄?t峄?5 ng脿y tr峄?l锚n c岷 t岷 膽啤n tr瓢峄沜 14 ng脿y l脿m vi峄嘽", "")
+                              varLeaveDays <= 2 && daysDiff < 1, "Thông báo Nghỉ 0.5-2 ngày có thể từ Ứng viên trễ 1 ngày làm việc",
+                              If(varLeaveDays >= 3 && varLeaveDays <= 4 && daysDiff < 7, "Thông báo Nghỉ 3-4 ngày có thể từ Ứng viên trễ 7 ngày làm việc",
+                                 If(varLeaveDays >= 5 && daysDiff < 14, "Thông báo Nghỉ từ 5 ngày trễ làm việc có thể từ Ứng viên trễ 14 ngày làm việc", "")
                               )
                             )
                           ),
@@ -500,14 +499,13 @@
                         Y: ='LeaveRequest.Form.ValidationMessage'.Y + If('LeaveRequest.Form.ValidationMessage'.Visible, 'LeaveRequest.Form.ValidationMessage'.Height + 20, 20)
                         Width: =Parent.Width - 60
                         Height: =50
-                        Text: ="馃摛 G峄璱 膽啤n ngh峄?ph茅p"
+                        Text: ="Gửi đơn xin nghỉ phép"
                         Fill: =RGBA(0, 120, 212, 1)
                         Color: =RGBA(255, 255, 255, 1)
                         Font: =Font.'Open Sans'
                         FontWeight: =FontWeight.Semibold
                         Size: =16
-                        OnSelect: |
-                          =If(IsBlank(varStartDate) || IsBlank(varEndDate) || IsBlank(varLeaveReason) || IsBlank(varHandoverPerson) || IsBlank(varHandoverContent), Notify("Vui l貌ng 膽i峄乶 膽岷 膽峄?th么ng tin!", NotificationType.Error), If(varEndDate < varStartDate, Notify("Ng脿y k岷縯 th煤c ph岷 sau ng脿y b岷痶 膽岷!", NotificationType.Error), If(varIsSpecialCase && IsBlank(varSpecialReason), Notify("Vui l貌ng nh岷璸 l媒 do 膽岷穋 bi峄噒!", NotificationType.Error), If(Not(varIsSpecialCase) && ((varLeaveDays <= 2 && DateDiff(varStartDate, Today(), Days) < 1) || (varLeaveDays >= 3 && varLeaveDays <= 4 && DateDiff(varStartDate, Today(), Days) < 7) || (varLeaveDays >= 5 && DateDiff(varStartDate, Today(), Days) < 14)), Notify("膼啤n ngh峄?ph茅p kh么ng 膽谩p 峄﹏g quy 膽峄媙h th峄漣 gian t岷 膽啤n. Vui l貌ng ch峄峮 'Tr瓢峄漬g h峄 膽岷穋 bi峄噒' n岷縰 c岷 thi岷縯!", NotificationType.Error), Notify("膼茫 g峄璱 膽啤n ngh峄?ph茅p th脿nh c么ng! 膼啤n s岷?膽瓢峄 chuy峄僴 膽岷縩 c岷 ph锚 duy峄噒.", NotificationType.Success); Set(varStartDate, Blank()); Set(varEndDate, Blank()); Set(varLeaveType, "Ngh峄?ph茅p n膬m"); Set(varLeaveReason, ""); Set(varHandoverPerson, ""); Set(varHandoverContent, ""); Set(varIsSpecialCase, false); Set(varSpecialReason, ""); Set(varLeaveDays, 0)))))
+                        OnSelect: =If(IsBlank(varStartDate) || IsBlank(varEndDate) || IsBlank(varLeaveReason) || IsBlank(varHandoverPerson) || IsBlank(varHandoverContent), Notify("Vui lòng điền đầy đủ thông tin!", NotificationType.Error), If(varEndDate < varStartDate, Notify("Ngày kết thúc phép sau ngày bắt đầu Ứng viên!", NotificationType.Error), If(varIsSpecialCase && IsBlank(varSpecialReason), Notify("Vui lòng nhập lý do đặc biệt Ứng viên!", NotificationType.Error), If(Not(varIsSpecialCase) && ((varLeaveDays <= 2 && DateDiff(varStartDate, Today(), Days) < 1) || (varLeaveDays >= 3 && varLeaveDays <= 4 && DateDiff(varStartDate, Today(), Days) < 7) || (varLeaveDays >= 5 && DateDiff(varStartDate, Today(), Days) < 14)), Notify("Ứng viên nghỉ phép không được phép Ứng viên. Vui lòng chọn 'Trường hợp đặc biệt' nếu có lý do đặc biệt!", NotificationType.Error), Notify("Thông báo gửi đơn xin nghỉ phép thành công! Ứng viên sẽ được xử lý bằng cách chuyển đổi Ứng viên. Vui lòng chọn 'Trường hợp đặc biệt' nếu có lý do đặc biệt!", NotificationType.Success); Set(varStartDate, Blank()); Set(varEndDate, Blank()); Set(varLeaveType, "Nghỉ phép năm"); Set(varLeaveReason, ""); Set(varHandoverPerson, ""); Set(varHandoverContent, ""); Set(varIsSpecialCase, false); Set(varSpecialReason, ""); Set(varLeaveDays, 0)))))
                           
                   - 'LeaveRequest.Form.Cancel.Button':
                       Control: Classic/Button
@@ -516,7 +514,7 @@
                         Y: =Parent.Y
                         Width: =150
                         Height: =50
-                        Text: ="H峄 b峄?
+                        Text: ="Hủy bỏ"
                         Fill: =RGBA(248, 249, 250, 1)
                         Color: =RGBA(108, 117, 125, 1)
                         BorderColor: =RGBA(230, 230, 230, 1)

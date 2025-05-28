@@ -137,7 +137,7 @@ ComponentDefinitions:
                                 "People", Icon.People,
                                 "TrendingUp", Icon.ChevronUp,
                                 "TrendingDown", Icon.ChevronDown,
-                                "BarChart", Icon.BarChart4,
+                                "BarChart", Icon.DetailList,
                                 Icon.CalendarBlank)
                               Color: =StatsCardComponent.Color
                               

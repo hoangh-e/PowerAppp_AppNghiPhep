@@ -2,8 +2,7 @@
   LoginScreen:
     Properties:
       Fill: =RGBA(248, 250, 252, 1)
-      OnVisible: |
-        =Set(varCurrentUser, Blank()); Set(varLoginError, ""); Set(varIsLoading, false)
+      OnVisible: =Set(varCurrentUser, Blank()); Set(varLoginError, ""); Set(varIsLoading, false)
     Children:
       - 'Login.Background':
           Control: Rectangle
@@ -145,8 +144,7 @@
                   FontWeight: =FontWeight.Semibold
                   Size: =16
                   DisplayMode: =If(varIsLoading, DisplayMode.Disabled, DisplayMode.Edit)
-                  OnSelect: |
-                    =Set(varIsLoading, true); Set(varLoginError, ""); If(And(Not(IsBlank('Login.Email.Input'.Text)), Not(IsBlank('Login.Password.Input'.Text))), Set(varCurrentUser, {ID: "EMP001", FullName: "Nguy峄卬 V膬n An", Email: 'Login.Email.Input'.Text, Role: "Employee", Department: "Ph貌ng C么ng ngh峄?th么ng tin"}); Set(varIsLoading, false); Navigate(DashboardScreen), Set(varLoginError, "Email ho岷穋 m岷璽 kh岷﹗ kh么ng 膽煤ng"); Set(varIsLoading, false))
+                  OnSelect: =Set(varIsLoading, true); Set(varLoginError, ""); If(And(Not(IsBlank('Login.Email.Input'.Text)), Not(IsBlank('Login.Password.Input'.Text))), Set(varCurrentUser, {ID: "EMP001", FullName: "Nguyễn Văn An", Email: 'Login.Email.Input'.Text, Role: "Employee", Department: "Phòng Công nghệ thông tin"}); Set(varIsLoading, false); Navigate(DashboardScreen), Set(varLoginError, "Email hoặc mật khẩu không đúng"); Set(varIsLoading, false))
                     
             - 'Login.Demo.Info':
                 Control: Label

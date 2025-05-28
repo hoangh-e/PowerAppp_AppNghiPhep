@@ -189,7 +189,7 @@ ComponentDefinitions:
                           "Calendar", Icon.CalendarBlank,
                           "Location", Icon.Location,
                           "Globe", Icon.Globe,
-                          "Document", Icon.DocumentText,
+                          "Document", Icon.Document,
                           Icon.Person)
                         Color: =If(InputComponent.IsDisabled,
                           RGBA(158, 158, 158, 1),
