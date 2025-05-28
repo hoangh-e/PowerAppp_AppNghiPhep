@@ -28,3 +28,4 @@ error: The '.' operator cannot be used on Error values.
 error: Reason: While scanning a plain scalar value, found invalid mapping.
     Example Error: Control.Text: = "Nhân viên: ID (1-16)"
     Fix Error: Control.Text: = "Nhân viên:ID (1-16)"
+error PA2108 : Unknown property 'BorderRadius' for control type 'GroupContainer' and variant 'ManualLayout'.

@@ -1,0 +1,257 @@
+ComponentDefinitions:
+  EnhancedButtonComponent:
+    DefinitionType: CanvasComponent
+    CustomProperties:
+      Text:
+        PropertyKind: Input
+        DisplayName: Text
+        Description: "Nội dung button"
+        DataType: Text
+        Default: ="Button"
+        
+      Variant:
+        PropertyKind: Input
+        DisplayName: Variant
+        Description: "Kiểu button: primary, secondary, outline, ghost, danger"
+        DataType: Text
+        Default: ="primary"
+        
+      Size:
+        PropertyKind: Input
+        DisplayName: Size
+        Description: "Kích thước: sm, md, lg, xl"
+        DataType: Text
+        Default: ="md"
+        
+      Icon:
+        PropertyKind: Input
+        DisplayName: Icon
+        Description: "Icon cho button"
+        DataType: Text
+        Default: =""
+        
+      IconPosition:
+        PropertyKind: Input
+        DisplayName: IconPosition
+        Description: "Vị trí icon: left, right"
+        DataType: Text
+        Default: ="left"
+        
+      IsDisabled:
+        PropertyKind: Input
+        DisplayName: IsDisabled
+        Description: "Trạng thái disabled"
+        DataType: Boolean
+        Default: =false
+        
+      IsLoading:
+        PropertyKind: Input
+        DisplayName: IsLoading
+        Description: "Trạng thái loading"
+        DataType: Boolean
+        Default: =false
+        
+      FullWidth:
+        PropertyKind: Input
+        DisplayName: FullWidth
+        Description: "Button chiếm full width"
+        DataType: Boolean
+        Default: =false
+        
+      OnClick:
+        PropertyKind: Event
+        DisplayName: OnClick
+        Description: "Sự kiện khi click button"
+        ReturnType: None
+        Default: =false
+        
+    Properties:
+      Height: =App.Height
+      Width: =App.Width
+    Children:
+      # Design System Reference
+      - 'Button.DesignSystem':
+          Control: CanvasComponent
+          ComponentName: EnhancedDesignSystemComponent
+          Properties:
+            X: =0
+            Y: =0
+            Width: =1
+            Height: =1
+            
+      # Main Button Container
+      - 'Button.Container':
+          Control: Classic/Button
+          Properties:
+            X: =Parent.X
+            Y: =Parent.Y
+            Width: =If(EnhancedButtonComponent.FullWidth, Parent.Width, 
+              Switch(EnhancedButtonComponent.Size,
+                "sm", Parent.Width * 0.15,
+                "md", Parent.Width * 0.2,
+                "lg", Parent.Width * 0.25,
+                "xl", Parent.Width * 0.3,
+                Parent.Width * 0.2))
+            Height: =Switch(EnhancedButtonComponent.Size,
+              "sm", Parent.Height * 0.035,
+              "md", Parent.Height * 0.045,
+              "lg", Parent.Height * 0.055,
+              "xl", Parent.Height * 0.065,
+              Parent.Height * 0.045)
+            Text: =If(And(IsBlank(EnhancedButtonComponent.Icon), Not(EnhancedButtonComponent.IsLoading)), 
+              EnhancedButtonComponent.Text, "")
+            # Primary Variant Colors
+            Fill: =If(EnhancedButtonComponent.IsDisabled, 
+              RGBA(229, 231, 235, 1),
+              Switch(EnhancedButtonComponent.Variant,
+                "primary", RGBA(33, 150, 243, 1),
+                "secondary", RGBA(107, 114, 128, 1),
+                "outline", RGBA(255, 255, 255, 1),
+                "ghost", RGBA(0, 0, 0, 0),
+                "danger", RGBA(239, 68, 68, 1),
+                RGBA(33, 150, 243, 1)))
+            Color: =If(EnhancedButtonComponent.IsDisabled,
+              RGBA(156, 163, 175, 1),
+              Switch(EnhancedButtonComponent.Variant,
+                "primary", RGBA(255, 255, 255, 1),
+                "secondary", RGBA(255, 255, 255, 1),
+                "outline", RGBA(33, 150, 243, 1),
+                "ghost", RGBA(55, 65, 81, 1),
+                "danger", RGBA(255, 255, 255, 1),
+                RGBA(255, 255, 255, 1)))
+            BorderColor: =If(EnhancedButtonComponent.IsDisabled,
+              RGBA(209, 213, 219, 1),
+              Switch(EnhancedButtonComponent.Variant,
+                "primary", RGBA(33, 150, 243, 1),
+                "secondary", RGBA(107, 114, 128, 1),
+                "outline", RGBA(33, 150, 243, 1),
+                "ghost", RGBA(0, 0, 0, 0),
+                "danger", RGBA(239, 68, 68, 1),
+                RGBA(33, 150, 243, 1)))
+            BorderThickness: =Switch(EnhancedButtonComponent.Variant,
+              "outline", Parent.Height * 0.002,
+              "ghost", 0,
+              Parent.Height * 0.001)
+            Font: =Font.'Open Sans'
+            FontWeight: =FontWeight.Semibold
+            Size: =Switch(EnhancedButtonComponent.Size,
+              "sm", Parent.Height * 0.014,
+              "md", Parent.Height * 0.016,
+              "lg", Parent.Height * 0.018,
+              "xl", Parent.Height * 0.020,
+              Parent.Height * 0.016)
+            DisplayMode: =If(EnhancedButtonComponent.IsDisabled, DisplayMode.Disabled, DisplayMode.Edit)
+            OnSelect: =If(Not(Or(EnhancedButtonComponent.IsDisabled, EnhancedButtonComponent.IsLoading)), 
+              EnhancedButtonComponent.OnClick())
+              
+      # Icon Container (when icon is present)
+      - 'Button.Icon.Container':
+          Control: GroupContainer
+          Variant: ManualLayout
+          Properties:
+            X: ='Button.Container'.X
+            Y: ='Button.Container'.Y
+            Width: ='Button.Container'.Width
+            Height: ='Button.Container'.Height
+            Fill: =RGBA(0, 0, 0, 0)
+            Visible: =Or(Not(IsBlank(EnhancedButtonComponent.Icon)), EnhancedButtonComponent.IsLoading)
+          Children:
+            # Loading Spinner
+            - 'Button.Loading.Spinner':
+                Control: Classic/Icon
+                Properties:
+                  X: =If(IsBlank(EnhancedButtonComponent.Text),
+                    (Parent.Width - Self.Width) / 2,
+                    If(EnhancedButtonComponent.IconPosition = "left",
+                      Parent.X + Parent.Width * 0.15,
+                      Parent.X + Parent.Width * 0.7))
+                  Y: =(Parent.Height - Self.Height) / 2
+                  Width: =Parent.Height * 0.4
+                  Height: =Parent.Height * 0.4
+                  Icon: =Icon.Sync
+                  Color: =If(EnhancedButtonComponent.IsDisabled,
+                    RGBA(156, 163, 175, 1),
+                    Switch(EnhancedButtonComponent.Variant,
+                      "primary", RGBA(255, 255, 255, 1),
+                      "secondary", RGBA(255, 255, 255, 1),
+                      "outline", RGBA(33, 150, 243, 1),
+                      "ghost", RGBA(55, 65, 81, 1),
+                      "danger", RGBA(255, 255, 255, 1),
+                      RGBA(255, 255, 255, 1)))
+                  Visible: =EnhancedButtonComponent.IsLoading
+                  
+            # Regular Icon
+            - 'Button.Icon':
+                Control: Classic/Icon
+                Properties:
+                  X: =If(IsBlank(EnhancedButtonComponent.Text),
+                    (Parent.Width - Self.Width) / 2,
+                    If(EnhancedButtonComponent.IconPosition = "left",
+                      Parent.X + Parent.Width * 0.15,
+                      Parent.X + Parent.Width * 0.7))
+                  Y: =(Parent.Height - Self.Height) / 2
+                  Width: =Parent.Height * 0.4
+                  Height: =Parent.Height * 0.4
+                  Icon: =Switch(EnhancedButtonComponent.Icon,
+                    "add", Icon.Add,
+                    "edit", Icon.Edit,
+                    "delete", Icon.Delete,
+                    "save", Icon.Save,
+                    "cancel", Icon.Cancel,
+                    "search", Icon.Search,
+                    "filter", Icon.Filter,
+                    "download", Icon.Download,
+                    "upload", Icon.Add,
+                    "settings", Icon.Settings,
+                    "user", Icon.Person,
+                    "calendar", Icon.CalendarBlank,
+                    "document", Icon.Document,
+                    "mail", Icon.Mail,
+                    "phone", Icon.Phone,
+                    "home", Icon.Home,
+                    "back", Icon.Back,
+                    "forward", Icon.Forward,
+                    "check", Icon.Check,
+                    "close", Icon.Cancel,
+                    Icon.Add)
+                  Color: =If(EnhancedButtonComponent.IsDisabled,
+                    RGBA(156, 163, 175, 1),
+                    Switch(EnhancedButtonComponent.Variant,
+                      "primary", RGBA(255, 255, 255, 1),
+                      "secondary", RGBA(255, 255, 255, 1),
+                      "outline", RGBA(33, 150, 243, 1),
+                      "ghost", RGBA(55, 65, 81, 1),
+                      "danger", RGBA(255, 255, 255, 1),
+                      RGBA(255, 255, 255, 1)))
+                  Visible: =And(Not(IsBlank(EnhancedButtonComponent.Icon)), Not(EnhancedButtonComponent.IsLoading))
+                  
+            # Button Text (when icon is present)
+            - 'Button.Text.WithIcon':
+                Control: Label
+                Properties:
+                  X: =If(EnhancedButtonComponent.IconPosition = "left",
+                    'Button.Icon'.X + 'Button.Icon'.Width + Parent.Width * 0.03,
+                    Parent.X + Parent.Width * 0.15)
+                  Y: =(Parent.Height - Self.Height) / 2
+                  Width: =Parent.Width * 0.5
+                  Height: =Parent.Height * 0.6
+                  Text: =EnhancedButtonComponent.Text
+                  Color: =If(EnhancedButtonComponent.IsDisabled,
+                    RGBA(156, 163, 175, 1),
+                    Switch(EnhancedButtonComponent.Variant,
+                      "primary", RGBA(255, 255, 255, 1),
+                      "secondary", RGBA(255, 255, 255, 1),
+                      "outline", RGBA(33, 150, 243, 1),
+                      "ghost", RGBA(55, 65, 81, 1),
+                      "danger", RGBA(255, 255, 255, 1),
+                      RGBA(255, 255, 255, 1)))
+                  Font: =Font.'Open Sans'
+                  FontWeight: =FontWeight.Semibold
+                  Size: =Switch(EnhancedButtonComponent.Size,
+                    "sm", Parent.Height * 0.014,
+                    "md", Parent.Height * 0.016,
+                    "lg", Parent.Height * 0.018,
+                    "xl", Parent.Height * 0.020,
+                    Parent.Height * 0.016)
+                  Align: =Align.Center
+                  Visible: =And(Not(IsBlank(EnhancedButtonComponent.Text)), Not(EnhancedButtonComponent.IsLoading)) 

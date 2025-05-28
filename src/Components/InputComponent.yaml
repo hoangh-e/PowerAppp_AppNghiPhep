@@ -119,7 +119,7 @@ ComponentDefinitions:
                 Control: Label
                 Properties:
                   X: =Parent.X + Parent.Width * 0.015
-                  Y: =If(Or('Input.Field'.Focused, Not(IsBlank(InputComponent.Value))),
+                  Y: =If(Or(varInputFocused, Not(IsBlank(InputComponent.Value))),
                     Parent.Y,
                     Parent.Y + Parent.Height * 0.3)
                   Width: =Parent.Width * 0.85
@@ -131,14 +131,14 @@ ComponentDefinitions:
                       "Error", RGBA(244, 67, 54, 1),
                       "Success", RGBA(76, 175, 80, 1),
                       "Warning", RGBA(255, 152, 0, 1),
-                      If(Or('Input.Field'.Focused, Not(IsBlank(InputComponent.Value))),
+                      If(Or(varInputFocused, Not(IsBlank(InputComponent.Value))),
                         RGBA(33, 150, 243, 1),
                         RGBA(107, 114, 128, 1))))
                   Font: =Font.'Open Sans'
-                  FontWeight: =If(Or('Input.Field'.Focused, Not(IsBlank(InputComponent.Value))),
+                  FontWeight: =If(Or(varInputFocused, Not(IsBlank(InputComponent.Value))),
                     FontWeight.Semibold,
                     FontWeight.Normal)
-                  Size: =If(Or('Input.Field'.Focused, Not(IsBlank(InputComponent.Value))),
+                  Size: =If(Or(varInputFocused, Not(IsBlank(InputComponent.Value))),
                     Parent.Height * 0.1,
                     Parent.Height * 0.12)
                     
@@ -162,13 +162,13 @@ ComponentDefinitions:
                       "Error", RGBA(255, 205, 210, 1),
                       "Success", RGBA(200, 230, 201, 1),
                       "Warning", RGBA(255, 224, 178, 1),
-                      If('Input.Field'.Focused,
+                      If(varInputFocused,
                         RGBA(187, 222, 251, 1),
                         RGBA(224, 224, 224, 1))))
-                  BorderThickness: =If('Input.Field'.Focused,
+                  BorderThickness: =If(varInputFocused,
                     Parent.Height * 0.002,
                     Parent.Height * 0.001)
-                  DropShadow: =If('Input.Field'.Focused,
+                  DropShadow: =If(varInputFocused,
                     DropShadow.Semilight,
                     DropShadow.None)
                 Children:
@@ -213,7 +213,7 @@ ComponentDefinitions:
                           Parent.Width * 0.96)
                         Height: =Parent.Height
                         Default: =InputComponent.Value
-                        HintText: =If(Or(Self.Focused, Not(IsBlank(InputComponent.Value))),
+                        HintText: =If(Or(varInputFocused, Not(IsBlank(InputComponent.Value))),
                           "",
                           InputComponent.Placeholder)
                         Mode: =Switch(InputComponent.InputType,
@@ -237,6 +237,8 @@ ComponentDefinitions:
                           DisplayMode.Disabled,
                           DisplayMode.Edit)
                         OnChange: =InputComponent.OnChange()
+                        OnFocus: =Set(varInputFocused, true); InputComponent.OnFocus()
+                        OnBlur: =Set(varInputFocused, false); InputComponent.OnBlur()
                         
             # Helper Text / Error Message - Compact
             - 'Input.Helper.Container':
@@ -322,4 +324,4 @@ ComponentDefinitions:
                   Fill: =RGBA(0, 0, 0, 0)
                   BorderColor: =RGBA(187, 222, 251, 0.6)
                   BorderThickness: =Parent.Height * 0.003
-                  Visible: ='Input.Field'.Focused 
+                  Visible: =varInputFocused 

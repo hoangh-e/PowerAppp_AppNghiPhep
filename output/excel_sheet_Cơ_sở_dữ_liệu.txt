@@ -1,55 +1,128 @@
 SHEET: Cơ sở dữ liệu
 ==================================================
 Cơ sở dữ liệu (SharePoint)        Unnamed: 1          Unnamed: 2                                                 Unnamed: 3                Unnamed: 4
-                  Tên bảng    Tên thuộc tính        Kiểu dữ liệu                                           Mô tả thuộc tính                   Quan hệ
-                     DonVi           MaDonVi                text                              Mã đơn vị, định danh duy nhất                Khóa chính
-                       NaN          TenDonVi                text                                      Tên đầy đủ của đơn vị                       NaN
-                       NaN          DonViCha                text                                       Mã đơn vị cha nếu có        FK → DonVi.MaDonVi
-                 NguoiDung        MaNhanVien                text                                               Mã nhân viên                Khóa chính
-                       NaN             HoTen                text                                       Họ và tên người dùng                       NaN
-                       NaN             Email                text                                                      Email                       NaN
-                       NaN       SoDienThoai                text                                              Số điện thoại                       NaN
-                       NaN          ChucDanh                text                                    Chức danh trong tổ chức                       NaN
-                       NaN           MaDonVi                text                                         Mã đơn vị công tác        FK → DonVi.MaDonVi
-                       NaN            VaiTro              choice              Vai trò trong ứng dụng (Employee, Manager...)                       NaN
-                  LoaiNghi            MaLoai                text                                          Mã loại nghỉ phép                Khóa chính
-                       NaN           TenLoai                text          Tên loại nghỉ (VD: Nghỉ phép năm, Không lương...)                       NaN
-                       NaN           CoLuong             boolean                                    Có tính lương hay không                       NaN
-                       NaN              MoTa                text                                                 Mô tả thêm                       NaN
+                  Tên bảng    Tên thuộc tính        Loại thuộc tính & Kiểu dữ liệu                                           Mô tả thuộc tính                   Quan hệ
+                     DonVi           MaDonVi      text (required)                              Mã đơn vị, định danh duy nhất (max 10 chars)                Khóa chính
+                       NaN          TenDonVi      text (required)                                      Tên đầy đủ của đơn vị (max 255 chars)                       NaN
+                       NaN          DonViCha           text (optional)                                       Mã đơn vị cha nếu có        FK → DonVi.MaDonVi
+                     Quyen              MaQuyen       required, text(max=30), PK, unique        Mã định danh quyền (PERSONAL_LEAVE, SPECIAL_LEAVE, etc.)      Primary Key
+                       NaN          TenQuyen       required, text(max=100)                  Tên quyền hiển thị (VD: Xem đơn nghỉ của mình)      -
+                       NaN                MoTa       optional, text(max=500)                  Mô tả chi tiết quyền                         -
+                       NaN              GiaTri       required, number(1-65535), unique      Giá trị bit cho quyền (2^n)                  -
+                    VaiTro         MaVaiTro       required, text(max=20), PK, unique        Mã vai trò (EMPLOYEE, MANAGER, DIRECTOR, HR, ADMIN)      Primary Key
+                       NaN         TenVaiTro       required, text(max=100)                  Tên vai trò hiển thị                        -
+                       NaN               MoTa       optional, text(max=500)                  Mô tả vai trò                                -
+                       NaN           CacQuyen       required, lookup(multi-select)           Danh sách quyền của vai trò                  Foreign Key to Quyen.MaQuyen
+                 NguoiDung        MaNhanVien      text (required)                                     Mã nhân viên (max 20 chars)                Khóa chính
+                       NaN             HoTen      text (required)                                       Họ và tên người dùng (max 100 chars)                       NaN
+                       NaN             Email      text (required)                                      Email (unique, max 255 chars)                       NaN
+                       NaN       SoDienThoai           text (optional)                                    Số điện thoại (max 15 chars)                       NaN
+                       NaN          ChucDanh           text (optional)                                  Chức danh trong tổ chức (max 100 chars)                       NaN
+                       NaN           MaDonVi      text (required)                                         Mã đơn vị công tác        FK → DonVi.MaDonVi
+                       NaN         MaVaiTro      text (required)                                           Mã vai trò của người dùng        FK → VaiTro.MaVaiTro
+                       NaN        NgayVaoLam           date (optional)                                         Ngày vào làm việc                       NaN
+                       NaN          NgaySinh           date (optional)                                              Ngày sinh                       NaN
+                       NaN          GioiTinh      choice (optional)                                    Giới tính: 'Nam', 'Nu'                       NaN
+                       NaN            DiaChi           text (optional)                                       Địa chỉ (max 500 chars)                       NaN
+                       NaN         TrangThai      choice (required)                        Trạng thái: 'HoatDong', 'TamNghi', 'DaNghi'                       NaN
+                       NaN            Avatar           text (optional)                                    URL avatar (max 500 chars)                       NaN
+                       NaN         MaQuanLy           text (optional)                                      Mã người quản lý trực tiếp FK → NguoiDung.MaNhanVien
+                       NaN           NgayTao      datetime (auto)                                         Ngày tạo bản ghi                       NaN
+                       NaN       NgayCapNhat      datetime (auto)                                      Ngày cập nhật cuối                       NaN
+                  LoaiNghi            MaLoai      text (required)                                    Mã loại nghỉ phép (max 10 chars)                Khóa chính
+                       NaN           TenLoai      text (required)          Tên loại nghỉ (VD: Nghỉ phép năm, Không lương...) (max 100 chars)                       NaN
+                       NaN           CoLuong      boolean (required)                                    Có tính lương hay không                       NaN
+                       NaN              MoTa           text (optional)                                       Mô tả thêm (max 500 chars)                       NaN
                     NgayLe          MaNgayLe       number (auto)                                       Mã định danh tự tăng                Khóa chính
-                       NaN              Ngay                date                                               Ngày nghỉ lễ                       NaN
-                       NaN         TenNgayLe                text                                                Tên ngày lễ                       NaN
-                       NaN              Buoi              choice                            Buổi nghỉ: Cả ngày, sáng, chiều                       NaN
-                       NaN               Nam              number                                                Năm áp dụng                       NaN
+                       NaN              Ngay      text (required)                                      Ngày nghỉ lễ (định dạng dd/mm)                       NaN
+                       NaN         TenNgayLe      text (required)                                      Tên ngày lễ (max 200 chars)                       NaN
+                       NaN              Buoi      choice (required)                            Buổi nghỉ: 'CaNgay', 'BuoiSang', 'BuoiChieu'                       NaN
+                       NaN               Nam      number (required)                                        Năm áp dụng (YYYY)                       NaN
+        CauHinhHeThong        MaCauHinh      text (required)                                 Mã cấu hình hệ thống (max 50 chars)                Khóa chính
+                       NaN        TenCauHinh      text (required)                                    Tên cấu hình (max 200 chars)                       NaN
+                       NaN            GiaTri      text (required)                                      Giá trị cấu hình (max 1000 chars)                       NaN
+                       NaN       KieuDuLieu      choice (required)                          Kiểu dữ liệu: 'Text', 'Number', 'Boolean', 'Date'                       NaN
+                       NaN              MoTa           text (optional)                                     Mô tả cấu hình (max 500 chars)                       NaN
+                       NaN           MaDonVi           text (optional)                                   Áp dụng cho đơn vị cụ thể        FK → DonVi.MaDonVi
+                       NaN       NgayCapNhat      datetime (auto)                                      Ngày cập nhật cuối                       NaN
+                       NaN      NguoiCapNhat      text (required)                                        Người cập nhật cuối FK → NguoiDung.MaNhanVien
+                  MauEmail            MaMau      text (required)                                   Mã mẫu email (max 50 chars)                Khóa chính
+                       NaN           TenMau      text (required)                                     Tên mẫu email (max 200 chars)                       NaN
+                       NaN           TieuDe      text (required)                                    Tiêu đề email (max 500 chars)                       NaN
+                       NaN          NoiDung      text (required)                                   Nội dung HTML email (max 10000 chars)                       NaN
+                       NaN           ThamSo           text (optional)                                  JSON parameters (max 2000 chars)                       NaN
+                       NaN       LoaiSuKien      choice (required)                    Loại sự kiện: 'TaoDon', 'PheDuyet', 'TuChoi', 'HetHan'                       NaN
+                       NaN         TrangThai      choice (required)                              Trạng thái: 'HoatDong', 'TamNghi'                       NaN
+                       NaN           NgayTao      datetime (auto)                                         Ngày tạo mẫu                       NaN
+                       NaN       NgayCapNhat      datetime (auto)                                      Ngày cập nhật cuối                       NaN
                 SoNgayPhep          MaSoPhep       number (auto)                                            ID số phép nghỉ                Khóa chính
-                       NaN        MaNhanVien                text                                               Mã nhân viên FK → NguoiDung.MaNhanVien
-                       NaN               Nam              number                                                Năm áp dụng                       NaN
-                       NaN  TongNgayDuocPhep              number                           Tổng số ngày được nghỉ trong năm                       NaN
-                       NaN      SoNgayDaNghi              number                                    Số ngày đã nghỉ thực tế                       NaN
+                       NaN        MaNhanVien      text (required)                                               Mã nhân viên FK → NguoiDung.MaNhanVien
+                       NaN               Nam      number (required)                                        Năm áp dụng (YYYY)                       NaN
+                       NaN  TongNgayDuocPhep      number (required)                           Tổng số ngày được nghỉ trong năm (0-365)                       NaN
+                       NaN      SoNgayDaNghi      number (default 0)                                    Số ngày đã nghỉ thực tế (0-365)                       NaN
                        NaN      SoNgayConLai number (calculated)                                            Số ngày còn lại calculate(Tổng - Đã nghỉ)
-                       NaN  SoNgayKhongLuong              number                                      Ngày nghỉ không lương                       NaN
+                       NaN  SoNgayKhongLuong      number (default 0)                                      Ngày nghỉ không lương (0-365)                       NaN
                DonNghiPhep             MaDon                GUID                                     Mã đơn nghỉ (duy nhất)                Khóa chính
-                       NaN        MaNhanVien                text                                          Nhân viên tạo đơn FK → NguoiDung.MaNhanVien
-                       NaN        NgayBatDau                date                                          Ngày bắt đầu nghỉ                       NaN
-                       NaN       NgayKetThuc                date                                         Ngày kết thúc nghỉ                       NaN
-                       NaN        SoNgayNghi              number                                               Số ngày nghỉ                       NaN
-                       NaN            MaLoai                text                                               Mã loại nghỉ      FK → LoaiNghi.MaLoai
-                       NaN              LyDo         text (long)                                                 Lý do nghỉ                       NaN
-                       NaN      NguoiBanGiao                text                                     Mã người nhận bàn giao FK → NguoiDung.MaNhanVien
-                       NaN    NoiDungBanGiao         text (long)                                Nội dung công việc bàn giao                       NaN
-                       NaN        TepDinhKem   image / file path                                     Đường dẫn tệp đính kèm                       NaN
-                       NaN         TrangThai              choice                 Trạng thái đơn ('ChoDuyet', 'DaDuyet',...)                       NaN
-                       NaN           NgayTao            datetime                                          Thời điểm tạo đơn                       NaN
+                       NaN        MaNhanVien      text (required)                                          Nhân viên tạo đơn FK → NguoiDung.MaNhanVien
+                       NaN        NgayBatDau      date (required)                                          Ngày bắt đầu nghỉ                       NaN
+                       NaN       NgayKetThuc      date (required)                                         Ngày kết thúc nghỉ                       NaN
+                       NaN        SoNgayNghi      number (calculated)                                      Số ngày nghỉ (auto calculated)                       NaN
+                       NaN            MaLoai      text (required)                                               Mã loại nghỉ      FK → LoaiNghi.MaLoai
+                       NaN              LyDo      text (required)                                         Lý do nghỉ (max 1000 chars)                       NaN
+                       NaN      NguoiBanGiao           text (optional)                                     Mã người nhận bàn giao FK → NguoiDung.MaNhanVien
+                       NaN    NoiDungBanGiao           text (optional)                                Nội dung công việc bàn giao (max 2000 chars)                       NaN
+                       NaN        TepDinhKem           text (optional)                                     Đường dẫn tệp đính kèm (max 500 chars)                       NaN
+                       NaN         TrangThai      choice (required)           Trạng thái đơn: 'ChoDuyet', 'DaDuyet', 'TuChoi', 'HetHan', 'Huy'                       NaN
+                       NaN           NgayTao      datetime (auto)                                          Thời điểm tạo đơn                       NaN
+                       NaN          BuoiNghi      choice (required)                            Buổi nghỉ: 'CaNgay', 'BuoiSang', 'BuoiChieu'                       NaN
+                       NaN          NguoiTao      text (required)                                            Người tạo đơn FK → NguoiDung.MaNhanVien
+                       NaN       NgayCapNhat      datetime (auto)                                      Ngày cập nhật cuối                       NaN
+                       NaN      NguoiCapNhat           text (optional)                                       Người cập nhật cuối FK → NguoiDung.MaNhanVien
+                       NaN   ThoiHanPheDuyet      datetime (calculated)                                    Thời hạn phê duyệt (auto calculated)                       NaN
+                       NaN           UuTien      choice (default)                              Mức ưu tiên: 'BinhThuong', 'Cao', 'KhanCap'                       NaN
+                       NaN          GhiChuHR           text (optional)                                      Ghi chú của HR (max 1000 chars)                       NaN
+                       NaN       NgayGhiNhan           date (optional)                                        Ngày ghi nhận thực tế                       NaN
                PheDuyetDon        MaPheDuyet       number (auto)                                               ID phê duyệt                Khóa chính
                        NaN             MaDon                GUID                                      Liên kết đến đơn nghỉ    FK → DonNghiPhep.MaDon
-                       NaN               Cap              number                                       Cấp phê duyệt: 1-2-3                       NaN
-                       NaN      MaNguoiDuyet                text                                            Người phê duyệt FK → NguoiDung.MaNhanVien
-                       NaN         QuyetDinh              choice               Trạng thái: 'DaDuyet', 'TuChoi', 'HetHan'...                       NaN
-                       NaN         NgayDuyet            datetime                                             Ngày phê duyệt                       NaN
-                       NaN            GhiChu         text (long)                                          Ghi chú khi duyệt                       NaN
+                       NaN               Cap      number (required)                                       Cấp phê duyệt: 1-2-3 (1-10)                       NaN
+                       NaN      MaNguoiDuyet      text (required)                                            Người phê duyệt FK → NguoiDung.MaNhanVien
+                       NaN         QuyetDinh      choice (required)               Trạng thái: 'DaDuyet', 'TuChoi', 'HetHan', 'ChoDuyet'                       NaN
+                       NaN         NgayDuyet      datetime (auto)                                             Ngày phê duyệt                       NaN
+                       NaN            GhiChu           text (optional)                                    Ghi chú khi duyệt (max 1000 chars)                       NaN
+                       NaN      ThoiHanDuyet      datetime (required)                                       Thời hạn phê duyệt                       NaN
+                       NaN         NgayHetHan      datetime (calculated)                                    Ngày hết hạn (auto calculated)                       NaN
+                       NaN    ViTriPheDuyet      text (required)                                   Vị trí phê duyệt (max 100 chars)                       NaN
+                       NaN        TepDinhKem           text (optional)                                 Tệp đính kèm phê duyệt (max 500 chars)                       NaN
              QuyTrinhDuyet        MaQuyTrinh       number (auto)                                     Mã quy trình phê duyệt                Khóa chính
-                       NaN           MaDonVi                text                                             Đơn vị áp dụng        FK → DonVi.MaDonVi
-                       NaN               Cap              number                                 Cấp phê duyệt trong đơn vị                       NaN
-                       NaN            VaiTro              choice Vai trò phê duyệt tương ứng: 'QuanLy', 'GiamDoc', 'NhanSu'                       NaN
-                       NaN NguoiDuyetMacDinh                text                                   Người phê duyệt mặc định FK → NguoiDung.MaNhanVien
-                       NaN      DangHoatDong             boolean                                        Đang dùng hay không                       NaN
+                       NaN           MaDonVi      text (required)                                             Đơn vị áp dụng        FK → DonVi.MaDonVi
+                       NaN               Cap      number (required)                                 Cấp phê duyệt trong đơn vị (1-10)                       NaN
+                       NaN         MaVaiTro      text (required)                                        Vai trò phê duyệt tương ứng        FK → VaiTro.MaVaiTro
+                       NaN NguoiDuyetMacDinh      text (required)                                   Người phê duyệt mặc định FK → NguoiDung.MaNhanVien
+                       NaN      DangHoatDong      boolean (default)                                        Đang dùng hay không (default: true)                       NaN
+                TepDinhKem            MaTep                GUID                                       Mã tệp đính kèm (duy nhất)                Khóa chính
+                       NaN             MaDon                GUID                                      Liên kết đến đơn nghỉ    FK → DonNghiPhep.MaDon
+                       NaN            TenTep      text (required)                                     Tên file gốc (max 255 chars)                       NaN
+                       NaN          DuongDan      text (required)                                   Đường dẫn lưu trữ (max 1000 chars)                       NaN
+                       NaN        KichThuoc      number (required)                                      Kích thước file (bytes)                       NaN
+                       NaN           LoaiTep      text (required)                                     MIME type (max 100 chars)                       NaN
+                       NaN              MoTa           text (optional)                                      Mô tả file (max 500 chars)                       NaN
+                       NaN          NguoiTai      text (required)                                           Người upload file FK → NguoiDung.MaNhanVien
+                       NaN           NgayTai      datetime (auto)                                         Ngày upload file                       NaN
+                 ThongBao        MaThongBao       number (auto)                                            Mã thông báo                Khóa chính
+                       NaN       MaNguoiNhan      text (required)                                          Người nhận thông báo FK → NguoiDung.MaNhanVien
+                       NaN            TieuDe      text (required)                                    Tiêu đề thông báo (max 500 chars)                       NaN
+                       NaN          NoiDung      text (required)                                   Nội dung thông báo (max 2000 chars)                       NaN
+                       NaN      LoaiThongBao      choice (required)                    Loại: 'DonMoi', 'PheDuyet', 'TuChoi', 'HetHan', 'HeThong'                       NaN
+                       NaN     MaDonLienQuan                GUID                                      Mã đơn liên quan (nếu có)    FK → DonNghiPhep.MaDon
+                       NaN             DaDoc      boolean (default)                                       Đã đọc hay chưa (default: false)                       NaN
+                       NaN           NgayTao      datetime (auto)                                        Ngày tạo thông báo                       NaN
+                       NaN           NgayDoc      datetime (optional)                                        Ngày đọc thông báo                       NaN
+            LichSuThayDoi         MaLichSu       number (auto)                                           Mã lịch sử thay đổi                Khóa chính
+                       NaN        BangDuLieu      text (required)                                     Tên bảng dữ liệu (max 100 chars)                       NaN
+                       NaN          MaBanGhi      text (required)                                      Mã bản ghi (max 100 chars)                       NaN
+                       NaN          HanhDong      choice (required)                                Hành động: 'Tao', 'Sua', 'Xoa'                       NaN
+                       NaN          DuLieuCu           text (optional)                                    Dữ liệu cũ (JSON, max 5000 chars)                       NaN
+                       NaN         DuLieuMoi           text (optional)                                   Dữ liệu mới (JSON, max 5000 chars)                       NaN
+                       NaN  MaNguoiThucHien      text (required)                                         Người thực hiện thay đổi FK → NguoiDung.MaNhanVien
+                       NaN      NgayThucHien      datetime (auto)                                       Ngày thực hiện thay đổi                       NaN
+                       NaN            GhiChu           text (optional)                                     Ghi chú thay đổi (max 1000 chars)                       NaN

@@ -1,0 +1,376 @@
+ComponentDefinitions:
+  HeaderComponent_v2:
+    DefinitionType: CanvasComponent
+    CustomProperties:
+      UserName:
+        PropertyKind: Input
+        DisplayName: UserName
+        Description: "Tên người dùng"
+        DataType: Text
+        Default: ="Nguyễn Văn An"
+      
+      UserRole:
+        PropertyKind: Input
+        DisplayName: UserRole
+        Description: "Vai trò người dùng"
+        DataType: Text
+        Default: ="Employee"
+      
+      UserAvatar:
+        PropertyKind: Input
+        DisplayName: UserAvatar
+        Description: "URL ảnh đại diện người dùng"
+        DataType: Text
+        Default: =""
+      
+      Title:
+        PropertyKind: Input
+        DisplayName: Title
+        Description: "Tiêu đề header"
+        DataType: Text
+        Default: ="Leave Management System"
+      
+      ShowSearch:
+        PropertyKind: Input
+        DisplayName: ShowSearch
+        Description: "Hiển thị thanh tìm kiếm"
+        DataType: Boolean
+        Default: =true
+      
+      ShowNotification:
+        PropertyKind: Input
+        DisplayName: ShowNotification
+        Description: "Hiển thị thông báo"
+        DataType: Boolean
+        Default: =true
+      
+      NotificationCount:
+        PropertyKind: Input
+        DisplayName: NotificationCount
+        Description: "Số lượng thông báo"
+        DataType: Number
+        Default: =0
+      
+      # Theme Configuration
+      UseGradient:
+        PropertyKind: Input
+        DisplayName: UseGradient
+        Description: "Sử dụng gradient background"
+        DataType: Boolean
+        Default: =true
+      
+      # Events
+      OnSearch:
+        PropertyKind: Event
+        DisplayName: OnSearch
+        Description: "Sự kiện khi tìm kiếm"
+        ReturnType: None
+        Default: =false
+        Parameters:
+          - SearchText:
+              Description: "Nội dung tìm kiếm"
+              DataType: Text
+              IsOptional: true
+              Default: =""
+      
+      OnNotificationClick:
+        PropertyKind: Event
+        DisplayName: OnNotificationClick
+        Description: "Sự kiện khi click notification"
+        ReturnType: None
+        Default: =false
+      
+      OnProfileClick:
+        PropertyKind: Event
+        DisplayName: OnProfileClick
+        Description: "Sự kiện khi click profile"
+        ReturnType: None
+        Default: =false
+      
+    Properties:
+      Height: =App.Height
+      Width: =App.Width
+    Children:
+      # Design System Reference
+      - 'Header.DesignSystem':
+          Control: CanvasComponent
+          ComponentName: DesignSystemComponent_v2
+          Properties:
+            X: =0
+            Y: =0
+            Width: =1
+            Height: =1
+            ColorTheme: ="Light"
+            FontScale: =1.0
+            SpacingScale: =1.0
+            
+      # Main Header Container
+      - 'Header.Container':
+          Control: GroupContainer
+          Variant: ManualLayout
+          Properties:
+            X: =Parent.X
+            Y: =Parent.Y
+            Width: =Parent.Width
+            Height: =If('Header.DesignSystem'.IsMobile, Parent.Height * 0.08, Parent.Height * 0.06)
+            Fill: =If(HeaderComponent_v2.UseGradient, 'Header.DesignSystem'.PrimaryColor, RGBA(255, 255, 255, 1))
+            BorderColor: ='Header.DesignSystem'.Gray200
+            BorderThickness: =1
+            DropShadow: ='Header.DesignSystem'.ShadowSM
+          Children:
+            # Gradient Overlay (if enabled)
+            - 'Header.Gradient.Overlay':
+                Control: Rectangle
+                Properties:
+                  X: =Parent.X
+                  Y: =Parent.Y
+                  Width: =Parent.Width
+                  Height: =Parent.Height
+                  Fill: ='Header.DesignSystem'.SecondaryColor
+                  Visible: =HeaderComponent_v2.UseGradient
+                  
+            # Brand Section
+            - 'Header.Brand.Container':
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =Parent.X + 'Header.DesignSystem'.Space4
+                  Y: =(Parent.Height - Self.Height) / 2
+                  Width: =If('Header.DesignSystem'.IsMobile, Parent.Width * 0.4, Parent.Width * 0.25)
+                  Height: =Parent.Height * 0.7
+                Children:
+                  - 'Header.Brand.Icon':
+                      Control: Classic/Icon
+                      Properties:
+                        X: =Parent.X
+                        Y: =(Parent.Height - Self.Height) / 2
+                        Width: =Parent.Height * 0.6
+                        Height: =Parent.Height * 0.6
+                        Icon: =Icon.CalendarBlank
+                        Color: =If(HeaderComponent_v2.UseGradient, RGBA(255, 255, 255, 1), 'Header.DesignSystem'.PrimaryColor)
+                        
+                  - 'Header.Brand.Text':
+                      Control: Label
+                      Properties:
+                        X: ='Header.Brand.Icon'.X + 'Header.Brand.Icon'.Width + 'Header.DesignSystem'.Space2
+                        Y: =(Parent.Height - Self.Height) / 2
+                        Width: =Parent.Width - 'Header.Brand.Icon'.Width - 'Header.DesignSystem'.Space2
+                        Height: =Parent.Height * 0.6
+                        Text: =If('Header.DesignSystem'.IsMobile, "Leave App", HeaderComponent_v2.Title)
+                        Color: =If(HeaderComponent_v2.UseGradient, RGBA(255, 255, 255, 1), 'Header.DesignSystem'.Gray900)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Bold
+                        Size: =If('Header.DesignSystem'.IsMobile, 'Header.DesignSystem'.FontSizeLG, 'Header.DesignSystem'.FontSizeXL)
+                        
+            # Search Section (Desktop only)
+            - 'Header.Search.Container':
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: ='Header.Brand.Container'.X + 'Header.Brand.Container'.Width + 'Header.DesignSystem'.Space6
+                  Y: =(Parent.Height - Self.Height) / 2
+                  Width: =Parent.Width * 0.3
+                  Height: =Parent.Height * 0.55
+                  Fill: =RGBA(255, 255, 255, 0.9)
+                  BorderColor: =If(HeaderComponent_v2.UseGradient, RGBA(255, 255, 255, 0.3), 'Header.DesignSystem'.Gray300)
+                  BorderThickness: =1
+                  Visible: =And(HeaderComponent_v2.ShowSearch, 'Header.DesignSystem'.IsDesktop)
+                Children:
+                  - 'Header.Search.Icon':
+                      Control: Classic/Icon
+                      Properties:
+                        X: =Parent.X + 'Header.DesignSystem'.Space3
+                        Y: =(Parent.Height - Self.Height) / 2
+                        Width: =Parent.Height * 0.4
+                        Height: =Parent.Height * 0.4
+                        Icon: =Icon.Search
+                        Color: ='Header.DesignSystem'.Gray500
+                        
+                  - 'Header.Search.Input':
+                      Control: Classic/TextInput
+                      Properties:
+                        X: ='Header.Search.Icon'.X + 'Header.Search.Icon'.Width + 'Header.DesignSystem'.Space2
+                        Y: =Parent.Y
+                        Width: =Parent.Width - 'Header.Search.Icon'.Width - 'Header.DesignSystem'.Space3 - 'Header.DesignSystem'.Space2
+                        Height: =Parent.Height
+                        HintText: ="Tìm kiếm..."
+                        Color: ='Header.DesignSystem'.Gray700
+                        Fill: =RGBA(0, 0, 0, 0)
+                        BorderThickness: =0
+                        Font: =Font.'Open Sans'
+                        Size: ='Header.DesignSystem'.FontSizeBase
+                        OnChange: =HeaderComponent_v2.OnSearch()
+                        
+            # Actions Section
+            - 'Header.Actions.Container':
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =Parent.Width - Self.Width - 'Header.DesignSystem'.Space4
+                  Y: =Parent.Y
+                  Width: =If('Header.DesignSystem'.IsMobile, Parent.Width * 0.4, Parent.Width * 0.25)
+                  Height: =Parent.Height
+                Children:
+                  # Notification Center
+                  - 'Header.Notification.Container':
+                      Control: GroupContainer
+                      Variant: ManualLayout
+                      Properties:
+                        X: =Parent.X
+                        Y: =(Parent.Height - Self.Height) / 2
+                        Width: ='Header.DesignSystem'.TouchTargetComfortable
+                        Height: ='Header.DesignSystem'.TouchTargetComfortable
+                        Fill: =If(HeaderComponent_v2.UseGradient, RGBA(255, 255, 255, 0.1), 'Header.DesignSystem'.Gray100)
+                        BorderColor: =If(HeaderComponent_v2.UseGradient, RGBA(255, 255, 255, 0.2), 'Header.DesignSystem'.Gray200)
+                        BorderThickness: =1
+                        Visible: =HeaderComponent_v2.ShowNotification
+                      Children:
+                        - 'Header.Notification.Icon':
+                            Control: Classic/Icon
+                            Properties:
+                              X: =(Parent.Width - Self.Width) / 2
+                              Y: =(Parent.Height - Self.Height) / 2
+                              Width: =Parent.Height * 0.5
+                              Height: =Parent.Height * 0.5
+                              Icon: =Icon.Bell
+                              Color: =If(HeaderComponent_v2.UseGradient, RGBA(255, 255, 255, 1), 'Header.DesignSystem'.Gray600)
+                              OnSelect: =HeaderComponent_v2.OnNotificationClick()
+                              
+                        - 'Header.Notification.Badge':
+                            Control: Circle
+                            Properties:
+                              X: =Parent.Width * 0.65
+                              Y: =Parent.Height * 0.15
+                              Width: =Parent.Height * 0.35
+                              Height: =Parent.Height * 0.35
+                              Fill: ='Header.DesignSystem'.DangerColor
+                              Visible: =And(HeaderComponent_v2.ShowNotification, HeaderComponent_v2.NotificationCount > 0)
+                              
+                        - 'Header.Notification.Count':
+                            Control: Label
+                            Properties:
+                              X: ='Header.Notification.Badge'.X
+                              Y: ='Header.Notification.Badge'.Y
+                              Width: ='Header.Notification.Badge'.Width
+                              Height: ='Header.Notification.Badge'.Height
+                              Text: =If(HeaderComponent_v2.NotificationCount > 99, "99+", Text(HeaderComponent_v2.NotificationCount))
+                              Color: =RGBA(255, 255, 255, 1)
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Bold
+                              Size: ='Header.DesignSystem'.FontSizeXS
+                              Align: =Align.Center
+                              Visible: =And(HeaderComponent_v2.ShowNotification, HeaderComponent_v2.NotificationCount > 0)
+                              
+                  # User Profile Section
+                  - 'Header.UserProfile.Container':
+                      Control: GroupContainer
+                      Variant: ManualLayout
+                      Properties:
+                        X: ='Header.Notification.Container'.X + 'Header.Notification.Container'.Width + 'Header.DesignSystem'.Space3
+                        Y: =(Parent.Height - Self.Height) / 2
+                        Width: =If('Header.DesignSystem'.IsMobile, 'Header.DesignSystem'.TouchTargetComfortable, Parent.Width - 'Header.Notification.Container'.Width - 'Header.DesignSystem'.Space3)
+                        Height: ='Header.DesignSystem'.TouchTargetComfortable
+                        Fill: =If(HeaderComponent_v2.UseGradient, RGBA(255, 255, 255, 0.1), 'Header.DesignSystem'.Gray100)
+                        BorderColor: =If(HeaderComponent_v2.UseGradient, RGBA(255, 255, 255, 0.2), 'Header.DesignSystem'.Gray200)
+                        BorderThickness: =1
+                      Children:
+                        # User Avatar
+                        - 'Header.User.Avatar':
+                            Control: Circle
+                            Properties:
+                              X: =Parent.X + 'Header.DesignSystem'.Space2
+                              Y: =(Parent.Height - Self.Height) / 2
+                              Width: =Parent.Height * 0.7
+                              Height: =Parent.Height * 0.7
+                              Fill: =If(IsBlank(HeaderComponent_v2.UserAvatar), 'Header.DesignSystem'.SecondaryColor, RGBA(0, 0, 0, 0))
+                              BorderColor: =If(HeaderComponent_v2.UseGradient, RGBA(255, 255, 255, 0.3), 'Header.DesignSystem'.Gray300)
+                              BorderThickness: =1
+                              OnSelect: =HeaderComponent_v2.OnProfileClick()
+                              
+                        # User Initials (if no avatar)
+                        - 'Header.User.Initials':
+                            Control: Label
+                            Properties:
+                              X: ='Header.User.Avatar'.X
+                              Y: ='Header.User.Avatar'.Y
+                              Width: ='Header.User.Avatar'.Width
+                              Height: ='Header.User.Avatar'.Height
+                              Text: =Upper(Left(HeaderComponent_v2.UserName, 1) & If(Find(" ", HeaderComponent_v2.UserName) > 0, Mid(HeaderComponent_v2.UserName, Find(" ", HeaderComponent_v2.UserName) + 1, 1), ""))
+                              Color: =RGBA(255, 255, 255, 1)
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Bold
+                              Size: ='Header.DesignSystem'.FontSizeBase
+                              Align: =Align.Center
+                              Visible: =IsBlank(HeaderComponent_v2.UserAvatar)
+                              
+                        # User Info (Desktop only)
+                        - 'Header.User.Info.Container':
+                            Control: GroupContainer
+                            Variant: ManualLayout
+                            Properties:
+                              X: ='Header.User.Avatar'.X + 'Header.User.Avatar'.Width + 'Header.DesignSystem'.Space2
+                              Y: =Parent.Y + 'Header.DesignSystem'.Space1
+                              Width: =Parent.Width - 'Header.User.Avatar'.Width - ('Header.DesignSystem'.Space2 * 3) - 'Header.DesignSystem'.Space4
+                              Height: =Parent.Height - ('Header.DesignSystem'.Space1 * 2)
+                              Visible: ='Header.DesignSystem'.IsDesktop
+                            Children:
+                              - 'Header.User.Name':
+                                  Control: Label
+                                  Properties:
+                                    X: =Parent.X
+                                    Y: =Parent.Y
+                                    Width: =Parent.Width
+                                    Height: =Parent.Height * 0.6
+                                    Text: =HeaderComponent_v2.UserName
+                                    Color: =If(HeaderComponent_v2.UseGradient, RGBA(255, 255, 255, 1), 'Header.DesignSystem'.Gray900)
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Size: ='Header.DesignSystem'.FontSizeSM
+                                    
+                              - 'Header.User.Role':
+                                  Control: Label
+                                  Properties:
+                                    X: =Parent.X
+                                    Y: ='Header.User.Name'.Y + 'Header.User.Name'.Height
+                                    Width: =Parent.Width
+                                    Height: =Parent.Height * 0.4
+                                    Text: =HeaderComponent_v2.UserRole
+                                    Color: =If(HeaderComponent_v2.UseGradient, RGBA(255, 255, 255, 0.8), 'Header.DesignSystem'.Gray600)
+                                    Font: =Font.'Open Sans'
+                                    Size: ='Header.DesignSystem'.FontSizeXS
+                                    
+                        # Dropdown Arrow
+                        - 'Header.User.Dropdown.Arrow':
+                            Control: Classic/Icon
+                            Properties:
+                              X: =Parent.Width - Self.Width - 'Header.DesignSystem'.Space2
+                              Y: =(Parent.Height - Self.Height) / 2
+                              Width: =Parent.Height * 0.3
+                              Height: =Parent.Height * 0.3
+                              Icon: =Icon.ChevronDown
+                              Color: =If(HeaderComponent_v2.UseGradient, RGBA(255, 255, 255, 0.8), 'Header.DesignSystem'.Gray500)
+                              Visible: ='Header.DesignSystem'.IsDesktop
+                              
+                  # Mobile Menu Button (Mobile only)
+                  - 'Header.Mobile.Menu.Button':
+                      Control: GroupContainer
+                      Variant: ManualLayout
+                      Properties:
+                        X: =Parent.Width - Self.Width
+                        Y: =(Parent.Height - Self.Height) / 2
+                        Width: ='Header.DesignSystem'.TouchTargetComfortable
+                        Height: ='Header.DesignSystem'.TouchTargetComfortable
+                        Fill: =If(HeaderComponent_v2.UseGradient, RGBA(255, 255, 255, 0.1), 'Header.DesignSystem'.Gray100)
+                        BorderColor: =If(HeaderComponent_v2.UseGradient, RGBA(255, 255, 255, 0.2), 'Header.DesignSystem'.Gray200)
+                        BorderThickness: =1
+                        Visible: ='Header.DesignSystem'.IsMobile
+                      Children:
+                        - 'Header.Mobile.Menu.Icon':
+                            Control: Classic/Icon
+                            Properties:
+                              X: =(Parent.Width - Self.Width) / 2
+                              Y: =(Parent.Height - Self.Height) / 2
+                              Width: =Parent.Height * 0.5
+                              Height: =Parent.Height * 0.5
+                              Icon: =Icon.HamburgerMenu
+                              Color: =If(HeaderComponent_v2.UseGradient, RGBA(255, 255, 255, 1), 'Header.DesignSystem'.Gray700) 

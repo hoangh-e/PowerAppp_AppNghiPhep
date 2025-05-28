@@ -88,6 +88,54 @@ ComponentDefinition:
 - `Output` - Output properties
 - `Event` - Event properties
 
+### 1.4.1 Output Properties Restrictions
+**CRITICAL**: Output properties have special restrictions:
+
+```yaml
+# ✅ CORRECT - Output Property (NO Default value)
+PropertyName:
+  PropertyKind: Output
+  DisplayName: PropertyName
+  Description: "Property description"
+  DataType: Text
+  # NO Default property allowed for Output
+
+# ❌ WRONG - Output Property with Default (causes PA1003 error)
+PropertyName:
+  PropertyKind: Output
+  DisplayName: PropertyName
+  Description: "Property description"
+  DataType: Text
+  Default: ="Some value"  # ❌ FORBIDDEN for Output properties
+```
+
+**RULES for Output Properties**:
+- ❌ **NEVER** use `Default` property with Output properties
+- ❌ **NEVER** set default values for Output properties
+- ✅ **ONLY** use `PropertyKind`, `DisplayName`, `Description`, `DataType`
+- ✅ Output values must be calculated in component logic or child controls
+
+### 1.4.2 Input Properties Requirements
+**REQUIRED**: Input properties SHOULD have Default values:
+
+```yaml
+# ✅ CORRECT - Input Property with Default
+PropertyName:
+  PropertyKind: Input
+  DisplayName: PropertyName
+  Description: "Property description"
+  DataType: Text
+  Default: ="Default value"  # ✅ REQUIRED for Input properties
+
+# ⚠️ ACCEPTABLE but not recommended - Input without Default
+PropertyName:
+  PropertyKind: Input
+  DisplayName: PropertyName
+  Description: "Property description"
+  DataType: Text
+  # Missing Default - will use system default
+```
+
 ### 1.5 Event Properties Structure
 **REQUIRED**: Event properties MUST follow this structure:
 
@@ -149,10 +197,110 @@ Control: GroupContainer@1.3.0
 
 **GroupContainer Control** - NEVER use these properties:
 - `BorderRadius` - **NOT SUPPORTED for GroupContainer with ManualLayout variant**
+- `OnSelect` - **NOT SUPPORTED for GroupContainer with ManualLayout variant (PA2108 error)**
 
 **Classic/TextInput Control** - NEVER use these properties:
 - `Self.Focused` - Not recognized, use `Self.Focus` instead
 - `Self.IsHovered` - Not recognized, use hover events instead
+
+### 2.3.1 PA2108 Error - Invalid Properties for Control Types
+**CRITICAL ERROR**: Using unsupported properties causes PA2108 error:
+
+```yaml
+# ❌ WRONG - Causes PA2108 Error
+- 'Container.Name':
+    Control: GroupContainer
+    Variant: ManualLayout
+    Properties:
+      OnSelect: =SomeAction()  # ❌ FORBIDDEN - causes PA2108
+
+# ✅ CORRECT - Use Button or other interactive control instead
+- 'Container.Name':
+    Control: GroupContainer
+    Variant: ManualLayout
+    Properties:
+      # No OnSelect property for GroupContainer
+    Children:
+      - 'Interactive.Button':
+          Control: Classic/Button
+          Properties:
+            OnSelect: =SomeAction()  # ✅ OK for Button controls
+```
+
+**ERROR MESSAGE**: `error PA2108 : Unknown property 'OnSelect' for control type 'GroupContainer' and variant 'ManualLayout'.`
+
+**SOLUTION**: 
+- Remove `OnSelect` from GroupContainer, OR
+- Use interactive controls (Button, Icon) inside GroupContainer for click events
+
+### 2.3.2 TextMode Property Restrictions
+**CRITICAL**: TextMode property only accepts these values:
+
+```yaml
+# ✅ CORRECT - Valid TextMode values
+- 'Input.Field':
+    Control: Classic/TextInput
+    Properties:
+      TextMode: =TextMode.SingleLine  # Default single line input
+      
+- 'Input.Password':
+    Control: Classic/TextInput
+    Properties:
+      TextMode: =TextMode.Password    # Password input (masked)
+      
+- 'Input.MultiLine':
+    Control: Classic/TextInput
+    Properties:
+      TextMode: =TextMode.MultiLine   # Multi-line text area
+
+# ❌ WRONG - Invalid TextMode values
+- 'Input.Field':
+    Control: Classic/TextInput
+    Properties:
+      TextMode: =TextMode.Email       # ❌ NOT SUPPORTED
+      TextMode: =TextMode.Number      # ❌ NOT SUPPORTED
+      TextMode: ="SingleLine"        # ❌ Use enumeration, not string
+```
+
+**VALID TextMode VALUES**:
+- `TextMode.SingleLine` - Single line text input (default)
+- `TextMode.MultiLine` - Multi-line text area
+- `TextMode.Password` - Password input with masked characters
+
+### 2.3.3 Invalid Self Property References
+**CRITICAL ERROR**: Using invalid Self properties causes name recognition errors:
+
+```yaml
+# ❌ WRONG - Invalid Self property references
+- 'Input.Field':
+    Control: Classic/TextInput
+    Properties:
+      BorderColor: =If('Input.Field'.Focused, RGBA(0, 120, 212, 1), RGBA(200, 200, 200, 1))  # ❌ 'Focused' isn't recognized
+
+# ✅ CORRECT - Use valid Self properties
+- 'Input.Field':
+    Control: Classic/TextInput
+    Properties:
+      BorderColor: =If(Self.Focus, RGBA(0, 120, 212, 1), RGBA(200, 200, 200, 1))  # ✅ Use Self.Focus instead
+
+# ✅ ALTERNATIVE - Use control reference with valid properties
+- 'Input.Field':
+    Control: Classic/TextInput
+    Properties:
+      BorderColor: =If('Input.Field'.DisplayMode = DisplayMode.Edit, RGBA(0, 120, 212, 1), RGBA(200, 200, 200, 1))
+```
+
+**INVALID Self PROPERTIES**:
+- `'ControlName'.Focused` - Use `Self.Focus` or focus events instead
+- `'ControlName'.IsHovered` - Use hover events instead
+- `'ControlName'.IsPressed` - Use press events instead
+
+**VALID Self PROPERTIES**:
+- `Self.Focus` - Focus state
+- `Self.DisplayMode` - Display mode state
+- `Self.Visible` - Visibility state
+- `Self.Width` - Control width
+- `Self.Height` - Control height
 
 ### 2.4 Required Properties for All Controls
 Every control MUST have these properties when applicable:
@@ -246,6 +394,114 @@ Control: PDFViewer
 
 # Icons
 Control: Classic/Icon
+```
+
+### 4.2.1 Icon Control Rules
+**CRITICAL**: Icon controls have specific restrictions:
+
+#### Valid Icon Properties
+```yaml
+# ✅ CORRECT - Icon Control Structure
+- 'Icon.Name':
+    Control: Classic/Icon
+    Properties:
+      X: =Parent.X + 10
+      Y: =Parent.Y + 10
+      Width: =Parent.Height * 0.5
+      Height: =Parent.Height * 0.5
+      Icon: =Icon.ValidIconName  # Must use Icon enumeration
+      Color: =RGBA(32, 54, 71, 1)
+      Rotation: =0  # Optional rotation in degrees
+```
+
+#### Icon Enumeration - ONLY THESE ICONS ARE VALID
+**CRITICAL**: Only use icons from the official Power Apps Icon enumeration:
+
+**Navigation & Actions**:
+- `Icon.Add` - Plus/Add icon
+- `Icon.Cancel` - X/Cancel icon  
+- `Icon.Check` - Checkmark icon
+- `Icon.ChevronDown` - Down arrow
+- `Icon.ChevronLeft` - Left arrow
+- `Icon.ChevronRight` - Right arrow
+- `Icon.ChevronUp` - Up arrow
+- `Icon.Edit` - Edit/Pencil icon
+- `Icon.Save` - Save/Disk icon
+- `Icon.Delete` - Delete/Trash icon
+- `Icon.Reload` - Refresh/Reload icon
+- `Icon.Search` - Search/Magnifying glass
+- `Icon.Filter` - Filter icon
+- `Icon.Settings` - Settings/Gear icon
+- `Icon.Home` - Home icon
+- `Icon.Back` - Back arrow
+- `Icon.Forward` - Forward arrow
+
+**Communication & Media**:
+- `Icon.Mail` - Email icon
+- `Icon.Phone` - Phone icon
+- `Icon.Bell` - Notification bell
+- `Icon.Camera` - Camera icon
+- `Icon.Microphone` - Microphone icon
+- `Icon.Video` - Video icon
+
+**Files & Documents**:
+- `Icon.Document` - Document icon
+- `Icon.Download` - Download arrow
+- `Icon.Folder` - Folder icon
+- `Icon.Print` - Print icon
+
+**Calendar & Time**:
+- `Icon.CalendarBlank` - Calendar icon
+- `Icon.Clock` - Clock icon
+- `Icon.Timer` - Timer icon
+
+**People & Social**:
+- `Icon.Person` - Person/User icon
+- `Icon.People` - Multiple people icon
+- `Icon.Contact` - Contact icon
+
+**Status & Indicators**:
+- `Icon.CheckBadge` - Check badge
+- `Icon.Warning` - Warning triangle
+- `Icon.Error` - Error icon
+- `Icon.Information` - Info icon
+- `Icon.Lock` - Lock icon
+- `Icon.Unlock` - Unlock icon
+
+**UI Elements**:
+- `Icon.Menu` - Menu/Hamburger icon
+- `Icon.HamburgerMenu` - Hamburger menu
+- `Icon.MoreVertical` - Three dots vertical
+- `Icon.DetailList` - List icon
+- `Icon.Sync` - Sync icon
+
+#### Icon Property Restrictions
+**NEVER USE** these properties with Classic/Icon:
+- `BorderRadius` - Not supported for icons
+- `DropShadow` - Not supported for icons  
+- `Fill` - Use `Color` instead
+- `BorderColor` - Not supported for icons
+- `BorderThickness` - Not supported for icons
+
+#### Required Icon Properties
+```yaml
+# ✅ REQUIRED Properties for Classic/Icon
+Properties:
+  X: =Parent.X + 10          # Position relative to parent
+  Y: =Parent.Y + 10          # Position relative to parent  
+  Width: =Parent.Height * 0.5 # Size relative to parent
+  Height: =Parent.Height * 0.5 # Size relative to parent
+  Icon: =Icon.ValidName       # MUST use Icon enumeration
+  Color: =RGBA(32, 54, 71, 1) # Icon color
+```
+
+#### Optional Icon Properties
+```yaml
+# ✅ OPTIONAL Properties for Classic/Icon
+Properties:
+  Rotation: =0               # Rotation in degrees (0-360)
+  Visible: =true             # Visibility
+  OnSelect: =Navigate(Screen) # Click action
 ```
 
 ### 4.3 Layout Controls
@@ -440,7 +696,42 @@ ComponentDefinitions:
 - `DisplayName` - Human readable name
 - `Description` - Property description
 - `DataType` - Data type
-- `Default` - Default value
+- `Default` - Default value (for Input properties only)
+
+### 7.2.1 PA1003 Error - Output Properties with Default Values
+**CRITICAL ERROR**: Using `Default` with Output properties causes PA1003 error:
+
+```yaml
+# ❌ WRONG - Causes PA1003 Error
+PrimaryColor:
+  PropertyKind: Output
+  DisplayName: PrimaryColor
+  Description: "Màu chính"
+  DataType: Color
+  Default: =RGBA(59, 130, 246, 1)  # ❌ FORBIDDEN - causes PA1003
+
+# ✅ CORRECT - Output Property without Default
+PrimaryColor:
+  PropertyKind: Output
+  DisplayName: PrimaryColor
+  Description: "Màu chính"
+  DataType: Color
+  # No Default property for Output
+
+# ✅ ALTERNATIVE - Convert to Input Property
+PrimaryColor:
+  PropertyKind: Input  # Changed to Input
+  DisplayName: PrimaryColor
+  Description: "Màu chính"
+  DataType: Color
+  Default: =RGBA(59, 130, 246, 1)  # ✅ OK for Input properties
+```
+
+**ERROR MESSAGE**: `(line,column) : error PA1003 : The schema keyword 'Default' is not known or allowed in this context.`
+
+**SOLUTION**: 
+- Remove `Default` property from Output properties, OR
+- Convert Output properties to Input properties if defaults are needed
 
 ### 7.3 Event Property Errors
 **WRONG** event structure:
@@ -483,14 +774,103 @@ OnSelect: =NavigationComponent.OnNavigate(); Set(varActiveScreen, "Dashboard")
 ```
 
 ### 7.5 Text Property Formatting
-**AVOID** spaces after colons in text content:
+**CRITICAL**: Avoid spaces after colons in text content, especially in key-value pairs:
+
+#### 7.5.1 Key-Value Pair Formatting
+**NEVER** use spaces after colons in key-value text content:
 
 ```yaml
-# ✅ CORRECT
-Text: ="Demo:Phần lớn của ứng dụng"
+# ✅ CORRECT - No spaces after colons in key-value pairs
+Text: =Concatenate("ShadowSM:DropShadow.Light;", "ShadowMD:DropShadow.Regular;", "ShadowLG:DropShadow.Bold;", "ShadowXL:DropShadow.ExtraBold")
 
-# ❌ WRONG  
+# ❌ WRONG - Spaces after colons in key-value pairs
+Text: =Concatenate("ShadowSM: DropShadow.Light;", "ShadowMD: DropShadow.Regular;", "ShadowLG: DropShadow.Bold;", "ShadowXL: DropShadow.ExtraBold")
+```
+
+#### 7.5.2 Design System Constants Formatting
+**ALWAYS** format design system constants without spaces after colons:
+
+```yaml
+# ✅ CORRECT - Design system color constants
+Text: |
+  =Concatenate(
+    "Primary:RGBA(59, 130, 246, 1);",
+    "Secondary:RGBA(99, 102, 241, 1);",
+    "Success:RGBA(34, 197, 94, 1);",
+    "Warning:RGBA(251, 191, 36, 1);",
+    "Danger:RGBA(239, 68, 68, 1)"
+  )
+
+# ❌ WRONG - Spaces after colons
+Text: |
+  =Concatenate(
+    "Primary: RGBA(59, 130, 246, 1);",
+    "Secondary: RGBA(99, 102, 241, 1);",
+    "Success: RGBA(34, 197, 94, 1);",
+    "Warning: RGBA(251, 191, 36, 1);",
+    "Danger: RGBA(239, 68, 68, 1)"
+  )
+```
+
+#### 7.5.3 Typography and Spacing Constants
+**CONSISTENT** formatting for all design system constants:
+
+```yaml
+# ✅ CORRECT - Typography constants
+Text: =Concatenate("TextXS:", Text(Parent.Height * 0.012), ";", "TextSM:", Text(Parent.Height * 0.014), ";", "TextBase:", Text(Parent.Height * 0.016))
+
+# ✅ CORRECT - Spacing constants  
+Text: =Concatenate("Space1:", Text(Parent.Width * 0.004), ";", "Space2:", Text(Parent.Width * 0.008), ";", "Space3:", Text(Parent.Width * 0.012))
+
+# ✅ CORRECT - Border radius constants
+Text: =Concatenate("RadiusNone:0;", "RadiusSM:", Text(Parent.Height * 0.002), ";", "RadiusMD:", Text(Parent.Height * 0.004))
+
+# ❌ WRONG - Inconsistent spacing
+Text: =Concatenate("TextXS: ", Text(Parent.Height * 0.012), ";", "TextSM: ", Text(Parent.Height * 0.014))
+```
+
+#### 7.5.4 General Text Content Rules
+**STANDARD** text content can have spaces after colons:
+
+```yaml
+# ✅ CORRECT - Standard descriptive text (spaces allowed)
 Text: ="Demo: Phần lớn của ứng dụng"
+Text: ="Status: Đang chờ phê duyệt"
+Text: ="Role: Quản lý nhân sự"
+
+# ✅ CORRECT - Key-value data format (no spaces)
+Text: ="UserID:EMP001;Name:Nguyễn Văn An;Role:Manager"
+
+# ❌ WRONG - Mixed formatting in data strings
+Text: ="UserID: EMP001;Name: Nguyễn Văn An;Role: Manager"
+```
+
+#### 7.5.5 Detection Rules for Text Formatting
+**AUTOMATED DETECTION** patterns for text formatting violations:
+
+```bash
+# Detect spaces after colons in Concatenate key-value pairs
+grep -n "Concatenate.*\".*: [^\"]*\"" src/**/*.yaml
+
+# Detect inconsistent formatting in design system constants
+grep -n "Text.*=.*Concatenate.*: [A-Z]" src/**/*.yaml
+```
+
+**VIOLATION PATTERNS**:
+```yaml
+# ❌ PATTERN 1: Space after colon in design constants
+"Primary: RGBA(59, 130, 246, 1)"
+"ShadowSM: DropShadow.Light"
+"TextXS: "
+
+# ❌ PATTERN 2: Mixed spacing in data strings
+"Key1: Value1;Key2:Value2"
+
+# ✅ CORRECT PATTERNS: Consistent formatting
+"Primary:RGBA(59, 130, 246, 1)"
+"ShadowSM:DropShadow.Light"
+"TextXS:"
+"Key1:Value1;Key2:Value2"
 ```
 
 ### 7.6 Absolute Positioning
@@ -543,7 +923,7 @@ ComponentDefinitions:
 
 #### For Short Formulas (Single Line):
 ```yaml
-# ✅ CORRECT - Single line formula
+# ✅ CORRECT - Single line formula under 120 characters
 OnSelect: =Set(varExample, true); Navigate(NextScreen)
 ```
 
@@ -561,12 +941,81 @@ OnSelect: =Set(varIsLoading, true); Set(varLoginError, "");
           Set(varLoginError, "Email hoặc mật khẩu không đúng"); Set(varIsLoading, false))
 ```
 
+#### For Concatenate Functions (Common Violation):
+```yaml
+# ✅ CORRECT - Concatenate with pipe operator
+Text: |
+  =Concatenate(
+    "Primary: RGBA(59, 130, 246, 1);",
+    "Secondary: RGBA(99, 102, 241, 1);",
+    "Success: RGBA(34, 197, 94, 1)"
+  )
+
+# ❌ WRONG - Concatenate without pipe operator
+Text: =Concatenate(
+    "Primary: RGBA(59, 130, 246, 1);",
+    "Secondary: RGBA(99, 102, 241, 1);",
+    "Success: RGBA(34, 197, 94, 1)"
+  )
+```
+
 **RULES for Multi-line Formulas:**
 - **ALWAYS** use pipe operator (`|`) for formulas longer than 120 characters
+- **ALWAYS** use pipe operator (`|`) for ANY multi-line formula regardless of length
 - **ALWAYS** place the pipe operator (`|`) immediately after the property name and colon
 - **ALWAYS** indent the formula content with proper spacing (typically 20 spaces)
 - **NEVER** split formula without using pipe operator
-- **ESPECIALLY** use for `OnSelect`, `OnChange`, `OnVisible` with complex logic
+- **ESPECIALLY** use for `OnSelect`, `OnChange`, `OnVisible`, `Text` with complex logic
+
+### 7.9.1 Formula Length Detection
+**CRITICAL**: Automated detection of formula length violations:
+
+#### Detection Rules:
+- **Single line > 120 characters**: MUST use pipe operator
+- **Multi-line formula**: MUST use pipe operator regardless of length
+- **Concatenate functions**: MUST use pipe operator if multi-line
+
+#### Detection Scripts:
+```bash
+# Bash - Find formulas longer than 120 characters
+grep -n "Text: =.*" src/**/*.yaml | awk 'length($0) > 130'
+
+# Bash - Find multi-line formulas without pipe operator
+grep -A 10 "Text: =.*(" src/**/*.yaml | grep -v "Text: |"
+
+# PowerShell - Find long formulas
+Get-Content "src/**/*.yaml" | Select-String "Text: =.*" | Where-Object {$_.Line.Length -gt 120}
+```
+
+#### Common Violation Patterns:
+```yaml
+# ❌ PATTERN 1: Long single-line Concatenate
+Text: =Concatenate("A: ", value1, ";", "B: ", value2, ";", "C: ", value3, ";", "D: ", value4)
+
+# ❌ PATTERN 2: Multi-line Concatenate without pipe
+Text: =Concatenate(
+  "Line 1",
+  "Line 2",
+  "Line 3"
+)
+
+# ❌ PATTERN 3: Long single-line formula
+OnSelect: =Set(var1, value1); Set(var2, value2); Set(var3, value3); Navigate(Screen); UpdateContext({key: value})
+
+# ✅ CORRECT: All above with pipe operator
+Text: |
+  =Concatenate("A: ", value1, ";", "B: ", value2, ";", "C: ", value3, ";", "D: ", value4)
+
+Text: |
+  =Concatenate(
+    "Line 1",
+    "Line 2", 
+    "Line 3"
+  )
+
+OnSelect: |
+  =Set(var1, value1); Set(var2, value2); Set(var3, value3); Navigate(Screen); UpdateContext({key: value})
+```
 
 ### 7.10 Control Reference Errors
 **CRITICAL**: Use single quotes for control names with dots:
@@ -749,5 +1198,15 @@ Properties:
 13. **RECTANGLE PROPERTIES** - Never use `BorderRadius` or individual corner radius properties for Rectangle
 14. **GROUPCONTAINER PROPERTIES** - Never use `BorderRadius` for GroupContainer with ManualLayout variant
 15. **DROPSHADOW RESTRICTIONS** - Only use DropShadow for controls that explicitly support it (NOT Classic/Button)
+16. **PA1003 ERROR PREVENTION** - NEVER use `Default` property with Output properties (causes PA1003 error)
+17. **ICON ENUMERATION** - ONLY use valid icons from Icon enumeration (Icon.Add, Icon.Search, etc.)
+18. **ICON PROPERTIES** - Never use BorderRadius, DropShadow, Fill, BorderColor with Classic/Icon controls
+19. **FORMULA LENGTH DETECTION** - Use automated scripts to detect formulas >120 chars without pipe operator
+20. **CONCATENATE FUNCTIONS** - ALWAYS use pipe operator for multi-line Concatenate functions
+21. **YAML SYNTAX VALIDATION** - Validate YAML syntax before deployment to prevent parsing errors
+22. **TEXT FORMATTING CONSISTENCY** - NEVER use spaces after colons in key-value pairs (e.g., "Key:Value" not "Key: Value")
+23. **PA2108 ERROR PREVENTION** - NEVER use `OnSelect` with GroupContainer ManualLayout (causes PA2108 error)
+24. **TEXTMODE RESTRICTIONS** - ONLY use TextMode.SingleLine, TextMode.MultiLine, TextMode.Password
+25. **INVALID SELF PROPERTIES** - NEVER use `'ControlName'.Focused` - use `Self.Focus` or focus events instead
 
 **Agent must follow these rules ABSOLUTELY when generating Power App YAML code.** 

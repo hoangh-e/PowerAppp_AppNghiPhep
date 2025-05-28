@@ -173,7 +173,6 @@ ComponentDefinitions:
                     "Search", Icon.Search,
                     "Filter", Icon.Filter,
                     "Download", Icon.Download,
-                    "Upload", Icon.Upload,
                     "Settings", Icon.Settings,
                     "User", Icon.Person,
                     "Calendar", Icon.CalendarBlank,

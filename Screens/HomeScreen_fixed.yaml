@@ -470,7 +470,7 @@ Screens:
                         Y: =70
                         Width: =Parent.Width - 40
                         Height: =80
-                        Fill: =If(Self.Hover, RGBA(243, 246, 248, 1), Transparent)
+                        Fill: =Transparent
                         HoverFill: =RGBA(243, 246, 248, 1)
                       Children:
                         - ActivityItem1.Indicator:
@@ -531,7 +531,7 @@ Screens:
                         Y: =150
                         Width: =Parent.Width - 40
                         Height: =80
-                        Fill: =If(Self.Hover, RGBA(243, 246, 248, 1), Transparent)
+                        Fill: =Transparent
                         HoverFill: =RGBA(243, 246, 248, 1)
                       Children:
                         - ActivityItem2.Indicator:
@@ -592,7 +592,7 @@ Screens:
                         Y: =230
                         Width: =Parent.Width - 40
                         Height: =80
-                        Fill: =If(Self.Hover, RGBA(243, 246, 248, 1), Transparent)
+                        Fill: =Transparent
                         HoverFill: =RGBA(243, 246, 248, 1)
                       Children:
                         - ActivityItem3.Indicator:
