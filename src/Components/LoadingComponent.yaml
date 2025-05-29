@@ -68,7 +68,6 @@ ComponentDefinitions:
             BorderColor: =RGBA(229, 231, 235, 1)
             BorderThickness: =1
             DropShadow: =DropShadow.Light
-            BorderRadius: =8
             Visible: =LoadingComponent.IsVisible
           Children:
             # Loading Spinner
@@ -122,7 +121,6 @@ ComponentDefinitions:
                         Width: =Parent.Width
                         Height: =4
                         Fill: =RGBA(229, 231, 235, 1)
-                        BorderRadius: =2
                         BorderThickness: =0
                         
                   # Progress Fill
@@ -134,7 +132,6 @@ ComponentDefinitions:
                         Width: ='Loading.Progress.Background'.Width * (LoadingComponent.ProgressValue / 100)
                         Height: ='Loading.Progress.Background'.Height
                         Fill: =RGBA(33, 150, 243, 1)
-                        BorderRadius: =2
                         BorderThickness: =0
                         
                   # Progress Text

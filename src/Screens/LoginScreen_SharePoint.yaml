@@ -29,7 +29,6 @@ Screens:
             Height: =If(App.Width < 768, Parent.Height * 0.8, Parent.Height * 0.7)
             Fill: =RGBA(255, 255, 255, 1)
             DropShadow: =DropShadow.Bold
-            BorderRadius: =8
           Children:
             # Company Logo
             - 'Login.Logo':
@@ -211,7 +210,7 @@ Screens:
                         Y: =Parent.Y + Parent.Height * 0.9
                         Width: =Parent.Width
                         Height: =Parent.Height * 0.1
-                        Text: ="Hoặc liên hệ IT Support: support@asiashine.com"
+                        Text: ="Hoặc liên hệ IT Support:" & " " & "support@asiashine.com"
                         Color: =RGBA(108, 117, 125, 1)
                         Font: =Font.'Open Sans'
                         Size: =12

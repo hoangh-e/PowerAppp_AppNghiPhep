@@ -90,7 +90,6 @@ ComponentDefinitions:
       Height: =App.Height
       Width: =App.Width
     Children:
-      # Design System Reference
       - 'Card.DesignSystem':
           Control: CanvasComponent
           ComponentName: EnhancedDesignSystemComponent
@@ -173,7 +172,7 @@ ComponentDefinitions:
                           "phone", Icon.Phone,
                           "home", Icon.Home,
                           "edit", Icon.Edit,
-                          "delete", Icon.Delete,
+                          "delete", Icon.Cancel,
                           "add", Icon.Add,
                           "search", Icon.Search,
                           "filter", Icon.Filter,

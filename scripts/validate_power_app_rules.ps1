@@ -9,6 +9,37 @@ param(
 Write-Host "KIEM TRA POWER APP RULES" -ForegroundColor Cyan
 Write-Host "================================" -ForegroundColor Cyan
 
+# Danh sách icon hợp lệ từ power-app-rules
+$ValidIcons = @(
+    "Add", "AddDocument", "AddLibrary", "AddToCalendar", "AddUser", "Airplane", "Alarm", 
+    "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowUp", "BackArrow", "Bell", "Blocked", 
+    "Bookmark", "BookmarkFilled", "Bug", "Bus", "Calculator", "CalendarBlank", "Camera", 
+    "CameraAperture", "Cancel", "CancelBadge", "Cars", "Check", "CheckBadge", "ChevronDown", 
+    "ChevronLeft", "ChevronRight", "ChevronUp", "ClearDrawing", "Clock", "CollapseView", 
+    "ColorPicker", "Compose", "ComputerDesktop", "Controller", "Copy", "Crop", "Currency", 
+    "Cut", "Database", "DetailList", "Devices", "Diamond", "DockCheckProperties", "DockLeft", 
+    "DockRight", "Document", "DocumentPDF", "DocumentWithContent", "Download", "Draw", "Edit", 
+    "EmojiFrown", "EmojiHappy", "EmojiNeutral", "EmojiSad", "EmojiSmile", "Enhance", "Erase", 
+    "Error", "ExpandView", "Export", "Filter", "FilterFlat", "FilterFlatFilled", "Flag", 
+    "Folder", "ForkKnife", "Globe", "GlobeChangesPending", "GlobeError", "GlobeNotConnected", 
+    "GlobeRefresh", "GlobeWarning", "HalfFilledCircle", "Hamburger", "Health", "Heart", "Help", 
+    "Hide", "History", "Home", "HorizontalLine", "Hospital", "Import", "Information", "Items", 
+    "Journal", "Key", "Laptop", "Leave", "LevelsLayersItems", "Lightbulb", "LightningBolt", 
+    "LikeDislike", "LineWeight", "Link", "ListScrollEmpty", "ListScrollWatchlist", 
+    "ListWatchlistRemind", "Location", "Lock", "LogJournal", "Mail", "Manufacture", "Medical", 
+    "Message", "Microphone", "Mobile", "Money", "More", "Newspaper", "NextArrow", "Note", 
+    "Notebook", "OpenInNewWindow", "OptionsList", "PaperClip", "Paste", "People", "Person", 
+    "Phone", "Phonebook", "Pictures", "Pin", "Post", "Print", "Printing3D", "Publish", 
+    "QuestionMark", "RadarActivityMonitor", "Redo", "Reload", "Save", "Scan", "Search", "Send", 
+    "Settings", "Share", "Shirt", "Shop", "ShoppingCart", "Show", "ShowDrawing", "SignOut", 
+    "Site", "SkipBack", "SkipForward", "SkipNext", "SkipPrevious", "Slider", "Sort", "Speed", 
+    "Split", "SplitHorizontal", "SplitVertical", "Star", "StarFilled", "Stop", "Strikethrough", 
+    "Subtract", "Support", "Sync", "Tablet", "Tag", "Text", "ThumbsDown", "ThumbsDownFilled", 
+    "ThumbsUp", "ThumbsUpFilled", "Tools", "Train", "Transportation", "Trash", "Tray", 
+    "Trending", "TrendingHashtag", "TrendingUpwards", "Undo", "Unlock", "VerticalLine", "Video", 
+    "View", "Waffle", "Warning", "Waypoint", "Weather", "ZoomIn", "ZoomOut"
+)
+
 $totalFiles = 0
 $totalErrors = 0
 $results = @()
@@ -61,6 +92,27 @@ function Test-PowerAppFile {
         $errors += "HIGH: ZIndex property khong duoc ho tro"
     }
     
+    # 9. Check Invalid Icons
+    $iconMatches = [regex]::Matches($content, "Icon:\s*=\s*Icon\.(\w+)|=\s*Icon\.(\w+)")
+    foreach ($match in $iconMatches) {
+        # Check both capture groups
+        $iconName = if($match.Groups[1].Value) { $match.Groups[1].Value } else { $match.Groups[2].Value }
+        if ($iconName -and $iconName -ne "" -and $ValidIcons -notcontains $iconName) {
+            $lineNumber = ($content.Substring(0, $match.Index) -split "`n").Count
+            $errors += "CRITICAL: Icon khong hop le 'Icon.$iconName' tai line $lineNumber (xem power-app-rules section 6.1)"
+        }
+    }
+    
+    # 10. Check TextMode property for Classic/TextInput (should be Mode)
+    if ($content -match "Control:\s*Classic/TextInput" -and $content -match "TextMode:") {
+        $errors += "CRITICAL: Su dung 'TextMode:' cho Classic/TextInput, phai su dung 'Mode:' thay the"
+    }
+    
+    # 11. Check Text formatting violations
+    if ($content -match 'Text:\s*=\s*"[^"]*:\s+[^"]*"') {
+        $errors += "MEDIUM: Vi pham text formatting - co space sau dau ':' trong text"
+    }
+    
     return $errors
 }
 
@@ -96,7 +148,7 @@ $report += "---`n`n"
 $report += "## CHI TIET LOI`n`n"
 
 if ($results.Count -eq 0) {
-    $report += "KHONG CO LOI PHAT HIEN`n`n"
+    $report += "✅ KHONG CO LOI PHAT HIEN`n`n"
     $report += "Tat ca files deu tuan thu Power App rules.`n"
 } else {
     foreach ($result in $results) {
@@ -113,7 +165,8 @@ if ($results.Count -eq 0) {
     $report += "### PRIORITY 1 - CRITICAL`n"
     $report += "- Sua Component Definition Structure`n"
     $report += "- Sua Custom Properties Structure`n"
-    $report += "- Chuyen multi-line formulas thanh single-line`n`n"
+    $report += "- Chuyen multi-line formulas thanh single-line`n"
+    $report += "- Fix icon khong hop le theo power-app-rules section 6.1`n`n"
     $report += "### PRIORITY 2 - HIGH`n"
     $report += "- Loai bo BorderRadius khoi Classic controls`n"
     $report += "- Sua Self properties khong hop le`n"
@@ -121,6 +174,7 @@ if ($results.Count -eq 0) {
     $report += "### PRIORITY 3 - MEDIUM`n"
     $report += "- Kiem tra Align properties`n"
     $report += "- Kiem tra DropShadow properties`n"
+    $report += "- Fix text formatting violations`n"
 }
 
 # Write report

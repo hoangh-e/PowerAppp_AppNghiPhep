@@ -64,7 +64,6 @@ Screens:
                   BorderColor: =RGBA(230, 230, 230, 1)
                   BorderThickness: =Parent.Width * 0.001
                   DropShadow: =DropShadow.Light
-                  BorderRadius: =8
                 Children:
                   # Avatar Section
                   - 'Profile.Avatar.Container':
@@ -151,7 +150,7 @@ Screens:
                               Y: =Parent.Y + Parent.Height * 0.25
                               Width: =Parent.Width
                               Height: =Parent.Height * 0.2
-                              Text: ="Mã NV: " & varCurrentUser.MaNhanVien
+                              Text: ="Mã NV:" & " " & varCurrentUser.MaNhanVien
                               Color: =RGBA(107, 114, 128, 1)
                               Font: =Font.'Open Sans'
                               Size: =14
@@ -184,7 +183,7 @@ Screens:
                               Height: =Parent.Height * 0.35
                               Text: =If(Not(IsBlank(varDepartmentInfo)), 
                                 varDepartmentInfo.TenDonVi & Char(10) & 
-                                If(Not(IsBlank(varManagerInfo)), "Quản lý: " & varManagerInfo.HoTen, ""), "")
+                                If(Not(IsBlank(varManagerInfo)), "Quản lý:" & " " & varManagerInfo.HoTen, ""), "")
                               Color: =RGBA(55, 65, 81, 1)
                               Font: =Font.'Open Sans'
                               Size: =14
@@ -246,7 +245,6 @@ Screens:
                   BorderColor: =RGBA(230, 230, 230, 1)
                   BorderThickness: =Parent.Width * 0.001
                   DropShadow: =DropShadow.Light
-                  BorderRadius: =8
                 Children:
                   # Tab Headers
                   - 'Profile.TabHeaders.Container':
@@ -260,7 +258,6 @@ Screens:
                         Fill: =RGBA(248, 249, 250, 1)
                         BorderColor: =RGBA(229, 231, 235, 1)
                         BorderThickness: =Parent.Width * 0.0005
-                        BorderRadius: =4
                       Children:
                         - 'Profile.Tab.Personal':
                             Control: CanvasComponent
@@ -330,14 +327,14 @@ Screens:
                                     Width: =Parent.Width * 0.96
                                     Height: =Parent.Height * 0.96
                                     Text: =Concatenate(
-                                      "📧 Email: ", varCurrentUser.Email, Char(10), Char(10),
-                                      "📞 Số điện thoại: ", If(IsBlank(varCurrentUser.SoDienThoai), "Chưa cập nhật", varCurrentUser.SoDienThoai), Char(10), Char(10),
-                                      "💼 Chức danh: ", If(IsBlank(varCurrentUser.ChucDanh), "Chưa cập nhật", varCurrentUser.ChucDanh), Char(10), Char(10),
-                                      "🎂 Ngày sinh: ", If(IsBlank(varCurrentUser.NgaySinh), "Chưa cập nhật", Text(varCurrentUser.NgaySinh, "dd/mm/yyyy")), Char(10), Char(10),
-                                      "👤 Giới tính: ", If(IsBlank(varCurrentUser.GioiTinh), "Chưa cập nhật", varCurrentUser.GioiTinh), Char(10), Char(10),
-                                      "📍 Địa chỉ: ", If(IsBlank(varCurrentUser.DiaChi), "Chưa cập nhật", varCurrentUser.DiaChi), Char(10), Char(10),
-                                      "📅 Ngày vào làm: ", If(IsBlank(varCurrentUser.NgayVaoLam), "Chưa cập nhật", Text(varCurrentUser.NgayVaoLam, "dd/mm/yyyy")), Char(10), Char(10),
-                                      "📝 Ngày tạo: ", Text(varCurrentUser.NgayTao, "dd/mm/yyyy hh:mm")
+                                      "📧 Email:" & " " & varCurrentUser.Email, Char(10), Char(10),
+                                      "📞 Số điện thoại:" & " " & If(IsBlank(varCurrentUser.SoDienThoai), "Chưa cập nhật", varCurrentUser.SoDienThoai), Char(10), Char(10),
+                                      "💼 Chức danh:" & " " & If(IsBlank(varCurrentUser.ChucDanh), "Chưa cập nhật", varCurrentUser.ChucDanh), Char(10), Char(10),
+                                      "🎂 Ngày sinh:" & " " & If(IsBlank(varCurrentUser.NgaySinh), "Chưa cập nhật", Text(varCurrentUser.NgaySinh, "dd/mm/yyyy")), Char(10), Char(10),
+                                      "👤 Giới tính:" & " " & If(IsBlank(varCurrentUser.GioiTinh), "Chưa cập nhật", varCurrentUser.GioiTinh), Char(10), Char(10),
+                                      "📍 Địa chỉ:" & " " & If(IsBlank(varCurrentUser.DiaChi), "Chưa cập nhật", varCurrentUser.DiaChi), Char(10), Char(10),
+                                      "📅 Ngày vào làm:" & " " & If(IsBlank(varCurrentUser.NgayVaoLam), "Chưa cập nhật", Text(varCurrentUser.NgayVaoLam, "dd/mm/yyyy")), Char(10), Char(10),
+                                      "📝 Ngày tạo:" & " " & Text(varCurrentUser.NgayTao, "dd/mm/yyyy hh:mm")
                                     )
                                     Color: =RGBA(55, 65, 81, 1)
                                     Font: =Font.'Open Sans'
@@ -413,18 +410,18 @@ Screens:
                                     Width: =Parent.Width * 0.96
                                     Height: =Parent.Height * 0.6
                                     Text: =Concatenate(
-                                      "📊 THỐNG KÊ NGHỈ PHÉP NĂM ", Year(Today()), Char(10), Char(10),
-                                      "• Tổng đơn đã tạo: ", CountRows(varUserLeaveHistory), Char(10),
-                                      "• Đơn chờ duyệt: ", CountRows(Filter(varUserLeaveHistory, TrangThai in ["ChoDuyetCap1", "ChoDuyetCap2", "ChoDuyetCap3"])), Char(10),
-                                      "• Đơn đã duyệt: ", CountRows(Filter(varUserLeaveHistory, TrangThai = "DaDuyet")), Char(10),
-                                      "• Đơn bị từ chối: ", CountRows(Filter(varUserLeaveHistory, TrangThai = "TuChoi")), Char(10), Char(10),
+                                      "📊 THỐNG KÊ NGHỈ PHÉP NĂM " & Year(Today()), Char(10), Char(10),
+                                      "• Tổng đơn đã tạo:" & " " & CountRows(varUserLeaveHistory), Char(10),
+                                      "• Đơn chờ duyệt:" & " " & CountRows(Filter(varUserLeaveHistory, TrangThai in ["ChoDuyetCap1", "ChoDuyetCap2", "ChoDuyetCap3"])), Char(10),
+                                      "• Đơn đã duyệt:" & " " & CountRows(Filter(varUserLeaveHistory, TrangThai = "DaDuyet")), Char(10),
+                                      "• Đơn bị từ chối:" & " " & CountRows(Filter(varUserLeaveHistory, TrangThai = "TuChoi")), Char(10), Char(10),
                                       "📈 Đơn gần nhất:", Char(10),
                                       If(CountRows(varUserLeaveHistory) > 0,
                                         With(Last(Sort(varUserLeaveHistory, NgayTao, Descending)),
                                           Concatenate(
-                                            "• Ngày: ", Text(NgayBatDau, "dd/mm/yyyy"), " - ", Text(NgayKetThuc, "dd/mm/yyyy"), Char(10),
-                                            "• Loại: ", LookUp(LoaiNghi, MaLoai = ThisRecord.MaLoai).TenLoai, Char(10),
-                                            "• Trạng thái: ", Switch(TrangThai, "DaDuyet", "Đã duyệt", "TuChoi", "Từ chối", "Chờ duyệt")
+                                            "• Ngày:" & " " & Text(NgayBatDau, "dd/mm/yyyy") & " - " & Text(NgayKetThuc, "dd/mm/yyyy"), Char(10),
+                                            "• Loại:" & " " & LookUp(LoaiNghi, MaLoai = ThisRecord.MaLoai).TenLoai, Char(10),
+                                            "• Trạng thái:" & " " & Switch(TrangThai, "DaDuyet", "Đã duyệt", "TuChoi", "Từ chối", "Chờ duyệt")
                                           )),
                                         "Chưa có đơn nào")
                                     )

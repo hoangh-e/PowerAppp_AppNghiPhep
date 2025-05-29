@@ -278,7 +278,7 @@ ComponentDefinitions:
                         Height: =Parent.Height
                         HintText: =EnhancedInputComponent.Placeholder
                         Default: =EnhancedInputComponent.Value
-                        TextMode: =Switch(EnhancedInputComponent.InputType,
+                        Mode: =Switch(EnhancedInputComponent.InputType,
                           "password", TextMode.Password,
                           "multiline", TextMode.MultiLine,
                           TextMode.SingleLine)

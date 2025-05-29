@@ -575,17 +575,17 @@ Screens:
                         Height: =Parent.Height
                         Text: =If(Not(IsBlank(varSelectedLeave)),
                           Concatenate(
-                            "Mã đơn: ", varSelectedLeave.MaDon, Char(10),
-                            "Loại nghỉ: ", LookUp(LoaiNghi, MaLoai = varSelectedLeave.MaLoai).TenLoai, Char(10),
-                            "Thời gian: ", Text(varSelectedLeave.NgayBatDau, "dd/mm/yyyy"), " - ", Text(varSelectedLeave.NgayKetThuc, "dd/mm/yyyy"), Char(10),
-                            "Số ngày: ", varSelectedLeave.SoNgayNghi, " ngày", Char(10),
-                            "Buổi nghỉ: ", Switch(varSelectedLeave.BuoiNghi, "CaNgay", "Cả ngày", "BuoiSang", "Buổi sáng", "BuoiChieu", "Buổi chiều", varSelectedLeave.BuoiNghi), Char(10),
-                            "Trạng thái: ", Switch(varSelectedLeave.TrangThai, "ChoDuyetCap1", "Chờ phê duyệt cấp 1", "ChoDuyetCap2", "Chờ phê duyệt cấp 2", "ChoDuyetCap3", "Chờ phê duyệt cấp 3", "DaDuyet", "Đã phê duyệt", "TuChoi", "Bị từ chối", "Huy", "Đã hủy", varSelectedLeave.TrangThai), Char(10),
-                            "Lý do: ", varSelectedLeave.LyDo, Char(10),
-                            If(Not(IsBlank(varSelectedLeave.NguoiBanGiao)), "Người bàn giao: " & LookUp(NguoiDung, MaNhanVien = varSelectedLeave.NguoiBanGiao).HoTen & Char(10), ""),
-                            If(Not(IsBlank(varSelectedLeave.NoiDungBanGiao)), "Nội dung bàn giao: " & varSelectedLeave.NoiDungBanGiao & Char(10), ""),
-                            "Ngày tạo: ", Text(varSelectedLeave.NgayTao, "dd/mm/yyyy hh:mm"), Char(10),
-                            If(Not(IsBlank(varSelectedLeave.GhiChuPheDuyet)), "Ghi chú phê duyệt: " & varSelectedLeave.GhiChuPheDuyet, "")
+                            "Mã đơn:" & " " & varSelectedLeave.MaDon, Char(10),
+                            "Loại nghỉ:" & " " & LookUp(LoaiNghi, MaLoai = varSelectedLeave.MaLoai).TenLoai, Char(10),
+                            "Thời gian:" & " " & Text(varSelectedLeave.NgayBatDau, "dd/mm/yyyy") & " - " & Text(varSelectedLeave.NgayKetThuc, "dd/mm/yyyy"), Char(10),
+                            "Số ngày:" & " " & varSelectedLeave.SoNgayNghi & " ngày", Char(10),
+                            "Buổi nghỉ:" & " " & Switch(varSelectedLeave.BuoiNghi, "CaNgay", "Cả ngày", "BuoiSang", "Buổi sáng", "BuoiChieu", "Buổi chiều", varSelectedLeave.BuoiNghi), Char(10),
+                            "Trạng thái:" & " " & Switch(varSelectedLeave.TrangThai, "ChoDuyetCap1", "Chờ phê duyệt cấp 1", "ChoDuyetCap2", "Chờ phê duyệt cấp 2", "ChoDuyetCap3", "Chờ phê duyệt cấp 3", "DaDuyet", "Đã phê duyệt", "TuChoi", "Bị từ chối", "Huy", "Đã hủy", varSelectedLeave.TrangThai), Char(10),
+                            "Lý do:" & " " & varSelectedLeave.LyDo, Char(10),
+                            If(Not(IsBlank(varSelectedLeave.NguoiBanGiao)), "Người bàn giao:" & " " & LookUp(NguoiDung, MaNhanVien = varSelectedLeave.NguoiBanGiao).HoTen & Char(10), ""),
+                            If(Not(IsBlank(varSelectedLeave.NoiDungBanGiao)), "Nội dung bàn giao:" & " " & varSelectedLeave.NoiDungBanGiao & Char(10), ""),
+                            "Ngày tạo:" & " " & Text(varSelectedLeave.NgayTao, "dd/mm/yyyy hh:mm"), Char(10),
+                            If(Not(IsBlank(varSelectedLeave.GhiChuPheDuyet)), "Ghi chú phê duyệt:" & " " & varSelectedLeave.GhiChuPheDuyet, "")
                           ), "")
                         Color: =RGBA(55, 65, 81, 1)
                         Font: =Font.'Open Sans'
