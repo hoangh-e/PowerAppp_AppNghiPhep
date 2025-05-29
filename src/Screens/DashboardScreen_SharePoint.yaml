@@ -1,0 +1,448 @@
+Screens:
+  DashboardScreen:
+    Properties:
+      Fill: =RGBA(248, 250, 252, 1)
+      OnVisible: =Set(varActiveScreen, "Dashboard"); Set(varCurrentUser, LookUp(NguoiDung, Email = User().Email)); Set(varUserLeaveBalance, LookUp(SoNgayPhep, And(MaNhanVien = varCurrentUser.MaNhanVien, Nam = Year(Today())))); Set(varUserPermissions, LookUp(VaiTro, MaVaiTro = varCurrentUser.MaVaiTro).CacQuyen); Set(varMyRecentLeaves, Filter(DonNghiPhep, And(MaNhanVien = varCurrentUser.MaNhanVien, NgayTao >= DateAdd(Today(), -30)))); Set(varPendingApprovalsCount, Switch(varCurrentUser.MaVaiTro, "MANAGER", CountRows(Filter(DonNghiPhep, And(TrangThai = "ChoDuyetCap1", MaNhanVien in Filter(NguoiDung, MaQuanLy = varCurrentUser.MaNhanVien).MaNhanVien))), "DIRECTOR", CountRows(Filter(DonNghiPhep, TrangThai in ["ChoDuyetCap2", "ChoDuyetCap3"])), 0)); Set(varDashboardStats, {TotalLeave: varUserLeaveBalance.TongNgayDuocPhep, UsedLeave: varUserLeaveBalance.SoNgayDaNghi, RemainingLeave: varUserLeaveBalance.SoNgayConLai, PendingRequests: CountRows(Filter(varMyRecentLeaves, TrangThai in ["ChoDuyetCap1", "ChoDuyetCap2", "ChoDuyetCap3"])), ApprovedRequests: CountRows(Filter(varMyRecentLeaves, TrangThai = "DaDuyet")), RejectedRequests: CountRows(Filter(varMyRecentLeaves, TrangThai = "TuChoi"))})
+    Children:
+      - 'Dashboard.Header':
+          Control: CanvasComponent
+          ComponentName: HeaderComponent
+          Properties:
+            X: =Parent.X
+            Y: =Parent.Y
+            Width: =Parent.Width
+            Height: =Parent.Height * 0.06
+            UserName: =varCurrentUser.HoTen
+            UserRole: =varCurrentUser.MaVaiTro
+            ShowNotification: =true
+            NotificationCount: =varPendingApprovalsCount
+            
+      - 'Dashboard.Navigation':
+          Control: CanvasComponent
+          ComponentName: NavigationComponent
+          Properties:
+            X: =Parent.X
+            Y: ='Dashboard.Header'.Y + 'Dashboard.Header'.Height
+            Width: =If(App.Width < 768, 
+              If(varMobileMenuOpen, Parent.Width * 0.75, Parent.Width * 0.001),
+              If(varNavCollapsed, Parent.Width * 0.06, Parent.Width * 0.2))
+            Height: =Parent.Height - 'Dashboard.Header'.Height
+            UserRole: =varCurrentUser.MaVaiTro
+            ActiveScreen: =varActiveScreen
+            OnNavigate: =Set(varNavigateAction, true)
+            OnToggleCollapse: =Set(varNavCollapsed, !varNavCollapsed)
+            
+      - 'Dashboard.Content.Container':
+          Control: GroupContainer
+          Variant: ManualLayout
+          Properties:
+            X: ='Dashboard.Navigation'.X + 'Dashboard.Navigation'.Width
+            Y: ='Dashboard.Header'.Y + 'Dashboard.Header'.Height
+            Width: =Parent.Width - 'Dashboard.Navigation'.Width
+            Height: =Parent.Height - 'Dashboard.Header'.Height
+            Fill: =RGBA(248, 250, 252, 1)
+          Children:
+            # Welcome Section - Compact
+            - 'Dashboard.Content.Welcome':
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =Parent.X + Parent.Width * 0.02
+                  Y: =Parent.Y + Parent.Height * 0.02
+                  Width: =Parent.Width * 0.96
+                  Height: =Parent.Height * 0.08
+                Children:
+                  - 'Dashboard.Content.Title':
+                      Control: Label
+                      Properties:
+                        X: =Parent.X
+                        Y: =Parent.Y
+                        Width: =Parent.Width
+                        Height: =Parent.Height * 0.6
+                        Text: ="Chào mừng, " & varCurrentUser.HoTen
+                        Color: =RGBA(32, 54, 71, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Bold
+                        Size: =Parent.Height * 0.3
+                        
+                  - 'Dashboard.Content.Subtitle':
+                      Control: Label
+                      Properties:
+                        X: =Parent.X
+                        Y: ='Dashboard.Content.Title'.Y + 'Dashboard.Content.Title'.Height
+                        Width: =Parent.Width
+                        Height: =Parent.Height * 0.4
+                        Text: =Concatenate("Phòng ban: ", LookUp(DonVi, MaDonVi = varCurrentUser.MaDonVi).TenDonVi, " | Chức danh: ", varCurrentUser.ChucDanh)
+                        Color: =RGBA(108, 117, 125, 1)
+                        Font: =Font.'Open Sans'
+                        Size: =Parent.Height * 0.18
+                        
+            # Stats Cards Section - Compact
+            - 'Dashboard.Stats.Container':
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =Parent.X + Parent.Width * 0.02
+                  Y: ='Dashboard.Content.Welcome'.Y + 'Dashboard.Content.Welcome'.Height + Parent.Height * 0.02
+                  Width: =Parent.Width * 0.96
+                  Height: =Parent.Height * 0.25
+                Children:
+                  # Leave Balance Stats Row
+                  - 'Dashboard.Stats.LeaveBalance.Container':
+                      Control: GroupContainer
+                      Variant: ManualLayout
+                      Properties:
+                        X: =Parent.X
+                        Y: =Parent.Y
+                        Width: =Parent.Width
+                        Height: =Parent.Height * 0.48
+                      Children:
+                        - 'Dashboard.Stats.TotalLeave':
+                            Control: CanvasComponent
+                            ComponentName: StatsCardComponent
+                            Properties:
+                              X: =Parent.X
+                              Y: =Parent.Y
+                              Width: =(Parent.Width - Parent.Width * 0.04) / 3
+                              Height: =Parent.Height
+                              Title: ="Tổng số ngày phép"
+                              Value: =Text(varDashboardStats.TotalLeave)
+                              Icon: ="Calendar"
+                              Color: =RGBA(33, 150, 243, 1)
+                              Subtitle: ="Năm " & Year(Today())
+                              
+                        - 'Dashboard.Stats.UsedLeave':
+                            Control: CanvasComponent
+                            ComponentName: StatsCardComponent
+                            Properties:
+                              X: ='Dashboard.Stats.TotalLeave'.X + 'Dashboard.Stats.TotalLeave'.Width + Parent.Width * 0.02
+                              Y: =Parent.Y
+                              Width: =(Parent.Width - Parent.Width * 0.04) / 3
+                              Height: =Parent.Height
+                              Title: ="Đã sử dụng"
+                              Value: =Text(varDashboardStats.UsedLeave)
+                              Icon: ="Check"
+                              Color: =RGBA(76, 175, 80, 1)
+                              Subtitle: ="Ngày đã nghỉ"
+                              
+                        - 'Dashboard.Stats.RemainingLeave':
+                            Control: CanvasComponent
+                            ComponentName: StatsCardComponent
+                            Properties:
+                              X: ='Dashboard.Stats.UsedLeave'.X + 'Dashboard.Stats.UsedLeave'.Width + Parent.Width * 0.02
+                              Y: =Parent.Y
+                              Width: =(Parent.Width - Parent.Width * 0.04) / 3
+                              Height: =Parent.Height
+                              Title: ="Còn lại"
+                              Value: =Text(varDashboardStats.RemainingLeave)
+                              Icon: ="Clock"
+                              Color: =RGBA(255, 152, 0, 1)
+                              Subtitle: ="Ngày có thể nghỉ"
+                              
+                  # Request Status Stats Row
+                  - 'Dashboard.Stats.RequestStatus.Container':
+                      Control: GroupContainer
+                      Variant: ManualLayout
+                      Properties:
+                        X: =Parent.X
+                        Y: ='Dashboard.Stats.LeaveBalance.Container'.Y + 'Dashboard.Stats.LeaveBalance.Container'.Height + Parent.Height * 0.04
+                        Width: =Parent.Width
+                        Height: =Parent.Height * 0.48
+                      Children:
+                        - 'Dashboard.Stats.PendingRequests':
+                            Control: CanvasComponent
+                            ComponentName: StatsCardComponent
+                            Properties:
+                              X: =Parent.X
+                              Y: =Parent.Y
+                              Width: =(Parent.Width - Parent.Width * 0.04) / 3
+                              Height: =Parent.Height
+                              Title: ="Chờ phê duyệt"
+                              Value: =Text(varDashboardStats.PendingRequests)
+                              Icon: ="Clock"
+                              Color: =RGBA(255, 193, 7, 1)
+                              Subtitle: ="Đơn đang chờ"
+                              
+                        - 'Dashboard.Stats.ApprovedRequests':
+                            Control: CanvasComponent
+                            ComponentName: StatsCardComponent
+                            Properties:
+                              X: ='Dashboard.Stats.PendingRequests'.X + 'Dashboard.Stats.PendingRequests'.Width + Parent.Width * 0.02
+                              Y: =Parent.Y
+                              Width: =(Parent.Width - Parent.Width * 0.04) / 3
+                              Height: =Parent.Height
+                              Title: ="Đã phê duyệt"
+                              Value: =Text(varDashboardStats.ApprovedRequests)
+                              Icon: ="Check"
+                              Color: =RGBA(76, 175, 80, 1)
+                              Subtitle: ="Đơn được duyệt"
+                              
+                        - 'Dashboard.Stats.RejectedRequests':
+                            Control: CanvasComponent
+                            ComponentName: StatsCardComponent
+                            Properties:
+                              X: ='Dashboard.Stats.ApprovedRequests'.X + 'Dashboard.Stats.ApprovedRequests'.Width + Parent.Width * 0.02
+                              Y: =Parent.Y
+                              Width: =(Parent.Width - Parent.Width * 0.04) / 3
+                              Height: =Parent.Height
+                              Title: ="Bị từ chối"
+                              Value: =Text(varDashboardStats.RejectedRequests)
+                              Icon: ="Cancel"
+                              Color: =RGBA(244, 67, 54, 1)
+                              Subtitle: ="Đơn bị từ chối"
+                              
+            # Recent Requests Section - Compact
+            - 'Dashboard.RecentRequests.Container':
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =Parent.X + Parent.Width * 0.02
+                  Y: ='Dashboard.Stats.Container'.Y + 'Dashboard.Stats.Container'.Height + Parent.Height * 0.02
+                  Width: =Parent.Width * 0.96
+                  Height: =Parent.Height * 0.4
+                  Fill: =RGBA(255, 255, 255, 1)
+                  BorderColor: =RGBA(230, 230, 230, 1)
+                  BorderThickness: =Parent.Width * 0.001
+                  DropShadow: =DropShadow.Light
+                Children:
+                  - 'Dashboard.RecentRequests.Title':
+                      Control: Label
+                      Properties:
+                        X: =Parent.X + Parent.Width * 0.03
+                        Y: =Parent.Y + Parent.Height * 0.03
+                        Width: =Parent.Width * 0.7
+                        Height: =Parent.Height * 0.12
+                        Text: ="Đơn nghỉ phép gần đây (30 ngày)"
+                        Color: =RGBA(32, 54, 71, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Bold
+                        Size: =Parent.Height * 0.06
+                        
+                  # View All Button
+                  - 'Dashboard.RecentRequests.ViewAllButton':
+                      Control: CanvasComponent
+                      ComponentName: ButtonComponent
+                      Properties:
+                        X: =Parent.Width - Self.Width - Parent.Width * 0.03
+                        Y: =Parent.Y + Parent.Height * 0.03
+                        Width: =Parent.Width * 0.15
+                        Height: =Parent.Height * 0.12
+                        Text: ="Xem tất cả"
+                        Variant: ="Outline"
+                        Size: ="Small"
+                        OnClick: =Navigate(MyLeavesScreen)
+                        
+                  # Recent Requests Gallery
+                  - 'Dashboard.RecentRequests.Gallery':
+                      Control: Gallery
+                      Variant: Vertical
+                      Properties:
+                        X: =Parent.X + Parent.Width * 0.03
+                        Y: ='Dashboard.RecentRequests.Title'.Y + 'Dashboard.RecentRequests.Title'.Height + Parent.Height * 0.02
+                        Width: =Parent.Width * 0.94
+                        Height: =Parent.Height * 0.8
+                        Items: =FirstN(SortByColumns(varMyRecentLeaves, "NgayTao", Descending), 5)
+                        TemplateSize: =Self.Height / 5
+                        TemplatePadding: =Self.Height * 0.005
+                        BorderThickness: =Parent.Width * 0.001
+                        BorderColor: =RGBA(0, 0, 0, 0)
+                        Fill: =RGBA(0, 0, 0, 0)
+                      Children:
+                        - 'Dashboard.RecentRequests.Gallery.Card':
+                            Control: GroupContainer
+                            Variant: ManualLayout
+                            Properties:
+                              X: =Parent.TemplateX
+                              Y: =Parent.TemplateY
+                              Width: =Parent.TemplateWidth
+                              Height: =Parent.TemplateHeight
+                              Fill: =Switch(ThisItem.TrangThai,
+                                "DaDuyet", RGBA(232, 245, 233, 1),
+                                "TuChoi", RGBA(255, 235, 238, 1),
+                                "ChoDuyetCap1", RGBA(255, 243, 224, 1),
+                                "ChoDuyetCap2", RGBA(255, 243, 224, 1),
+                                "ChoDuyetCap3", RGBA(255, 243, 224, 1),
+                                RGBA(248, 250, 252, 1))
+                              BorderColor: =Switch(ThisItem.TrangThai,
+                                "DaDuyet", RGBA(200, 230, 201, 1),
+                                "TuChoi", RGBA(255, 205, 210, 1),
+                                "ChoDuyetCap1", RGBA(255, 224, 178, 1),
+                                "ChoDuyetCap2", RGBA(255, 224, 178, 1),
+                                "ChoDuyetCap3", RGBA(255, 224, 178, 1),
+                                RGBA(224, 224, 224, 1))
+                              BorderThickness: =Parent.Width * 0.001
+                            Children:
+                              # Status Badge
+                              - 'Dashboard.RecentRequests.Gallery.StatusBadge':
+                                  Control: Label
+                                  Properties:
+                                    X: =Parent.X + Parent.Width * 0.02
+                                    Y: =Parent.Y + (Parent.Height - Self.Height) / 2
+                                    Width: =Parent.Width * 0.15
+                                    Height: =Parent.Height * 0.4
+                                    Text: =Switch(ThisItem.TrangThai,
+                                      "DaDuyet", "Đã duyệt",
+                                      "TuChoi", "Từ chối",
+                                      "ChoDuyetCap1", "Chờ cấp 1",
+                                      "ChoDuyetCap2", "Chờ cấp 2", 
+                                      "ChoDuyetCap3", "Chờ cấp 3",
+                                      "Huy", "Đã hủy",
+                                      ThisItem.TrangThai)
+                                    Color: =Switch(ThisItem.TrangThai,
+                                      "DaDuyet", RGBA(76, 175, 80, 1),
+                                      "TuChoi", RGBA(244, 67, 54, 1),
+                                      "ChoDuyetCap1", RGBA(255, 152, 0, 1),
+                                      "ChoDuyetCap2", RGBA(255, 152, 0, 1),
+                                      "ChoDuyetCap3", RGBA(255, 152, 0, 1),
+                                      RGBA(107, 114, 128, 1))
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Size: =Parent.Height * 0.15
+                                    Align: =Align.Center
+                                    
+                              # Request Details
+                              - 'Dashboard.RecentRequests.Gallery.Details':
+                                  Control: GroupContainer
+                                  Variant: ManualLayout
+                                  Properties:
+                                    X: ='Dashboard.RecentRequests.Gallery.StatusBadge'.X + 'Dashboard.RecentRequests.Gallery.StatusBadge'.Width + Parent.Width * 0.02
+                                    Y: =Parent.Y + Parent.Height * 0.1
+                                    Width: =Parent.Width * 0.6
+                                    Height: =Parent.Height * 0.8
+                                  Children:
+                                    - 'Dashboard.RecentRequests.Gallery.LeaveType':
+                                        Control: Label
+                                        Properties:
+                                          X: =Parent.X
+                                          Y: =Parent.Y
+                                          Width: =Parent.Width
+                                          Height: =Parent.Height * 0.4
+                                          Text: =LookUp(LoaiNghi, MaLoai = ThisItem.MaLoai).TenLoai
+                                          Color: =RGBA(32, 54, 71, 1)
+                                          Font: =Font.'Open Sans'
+                                          FontWeight: =FontWeight.Semibold
+                                          Size: =Parent.Height * 0.16
+                                          
+                                    - 'Dashboard.RecentRequests.Gallery.DateRange':
+                                        Control: Label
+                                        Properties:
+                                          X: =Parent.X
+                                          Y: ='Dashboard.RecentRequests.Gallery.LeaveType'.Y + 'Dashboard.RecentRequests.Gallery.LeaveType'.Height
+                                          Width: =Parent.Width
+                                          Height: =Parent.Height * 0.3
+                                          Text: =Text(ThisItem.NgayBatDau, "dd/mm/yyyy") & " - " & Text(ThisItem.NgayKetThuc, "dd/mm/yyyy")
+                                          Color: =RGBA(107, 114, 128, 1)
+                                          Font: =Font.'Open Sans'
+                                          Size: =Parent.Height * 0.12
+                                          
+                                    - 'Dashboard.RecentRequests.Gallery.Days':
+                                        Control: Label
+                                        Properties:
+                                          X: =Parent.X
+                                          Y: ='Dashboard.RecentRequests.Gallery.DateRange'.Y + 'Dashboard.RecentRequests.Gallery.DateRange'.Height
+                                          Width: =Parent.Width
+                                          Height: =Parent.Height * 0.3
+                                          Text: =ThisItem.SoNgayNghi & " ngày"
+                                          Color: =RGBA(107, 114, 128, 1)
+                                          Font: =Font.'Open Sans'
+                                          Size: =Parent.Height * 0.12
+                                          
+                              # Created Date
+                              - 'Dashboard.RecentRequests.Gallery.CreatedDate':
+                                  Control: Label
+                                  Properties:
+                                    X: =Parent.Width * 0.8
+                                    Y: =Parent.Y + (Parent.Height - Self.Height) / 2
+                                    Width: =Parent.Width * 0.18
+                                    Height: =Parent.Height * 0.3
+                                    Text: =Text(ThisItem.NgayTao, "dd/mm")
+                                    Color: =RGBA(107, 114, 128, 1)
+                                    Font: =Font.'Open Sans'
+                                    Size: =Parent.Height * 0.12
+                                    Align: =Align.Right
+                                    
+            # Quick Actions Section - Compact
+            - 'Dashboard.QuickActions.Container':
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =Parent.X + Parent.Width * 0.02
+                  Y: ='Dashboard.RecentRequests.Container'.Y + 'Dashboard.RecentRequests.Container'.Height + Parent.Height * 0.02
+                  Width: =Parent.Width * 0.96
+                  Height: =Parent.Height * 0.15
+                Children:
+                  - 'Dashboard.QuickActions.Title':
+                      Control: Label
+                      Properties:
+                        X: =Parent.X
+                        Y: =Parent.Y
+                        Width: =Parent.Width
+                        Height: =Parent.Height * 0.25
+                        Text: ="Thao tác nhanh"
+                        Color: =RGBA(32, 54, 71, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Bold
+                        Size: =Parent.Height * 0.12
+                        
+                  - 'Dashboard.QuickActions.Buttons':
+                      Control: GroupContainer
+                      Variant: ManualLayout
+                      Properties:
+                        X: =Parent.X
+                        Y: ='Dashboard.QuickActions.Title'.Y + 'Dashboard.QuickActions.Title'.Height + Parent.Height * 0.05
+                        Width: =Parent.Width
+                        Height: =Parent.Height * 0.7
+                      Children:
+                        - 'Dashboard.QuickActions.CreateLeave':
+                            Control: CanvasComponent
+                            ComponentName: ButtonComponent
+                            Properties:
+                              X: =Parent.X
+                              Y: =Parent.Y
+                              Width: =Parent.Width * 0.2
+                              Height: =Parent.Height
+                              Text: ="Tạo đơn nghỉ phép"
+                              Variant: ="Primary"
+                              Icon: ="Add"
+                              OnClick: =Navigate(LeaveRequestScreen)
+                              
+                        - 'Dashboard.QuickActions.ViewCalendar':
+                            Control: CanvasComponent
+                            ComponentName: ButtonComponent
+                            Properties:
+                              X: ='Dashboard.QuickActions.CreateLeave'.X + 'Dashboard.QuickActions.CreateLeave'.Width + Parent.Width * 0.02
+                              Y: =Parent.Y
+                              Width: =Parent.Width * 0.2
+                              Height: =Parent.Height
+                              Text: ="Xem lịch nghỉ phép"
+                              Variant: ="Secondary"
+                              Icon: ="Calendar"
+                              OnClick: =Navigate(CalendarScreen)
+                              
+                        - 'Dashboard.QuickActions.ViewReports':
+                            Control: CanvasComponent
+                            ComponentName: ButtonComponent
+                            Properties:
+                              X: ='Dashboard.QuickActions.ViewCalendar'.X + 'Dashboard.QuickActions.ViewCalendar'.Width + Parent.Width * 0.02
+                              Y: =Parent.Y
+                              Width: =Parent.Width * 0.2
+                              Height: =Parent.Height
+                              Text: ="Xem báo cáo"
+                              Variant: ="Secondary"
+                              Icon: ="Download"
+                              OnClick: =Navigate(ReportsScreen)
+                              Visible: =varCurrentUser.MaVaiTro in ["HR", "ADMIN", "DIRECTOR"]
+                              
+                        - 'Dashboard.QuickActions.ManageSystem':
+                            Control: CanvasComponent
+                            ComponentName: ButtonComponent
+                            Properties:
+                              X: ='Dashboard.QuickActions.ViewReports'.X + 'Dashboard.QuickActions.ViewReports'.Width + Parent.Width * 0.02
+                              Y: =Parent.Y
+                              Width: =Parent.Width * 0.2
+                              Height: =Parent.Height
+                              Text: ="Quản lý hệ thống"
+                              Variant: ="Outline"
+                              Icon: ="Settings"
+                              OnClick: =Navigate(ManagementScreen)
+                              Visible: =varCurrentUser.MaVaiTro in ["HR", "ADMIN"] 

@@ -165,7 +165,7 @@ ComponentDefinitions:
                         Width: =Parent.Height * 0.4
                         Height: =Parent.Height * 0.4
                         Icon: =Switch(EnhancedCardComponent.Icon,
-                          "document", Icon.Document,
+                          "document", Icon.DocumentWithContent,
                           "user", Icon.Person,
                           "calendar", Icon.CalendarBlank,
                           "settings", Icon.Settings,
@@ -177,7 +177,7 @@ ComponentDefinitions:
                           "add", Icon.Add,
                           "search", Icon.Search,
                           "filter", Icon.Filter,
-                          Icon.Document)
+                          Icon.DocumentWithContent)
                         Color: =Switch(EnhancedCardComponent.ColorScheme,
                           "blue", RGBA(33, 150, 243, 1),
                           "green", RGBA(76, 175, 80, 1),

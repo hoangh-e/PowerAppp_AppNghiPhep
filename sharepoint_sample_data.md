@@ -14,8 +14,7 @@
 1. **DonVi** → **Quyen** → **VaiTro** → **LoaiNghi** → **NgayLe** → **CauHinhHeThong** → **MauEmail**
 2. **NguoiDung** 
 3. **SoNgayPhep** → **QuyTrinhDuyet**
-4. **DonNghiPhep** → **PheDuyetDon** → **TepDinhKem**
-5. **ThongBao** → **LichSuThayDoi**
+4. **DonNghiPhep**
 
 ---
 
@@ -31,13 +30,9 @@
 6. **QuyTrinhDuyet** (Approval Process) - Phụ thuộc VaiTro
 7. **SoNgayPhep** (Leave Quota) - Phụ thuộc NguoiDung
 8. **DonNghiPhep** (Leave Requests) - Phụ thuộc NguoiDung, LoaiNghi
-9. **LichSuPheDuyet** (Approval History) - Phụ thuộc DonNghiPhep, NguoiDung
-10. **ThongBao** (Notifications) - Phụ thuộc NguoiDung
-11. **BaoCao** (Reports) - Phụ thuộc NguoiDung
-12. **CauHinh** (Configuration) - Không phụ thuộc
-13. **AuditLog** (Audit Logs) - Phụ thuộc NguoiDung
-14. **LichLamViec** (Work Calendar) - Không phụ thuộc
-15. **NghiPhepTheoNhom** (Team Leave Summary) - Phụ thuộc NguoiDung
+9. **CauHinh** (Configuration) - Không phụ thuộc
+10. **LichLamViec** (Work Calendar) - Không phụ thuộc
+11. **NghiPhepTheoNhom** (Team Leave Summary) - Phụ thuộc NguoiDung
 
 ---
 
@@ -213,68 +208,27 @@
 
 ---
 
-## 📋 **11. BẢNG DONNGHIPHEP**
-*Tham khảo schema: MaDon (GUID, PK), MaNhanVien (text required, FK), NgayBatDau (date required), NgayKetThuc (date required), SoNgayNghi (number calculated), MaLoai (text required, FK), LyDo (text required), NguoiBanGiao (text optional, FK), NoiDungBanGiao (text optional), TepDinhKem (text optional), TrangThai (choice required), NgayTao (datetime auto), BuoiNghi (choice required), NguoiTao (text required, FK), NgayCapNhat (datetime auto), NguoiCapNhat (text optional, FK), ThoiHanPheDuyet (datetime calculated), UuTien (choice default), GhiChuHR (text optional), NgayGhiNhan (date optional)*
+## 📋 **11. BẢNG DONNGHIPHEP - MỞ RỘNG TRẠNG THÁI**
+*Tham khảo schema: MaDon (GUID, PK), MaNhanVien (text required, FK), NgayBatDau (date required), NgayKetThuc (date required), SoNgayNghi (number calculated), MaLoai (text required, FK), LyDo (text required), NguoiBanGiao (text optional, FK), NoiDungBanGiao (text optional), TrangThai (choice required), NgayTao (datetime auto), BuoiNghi (choice required), NguoiTao (text required, FK), NgayCapNhat (datetime auto), NguoiCapNhat (text optional, FK), ThoiHanPheDuyet (datetime calculated), UuTien (choice default), GhiChuHR (text optional), NgayGhiNhan (date optional), GhiChuPheDuyet (text optional)*
 
-| MaDon | MaNhanVien | NgayBatDau | NgayKetThuc | SoNgayNghi | MaLoai | LyDo | NguoiBanGiao | NoiDungBanGiao | TepDinhKem | TrangThai | NgayTao | BuoiNghi | NguoiTao | NgayCapNhat | NguoiCapNhat | ThoiHanPheDuyet | UuTien | GhiChuHR | NgayGhiNhan |
-|-------|------------|------------|-------------|------------|--------|------|--------------|----------------|------------|-----------|---------|----------|----------|-------------|--------------|-----------------|--------|----------|-------------|
-| 550e8400-e29b-41d4-a716-446655440001 | EMP001 | 2024-03-15 | 2024-03-17 | 3 | AL | Nghỉ phép thăm gia đình | MGR001 | Hoàn thành task A, chuyển giao task B cho team | | DaDuyet | 2024-03-10T09:00:00Z | CaNgay | EMP001 | 2024-03-12T14:30:00Z | MGR001 | 2024-03-13T17:00:00Z | BinhThuong | Đã ghi nhận | 2024-03-18T08:00:00Z |
-| 550e8400-e29b-41d4-a716-446655440002 | EMP001 | 2024-04-20 | 2024-04-22 | 3 | SL | Nghỉ ốm | MGR001 | Tạm hoãn meeting, chuyển task cho An | | DaDuyet | 2024-04-19T08:30:00Z | CaNgay | EMP001 | 2024-04-19T16:45:00Z | MGR001 | 2024-04-20T17:00:00Z | KhanCap | Đã ghi nhận | 2024-04-23T08:00:00Z |
-| 550e8400-e29b-41d4-a716-446655440003 | MGR001 | 2024-05-10 | 2024-05-12 | 3 | AL | Nghỉ phép cá nhân | DIR001 | Ủy quyền cho An xử lý các vấn đề phòng ban | | ChoDuyet | 2024-05-05T10:15:00Z | CaNgay | MGR001 | 2024-05-05T10:15:00Z | MGR001 | 2024-05-08T17:00:00Z | BinhThuong | | |
-| 550e8400-e29b-41d4-a716-446655440004 | EMP002 | 2024-06-01 | 2024-06-01 | 1 | AL | Nghỉ việc riêng | MGR003 | Hoàn thành báo cáo tháng 5 | | DaDuyet | 2024-05-28T14:20:00Z | BuoiSang | EMP002 | 2024-05-30T09:10:00Z | MGR003 | 2024-05-31T17:00:00Z | BinhThuong | Đã ghi nhận | 2024-06-02T08:00:00Z |
-| 550e8400-e29b-41d4-a716-446655440005 | HR001 | 2024-07-15 | 2024-07-19 | 5 | AL | Nghỉ phép hè | MGR002 | Chuyển giao công việc tuyển dụng cho đồng nghiệp | | ChoDuyet | 2024-07-08T11:30:00Z | CaNgay | HR001 | 2024-07-08T11:30:00Z | HR001 | 2024-07-11T17:00:00Z | BinhThuong | | |
-| 550e8400-e29b-41d4-a716-446655440006 | EMP003 | 2024-08-05 | 2024-08-07 | 3 | CL | Nghỉ cưới | MGR004 | Hoàn thành campaign tháng 8 trước khi nghỉ | | TuChoi | 2024-07-30T16:45:00Z | CaNgay | EMP003 | 2024-08-01T10:20:00Z | MGR004 | 2024-08-02T17:00:00Z | BinhThuong | | |
-| 550e8400-e29b-41d4-a716-446655440007 | DIR001 | 2024-09-20 | 2024-09-27 | 6 | AL | Nghỉ phép dài hạn | DIR002 | Ủy quyền toàn bộ quyết định cho Phạm Thị Dung | | ChoDuyet | 2024-09-10T13:15:00Z | CaNgay | DIR001 | 2024-09-10T13:15:00Z | DIR001 | 2024-09-13T17:00:00Z | BinhThuong | | |
+**Trạng thái mở rộng:**
+- `ChoDuyetCap1` - Chờ Manager phê duyệt (cấp 1)
+- `ChoDuyetCap2` - Chờ Director phê duyệt (cấp 2)  
+- `ChoDuyetCap3` - Chờ CEO phê duyệt (cấp 3)
+- `DaDuyet` - Đã phê duyệt hoàn tất
+- `TuChoi` - Bị từ chối
+- `Huy` - Đã hủy
+- `HetHan` - Hết hạn phê duyệt
 
----
-
-## 📋 **12. BẢNG PHEDUYETDON**
-
-| MaPheDuyet | MaDon | Cap | MaNguoiDuyet | QuyetDinh | NgayDuyet | GhiChu | ThoiHanDuyet | NgayHetHan | ViTriPheDuyet | TepDinhKem |
-|------------|-------|-----|--------------|-----------|-----------|--------|--------------|------------|---------------|------------|
-| 1 | 550e8400-e29b-41d4-a716-446655440001 | 1 | MGR001 | DaDuyet | 2024-03-12T14:30:00Z | Đồng ý nghỉ phép | 2024-03-13T17:00:00Z | 2024-03-15T17:00:00Z | Trưởng phòng IT | |
-| 2 | 550e8400-e29b-41d4-a716-446655440002 | 1 | MGR001 | DaDuyet | 2024-04-19T16:45:00Z | Nghỉ ốm cần thiết | 2024-04-20T17:00:00Z | 2024-04-22T17:00:00Z | Trưởng phòng IT | |
-| 3 | 550e8400-e29b-41d4-a716-446655440004 | 1 | MGR003 | DaDuyet | 2024-05-30T09:10:00Z | OK cho nửa ngày | 2024-05-31T17:00:00Z | 2024-06-02T17:00:00Z | Trưởng phòng Sale | |
-| 4 | 550e8400-e29b-41d4-a716-446655440006 | 1 | MGR004 | TuChoi | 2024-08-01T10:20:00Z | Thời điểm bận, cần hoãn lại | 2024-08-02T17:00:00Z | 2024-08-04T17:00:00Z | Trưởng phòng Marketing | |
-
----
-
-## 📋 **13. BẢNG TEPDINH KEM**
-
-| MaTep | MaDon | TenTep | DuongDan | KichThuoc | LoaiTep | MoTa | NguoiTai | NgayTai |
-|-------|-------|--------|----------|-----------|---------|------|----------|---------|
-| 6ba7b810-9dad-11d1-80b4-00c04fd430c8 | 550e8400-e29b-41d4-a716-446655440001 | don_xin_nghi_phep.pdf | /attachments/2024/03/don_xin_nghi_phep.pdf | 245760 | application/pdf | Đơn xin nghỉ phép có chữ ký | EMP001 | 2024-03-10T09:15:00Z |
-| 6ba7b811-9dad-11d1-80b4-00c04fd430c8 | 550e8400-e29b-41d4-a716-446655440002 | giay_bac_si.jpg | /attachments/2024/04/giay_bac_si.jpg | 1048576 | image/jpeg | Giấy chứng nhận của bác sĩ | EMP001 | 2024-04-19T08:45:00Z |
-| 6ba7b812-9dad-11d1-80b4-00c04fd430c8 | 550e8400-e29b-41d4-a716-446655440005 | ke_hoach_cong_viec.docx | /attachments/2024/07/ke_hoach_cong_viec.docx | 524288 | application/vnd.openxmlformats-officedocument.wordprocessingml.document | Kế hoạch bàn giao công việc | HR001 | 2024-07-08T11:45:00Z |
-
----
-
-## 📋 **14. BẢNG THONGBAO**
-
-| MaThongBao | MaNguoiNhan | TieuDe | NoiDung | LoaiThongBao | MaDonLienQuan | DaDoc | NgayTao | NgayDoc |
-|------------|-------------|--------|---------|--------------|---------------|-------|---------|---------|
-| 1 | MGR001 | Đơn nghỉ phép mới từ Nguyễn Văn An | Bạn có đơn nghỉ phép mới cần phê duyệt từ nhân viên Nguyễn Văn An | DonMoi | 550e8400-e29b-41d4-a716-446655440001 | true | 2024-03-10T09:00:00Z | 2024-03-10T14:20:00Z |
-| 2 | EMP001 | Đơn nghỉ phép đã được phê duyệt | Đơn nghỉ phép của bạn từ ngày 15/03 đến 17/03 đã được phê duyệt | PheDuyet | 550e8400-e29b-41d4-a716-446655440001 | true | 2024-03-12T14:30:00Z | 2024-03-12T15:45:00Z |
-| 3 | MGR001 | Đơn nghỉ ốm khẩn cấp từ Nguyễn Văn An | Nhân viên Nguyễn Văn An xin nghỉ ốm khẩn cấp | DonMoi | 550e8400-e29b-41d4-a716-446655440002 | true | 2024-04-19T08:30:00Z | 2024-04-19T09:15:00Z |
-| 4 | EMP001 | Đơn nghỉ ốm đã được phê duyệt | Đơn nghỉ ốm của bạn đã được phê duyệt | PheDuyet | 550e8400-e29b-41d4-a716-446655440002 | true | 2024-04-19T16:45:00Z | 2024-04-19T17:30:00Z |
-| 5 | DIR001 | Đơn nghỉ phép từ Trần Thị Bình | Trưởng phòng IT xin nghỉ phép 3 ngày | DonMoi | 550e8400-e29b-41d4-a716-446655440003 | false | 2024-05-05T10:15:00Z | |
-| 6 | MGR003 | Đơn nghỉ phép từ Trần Văn Hùng | Nhân viên Sale xin nghỉ nửa ngày | DonMoi | 550e8400-e29b-41d4-a716-446655440004 | true | 2024-05-28T14:20:00Z | 2024-05-29T08:30:00Z |
-| 7 | EMP002 | Đơn nghỉ phép đã được phê duyệt | Đơn nghỉ nửa ngày của bạn đã được phê duyệt | PheDuyet | 550e8400-e29b-41d4-a716-446655440004 | true | 2024-05-30T09:10:00Z | 2024-05-30T10:20:00Z |
-| 8 | EMP003 | Đơn nghỉ cưới bị từ chối | Đơn nghỉ cưới của bạn đã bị từ chối do thời điểm không phù hợp | TuChoi | 550e8400-e29b-41d4-a716-446655440006 | false | 2024-08-01T10:20:00Z | |
-
----
-
-## 📋 **15. BẢNG LICHSUTHAYDOI**
-
-| MaLichSu | BangDuLieu | MaBanGhi | HanhDong | DuLieuCu | DuLieuMoi | MaNguoiThucHien | NgayThucHien | GhiChu |
-|----------|------------|----------|----------|-----------|-----------|-----------------|--------------|--------|
-| 1 | DonNghiPhep | 550e8400-e29b-41d4-a716-446655440001 | Tao | | {"MaDon":"550e8400-e29b-41d4-a716-446655440001","MaNhanVien":"EMP001","NgayBatDau":"2024-03-15","NgayKetThuc":"2024-03-17","TrangThai":"ChoDuyet"} | EMP001 | 2024-03-10T09:00:00Z | Tạo đơn nghỉ phép mới |
-| 2 | DonNghiPhep | 550e8400-e29b-41d4-a716-446655440001 | Sua | {"TrangThai":"ChoDuyet"} | {"TrangThai":"DaDuyet","NgayCapNhat":"2024-03-12T14:30:00Z"} | MGR001 | 2024-03-12T14:30:00Z | Phê duyệt đơn nghỉ phép |
-| 3 | PheDuyetDon | 1 | Tao | | {"MaPheDuyet":1,"MaDon":"550e8400-e29b-41d4-a716-446655440001","Cap":1,"QuyetDinh":"DaDuyet"} | MGR001 | 2024-03-12T14:30:00Z | Tạo bản ghi phê duyệt |
-| 4 | DonNghiPhep | 550e8400-e29b-41d4-a716-446655440002 | Tao | | {"MaDon":"550e8400-e29b-41d4-a716-446655440002","MaNhanVien":"EMP001","NgayBatDau":"2024-04-20","TrangThai":"ChoDuyet"} | EMP001 | 2024-04-19T08:30:00Z | Tạo đơn nghỉ ốm khẩn cấp |
-| 5 | DonNghiPhep | 550e8400-e29b-41d4-a716-446655440002 | Sua | {"TrangThai":"ChoDuyet"} | {"TrangThai":"DaDuyet","NgayCapNhat":"2024-04-19T16:45:00Z"} | MGR001 | 2024-04-19T16:45:00Z | Phê duyệt đơn nghỉ ốm |
-| 6 | NguoiDung | EMP001 | Sua | {"SoDienThoai":"0901234567"} | {"SoDienThoai":"0901234567","NgayCapNhat":"2024-05-01T10:00:00Z"} | EMP001 | 2024-05-01T10:00:00Z | Cập nhật thông tin cá nhân |
-| 7 | DonNghiPhep | 550e8400-e29b-41d4-a716-446655440006 | Sua | {"TrangThai":"ChoDuyet"} | {"TrangThai":"TuChoi","NgayCapNhat":"2024-08-01T10:20:00Z"} | MGR004 | 2024-08-01T10:20:00Z | Từ chối đơn nghỉ cưới |
+| MaDon | MaNhanVien | NgayBatDau | NgayKetThuc | SoNgayNghi | MaLoai | LyDo | NguoiBanGiao | NoiDungBanGiao | TrangThai | NgayTao | BuoiNghi | NguoiTao | NgayCapNhat | NguoiCapNhat | ThoiHanPheDuyet | UuTien | GhiChuHR | NgayGhiNhan | GhiChuPheDuyet |
+|-------|------------|------------|-------------|------------|--------|------|--------------|----------------|-----------|---------|----------|----------|-------------|--------------|-----------------|--------|----------|-------------|----------------|
+| 550e8400-e29b-41d4-a716-446655440001 | EMP001 | 2024-03-15 | 2024-03-17 | 3 | AL | Nghỉ phép thăm gia đình | MGR001 | Hoàn thành task A, chuyển giao task B cho team | DaDuyet | 2024-03-10T09:00:00Z | CaNgay | EMP001 | 2024-03-12T14:30:00Z | MGR001 | 2024-03-13T17:00:00Z | BinhThuong | Đã ghi nhận | 2024-03-18T08:00:00Z | Đồng ý nghỉ phép |
+| 550e8400-e29b-41d4-a716-446655440002 | EMP001 | 2024-04-20 | 2024-04-22 | 3 | SL | Nghỉ ốm | MGR001 | Tạm hoãn meeting, chuyển task cho An | DaDuyet | 2024-04-19T08:30:00Z | CaNgay | EMP001 | 2024-04-19T16:45:00Z | MGR001 | 2024-04-20T17:00:00Z | KhanCap | Đã ghi nhận | 2024-04-23T08:00:00Z | Nghỉ ốm cần thiết |
+| 550e8400-e29b-41d4-a716-446655440003 | MGR001 | 2024-05-10 | 2024-05-12 | 3 | AL | Nghỉ phép cá nhân | DIR001 | Ủy quyền cho An xử lý các vấn đề phòng ban | ChoDuyetCap2 | 2024-05-05T10:15:00Z | CaNgay | MGR001 | 2024-05-05T10:15:00Z | MGR001 | 2024-05-08T17:00:00Z | BinhThuong | | | |
+| 550e8400-e29b-41d4-a716-446655440004 | EMP002 | 2024-06-01 | 2024-06-01 | 1 | AL | Nghỉ việc riêng | MGR003 | Hoàn thành báo cáo tháng 5 | DaDuyet | 2024-05-28T14:20:00Z | BuoiSang | EMP002 | 2024-05-30T09:10:00Z | MGR003 | 2024-05-31T17:00:00Z | BinhThuong | Đã ghi nhận | 2024-06-02T08:00:00Z | OK cho nửa ngày |
+| 550e8400-e29b-41d4-a716-446655440005 | HR001 | 2024-07-15 | 2024-07-19 | 5 | AL | Nghỉ phép hè | MGR002 | Chuyển giao công việc tuyển dụng cho đồng nghiệp | ChoDuyetCap1 | 2024-07-08T11:30:00Z | CaNgay | HR001 | 2024-07-08T11:30:00Z | HR001 | 2024-07-11T17:00:00Z | BinhThuong | | | |
+| 550e8400-e29b-41d4-a716-446655440006 | EMP003 | 2024-08-05 | 2024-08-07 | 3 | CL | Nghỉ cưới | MGR004 | Hoàn thành campaign tháng 8 trước khi nghỉ | TuChoi | 2024-07-30T16:45:00Z | CaNgay | EMP003 | 2024-08-01T10:20:00Z | MGR004 | 2024-08-02T17:00:00Z | BinhThuong | | | Thời điểm bận, cần hoãn lại |
+| 550e8400-e29b-41d4-a716-446655440007 | DIR001 | 2024-09-20 | 2024-09-27 | 6 | AL | Nghỉ phép dài hạn | DIR002 | Ủy quyền toàn bộ quyết định cho Phạm Thị Dung | ChoDuyetCap3 | 2024-09-10T13:15:00Z | CaNgay | DIR001 | 2024-09-10T13:15:00Z | DIR001 | 2024-09-13T17:00:00Z | BinhThuong | | | |
 
 ---
 
@@ -306,7 +260,23 @@
 1. **GUID Format**: Sử dụng đúng format GUID cho các trường ID
 2. **DateTime Format**: Sử dụng ISO 8601 format (YYYY-MM-DDTHH:mm:ssZ)
 3. **Choice Values**: Đảm bảo giá trị choice khớp với định nghĩa
-4. **File Paths**: Đường dẫn file phải tồn tại trong SharePoint Document Library
-5. **Relationships**: Kiểm tra tất cả foreign key references hợp lệ
+4. **Relationships**: Kiểm tra tất cả foreign key references hợp lệ
+5. **Trạng thái mở rộng**: Sử dụng trạng thái chi tiết để quản lý quy trình phê duyệt 3 cấp
 
-Dữ liệu mẫu này cung cấp đầy đủ scenarios để test toàn bộ chức năng của ứng dụng Power App! 
+## 🔄 **QUY TRÌNH PHÊ DUYỆT ĐƠN GIẢN HÓA**
+
+### Logic phê duyệt:
+```
+1. Tạo đơn → TrangThai = "ChoDuyetCap1"
+2. Manager phê duyệt → TrangThai = "ChoDuyetCap2" (nếu cần) hoặc "DaDuyet"
+3. Director phê duyệt → TrangThai = "ChoDuyetCap3" (nếu cần) hoặc "DaDuyet"  
+4. CEO phê duyệt → TrangThai = "DaDuyet"
+```
+
+### Truy vấn đơn giản:
+- Đơn chờ Manager: `Filter(DonNghiPhep, TrangThai = "ChoDuyetCap1")`
+- Đơn chờ Director: `Filter(DonNghiPhep, TrangThai = "ChoDuyetCap2")`
+- Đơn chờ CEO: `Filter(DonNghiPhep, TrangThai = "ChoDuyetCap3")`
+- Đơn hoàn tất: `Filter(DonNghiPhep, TrangThai = "DaDuyet")`
+
+Dữ liệu mẫu này cung cấp đầy đủ scenarios để test toàn bộ chức năng của ứng dụng Power App với hệ thống đơn giản hóa! 

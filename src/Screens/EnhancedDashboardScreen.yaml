@@ -292,7 +292,7 @@ Screens:
                               Y: =(Parent.Height - Self.Height) / 2
                               Width: =Parent.Height * 0.6
                               Height: =Parent.Height * 0.6
-                              Icon: =Icon.Document
+                              Icon: =Icon.DocumentWithContent
                               Color: =RGBA(33, 150, 243, 1)
                               
                         - 'Dashboard.RecentRequests.Title':

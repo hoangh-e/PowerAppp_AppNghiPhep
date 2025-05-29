@@ -71,8 +71,7 @@ Cơ sở dữ liệu (SharePoint)        Unnamed: 1          Unnamed: 2         
                        NaN              LyDo      text (required)                                         Lý do nghỉ (max 1000 chars)                       NaN
                        NaN      NguoiBanGiao           text (optional)                                     Mã người nhận bàn giao FK → NguoiDung.MaNhanVien
                        NaN    NoiDungBanGiao           text (optional)                                Nội dung công việc bàn giao (max 2000 chars)                       NaN
-                       NaN        TepDinhKem           text (optional)                                     Đường dẫn tệp đính kèm (max 500 chars)                       NaN
-                       NaN         TrangThai      choice (required)           Trạng thái đơn: 'ChoDuyet', 'DaDuyet', 'TuChoi', 'HetHan', 'Huy'                       NaN
+                       NaN         TrangThai      choice (required)           Trạng thái: 'ChoDuyetCap1', 'ChoDuyetCap2', 'ChoDuyetCap3', 'DaDuyet', 'TuChoi', 'Huy', 'HetHan'                       NaN
                        NaN           NgayTao      datetime (auto)                                          Thời điểm tạo đơn                       NaN
                        NaN          BuoiNghi      choice (required)                            Buổi nghỉ: 'CaNgay', 'BuoiSang', 'BuoiChieu'                       NaN
                        NaN          NguoiTao      text (required)                                            Người tạo đơn FK → NguoiDung.MaNhanVien
@@ -82,47 +81,10 @@ Cơ sở dữ liệu (SharePoint)        Unnamed: 1          Unnamed: 2         
                        NaN           UuTien      choice (default)                              Mức ưu tiên: 'BinhThuong', 'Cao', 'KhanCap'                       NaN
                        NaN          GhiChuHR           text (optional)                                      Ghi chú của HR (max 1000 chars)                       NaN
                        NaN       NgayGhiNhan           date (optional)                                        Ngày ghi nhận thực tế                       NaN
-               PheDuyetDon        MaPheDuyet       number (auto)                                               ID phê duyệt                Khóa chính
-                       NaN             MaDon                GUID                                      Liên kết đến đơn nghỉ    FK → DonNghiPhep.MaDon
-                       NaN               Cap      number (required)                                       Cấp phê duyệt: 1-2-3 (1-10)                       NaN
-                       NaN      MaNguoiDuyet      text (required)                                            Người phê duyệt FK → NguoiDung.MaNhanVien
-                       NaN         QuyetDinh      choice (required)               Trạng thái: 'DaDuyet', 'TuChoi', 'HetHan', 'ChoDuyet'                       NaN
-                       NaN         NgayDuyet      datetime (auto)                                             Ngày phê duyệt                       NaN
-                       NaN            GhiChu           text (optional)                                    Ghi chú khi duyệt (max 1000 chars)                       NaN
-                       NaN      ThoiHanDuyet      datetime (required)                                       Thời hạn phê duyệt                       NaN
-                       NaN         NgayHetHan      datetime (calculated)                                    Ngày hết hạn (auto calculated)                       NaN
-                       NaN    ViTriPheDuyet      text (required)                                   Vị trí phê duyệt (max 100 chars)                       NaN
-                       NaN        TepDinhKem           text (optional)                                 Tệp đính kèm phê duyệt (max 500 chars)                       NaN
+                       NaN    GhiChuPheDuyet           text (optional)                                      Ghi chú phê duyệt (max 1000 chars)                       NaN
              QuyTrinhDuyet        MaQuyTrinh       number (auto)                                     Mã quy trình phê duyệt                Khóa chính
                        NaN           MaDonVi      text (required)                                             Đơn vị áp dụng        FK → DonVi.MaDonVi
                        NaN               Cap      number (required)                                 Cấp phê duyệt trong đơn vị (1-10)                       NaN
                        NaN         MaVaiTro      text (required)                                        Vai trò phê duyệt tương ứng        FK → VaiTro.MaVaiTro
                        NaN NguoiDuyetMacDinh      text (required)                                   Người phê duyệt mặc định FK → NguoiDung.MaNhanVien
                        NaN      DangHoatDong      boolean (default)                                        Đang dùng hay không (default: true)                       NaN
-                TepDinhKem            MaTep                GUID                                       Mã tệp đính kèm (duy nhất)                Khóa chính
-                       NaN             MaDon                GUID                                      Liên kết đến đơn nghỉ    FK → DonNghiPhep.MaDon
-                       NaN            TenTep      text (required)                                     Tên file gốc (max 255 chars)                       NaN
-                       NaN          DuongDan      text (required)                                   Đường dẫn lưu trữ (max 1000 chars)                       NaN
-                       NaN        KichThuoc      number (required)                                      Kích thước file (bytes)                       NaN
-                       NaN           LoaiTep      text (required)                                     MIME type (max 100 chars)                       NaN
-                       NaN              MoTa           text (optional)                                      Mô tả file (max 500 chars)                       NaN
-                       NaN          NguoiTai      text (required)                                           Người upload file FK → NguoiDung.MaNhanVien
-                       NaN           NgayTai      datetime (auto)                                         Ngày upload file                       NaN
-                 ThongBao        MaThongBao       number (auto)                                            Mã thông báo                Khóa chính
-                       NaN       MaNguoiNhan      text (required)                                          Người nhận thông báo FK → NguoiDung.MaNhanVien
-                       NaN            TieuDe      text (required)                                    Tiêu đề thông báo (max 500 chars)                       NaN
-                       NaN          NoiDung      text (required)                                   Nội dung thông báo (max 2000 chars)                       NaN
-                       NaN      LoaiThongBao      choice (required)                    Loại: 'DonMoi', 'PheDuyet', 'TuChoi', 'HetHan', 'HeThong'                       NaN
-                       NaN     MaDonLienQuan                GUID                                      Mã đơn liên quan (nếu có)    FK → DonNghiPhep.MaDon
-                       NaN             DaDoc      boolean (default)                                       Đã đọc hay chưa (default: false)                       NaN
-                       NaN           NgayTao      datetime (auto)                                        Ngày tạo thông báo                       NaN
-                       NaN           NgayDoc      datetime (optional)                                        Ngày đọc thông báo                       NaN
-            LichSuThayDoi         MaLichSu       number (auto)                                           Mã lịch sử thay đổi                Khóa chính
-                       NaN        BangDuLieu      text (required)                                     Tên bảng dữ liệu (max 100 chars)                       NaN
-                       NaN          MaBanGhi      text (required)                                      Mã bản ghi (max 100 chars)                       NaN
-                       NaN          HanhDong      choice (required)                                Hành động: 'Tao', 'Sua', 'Xoa'                       NaN
-                       NaN          DuLieuCu           text (optional)                                    Dữ liệu cũ (JSON, max 5000 chars)                       NaN
-                       NaN         DuLieuMoi           text (optional)                                   Dữ liệu mới (JSON, max 5000 chars)                       NaN
-                       NaN  MaNguoiThucHien      text (required)                                         Người thực hiện thay đổi FK → NguoiDung.MaNhanVien
-                       NaN      NgayThucHien      datetime (auto)                                       Ngày thực hiện thay đổi                       NaN
-                       NaN            GhiChu           text (optional)                                     Ghi chú thay đổi (max 1000 chars)                       NaN

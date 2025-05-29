@@ -1,0 +1,231 @@
+AppDefinition:
+  Name: AsiaShine_LeaveApp_SharePoint
+  Version: "2.0.0"
+  MainContainer:
+    Control: AppContainer
+    Properties:
+      OnVisible: |
+                    =Set(varAppVersion, "SharePoint 2.0");
+                    Set(varCurrentUser, LookUp(NguoiDung, Email = User().Email));
+                    If(
+                      IsBlank(varCurrentUser),
+                      Navigate(LoginScreen),
+                      Set(varUserRole, varCurrentUser.MaVaiTro);
+                      Navigate(DashboardScreen)
+                    )
+  AppState:
+    - CurrentUser: =varCurrentUser
+    - UserRole: =varUserRole
+    - SelectedMenuItem: ="Dashboard"
+    - ActiveScreen: ="Dashboard"
+    - AppWidth: =App.Width
+    - AppHeight: =App.Height
+    - IsMobile: =App.Width < 768
+    - IsTablet: =And(App.Width >= 768, App.Width < 1024)
+    - IsDesktop: =App.Width >= 1024
+    
+  # SharePoint Data Sources - Optimized 11 Lists
+  DataSources:
+    # Master Data Lists
+    - Quyen:
+        Type: "ConnectedDataSource"
+        ServiceKind: "SharePoint"
+        ServiceName: "AsiaShine_Quyen"
+        EntityName: "Quyen"
+        Description: "Permissions với bit-wise operations"
+        
+    - VaiTro:
+        Type: "ConnectedDataSource"
+        ServiceKind: "SharePoint"
+        ServiceName: "AsiaShine_VaiTro"
+        EntityName: "VaiTro"
+        Description: "Roles với permissions mapping"
+        
+    - LoaiNghi:
+        Type: "ConnectedDataSource"
+        ServiceKind: "SharePoint"
+        ServiceName: "AsiaShine_LoaiNghi"
+        EntityName: "LoaiNghi"
+        Description: "Leave types với business rules"
+        
+    - NgayLe:
+        Type: "ConnectedDataSource"
+        ServiceKind: "SharePoint"
+        ServiceName: "AsiaShine_NgayLe"
+        EntityName: "NgayLe"
+        Description: "Holidays calendar"
+        
+    - CauHinhHeThong:
+        Type: "ConnectedDataSource"
+        ServiceKind: "SharePoint"
+        ServiceName: "AsiaShine_CauHinhHeThong"
+        EntityName: "CauHinhHeThong"
+        Description: "System configuration"
+        
+    - MauEmail:
+        Type: "ConnectedDataSource"
+        ServiceKind: "SharePoint"
+        ServiceName: "AsiaShine_MauEmail"
+        EntityName: "MauEmail"
+        Description: "Email templates"
+        
+    # Reference Data Lists
+    - DonVi:
+        Type: "ConnectedDataSource"
+        ServiceKind: "SharePoint"
+        ServiceName: "AsiaShine_DonVi"
+        EntityName: "DonVi"
+        Description: "Departments với hierarchy"
+        
+    # User Data Lists
+    - NguoiDung:
+        Type: "ConnectedDataSource"
+        ServiceKind: "SharePoint"
+        ServiceName: "AsiaShine_NguoiDung"
+        EntityName: "NguoiDung"
+        Description: "Users với authentication"
+        
+    - QuyTrinhDuyet:
+        Type: "ConnectedDataSource"
+        ServiceKind: "SharePoint"
+        ServiceName: "AsiaShine_QuyTrinhDuyet"
+        EntityName: "QuyTrinhDuyet"
+        Description: "Approval workflows"
+        
+    # Transaction Data Lists
+    - SoNgayPhep:
+        Type: "ConnectedDataSource"
+        ServiceKind: "SharePoint"
+        ServiceName: "AsiaShine_SoNgayPhep"
+        EntityName: "SoNgayPhep"
+        Description: "Leave quotas tracking"
+        
+    - DonNghiPhep:
+        Type: "ConnectedDataSource"
+        ServiceKind: "SharePoint"
+        ServiceName: "AsiaShine_DonNghiPhep"
+        EntityName: "DonNghiPhep"
+        Description: "Leave requests với full workflow"
+        
+  # Navigation Configuration
+  NavigationContainer: 
+    ScreenOrder:
+      - 'DashboardScreen'
+      - 'LeaveRequestScreen'
+      - 'MyLeavesScreen'
+      - 'ApprovalScreen'
+      - 'CalendarScreen'
+      - 'ReportsScreen'
+      - 'ManagementScreen'
+      
+    # Role-based Screen Access
+    AccessControl:
+      EMPLOYEE:
+        AllowedScreens: ["DashboardScreen", "LeaveRequestScreen", "MyLeavesScreen", "CalendarScreen"]
+        DefaultScreen: "DashboardScreen"
+        
+      MANAGER:
+        AllowedScreens: ["DashboardScreen", "LeaveRequestScreen", "MyLeavesScreen", "ApprovalScreen", "CalendarScreen", "ReportsScreen"]
+        DefaultScreen: "DashboardScreen"
+        
+      DIRECTOR:
+        AllowedScreens: ["DashboardScreen", "LeaveRequestScreen", "MyLeavesScreen", "ApprovalScreen", "CalendarScreen", "ReportsScreen", "ManagementScreen"]
+        DefaultScreen: "DashboardScreen"
+        
+      HR:
+        AllowedScreens: ["DashboardScreen", "LeaveRequestScreen", "MyLeavesScreen", "ApprovalScreen", "CalendarScreen", "ReportsScreen", "ManagementScreen"]
+        DefaultScreen: "DashboardScreen"
+        
+      ADMIN:
+        AllowedScreens: ["DashboardScreen", "LeaveRequestScreen", "MyLeavesScreen", "ApprovalScreen", "CalendarScreen", "ReportsScreen", "ManagementScreen"]
+        DefaultScreen: "ManagementScreen"
+        
+  # SharePoint Specific Settings
+  SharePointSettings:
+    SiteUrl: "https://[tenant].sharepoint.com/sites/AsiaShineLeaveApp"
+    Environment: "Production"
+    ApiVersion: "v1.0"
+    
+    # Performance Settings
+    CachingEnabled: true
+    CacheTimeout: 300 # 5 minutes
+    BatchSize: 500
+    DelegationLimit: 2000
+    
+    # Security Settings
+    RequireAuthentication: true
+    EnableAuditLog: true
+    DataRetentionDays: 2555 # 7 years
+    
+    # Notification Settings
+    EmailNotificationsEnabled: true
+    PushNotificationsEnabled: true
+    SMSNotificationsEnabled: false
+    
+  # Global Variables
+  GlobalVariables:
+    - varAppName: ="AsiaShine Leave Management"
+    - varAppVersion: ="2.0.0 SharePoint"
+    - varCompanyName: ="Công ty TNHH AsiaShine"
+    - varSupportEmail: ="support@asiashine.com"
+    - varMaxLeaveDays: =20
+    - varMinAdvanceDays: =3
+    - varMaxContinuousDays: =10
+    - varAutoApprovalDays: =7
+    
+  # Theme Configuration
+  Theme:
+    PrimaryColor: =RGBA(33, 150, 243, 1)     # Blue
+    SecondaryColor: =RGBA(76, 175, 80, 1)    # Green
+    AccentColor: =RGBA(255, 152, 0, 1)       # Orange
+    ErrorColor: =RGBA(244, 67, 54, 1)        # Red
+    WarningColor: =RGBA(255, 193, 7, 1)      # Yellow
+    InfoColor: =RGBA(103, 58, 183, 1)        # Purple
+    SuccessColor: =RGBA(76, 175, 80, 1)      # Green
+    
+    # Background Colors
+    BackgroundPrimary: =RGBA(248, 250, 252, 1)
+    BackgroundSecondary: =RGBA(255, 255, 255, 1)
+    BackgroundCard: =RGBA(255, 255, 255, 1)
+    
+    # Text Colors
+    TextPrimary: =RGBA(32, 54, 71, 1)
+    TextSecondary: =RGBA(55, 65, 81, 1)
+    TextMuted: =RGBA(107, 114, 128, 1)
+    
+    # Border Colors
+    BorderLight: =RGBA(229, 231, 235, 1)
+    BorderMedium: =RGBA(209, 213, 219, 1)
+    BorderDark: =RGBA(156, 163, 175, 1)
+    
+  # Component Library Reference
+  ComponentLibrary:
+    Version: "1.0.0"
+    Components:
+      - "ButtonComponent"
+      - "HeaderComponent"
+      - "NavigationComponent"
+      - "InputComponent"
+      - "StatsCardComponent"
+      - "EnhancedDesignSystemComponent"
+      
+  # Error Handling
+  ErrorHandling:
+    ShowDetailedErrors: false
+    LogErrors: true
+    RetryAttempts: 3
+    RetryDelay: 1000 # milliseconds
+    
+    DefaultErrorMessages:
+      ConnectionError: "Không thể kết nối tới SharePoint. Vui lòng kiểm tra kết nối mạng."
+      AuthenticationError: "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại."
+      PermissionError: "Bạn không có quyền thực hiện thao tác này."
+      ValidationError: "Dữ liệu nhập vào không hợp lệ. Vui lòng kiểm tra lại."
+      ServerError: "Có lỗi xảy ra trên hệ thống. Vui lòng thử lại sau."
+      
+  # Performance Monitoring
+  Performance:
+    EnableTelemetry: true
+    TrackLoadTimes: true
+    TrackUserActions: true
+    MaxLogEntries: 1000 

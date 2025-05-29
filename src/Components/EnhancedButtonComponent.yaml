@@ -205,7 +205,7 @@ ComponentDefinitions:
                     "settings", Icon.Settings,
                     "user", Icon.Person,
                     "calendar", Icon.CalendarBlank,
-                    "document", Icon.Document,
+                    "document", Icon.DocumentWithContent,
                     "mail", Icon.Mail,
                     "phone", Icon.Phone,
                     "home", Icon.Home,

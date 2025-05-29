@@ -1,0 +1,152 @@
+ComponentDefinitions:
+  LoadingComponent:
+    DefinitionType: CanvasComponent
+    CustomProperties:
+      IsVisible:
+        PropertyKind: Input
+        DisplayName: IsVisible
+        Description: "Hiển thị component loading"
+        DataType: Boolean
+        Default: =false
+        
+      LoadingText:
+        PropertyKind: Input
+        DisplayName: LoadingText
+        Description: "Văn bản hiển thị khi loading"
+        DataType: Text
+        Default: ="Đang tải..."
+        
+      ShowProgress:
+        PropertyKind: Input
+        DisplayName: ShowProgress
+        Description: "Hiển thị thanh tiến trình"
+        DataType: Boolean
+        Default: =false
+        
+      ProgressValue:
+        PropertyKind: Input
+        DisplayName: ProgressValue
+        Description: "Giá trị tiến trình (0-100)"
+        DataType: Number
+        Default: =0
+        
+      Size:
+        PropertyKind: Input
+        DisplayName: Size
+        Description: "Kích thước loading (Small/Medium/Large)"
+        DataType: Text
+        Default: ="Medium"
+        
+    Properties:
+      Height: =If(LoadingComponent.ShowProgress, 120, 80)
+      Width: =240
+      
+    Children:
+      - 'Loading.Overlay':
+          Control: Rectangle
+          Properties:
+            X: =Parent.X
+            Y: =Parent.Y
+            Width: =Parent.Width
+            Height: =Parent.Height
+            Fill: =RGBA(255, 255, 255, 0.95)
+            BorderColor: =RGBA(0, 0, 0, 0)
+            Visible: =LoadingComponent.IsVisible
+            
+      - 'Loading.Container':
+          Control: GroupContainer
+          Variant: ManualLayout
+          Properties:
+            X: =(Parent.Width - Self.Width) / 2
+            Y: =(Parent.Height - Self.Height) / 2
+            Width: =Switch(LoadingComponent.Size,
+              "Small", 160,
+              "Large", 280,
+              200)
+            Height: =If(LoadingComponent.ShowProgress, 80, 60)
+            Fill: =RGBA(255, 255, 255, 1)
+            BorderColor: =RGBA(229, 231, 235, 1)
+            BorderThickness: =1
+            DropShadow: =DropShadow.Light
+            BorderRadius: =8
+            Visible: =LoadingComponent.IsVisible
+          Children:
+            # Loading Spinner
+            - 'Loading.Spinner':
+                Control: Classic/Icon
+                Properties:
+                  X: =Parent.X + Parent.Width * 0.1
+                  Y: =Parent.Y + Parent.Height * 0.25
+                  Width: =Switch(LoadingComponent.Size,
+                    "Small", 20,
+                    "Large", 32,
+                    24)
+                  Height: =Self.Width
+                  Icon: =Icon.Sync
+                  Color: =RGBA(33, 150, 243, 1)
+                  
+            # Loading Text
+            - 'Loading.Text':
+                Control: Label
+                Properties:
+                  X: ='Loading.Spinner'.X + 'Loading.Spinner'.Width + Parent.Width * 0.05
+                  Y: =Parent.Y + Parent.Height * 0.2
+                  Width: =Parent.Width * 0.7
+                  Height: =Parent.Height * 0.4
+                  Text: =LoadingComponent.LoadingText
+                  Color: =RGBA(55, 65, 81, 1)
+                  Font: =Font.'Open Sans'
+                  FontWeight: =FontWeight.Semibold
+                  Size: =Switch(LoadingComponent.Size,
+                    "Small", 12,
+                    "Large", 16,
+                    14)
+                  
+            # Progress Bar (optional)
+            - 'Loading.Progress.Container':
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =Parent.X + Parent.Width * 0.1
+                  Y: =Parent.Y + Parent.Height * 0.65
+                  Width: =Parent.Width * 0.8
+                  Height: =Parent.Height * 0.25
+                  Visible: =LoadingComponent.ShowProgress
+                Children:
+                  # Progress Background
+                  - 'Loading.Progress.Background':
+                      Control: Rectangle
+                      Properties:
+                        X: =Parent.X
+                        Y: =Parent.Y + (Parent.Height - Self.Height) / 2
+                        Width: =Parent.Width
+                        Height: =4
+                        Fill: =RGBA(229, 231, 235, 1)
+                        BorderRadius: =2
+                        BorderThickness: =0
+                        
+                  # Progress Fill
+                  - 'Loading.Progress.Fill':
+                      Control: Rectangle
+                      Properties:
+                        X: ='Loading.Progress.Background'.X
+                        Y: ='Loading.Progress.Background'.Y
+                        Width: ='Loading.Progress.Background'.Width * (LoadingComponent.ProgressValue / 100)
+                        Height: ='Loading.Progress.Background'.Height
+                        Fill: =RGBA(33, 150, 243, 1)
+                        BorderRadius: =2
+                        BorderThickness: =0
+                        
+                  # Progress Text
+                  - 'Loading.Progress.Text':
+                      Control: Label
+                      Properties:
+                        X: =Parent.X
+                        Y: ='Loading.Progress.Background'.Y + 'Loading.Progress.Background'.Height + 2
+                        Width: =Parent.Width
+                        Height: =10
+                        Text: =LoadingComponent.ProgressValue & "%"
+                        Color: =RGBA(107, 114, 128, 1)
+                        Font: =Font.'Open Sans'
+                        Size: =10
+                        Align: =Align.Center 

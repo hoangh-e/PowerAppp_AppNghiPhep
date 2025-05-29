@@ -303,7 +303,7 @@ ComponentDefinitions:
                             Y: =(Parent.Height - Self.Height) / 2
                             Width: =Parent.Height * 0.4
                             Height: =Parent.Height * 0.4
-                            Icon: =Icon.Document
+                            Icon: =Icon.DocumentWithContent
                             Color: =If(NavigationComponent.ActiveScreen = "MyLeaves", 
                               RGBA(76, 175, 80, 1), 
                               RGBA(107, 114, 128, 1))

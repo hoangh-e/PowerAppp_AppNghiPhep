@@ -1,0 +1,288 @@
+Screens:
+  LoginScreen:
+    Properties:
+      Fill: =RGBA(248, 250, 252, 1)
+      OnVisible: |
+                    =Set(varCurrentUser, LookUp(NguoiDung, Email = User().Email));
+                    Set(varLoginError, "");
+                    Set(varIsLoading, false);
+                    If(Not(IsBlank(varCurrentUser)), 
+                      Navigate(DashboardScreen),
+                      Set(varShowLoginForm, true))
+    Children:
+      - 'Login.Background':
+          Control: Rectangle
+          Properties:
+            X: =0
+            Y: =0
+            Width: =Parent.Width
+            Height: =Parent.Height
+            Fill: =RGBA(33, 150, 243, 1)
+            
+      - 'Login.Container':
+          Control: GroupContainer
+          Variant: ManualLayout
+          Properties:
+            X: =(Parent.Width - Self.Width) / 2
+            Y: =(Parent.Height - Self.Height) / 2
+            Width: =If(App.Width < 768, Parent.Width * 0.9, Parent.Width * 0.4)
+            Height: =If(App.Width < 768, Parent.Height * 0.8, Parent.Height * 0.7)
+            Fill: =RGBA(255, 255, 255, 1)
+            DropShadow: =DropShadow.Bold
+            BorderRadius: =8
+          Children:
+            # Company Logo
+            - 'Login.Logo':
+                Control: Classic/Icon
+                Properties:
+                  X: =(Parent.Width - Self.Width) / 2
+                  Y: =Parent.Y + Parent.Height * 0.08
+                  Width: =Parent.Width * 0.15
+                  Height: =Parent.Width * 0.15
+                  Icon: =Icon.Person
+                  Color: =RGBA(33, 150, 243, 1)
+                  
+            - 'Login.Title':
+                Control: Label
+                Properties:
+                  X: =Parent.X + Parent.Width * 0.05
+                  Y: ='Login.Logo'.Y + 'Login.Logo'.Height + Parent.Height * 0.04
+                  Width: =Parent.Width * 0.9
+                  Height: =Parent.Height * 0.08
+                  Text: ="AsiaShine Leave Management"
+                  Color: =RGBA(32, 54, 71, 1)
+                  Font: =Font.'Open Sans'
+                  FontWeight: =FontWeight.Bold
+                  Size: =If(App.Width < 768, 18, 22)
+                  Align: =Align.Center
+                  
+            - 'Login.Subtitle':
+                Control: Label
+                Properties:
+                  X: =Parent.X + Parent.Width * 0.05
+                  Y: ='Login.Title'.Y + 'Login.Title'.Height
+                  Width: =Parent.Width * 0.9
+                  Height: =Parent.Height * 0.05
+                  Text: ="Hệ thống quản lý nghỉ phép doanh nghiệp"
+                  Color: =RGBA(108, 117, 125, 1)
+                  Font: =Font.'Open Sans'
+                  Size: =If(App.Width < 768, 12, 14)
+                  Align: =Align.Center
+                  
+            # Authentication Section
+            - 'Login.Auth.Container':
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =Parent.X + Parent.Width * 0.075
+                  Y: ='Login.Subtitle'.Y + 'Login.Subtitle'.Height + Parent.Height * 0.06
+                  Width: =Parent.Width * 0.85
+                  Height: =Parent.Height * 0.45
+                  Visible: =varShowLoginForm
+                Children:
+                  # Current User Display (if already authenticated)
+                  - 'Login.UserInfo.Container':
+                      Control: GroupContainer
+                      Variant: ManualLayout
+                      Properties:
+                        X: =Parent.X
+                        Y: =Parent.Y
+                        Width: =Parent.Width
+                        Height: =Parent.Height * 0.4
+                        Visible: =Not(IsBlank(varCurrentUser))
+                      Children:
+                        - 'Login.UserInfo.Avatar':
+                            Control: Circle
+                            Properties:
+                              X: =(Parent.Width - Self.Width) / 2
+                              Y: =Parent.Y
+                              Width: =Parent.Height * 0.6
+                              Height: =Parent.Height * 0.6
+                              Fill: =RGBA(33, 150, 243, 0.1)
+                              BorderColor: =RGBA(33, 150, 243, 1)
+                              BorderThickness: =2
+                              
+                        - 'Login.UserInfo.InitialLabel':
+                            Control: Label
+                            Properties:
+                              X: ='Login.UserInfo.Avatar'.X + ('Login.UserInfo.Avatar'.Width - Self.Width) / 2
+                              Y: ='Login.UserInfo.Avatar'.Y + ('Login.UserInfo.Avatar'.Height - Self.Height) / 2
+                              Width: ='Login.UserInfo.Avatar'.Width * 0.6
+                              Height: ='Login.UserInfo.Avatar'.Height * 0.6
+                              Text: =If(Not(IsBlank(varCurrentUser)), 
+                                Upper(Left(varCurrentUser.HoTen, 1)), "")
+                              Color: =RGBA(33, 150, 243, 1)
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Bold
+                              Size: =Parent.Height * 0.25
+                              Align: =Align.Center
+                              
+                        - 'Login.UserInfo.Name':
+                            Control: Label
+                            Properties:
+                              X: =Parent.X
+                              Y: ='Login.UserInfo.Avatar'.Y + 'Login.UserInfo.Avatar'.Height + Parent.Height * 0.05
+                              Width: =Parent.Width
+                              Height: =Parent.Height * 0.2
+                              Text: =If(Not(IsBlank(varCurrentUser)), 
+                                "Xin chào, " & varCurrentUser.HoTen, "")
+                              Color: =RGBA(32, 54, 71, 1)
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Semibold
+                              Size: =16
+                              Align: =Align.Center
+                              
+                        - 'Login.UserInfo.Role':
+                            Control: Label
+                            Properties:
+                              X: =Parent.X
+                              Y: ='Login.UserInfo.Name'.Y + 'Login.UserInfo.Name'.Height
+                              Width: =Parent.Width
+                              Height: =Parent.Height * 0.15
+                              Text: =If(Not(IsBlank(varCurrentUser)), 
+                                Switch(varCurrentUser.MaVaiTro,
+                                  "EMPLOYEE", "Nhân viên",
+                                  "MANAGER", "Quản lý",
+                                  "DIRECTOR", "Giám đốc", 
+                                  "HR", "Nhân sự",
+                                  "ADMIN", "Quản trị viên",
+                                  varCurrentUser.MaVaiTro), "")
+                              Color: =RGBA(108, 117, 125, 1)
+                              Font: =Font.'Open Sans'
+                              Size: =14
+                              Align: =Align.Center
+                              
+                  # Authentication Status
+                  - 'Login.Auth.Status':
+                      Control: Label
+                      Properties:
+                        X: =Parent.X
+                        Y: =Parent.Y + Parent.Height * 0.45
+                        Width: =Parent.Width
+                        Height: =Parent.Height * 0.15
+                        Text: =If(IsBlank(varCurrentUser),
+                          "Vui lòng đăng nhập bằng tài khoản Microsoft 365",
+                          "Bạn đã đăng nhập thành công!")
+                        Color: =If(IsBlank(varCurrentUser), RGBA(108, 117, 125, 1), RGBA(76, 175, 80, 1))
+                        Font: =Font.'Open Sans'
+                        Size: =14
+                        Align: =Align.Center
+                        
+                  # Login/Continue Button
+                  - 'Login.Auth.Button':
+                      Control: CanvasComponent
+                      ComponentName: ButtonComponent
+                      Properties:
+                        X: =Parent.X
+                        Y: =Parent.Y + Parent.Height * 0.65
+                        Width: =Parent.Width
+                        Height: =Parent.Height * 0.2
+                        Text: =If(IsBlank(varCurrentUser), "Đăng nhập với Microsoft 365", "Tiếp tục")
+                        Variant: ="Primary"
+                        Size: ="Large"
+                        Icon: =If(IsBlank(varCurrentUser), "People", "ChevronRight")
+                        IsLoading: =varIsLoading
+                        LoadingText: ="Đang xử lý..."
+                        OnClick: |
+                                    =Set(varIsLoading, true);
+                                    Set(varLoginError, "");
+                                    If(IsBlank(varCurrentUser),
+                                      // Try to authenticate with current user
+                                      Set(varCurrentUser, LookUp(NguoiDung, Email = User().Email));
+                                      If(IsBlank(varCurrentUser),
+                                        Set(varLoginError, "Tài khoản của bạn chưa được cấp quyền truy cập hệ thống. Vui lòng liên hệ quản trị viên.");
+                                        Set(varIsLoading, false),
+                                        // Successfully authenticated
+                                        Set(varUserRole, varCurrentUser.MaVaiTro);
+                                        Set(varIsLoading, false);
+                                        Navigate(DashboardScreen)
+                                      ),
+                                      // User already authenticated, continue to dashboard
+                                      Set(varUserRole, varCurrentUser.MaVaiTro);
+                                      Set(varIsLoading, false);
+                                      Navigate(DashboardScreen)
+                                    )
+                                    
+                  # Alternative Login Methods
+                  - 'Login.Auth.Alternative':
+                      Control: Label
+                      Properties:
+                        X: =Parent.X
+                        Y: =Parent.Y + Parent.Height * 0.9
+                        Width: =Parent.Width
+                        Height: =Parent.Height * 0.1
+                        Text: ="Hoặc liên hệ IT Support: support@asiashine.com"
+                        Color: =RGBA(108, 117, 125, 1)
+                        Font: =Font.'Open Sans'
+                        Size: =12
+                        Align: =Align.Center
+                        Visible: =Not(IsBlank(varLoginError))
+                        
+            # Error Message
+            - 'Login.Error.Container':
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =Parent.X + Parent.Width * 0.075
+                  Y: ='Login.Auth.Container'.Y + 'Login.Auth.Container'.Height + Parent.Height * 0.02
+                  Width: =Parent.Width * 0.85
+                  Height: =Parent.Height * 0.12
+                  Visible: =Not(IsBlank(varLoginError))
+                Children:
+                  - 'Login.Error.Icon':
+                      Control: Classic/Icon
+                      Properties:
+                        X: =Parent.X + Parent.Width * 0.05
+                        Y: =Parent.Y + (Parent.Height - Self.Height) / 2
+                        Width: =Parent.Height * 0.4
+                        Height: =Parent.Height * 0.4
+                        Icon: =Icon.Warning
+                        Color: =RGBA(244, 67, 54, 1)
+                        
+                  - 'Login.Error.Message':
+                      Control: Label
+                      Properties:
+                        X: ='Login.Error.Icon'.X + 'Login.Error.Icon'.Width + Parent.Width * 0.03
+                        Y: =Parent.Y
+                        Width: =Parent.Width * 0.87
+                        Height: =Parent.Height
+                        Text: =varLoginError
+                        Color: =RGBA(244, 67, 54, 1)
+                        Font: =Font.'Open Sans'
+                        Size: =13
+                        
+            # System Information
+            - 'Login.System.Info':
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =Parent.X + Parent.Width * 0.05
+                  Y: =Parent.Y + Parent.Height * 0.85
+                  Width: =Parent.Width * 0.9
+                  Height: =Parent.Height * 0.12
+                Children:
+                  - 'Login.System.Version':
+                      Control: Label
+                      Properties:
+                        X: =Parent.X
+                        Y: =Parent.Y
+                        Width: =Parent.Width
+                        Height: =Parent.Height * 0.5
+                        Text: ="Version 2.0.0 SharePoint | Powered by Microsoft Power Platform"
+                        Color: =RGBA(156, 163, 175, 1)
+                        Font: =Font.'Open Sans'
+                        Size: =11
+                        Align: =Align.Center
+                        
+                  - 'Login.System.Copyright':
+                      Control: Label
+                      Properties:
+                        X: =Parent.X
+                        Y: =Parent.Y + Parent.Height * 0.5
+                        Width: =Parent.Width
+                        Height: =Parent.Height * 0.5
+                        Text: ="© 2024 AsiaShine Technology Solutions. All rights reserved."
+                        Color: =RGBA(156, 163, 175, 1)
+                        Font: =Font.'Open Sans'
+                        Size: =10
+                        Align: =Align.Center 
