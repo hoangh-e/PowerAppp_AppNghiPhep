@@ -32,7 +32,7 @@
             OnNavigate: =Set(varNavigateAction, true)
             
       - 'Profile.Content.Container':
-          Control: GroupContainer
+          Control: Rectangle
           Variant: ManualLayout
           Properties:
             X: ='Profile.Navigation'.X + 'Profile.Navigation'.Width
@@ -55,7 +55,7 @@
                   Size: =Parent.Height * 0.05
                   
             - 'Profile.Main.Container':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.X + Parent.Width * 0.03
@@ -64,7 +64,7 @@
                   Height: =Parent.Height * 0.8
                 Children:
                   - 'Profile.Info.Container':
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         X: =Parent.X
@@ -77,7 +77,7 @@
                         DropShadow: =DropShadow.Light
                       Children:
                         - 'Profile.Info.Header':
-                            Control: GroupContainer
+                            Control: Rectangle
                             Variant: ManualLayout
                             Properties:
                               X: =Parent.X + Parent.Width * 0.03
@@ -115,7 +115,7 @@
                                       =If(varIsEditing, Notify("Thông tin đã được cập nhật!", NotificationType.Success); Set(varIsEditing, false), Set(varIsEditing, true))
                                       
                         - 'Profile.Info.Avatar.Container':
-                            Control: GroupContainer
+                            Control: Rectangle
                             Variant: ManualLayout
                             Properties:
                               X: =Parent.X + Parent.Width * 0.03
@@ -184,7 +184,7 @@
                                     Align: =Align.Center
                                     
                         - 'Profile.Info.Details.Container':
-                            Control: GroupContainer
+                            Control: Rectangle
                             Variant: ManualLayout
                             Properties:
                               X: =Parent.X + Parent.Width * 0.03
@@ -193,7 +193,7 @@
                               Height: =Parent.Height * 0.65
                             Children:
                               - 'Profile.Info.Field.ID':
-                                  Control: GroupContainer
+                                  Control: Rectangle
                                   Variant: ManualLayout
                                   Properties:
                                     X: =Parent.X
@@ -227,7 +227,7 @@
                                           Size: =Parent.Height * 0.25
                                           
                               - 'Profile.Info.Field.Email':
-                                  Control: GroupContainer
+                                  Control: Rectangle
                                   Variant: ManualLayout
                                   Properties:
                                     X: =Parent.X
@@ -276,7 +276,7 @@
                                           Visible: =varIsEditing
                                           
                               - 'Profile.Info.Field.Phone':
-                                  Control: GroupContainer
+                                  Control: Rectangle
                                   Variant: ManualLayout
                                   Properties:
                                     X: =Parent.X
@@ -325,7 +325,7 @@
                                           Visible: =varIsEditing
                                           
                               - 'Profile.Info.Field.Manager':
-                                  Control: GroupContainer
+                                  Control: Rectangle
                                   Variant: ManualLayout
                                   Properties:
                                     X: =Parent.X
@@ -359,7 +359,7 @@
                                           Size: =Parent.Height * 0.25
                                           
                               - 'Profile.Info.Field.JoinDate':
-                                  Control: GroupContainer
+                                  Control: Rectangle
                                   Variant: ManualLayout
                                   Properties:
                                     X: =Parent.X
@@ -393,7 +393,7 @@
                                           Size: =Parent.Height * 0.25
                                           
                   - 'Profile.Leave.Container':
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         X: ='Profile.Info.Container'.X + 'Profile.Info.Container'.Width + Parent.Width * 0.02
@@ -402,7 +402,7 @@
                         Height: =Parent.Height
                       Children:
                         - 'Profile.Leave.Balance.Container':
-                            Control: GroupContainer
+                            Control: Rectangle
                             Variant: ManualLayout
                             Properties:
                               X: =Parent.X
@@ -428,7 +428,7 @@
                                     Size: =Parent.Height * 0.08
                                     
                               - 'Profile.Leave.Balance.Stats':
-                                  Control: GroupContainer
+                                  Control: Rectangle
                                   Variant: ManualLayout
                                   Properties:
                                     X: =Parent.X + Parent.Width * 0.05
@@ -489,7 +489,7 @@
                                           Color: =RGBA(108, 117, 125, 1)
                                           
                         - 'Profile.Leave.History.Container':
-                            Control: GroupContainer
+                            Control: Rectangle
                             Variant: ManualLayout
                             Properties:
                               X: =Parent.X
@@ -527,7 +527,7 @@
                                     TemplatePadding: =Parent.Height * 0.01
                                   Children:
                                     - 'Gallery.History.Container':
-                                        Control: GroupContainer
+                                        Control: Rectangle
                                         Variant: ManualLayout
                                         Properties:
                                           X: =Parent.X

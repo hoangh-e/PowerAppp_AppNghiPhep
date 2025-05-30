@@ -36,7 +36,7 @@
       Width: =App.Width
     Children:
       - 'Advanced.MainContainer':
-          Control: GroupContainer
+          Control: Rectangle
           Variant: ManualLayout
           Properties:
             X: =Parent.X
@@ -68,7 +68,7 @@
                   Width: 300
                   Height: ='Advanced.HeaderIcon'.Height
                   # ❌ Wrong text formatting
-                  Text: ="Title: " & AdvancedTestComponent.ComponentTitle
+                  Text: ="Title:" & AdvancedTestComponent.ComponentTitle
                   Color: =RGBA(17, 24, 39, 1)
                   Font: =Font.'Open Sans'
                   FontWeight: =FontWeight.Bold
@@ -108,7 +108,7 @@
                   Width: =200
                   Height: ='Advanced.StatusIcon'.Height
                   # ❌ Multiple text formatting errors
-                  Text: ="Status: " & "Active" & " | " & "Department: " & "IT"
+                  Text: ="Status:" & "Active" & " | " & "Department:" & "IT"
                   Color: =RGBA(55, 65, 81, 1)
                   Font: =Font.'Open Sans'
                   Size: =14

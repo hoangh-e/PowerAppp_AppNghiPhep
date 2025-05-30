@@ -54,7 +54,7 @@ ComponentDefinitions:
             Visible: =LoadingComponent.IsVisible
             
       - 'Loading.Container':
-          Control: GroupContainer
+          Control: Rectangle
           Variant: ManualLayout
           Properties:
             X: =(Parent.Width - Self.Width) / 2
@@ -103,7 +103,7 @@ ComponentDefinitions:
                   
             # Progress Bar (optional)
             - 'Loading.Progress.Container':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.X + Parent.Width * 0.1

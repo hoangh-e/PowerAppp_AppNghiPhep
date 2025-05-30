@@ -36,7 +36,7 @@ Screens:
             BorderColor: =RGBA(0, 0, 0, 0)
       
       - Header:
-          Control: GroupContainer
+          Control: Rectangle
           Variant: ManualLayout
           Properties:
             X: =0
@@ -79,7 +79,7 @@ Screens:
                   Color: =RGBA(32, 54, 71, 1)
             
             - 'Header.UserInfo':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.Width - 250
@@ -149,7 +149,7 @@ Screens:
                         OnSelect: =Set(varCurrentUser, Blank()); Navigate(LoginScreen, ScreenTransition.Fade)
       
       - MainContent:
-          Control: GroupContainer
+          Control: Rectangle
           Variant: ManualLayout
           Properties:
             X: =0
@@ -159,7 +159,7 @@ Screens:
             Fill: =RGBA(248, 250, 252, 1)
           Children:
             - WelcomeSection:
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =40
@@ -220,7 +220,7 @@ Screens:
                         OnSelect: =Notify("Chức năng đang phát triển", NotificationType.Information)
             
             - StatsGrid:
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =40
@@ -231,7 +231,7 @@ Screens:
                 Children:
                   # Card 1 - Số ngày nghỉ còn lại
                   - 'StatsGrid.LeaveBalanceCard':
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         X: =0
@@ -295,14 +295,14 @@ Screens:
                               Y: =130
                               Width: =Parent.Width
                               Height: =30
-                              Text: =If(IsBlank(varCurrentEmployee) || varCurrentUser.Role = "Admin", "Không áp dụng", Concatenate("Tổng cộng: ", Text(varCurrentEmployee.TongSoNgayNghi), " ngày"))
+                              Text: =If(IsBlank(varCurrentEmployee) || varCurrentUser.Role = "Admin", "Không áp dụng", Concatenate("Tổng cộng:", Text(varCurrentEmployee.TongSoNgayNghi), " ngày"))
                               Size: =11
                               Color: =RGBA(108, 117, 125, 1)
                               Align: =Align.Center
                   
                   # Card 2 - Số ngày đã nghỉ
                   - 'StatsGrid.UsedLeavesCard':
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         X: =(Parent.Width - 40) / 3 + 20
@@ -373,7 +373,7 @@ Screens:
                   
                   # Card 3 - Trạng thái
                   - 'StatsGrid.StatusCard':
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         X: =2 * ((Parent.Width - 40) / 3 + 20)
@@ -443,7 +443,7 @@ Screens:
                               Align: =Align.Center
             
             - QuickActionsSection:
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =40
@@ -465,7 +465,7 @@ Screens:
                         Color: =RGBA(32, 54, 71, 1)
                   
                   - 'QuickActionsSection.ButtonGroup':
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         X: =0

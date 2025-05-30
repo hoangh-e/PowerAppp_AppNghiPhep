@@ -30,7 +30,7 @@ Screens:
             BorderColor: =RGBA(0, 0, 0, 0)
       
       - Header:
-          Control: GroupContainer
+          Control: Rectangle
           Variant: ManualLayout
           Properties:
             X: =0
@@ -69,7 +69,7 @@ Screens:
                   Color: =RGBA(32, 54, 71, 1)
       
       - MainContent:
-          Control: GroupContainer
+          Control: Rectangle
           Variant: ManualLayout
           Properties:
             X: =0
@@ -79,7 +79,7 @@ Screens:
             Fill: =RGBA(248, 250, 252, 1)
           Children:
             - FormContainer:
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =(Parent.Width - 600) / 2
@@ -125,7 +125,7 @@ Screens:
                   
                   # Loại nghỉ phép
                   - 'FormContainer.LeaveTypeGroup':
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         X: =40
@@ -156,15 +156,15 @@ Screens:
                               Items: =varLeaveTypes.Name
                               Default: =""
                               HintText: ="Chọn loại nghỉ phép"
-                              BorderColor: =If(Self.Focus, RGBA(0, 120, 212, 1), RGBA(200, 200, 200, 1))
-                              BorderThickness: =If(Self.Focus, 2, 1)
+                              BorderColor: =RGBA(200, 200, 200, 1)
+                              BorderThickness: =1
                               Fill: =RGBA(248, 250, 253, 1)
                               HoverFill: =RGBA(255, 255, 255, 1)
                               OnChange: =Set(varSelectedLeaveType, LookUp(varLeaveTypes, Name = Self.Selected.Value))
                   
                   # Ngày bắt đầu và kết thúc
                   - 'FormContainer.DateGroup':
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         X: =40
@@ -205,8 +205,8 @@ Screens:
                               Width: =(Parent.Width - 20) / 2
                               Height: =42
                               DefaultDate: =Today()
-                              BorderColor: =If(Self.Focus, RGBA(0, 120, 212, 1), RGBA(200, 200, 200, 1))
-                              BorderThickness: =If(Self.Focus, 2, 1)
+                              BorderColor: =RGBA(200, 200, 200, 1)
+                              BorderThickness: =1
                               Fill: =RGBA(248, 250, 253, 1)
                               HoverFill: =RGBA(255, 255, 255, 1)
                               OnChange: =Set(varStartDate, Self.SelectedDate)
@@ -219,15 +219,15 @@ Screens:
                               Width: =(Parent.Width - 20) / 2
                               Height: =42
                               DefaultDate: =Today()
-                              BorderColor: =If(Self.Focus, RGBA(0, 120, 212, 1), RGBA(200, 200, 200, 1))
-                              BorderThickness: =If(Self.Focus, 2, 1)
+                              BorderColor: =RGBA(200, 200, 200, 1)
+                              BorderThickness: =1
                               Fill: =RGBA(248, 250, 253, 1)
                               HoverFill: =RGBA(255, 255, 255, 1)
                               OnChange: =Set(varEndDate, Self.SelectedDate)
                   
                   # Lý do nghỉ phép
                   - 'FormContainer.ReasonGroup':
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         X: =40
@@ -258,8 +258,8 @@ Screens:
                               Default: =""
                               HintText: ="Nhập lý do nghỉ phép chi tiết..."
                               Mode: =TextMode.MultiLine
-                              BorderColor: =If(Self.Focus, RGBA(0, 120, 212, 1), RGBA(200, 200, 200, 1))
-                              BorderThickness: =If(Self.Focus, 2, 1)
+                              BorderColor: =RGBA(200, 200, 200, 1)
+                              BorderThickness: =1
                               Fill: =RGBA(248, 250, 253, 1)
                               HoverFill: =RGBA(255, 255, 255, 1)
                               PaddingLeft: =12
@@ -270,7 +270,7 @@ Screens:
                   
                   # Buttons
                   - 'FormContainer.ButtonGroup':
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         X: =40
@@ -317,14 +317,14 @@ Screens:
                                         Notify("Ngày kết thúc phải sau ngày bắt đầu", NotificationType.Error),
                                         // Tính số ngày nghỉ
                                         Set(varLeaveDays, DateDiff(varStartDate, varEndDate) + 1);
-                                        Notify(Concatenate("Đơn nghỉ phép đã được gửi thành công! Số ngày nghỉ: ", Text(varLeaveDays)), NotificationType.Success);
+                                        Notify(Concatenate("Đơn nghỉ phép đã được gửi thành công! Số ngày nghỉ:", Text(varLeaveDays)), NotificationType.Success);
                                         Navigate(HomeScreen, ScreenTransition.Fade)
                                     )
                                 )
             
             # Sidebar với thông tin hướng dẫn
             - InfoSidebar:
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =(Parent.Width - 600) / 2 + 620

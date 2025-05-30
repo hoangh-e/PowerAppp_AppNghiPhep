@@ -7,7 +7,7 @@ ComponentDefinitions:
       Width: =Parent.Width
     Children:
       - DocUploadContainer:
-          Control: GroupContainer
+          Control: Rectangle
           Variant: ManualLayout
           Properties:
             X: =0
@@ -41,7 +41,7 @@ ComponentDefinitions:
                   Color: =RGBA(0, 120, 212, 1)
             
             - UploadArea:
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =0

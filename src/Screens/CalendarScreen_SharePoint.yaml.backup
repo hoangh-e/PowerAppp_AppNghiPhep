@@ -1,0 +1,686 @@
+Screens:
+  CalendarScreen:
+    Properties:
+      Fill: =RGBA(248, 250, 252, 1)
+      OnVisible: =Set(varActiveScreen, "Calendar"); Set(varCurrentUser, LookUp(NguoiDung, Email = User().Email)); Set(varSelectedMonth, Month(Today())); Set(varSelectedYear, Year(Today())); Set(varCalendarDate, Date(varSelectedYear, varSelectedMonth, 1)); Set(varDaysInMonth, Day(DateAdd(DateAdd(varCalendarDate, 1, TimeUnit.Months), -1, TimeUnit.Days))); Set(varFirstDayOfWeek, Weekday(varCalendarDate, StartOfWeek.Monday)); Set(varTotalWeeks, RoundUp((varDaysInMonth + varFirstDayOfWeek - 1) / 7, 0)); Set(varCalendarView, "Team"); Set(varSelectedDepartment, varCurrentUser.MaDonVi); Set(varTeamMembers, Filter(NguoiDung, And(MaDonVi = varSelectedDepartment, TrangThai = "HoatDong"))); Set(varMonthLeaves, Filter(DonNghiPhep, And(NgayBatDau <= DateAdd(varCalendarDate, 1, TimeUnit.Months), NgayKetThuc >= varCalendarDate, TrangThai in ["DaDuyet", "ChoDuyetCap1", "ChoDuyetCap2", "ChoDuyetCap3"], Switch(varCalendarView, "Team", MaNhanVien in varTeamMembers.MaNhanVien, "Department", MaNhanVien in Filter(NguoiDung, MaDonVi = varSelectedDepartment).MaNhanVien, "All", true, "Personal", MaNhanVien = varCurrentUser.MaNhanVien, true)))); Set(varHolidays, Filter(NgayLe, Nam = varSelectedYear)); Set(varSelectedDate, Today()); Set(varShowDayDetails, false); Set(varDayLeaves, [])
+    Children:
+      - 'Calendar.Header':
+          Control: CanvasComponent
+          ComponentName: HeaderComponent
+          Properties:
+            X: =Parent.X
+            Y: =Parent.Y
+            Width: =Parent.Width
+            Height: =Parent.Height * 0.06
+            UserName: =varCurrentUser.HoTen
+            UserRole: =varCurrentUser.MaVaiTro
+            ShowNotification: =true
+            NotificationCount: =CountRows(Filter(varMonthLeaves, TrangThai in ["ChoDuyetCap1", "ChoDuyetCap2", "ChoDuyetCap3"]))
+            
+      - 'Calendar.Navigation':
+          Control: CanvasComponent
+          ComponentName: NavigationComponent
+          Properties:
+            X: =Parent.X
+            Y: ='Calendar.Header'.Y + 'Calendar.Header'.Height
+            Width: =If(App.Width < 768, 
+              If(varMobileMenuOpen, Parent.Width * 0.75, Parent.Width * 0.001),
+              If(varNavCollapsed, Parent.Width * 0.06, Parent.Width * 0.2))
+            Height: =Parent.Height - 'Calendar.Header'.Height
+            UserRole: =varCurrentUser.MaVaiTro
+            ActiveScreen: =varActiveScreen
+            OnNavigate: =Set(varNavigateAction, true)
+            
+      - 'Calendar.Content.Container':
+          Control: GroupContainer
+          Variant: ManualLayout
+          Properties:
+            X: ='Calendar.Navigation'.X + 'Calendar.Navigation'.Width
+            Y: ='Calendar.Header'.Y + 'Calendar.Header'.Height
+            Width: =Parent.Width - 'Calendar.Navigation'.Width
+            Height: =Parent.Height - 'Calendar.Header'.Height
+            Fill: =RGBA(248, 250, 252, 1)
+          Children:
+            # Calendar Header Controls
+            - 'Calendar.Controls.Container':
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =Parent.X + Parent.Width * 0.03
+                  Y: =Parent.Y + Parent.Height * 0.02
+                  Width: =Parent.Width * 0.94
+                  Height: =Parent.Height * 0.12
+                Children:
+                  - 'Calendar.Controls.Title':
+                      Control: Label
+                      Properties:
+                        X: =Parent.X
+                        Y: =Parent.Y
+                        Width: =Parent.Width * 0.3
+                        Height: =Parent.Height * 0.4
+                        Text: ="Lịch nghỉ phép"
+                        Color: =RGBA(32, 54, 71, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Bold
+                        Size: =Parent.Height * 0.2
+                        
+                  # Month/Year Navigation
+                  - 'Calendar.Controls.MonthYear.Container':
+                      Control: GroupContainer
+                      Variant: ManualLayout
+                      Properties:
+                        X: =Parent.X
+                        Y: =Parent.Y + Parent.Height * 0.45
+                        Width: =Parent.Width * 0.4
+                        Height: =Parent.Height * 0.5
+                      Children:
+                        - 'Calendar.Controls.PrevMonth':
+                            Control: CanvasComponent
+                            ComponentName: ButtonComponent
+                            Properties:
+                              X: =Parent.X
+                              Y: =Parent.Y
+                              Width: =Parent.Width * 0.12
+                              Height: =Parent.Height
+                              Text: =""
+                              Variant: ="Ghost"
+                              Icon: ="ChevronLeft"
+                              OnClick: =Set(varSelectedMonth, varSelectedMonth - 1); If(varSelectedMonth < 1, Set(varSelectedMonth, 12); Set(varSelectedYear, varSelectedYear - 1)); Set(varCalendarDate, Date(varSelectedYear, varSelectedMonth, 1)); Set(varDaysInMonth, Day(DateAdd(DateAdd(varCalendarDate, 1, TimeUnit.Months), -1, TimeUnit.Days))); Set(varFirstDayOfWeek, Weekday(varCalendarDate, StartOfWeek.Monday)); Set(varTotalWeeks, RoundUp((varDaysInMonth + varFirstDayOfWeek - 1) / 7, 0)); Set(varMonthLeaves, Filter(DonNghiPhep, And(NgayBatDau <= DateAdd(varCalendarDate, 1, TimeUnit.Months), NgayKetThuc >= varCalendarDate, TrangThai in ["DaDuyet", "ChoDuyetCap1", "ChoDuyetCap2", "ChoDuyetCap3"], Switch(varCalendarView, "Team", MaNhanVien in varTeamMembers.MaNhanVien, "Department", MaNhanVien in Filter(NguoiDung, MaDonVi = varSelectedDepartment).MaNhanVien, "All", true, "Personal", MaNhanVien = varCurrentUser.MaNhanVien, true)))); Set(varHolidays, Filter(NgayLe, Nam = varSelectedYear))
+                              
+                        - 'Calendar.Controls.MonthYear.Label':
+                            Control: Label
+                            Properties:
+                              X: =Parent.X + Parent.Width * 0.15
+                              Y: =Parent.Y
+                              Width: =Parent.Width * 0.7
+                              Height: =Parent.Height
+                              Text: =Switch(varSelectedMonth,
+                                1, "Tháng 1",
+                                2, "Tháng 2", 
+                                3, "Tháng 3",
+                                4, "Tháng 4",
+                                5, "Tháng 5",
+                                6, "Tháng 6",
+                                7, "Tháng 7",
+                                8, "Tháng 8",
+                                9, "Tháng 9",
+                                10, "Tháng 10",
+                                11, "Tháng 11",
+                                12, "Tháng 12",
+                                "Tháng " & varSelectedMonth) & " năm " & varSelectedYear
+                              Color: =RGBA(55, 65, 81, 1)
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Semibold
+                              Size: =Parent.Height * 0.35
+                              Align: =Align.Center
+                              
+                        - 'Calendar.Controls.NextMonth':
+                            Control: CanvasComponent
+                            ComponentName: ButtonComponent
+                            Properties:
+                              X: =Parent.Width * 0.88
+                              Y: =Parent.Y
+                              Width: =Parent.Width * 0.12
+                              Height: =Parent.Height
+                              Text: =""
+                              Variant: ="Ghost"
+                              Icon: ="ChevronRight"
+                              OnClick: =Set(varSelectedMonth, varSelectedMonth + 1); If(varSelectedMonth > 12, Set(varSelectedMonth, 1); Set(varSelectedYear, varSelectedYear + 1)); Set(varCalendarDate, Date(varSelectedYear, varSelectedMonth, 1)); Set(varDaysInMonth, Day(DateAdd(DateAdd(varCalendarDate, 1, TimeUnit.Months), -1, TimeUnit.Days))); Set(varFirstDayOfWeek, Weekday(varCalendarDate, StartOfWeek.Monday)); Set(varTotalWeeks, RoundUp((varDaysInMonth + varFirstDayOfWeek - 1) / 7, 0)); Set(varMonthLeaves, Filter(DonNghiPhep, And(NgayBatDau <= DateAdd(varCalendarDate, 1, TimeUnit.Months), NgayKetThuc >= varCalendarDate, TrangThai in ["DaDuyet", "ChoDuyetCap1", "ChoDuyetCap2", "ChoDuyetCap3"], Switch(varCalendarView, "Team", MaNhanVien in varTeamMembers.MaNhanVien, "Department", MaNhanVien in Filter(NguoiDung, MaDonVi = varSelectedDepartment).MaNhanVien, "All", true, "Personal", MaNhanVien = varCurrentUser.MaNhanVien, true)))); Set(varHolidays, Filter(NgayLe, Nam = varSelectedYear))
+                              
+                  # View Controls
+                  - 'Calendar.Controls.View.Container':
+                      Control: GroupContainer
+                      Variant: ManualLayout
+                      Properties:
+                        X: =Parent.Width * 0.45
+                        Y: =Parent.Y
+                        Width: =Parent.Width * 0.55
+                        Height: =Parent.Height
+                      Children:
+                        # View Type Filter
+                        - 'Calendar.Controls.ViewType.Container':
+                            Control: GroupContainer
+                            Variant: ManualLayout
+                            Properties:
+                              X: =Parent.X
+                              Y: =Parent.Y
+                              Width: =Parent.Width * 0.45
+                              Height: =Parent.Height * 0.5
+                            Children:
+                              - 'Calendar.Controls.ViewType.Label':
+                                  Control: Label
+                                  Properties:
+                                    X: =Parent.X
+                                    Y: =Parent.Y
+                                    Width: =Parent.Width
+                                    Height: =Parent.Height * 0.4
+                                    Text: ="Hiển thị:"
+                                    Color: =RGBA(55, 65, 81, 1)
+                                    Font: =Font.'Open Sans'
+                                    Size: =Parent.Height * 0.2
+                                    
+                              - 'Calendar.Controls.ViewType.Dropdown':
+                                  Control: Classic/DropDown
+                                  Properties:
+                                    X: =Parent.X
+                                    Y: =Parent.Y + Parent.Height * 0.45
+                                    Width: =Parent.Width
+                                    Height: =Parent.Height * 0.55
+                                    Items: =["Personal", "Team", "Department", "All"]
+                                    Default: =varCalendarView
+                                    OnChange: |
+                                                =Set(varCalendarView, Self.Selected.Value);
+                                                Set(varMonthLeaves, Filter(DonNghiPhep, 
+                                                  And(
+                                                    NgayBatDau <= DateAdd(varCalendarDate, 1, TimeUnit.Months),
+                                                    NgayKetThuc >= varCalendarDate,
+                                                    TrangThai in ["DaDuyet", "ChoDuyetCap1", "ChoDuyetCap2", "ChoDuyetCap3"],
+                                                    Switch(varCalendarView,
+                                                      "Team", MaNhanVien in varTeamMembers.MaNhanVien,
+                                                      "Department", MaNhanVien in Filter(NguoiDung, MaDonVi = varSelectedDepartment).MaNhanVien,
+                                                      "All", true,
+                                                      "Personal", MaNhanVien = varCurrentUser.MaNhanVien,
+                                                      true))))
+                                    
+                        # Department Filter (if applicable)
+                        - 'Calendar.Controls.Department.Container':
+                            Control: GroupContainer
+                            Variant: ManualLayout
+                            Properties:
+                              X: =Parent.Width * 0.5
+                              Y: =Parent.Y
+                              Width: =Parent.Width * 0.45
+                              Height: =Parent.Height * 0.5
+                              Visible: =varCalendarView in ["Department", "All"] And varCurrentUser.MaVaiTro in ["HR", "ADMIN", "DIRECTOR"]
+                            Children:
+                              - 'Calendar.Controls.Department.Label':
+                                  Control: Label
+                                  Properties:
+                                    X: =Parent.X
+                                    Y: =Parent.Y
+                                    Width: =Parent.Width
+                                    Height: =Parent.Height * 0.4
+                                    Text: ="Phòng ban:"
+                                    Color: =RGBA(55, 65, 81, 1)
+                                    Font: =Font.'Open Sans'
+                                    Size: =Parent.Height * 0.2
+                                    
+                              - 'Calendar.Controls.Department.Dropdown':
+                                  Control: Classic/DropDown
+                                  Properties:
+                                    X: =Parent.X
+                                    Y: =Parent.Y + Parent.Height * 0.45
+                                    Width: =Parent.Width
+                                    Height: =Parent.Height * 0.55
+                                    Items: =DonVi
+                                    Default: =LookUp(DonVi, MaDonVi = varSelectedDepartment)
+                                    OnChange: |
+                                                =Set(varSelectedDepartment, Self.Selected.MaDonVi);
+                                                Set(varTeamMembers, Filter(NguoiDung, And(MaDonVi = varSelectedDepartment, TrangThai = "HoatDong")));
+                                                Set(varMonthLeaves, Filter(DonNghiPhep, 
+                                                  And(
+                                                    NgayBatDau <= DateAdd(varCalendarDate, 1, TimeUnit.Months),
+                                                    NgayKetThuc >= varCalendarDate,
+                                                    TrangThai in ["DaDuyet", "ChoDuyetCap1", "ChoDuyetCap2", "ChoDuyetCap3"],
+                                                    Switch(varCalendarView,
+                                                      "Team", MaNhanVien in varTeamMembers.MaNhanVien,
+                                                      "Department", MaNhanVien in Filter(NguoiDung, MaDonVi = varSelectedDepartment).MaNhanVien,
+                                                      "All", true,
+                                                      "Personal", MaNhanVien = varCurrentUser.MaNhanVien,
+                                                      true))))
+                                    
+                        # Legend
+                        - 'Calendar.Controls.Legend.Container':
+                            Control: GroupContainer
+                            Variant: ManualLayout
+                            Properties:
+                              X: =Parent.X
+                              Y: =Parent.Y + Parent.Height * 0.6
+                              Width: =Parent.Width
+                              Height: =Parent.Height * 0.4
+                            Children:
+                              - 'Calendar.Controls.Legend.Label':
+                                  Control: Label
+                                  Properties:
+                                    X: =Parent.X
+                                    Y: =Parent.Y
+                                    Width: =Parent.Width * 0.15
+                                    Height: =Parent.Height
+                                    Text: ="Chú thích:"
+                                    Color: =RGBA(55, 65, 81, 1)
+                                    Font: =Font.'Open Sans'
+                                    Size: =Parent.Height * 0.4
+                                    
+                              - 'Calendar.Controls.Legend.Items':
+                                  Control: Label
+                                  Properties:
+                                    X: =Parent.X + Parent.Width * 0.16
+                                    Y: =Parent.Y
+                                    Width: =Parent.Width * 0.84
+                                    Height: =Parent.Height
+                                    Text: ="🟢 Đã duyệt | 🟡 Chờ duyệt | 🔴 Lễ/Tết | 📅 Hôm nay"
+                                    Color: =RGBA(55, 65, 81, 1)
+                                    Font: =Font.'Open Sans'
+                                    Size: =Parent.Height * 0.35
+                                    
+            # Calendar Grid
+            - 'Calendar.Grid.Container':
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =Parent.X + Parent.Width * 0.03
+                  Y: ='Calendar.Controls.Container'.Y + 'Calendar.Controls.Container'.Height + Parent.Height * 0.02
+                  Width: =Parent.Width * 0.94
+                  Height: =Parent.Height * 0.8
+                  Fill: =RGBA(255, 255, 255, 1)
+                  BorderColor: =RGBA(230, 230, 230, 1)
+                  BorderThickness: =Parent.Width * 0.001
+                  DropShadow: =DropShadow.Light
+                Children:
+                  # Calendar Header (Days of Week)
+                  - 'Calendar.Grid.Header':
+                      Control: GroupContainer
+                      Variant: ManualLayout
+                      Properties:
+                        X: =Parent.X + Parent.Width * 0.01
+                        Y: =Parent.Y + Parent.Height * 0.01
+                        Width: =Parent.Width * 0.98
+                        Height: =Parent.Height * 0.08
+                        Fill: =RGBA(248, 249, 250, 1)
+                        BorderColor: =RGBA(229, 231, 235, 1)
+                        BorderThickness: =Parent.Width * 0.0005
+                      Children:
+                        - 'Calendar.Grid.Header.Monday':
+                            Control: Label
+                            Properties:
+                              X: =Parent.X
+                              Y: =Parent.Y
+                              Width: =Parent.Width / 7
+                              Height: =Parent.Height
+                              Text: ="Thứ 2"
+                              Color: =RGBA(55, 65, 81, 1)
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Semibold
+                              Size: =Parent.Height * 0.35
+                              Align: =Align.Center
+                              BorderColor: =RGBA(229, 231, 235, 1)
+                              BorderThickness: =Parent.Width * 0.0003
+                              
+                        - 'Calendar.Grid.Header.Tuesday':
+                            Control: Label
+                            Properties:
+                              X: =Parent.X + Parent.Width / 7
+                              Y: =Parent.Y
+                              Width: =Parent.Width / 7
+                              Height: =Parent.Height
+                              Text: ="Thứ 3"
+                              Color: =RGBA(55, 65, 81, 1)
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Semibold
+                              Size: =Parent.Height * 0.35
+                              Align: =Align.Center
+                              BorderColor: =RGBA(229, 231, 235, 1)
+                              BorderThickness: =Parent.Width * 0.0003
+                              
+                        - 'Calendar.Grid.Header.Wednesday':
+                            Control: Label
+                            Properties:
+                              X: =Parent.X + Parent.Width / 7 * 2
+                              Y: =Parent.Y
+                              Width: =Parent.Width / 7
+                              Height: =Parent.Height
+                              Text: ="Thứ 4"
+                              Color: =RGBA(55, 65, 81, 1)
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Semibold
+                              Size: =Parent.Height * 0.35
+                              Align: =Align.Center
+                              BorderColor: =RGBA(229, 231, 235, 1)
+                              BorderThickness: =Parent.Width * 0.0003
+                              
+                        - 'Calendar.Grid.Header.Thursday':
+                            Control: Label
+                            Properties:
+                              X: =Parent.X + Parent.Width / 7 * 3
+                              Y: =Parent.Y
+                              Width: =Parent.Width / 7
+                              Height: =Parent.Height
+                              Text: ="Thứ 5"
+                              Color: =RGBA(55, 65, 81, 1)
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Semibold
+                              Size: =Parent.Height * 0.35
+                              Align: =Align.Center
+                              BorderColor: =RGBA(229, 231, 235, 1)
+                              BorderThickness: =Parent.Width * 0.0003
+                              
+                        - 'Calendar.Grid.Header.Friday':
+                            Control: Label
+                            Properties:
+                              X: =Parent.X + Parent.Width / 7 * 4
+                              Y: =Parent.Y
+                              Width: =Parent.Width / 7
+                              Height: =Parent.Height
+                              Text: ="Thứ 6"
+                              Color: =RGBA(55, 65, 81, 1)
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Semibold
+                              Size: =Parent.Height * 0.35
+                              Align: =Align.Center
+                              BorderColor: =RGBA(229, 231, 235, 1)
+                              BorderThickness: =Parent.Width * 0.0003
+                              
+                        - 'Calendar.Grid.Header.Saturday':
+                            Control: Label
+                            Properties:
+                              X: =Parent.X + Parent.Width / 7 * 5
+                              Y: =Parent.Y
+                              Width: =Parent.Width / 7
+                              Height: =Parent.Height
+                              Text: ="Thứ 7"
+                              Color: =RGBA(244, 67, 54, 1)
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Semibold
+                              Size: =Parent.Height * 0.35
+                              Align: =Align.Center
+                              BorderColor: =RGBA(229, 231, 235, 1)
+                              BorderThickness: =Parent.Width * 0.0003
+                              
+                        - 'Calendar.Grid.Header.Sunday':
+                            Control: Label
+                            Properties:
+                              X: =Parent.X + Parent.Width / 7 * 6
+                              Y: =Parent.Y
+                              Width: =Parent.Width / 7
+                              Height: =Parent.Height
+                              Text: ="Chủ nhật"
+                              Color: =RGBA(244, 67, 54, 1)
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Semibold
+                              Size: =Parent.Height * 0.35
+                              Align: =Align.Center
+                              BorderColor: =RGBA(229, 231, 235, 1)
+                              BorderThickness: =Parent.Width * 0.0003
+                              
+                  # Calendar Days Grid using Gallery
+                  - 'Calendar.Grid.Days':
+                      Control: Gallery
+                      Variant: VariableHeight
+                      Properties:
+                        X: =Parent.X + Parent.Width * 0.01
+                        Y: ='Calendar.Grid.Header'.Y + 'Calendar.Grid.Header'.Height
+                        Width: =Parent.Width * 0.98
+                        Height: =Parent.Height * 0.9
+                        Items: =Sequence(42, 1)
+                        TemplateSize: =Self.Height / 6
+                        TemplatePadding: =0
+                        Fill: =RGBA(0, 0, 0, 0)
+                      Children:
+                        - 'Calendar.Grid.Days.Cell':
+                            Control: GroupContainer
+                            Variant: ManualLayout
+                            Properties:
+                              X: =Parent.TemplateX
+                              Y: =Parent.TemplateY
+                              Width: =Parent.TemplateWidth
+                              Height: =Parent.TemplateHeight
+                              Fill: |
+                                =With({
+                                dayNumber: ThisItem - varFirstDayOfWeek + 1,
+                                isCurrentMonth: And(ThisItem >= varFirstDayOfWeek, ThisItem < varFirstDayOfWeek + varDaysInMonth),
+                                currentDate: Date(varSelectedYear, varSelectedMonth, ThisItem - varFirstDayOfWeek + 1),
+                                isToday: currentDate = Today(),
+                                isHoliday: currentDate in varHolidays.Ngay,
+                                isWeekend: Weekday(currentDate, StartOfWeek.Monday) in [6, 7]},
+                                If(isToday, RGBA(33, 150, 243, 0.1),
+                                  If(isHoliday, RGBA(244, 67, 54, 0.1),
+                                    If(isWeekend, RGBA(248, 250, 252, 1),
+                                      If(isCurrentMonth, RGBA(255, 255, 255, 1), RGBA(248, 250, 252, 0.5))))))
+                              BorderColor: =RGBA(229, 231, 235, 1)
+                              BorderThickness: =Parent.Width * 0.0003
+                              OnSelect: |
+                                =With({
+                                dayNumber: ThisItem - varFirstDayOfWeek + 1,
+                                isCurrentMonth: And(ThisItem >= varFirstDayOfWeek, ThisItem < varFirstDayOfWeek + varDaysInMonth),
+                                selectedDate: Date(varSelectedYear, varSelectedMonth, ThisItem - varFirstDayOfWeek + 1)},
+                                If(isCurrentMonth,
+                                  Set(varSelectedDate, selectedDate);
+                                  Set(varDayLeaves, Filter(varMonthLeaves, 
+                                    And(selectedDate >= NgayBatDau, selectedDate <= NgayKetThuc)));
+                                Set(varShowDayDetails, true)))
+                            Children:
+                              # Day Number
+                              - 'Calendar.Grid.Days.Cell.Number':
+                                  Control: Label
+                                  Properties:
+                                    X: =Parent.X + Parent.Width * 0.05
+                                    Y: =Parent.Y + Parent.Height * 0.05
+                                    Width: =Parent.Width * 0.3
+                                    Height: =Parent.Height * 0.25
+                                    Text: |
+                                      =With({
+                                      dayNumber: ThisItem - varFirstDayOfWeek + 1,
+                                      isCurrentMonth: And(ThisItem >= varFirstDayOfWeek, ThisItem < varFirstDayOfWeek + varDaysInMonth)},
+                                      If(isCurrentMonth, Text(dayNumber), ""))
+                                    Color: |
+                                      =With({
+                                      dayNumber: ThisItem - varFirstDayOfWeek + 1,
+                                      isCurrentMonth: And(ThisItem >= varFirstDayOfWeek, ThisItem < varFirstDayOfWeek + varDaysInMonth),
+                                      currentDate: Date(varSelectedYear, varSelectedMonth, ThisItem - varFirstDayOfWeek + 1),
+                                      isToday: currentDate = Today(),
+                                      isHoliday: CountRows(Filter(varHolidays, Text(currentDate, "dd/mm") = Ngay)) > 0,
+                                      isWeekend: Weekday(currentDate, StartOfWeek.Monday) in [6, 7]},
+                                      If(isToday, RGBA(33, 150, 243, 1),
+                                        If(isHoliday, RGBA(244, 67, 54, 1),
+                                          If(isWeekend, RGBA(244, 67, 54, 1),
+                                            RGBA(55, 65, 81, 1)))))
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: |
+                                      =With({
+                                      currentDate: Date(varSelectedYear, varSelectedMonth, ThisItem - varFirstDayOfWeek + 1),
+                                      isToday: currentDate = Today()},
+                                      If(isToday, FontWeight.Bold, FontWeight.Normal))
+                                    Size: =Parent.Height * 0.15
+                                    
+                              # Leave Indicators
+                              - 'Calendar.Grid.Days.Cell.Leaves':
+                                  Control: Label
+                                  Properties:
+                                    X: =Parent.X + Parent.Width * 0.05
+                                    Y: =Parent.Y + Parent.Height * 0.3
+                                    Width: =Parent.Width * 0.9
+                                    Height: =Parent.Height * 0.65
+                                    Text: |
+                                      =With({
+                                      dayNumber: ThisItem - varFirstDayOfWeek + 1,
+                                      isCurrentMonth: And(ThisItem >= varFirstDayOfWeek, ThisItem < varFirstDayOfWeek + varDaysInMonth),
+                                      currentDate: Date(varSelectedYear, varSelectedMonth, ThisItem - varFirstDayOfWeek + 1),
+                                      dayLeaves: Filter(varMonthLeaves, And(currentDate >= NgayBatDau, currentDate <= NgayKetThuc))},
+                                      If(And(isCurrentMonth, CountRows(dayLeaves) > 0),
+                                        Concatenate(
+                                          If(CountRows(Filter(dayLeaves, TrangThai = "DaDuyet")) > 0, "🟢", ""),
+                                          If(CountRows(Filter(dayLeaves, TrangThai in ["ChoDuyetCap1", "ChoDuyetCap2", "ChoDuyetCap3"])) > 0, "🟡", ""),
+                                          Char(10),
+                                          Left(Concat(dayLeaves, LookUp(NguoiDung, MaNhanVien = ThisRecord.MaNhanVien).HoTen & Char(10)), 50)
+                                        ), ""))
+                                    Color: =RGBA(55, 65, 81, 1)
+                                    Font: =Font.'Open Sans'
+                                    Size: =Parent.Height * 0.08
+                                    
+      # Day Details Modal
+      - 'Calendar.DayDetails.Overlay':
+          Control: Rectangle
+          Properties:
+            X: =Parent.X
+            Y: =Parent.Y
+            Width: =Parent.Width
+            Height: =Parent.Height
+            Fill: =RGBA(0, 0, 0, 0.5)
+            Visible: =varShowDayDetails
+            OnSelect: =Set(varShowDayDetails, false)
+            
+      - 'Calendar.DayDetails.Modal':
+          Control: GroupContainer
+          Variant: ManualLayout
+          Properties:
+            X: =(Parent.Width - Self.Width) / 2
+            Y: =(Parent.Height - Self.Height) / 2
+            Width: =Parent.Width * 0.6
+            Height: =Parent.Height * 0.7
+            Fill: =RGBA(255, 255, 255, 1)
+            BorderColor: =RGBA(230, 230, 230, 1)
+            BorderThickness: =Parent.Width * 0.002
+            DropShadow: =DropShadow.Bold
+            Visible: =varShowDayDetails
+          Children:
+            - 'Calendar.DayDetails.Header':
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =Parent.X + Parent.Width * 0.04
+                  Y: =Parent.Y + Parent.Height * 0.04
+                  Width: =Parent.Width * 0.92
+                  Height: =Parent.Height * 0.1
+                  Fill: =RGBA(248, 249, 250, 1)
+                  BorderColor: =RGBA(229, 231, 235, 1)
+                  BorderThickness: =Parent.Width * 0.001
+                Children:
+                  - 'Calendar.DayDetails.Title':
+                      Control: Label
+                      Properties:
+                        X: =Parent.X + Parent.Width * 0.03
+                        Y: =Parent.Y + (Parent.Height - Self.Height) / 2
+                        Width: =Parent.Width * 0.8
+                        Height: =Parent.Height * 0.6
+                        Text: ="Nghỉ phép ngày " & Text(varSelectedDate, "dd/mm/yyyy")
+                        Color: =RGBA(32, 54, 71, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Bold
+                        Size: =Parent.Height * 0.3
+                        
+                  - 'Calendar.DayDetails.CloseButton':
+                      Control: CanvasComponent
+                      ComponentName: ButtonComponent
+                      Properties:
+                        X: =Parent.Width * 0.85
+                        Y: =Parent.Y + (Parent.Height - Self.Height) / 2
+                        Width: =Parent.Width * 0.12
+                        Height: =Parent.Height * 0.6
+                        Text: ="Đóng"
+                        Variant: ="Ghost"
+                        Size: ="Small"
+                        Icon: ="Cancel"
+                        OnClick: =Set(varShowDayDetails, false)
+                        
+            - 'Calendar.DayDetails.Content':
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =Parent.X + Parent.Width * 0.04
+                  Y: ='Calendar.DayDetails.Header'.Y + 'Calendar.DayDetails.Header'.Height + Parent.Height * 0.02
+                  Width: =Parent.Width * 0.92
+                  Height: =Parent.Height * 0.8
+                Children:
+                  - 'Calendar.DayDetails.LeavesList':
+                      Control: Gallery
+                      Variant: Vertical
+                      Properties:
+                        X: =Parent.X
+                        Y: =Parent.Y
+                        Width: =Parent.Width
+                        Height: =Parent.Height
+                        Items: =varDayLeaves
+                        TemplateSize: =Self.Height / 8
+                        TemplatePadding: =Self.Height * 0.01
+                        BorderThickness: =0
+                        Fill: =RGBA(0, 0, 0, 0)
+                      Children:
+                        - 'Calendar.DayDetails.LeavesList.Item':
+                            Control: GroupContainer
+                            Variant: ManualLayout
+                            Properties:
+                              X: =Parent.TemplateX
+                              Y: =Parent.TemplateY
+                              Width: =Parent.TemplateWidth
+                              Height: =Parent.TemplateHeight
+                              Fill: =Switch(ThisItem.TrangThai,
+                                "DaDuyet", RGBA(232, 245, 233, 1),
+                                "TuChoi", RGBA(255, 235, 238, 1),
+                                RGBA(255, 243, 224, 1))
+                              BorderColor: =Switch(ThisItem.TrangThai,
+                                "DaDuyet", RGBA(200, 230, 201, 1),
+                                "TuChoi", RGBA(255, 205, 210, 1),
+                                RGBA(255, 224, 178, 1))
+                              BorderThickness: =Parent.Width * 0.001
+                            Children:
+                              - 'Calendar.DayDetails.LeavesList.Item.Employee':
+                                  Control: Label
+                                  Properties:
+                                    X: =Parent.X + Parent.Width * 0.02
+                                    Y: =Parent.Y + Parent.Height * 0.1
+                                    Width: =Parent.Width * 0.3
+                                    Height: =Parent.Height * 0.35
+                                    Text: =LookUp(NguoiDung, MaNhanVien = ThisItem.MaNhanVien).HoTen
+                                    Color: =RGBA(55, 65, 81, 1)
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Size: =Parent.Height * 0.2
+                                    
+                              - 'Calendar.DayDetails.LeavesList.Item.Type':
+                                  Control: Label
+                                  Properties:
+                                    X: =Parent.Width * 0.32
+                                    Y: =Parent.Y + Parent.Height * 0.1
+                                    Width: =Parent.Width * 0.25
+                                    Height: =Parent.Height * 0.35
+                                    Text: =LookUp(LoaiNghi, MaLoai = ThisItem.MaLoai).TenLoai
+                                    Color: =RGBA(55, 65, 81, 1)
+                                    Font: =Font.'Open Sans'
+                                    Size: =Parent.Height * 0.18
+                                    
+                              - 'Calendar.DayDetails.LeavesList.Item.Status':
+                                  Control: Label
+                                  Properties:
+                                    X: =Parent.Width * 0.57
+                                    Y: =Parent.Y + Parent.Height * 0.1
+                                    Width: =Parent.Width * 0.2
+                                    Height: =Parent.Height * 0.35
+                                    Text: =Switch(ThisItem.TrangThai,
+                                      "ChoDuyetCap1", "Chờ cấp 1",
+                                      "ChoDuyetCap2", "Chờ cấp 2",
+                                      "ChoDuyetCap3", "Chờ cấp 3",
+                                      "DaDuyet", "Đã duyệt",
+                                      "TuChoi", "Từ chối",
+                                      ThisItem.TrangThai)
+                                    Color: =Switch(ThisItem.TrangThai,
+                                      "DaDuyet", RGBA(76, 175, 80, 1),
+                                      "TuChoi", RGBA(244, 67, 54, 1),
+                                      RGBA(255, 152, 0, 1))
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Size: =Parent.Height * 0.16
+                                    
+                              - 'Calendar.DayDetails.LeavesList.Item.Days':
+                                  Control: Label
+                                  Properties:
+                                    X: =Parent.Width * 0.77
+                                    Y: =Parent.Y + Parent.Height * 0.1
+                                    Width: =Parent.Width * 0.21
+                                    Height: =Parent.Height * 0.35
+                                    Text: =ThisItem.SoNgayNghi & " ngày"
+                                    Color: =RGBA(55, 65, 81, 1)
+                                    Font: =Font.'Open Sans'
+                                    Size: =Parent.Height * 0.16
+                                    Align: =Align.Right
+                                    
+                              - 'Calendar.DayDetails.LeavesList.Item.Reason':
+                                  Control: Label
+                                  Properties:
+                                    X: =Parent.X + Parent.Width * 0.02
+                                    Y: =Parent.Y + Parent.Height * 0.5
+                                    Width: =Parent.Width * 0.96
+                                    Height: =Parent.Height * 0.4
+                                    Text: =Left(ThisItem.LyDo, 100) & If(Len(ThisItem.LyDo) > 100, "...", "")
+                                    Color: =RGBA(107, 114, 128, 1)
+                                    Font: =Font.'Open Sans'
+                                    Size: =Parent.Height * 0.14 

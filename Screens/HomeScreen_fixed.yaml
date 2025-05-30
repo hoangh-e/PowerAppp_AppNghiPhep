@@ -36,7 +36,7 @@ Screens:
             UserRole: =LookUp(Users, Email = User().Email).Role
       
       - ContentContainer:
-          Control: GroupContainer
+          Control: Rectangle
           Variant: ManualLayout
           Properties:
             X: =250
@@ -46,7 +46,7 @@ Screens:
             Fill: =RGBA(248, 250, 252, 1)
           Children:
             - WelcomeHeader:
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =0
@@ -91,7 +91,7 @@ Screens:
                         Color: =RGBA(0, 120, 212, 1)
             
             - StatusRow:
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =40
@@ -147,7 +147,7 @@ Screens:
                         DropShadow: =DropShadow.Small
             
             - DashboardGrid:
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =40
@@ -230,7 +230,7 @@ Screens:
                         Y: =195
                         Width: =(Parent.Width - 40) / 3
                         Height: =20
-                        Text: ="Đã sử dụng: 3 ngày"
+                        Text: ="Đã sử dụng:3 ngày"
                         Size: =12
                         Color: =RGBA(71, 110, 140, 1)
                         Align: =Align.Center
@@ -411,7 +411,7 @@ Screens:
             
             # Activity Feed Section
             - ActivityFeedSection:
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =40
@@ -420,7 +420,7 @@ Screens:
                   Height: =Parent.Height - 510
                 Children:
                   - ActivityFeedSection.Header:
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         X: =0
@@ -463,7 +463,7 @@ Screens:
                   
                   # Activity Item 1
                   - ActivityItem1:
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         X: =20
@@ -524,7 +524,7 @@ Screens:
                   
                   # Activity Item 2
                   - ActivityItem2:
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         X: =20
@@ -585,7 +585,7 @@ Screens:
                   
                   # Activity Item 3
                   - ActivityItem3:
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         X: =20

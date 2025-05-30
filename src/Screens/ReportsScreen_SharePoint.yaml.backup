@@ -1,0 +1,367 @@
+Screens:
+  ReportsScreen:
+    Properties:
+      Fill: =RGBA(248, 250, 252, 1)
+      OnVisible: |
+                    =Set(varActiveScreen, "Reports");
+                    Set(varCurrentUser, LookUp(NguoiDung, Email = User().Email));
+                    Set(varReportType, "Department");
+                    Set(varReportPeriod, "ThisYear");
+                    Set(varSelectedDepartment, varCurrentUser.MaDonVi);
+                    Set(varSelectedYear, Year(Today()));
+                    Set(varReportData, []);
+                    Set(varIsGenerating, false);
+                    Set(varCanAccessReports, varCurrentUser.MaVaiTro in ["HR", "ADMIN", "DIRECTOR", "MANAGER"])
+    Children:
+      - 'Reports.Header':
+          Control: CanvasComponent
+          ComponentName: HeaderComponent
+          Properties:
+            X: =Parent.X
+            Y: =Parent.Y
+            Width: =Parent.Width
+            Height: =Parent.Height * 0.06
+            UserName: =varCurrentUser.HoTen
+            UserRole: =varCurrentUser.MaVaiTro
+            ShowNotification: =true
+            NotificationCount: =0
+            
+      - 'Reports.Navigation':
+          Control: CanvasComponent
+          ComponentName: NavigationComponent
+          Properties:
+            X: =Parent.X
+            Y: ='Reports.Header'.Y + 'Reports.Header'.Height
+            Width: =If(App.Width < 768, 
+              If(varMobileMenuOpen, Parent.Width * 0.75, Parent.Width * 0.001),
+              If(varNavCollapsed, Parent.Width * 0.06, Parent.Width * 0.2))
+            Height: =Parent.Height - 'Reports.Header'.Height
+            UserRole: =varCurrentUser.MaVaiTro
+            ActiveScreen: =varActiveScreen
+            OnNavigate: =Set(varNavigateAction, true)
+            
+      - 'Reports.Content.Container':
+          Control: GroupContainer
+          Variant: ManualLayout
+          Properties:
+            X: ='Reports.Navigation'.X + 'Reports.Navigation'.Width
+            Y: ='Reports.Header'.Y + 'Reports.Header'.Height
+            Width: =Parent.Width - 'Reports.Navigation'.Width
+            Height: =Parent.Height - 'Reports.Header'.Height
+            Fill: =RGBA(248, 250, 252, 1)
+            Visible: =varCanAccessReports
+          Children:
+            # Report Controls
+            - 'Reports.Controls.Container':
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =Parent.X + Parent.Width * 0.03
+                  Y: =Parent.Y + Parent.Height * 0.02
+                  Width: =Parent.Width * 0.94
+                  Height: =Parent.Height * 0.15
+                  Fill: =RGBA(255, 255, 255, 1)
+                  BorderColor: =RGBA(230, 230, 230, 1)
+                  BorderThickness: =Parent.Width * 0.001
+                  DropShadow: =DropShadow.Light
+                Children:
+                  - 'Reports.Controls.Title':
+                      Control: Label
+                      Properties:
+                        X: =Parent.X + Parent.Width * 0.03
+                        Y: =Parent.Y + Parent.Height * 0.1
+                        Width: =Parent.Width * 0.94
+                        Height: =Parent.Height * 0.25
+                        Text: ="Báo cáo thống kê nghỉ phép"
+                        Color: =RGBA(32, 54, 71, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Bold
+                        Size: =Parent.Height * 0.12
+                        
+                  # Report Type Selection
+                  - 'Reports.Controls.Type.Container':
+                      Control: GroupContainer
+                      Variant: ManualLayout
+                      Properties:
+                        X: =Parent.X + Parent.Width * 0.03
+                        Y: =Parent.Y + Parent.Height * 0.4
+                        Width: =Parent.Width * 0.2
+                        Height: =Parent.Height * 0.5
+                      Children:
+                        - 'Reports.Controls.Type.Label':
+                            Control: Label
+                            Properties:
+                              X: =Parent.X
+                              Y: =Parent.Y
+                              Width: =Parent.Width
+                              Height: =Parent.Height * 0.4
+                              Text: ="Loại báo cáo:"
+                              Color: =RGBA(55, 65, 81, 1)
+                              Font: =Font.'Open Sans'
+                              Size: =Parent.Height * 0.2
+                              
+                        - 'Reports.Controls.Type.Dropdown':
+                            Control: Classic/DropDown
+                            Properties:
+                              X: =Parent.X
+                              Y: =Parent.Y + Parent.Height * 0.4
+                              Width: =Parent.Width
+                              Height: =Parent.Height * 0.6
+                              Items: =["Department", "Employee", "LeaveType", "Monthly"]
+                              Default: =varReportType
+                              OnChange: =Set(varReportType, Self.Selected.Value)
+                              
+                  # Period Selection
+                  - 'Reports.Controls.Period.Container':
+                      Control: GroupContainer
+                      Variant: ManualLayout
+                      Properties:
+                        X: =Parent.X + Parent.Width * 0.25
+                        Y: =Parent.Y + Parent.Height * 0.4
+                        Width: =Parent.Width * 0.2
+                        Height: =Parent.Height * 0.5
+                      Children:
+                        - 'Reports.Controls.Period.Label':
+                            Control: Label
+                            Properties:
+                              X: =Parent.X
+                              Y: =Parent.Y
+                              Width: =Parent.Width
+                              Height: =Parent.Height * 0.4
+                              Text: ="Thời kỳ:"
+                              Color: =RGBA(55, 65, 81, 1)
+                              Font: =Font.'Open Sans'
+                              Size: =Parent.Height * 0.2
+                              
+                        - 'Reports.Controls.Period.Dropdown':
+                            Control: Classic/DropDown
+                            Properties:
+                              X: =Parent.X
+                              Y: =Parent.Y + Parent.Height * 0.4
+                              Width: =Parent.Width
+                              Height: =Parent.Height * 0.6
+                              Items: =["ThisMonth", "LastMonth", "ThisQuarter", "ThisYear", "LastYear"]
+                              Default: =varReportPeriod
+                              OnChange: =Set(varReportPeriod, Self.Selected.Value)
+                              
+                  # Generate Report Button
+                  - 'Reports.Controls.GenerateButton':
+                      Control: CanvasComponent
+                      ComponentName: ButtonComponent
+                      Properties:
+                        X: =Parent.X + Parent.Width * 0.7
+                        Y: =Parent.Y + Parent.Height * 0.55
+                        Width: =Parent.Width * 0.25
+                        Height: =Parent.Height * 0.35
+                        Text: ="Tạo báo cáo"
+                        Variant: ="Primary"
+                        Icon: ="Download"
+                        IsLoading: =varIsGenerating
+                        LoadingText: ="Đang tạo..."
+                        OnClick: |
+                                    =Set(varIsGenerating, true);
+                                    Set(varReportData, 
+                                      Switch(varReportType,
+                                        "Department", 
+                                          AddColumns(
+                                            AddColumns(DonVi, "TongNhanVien", CountRows(Filter(NguoiDung, MaDonVi = ThisRecord.MaDonVi))),
+                                            "TongDonNghi", CountRows(Filter(DonNghiPhep, 
+                                              And(
+                                                MaNhanVien in Filter(NguoiDung, MaDonVi = ThisRecord.MaDonVi).MaNhanVien,
+                                                Year(NgayTao) = varSelectedYear
+                                              ))),
+                                            "DonDaDuyet", CountRows(Filter(DonNghiPhep, 
+                                              And(
+                                                MaNhanVien in Filter(NguoiDung, MaDonVi = ThisRecord.MaDonVi).MaNhanVien,
+                                                TrangThai = "DaDuyet",
+                                                Year(NgayTao) = varSelectedYear
+                                              ))),
+                                            "TongNgayNghi", Sum(Filter(DonNghiPhep, 
+                                              And(
+                                                MaNhanVien in Filter(NguoiDung, MaDonVi = ThisRecord.MaDonVi).MaNhanVien,
+                                                TrangThai = "DaDuyet",
+                                                Year(NgayTao) = varSelectedYear
+                                              )), SoNgayNghi)
+                                          ),
+                                        "Employee",
+                                          AddColumns(
+                                            Filter(NguoiDung, MaDonVi = varSelectedDepartment),
+                                            "TongDonNghi", CountRows(Filter(DonNghiPhep, 
+                                              And(MaNhanVien = ThisRecord.MaNhanVien, Year(NgayTao) = varSelectedYear))),
+                                            "DonDaDuyet", CountRows(Filter(DonNghiPhep, 
+                                              And(MaNhanVien = ThisRecord.MaNhanVien, TrangThai = "DaDuyet", Year(NgayTao) = varSelectedYear))),
+                                            "TongNgayNghi", Sum(Filter(DonNghiPhep, 
+                                              And(MaNhanVien = ThisRecord.MaNhanVien, TrangThai = "DaDuyet", Year(NgayTao) = varSelectedYear)), SoNgayNghi),
+                                            "NgayPhepConLai", LookUp(SoNgayPhep, And(MaNhanVien = ThisRecord.MaNhanVien, Nam = varSelectedYear)).SoNgayConLai
+                                          ),
+                                        "LeaveType",
+                                          AddColumns(LoaiNghi,
+                                            "SoLanSuDung", CountRows(Filter(DonNghiPhep, 
+                                              And(MaLoai = ThisRecord.MaLoai, TrangThai = "DaDuyet", Year(NgayTao) = varSelectedYear))),
+                                            "TongNgayNghi", Sum(Filter(DonNghiPhep, 
+                                              And(MaLoai = ThisRecord.MaLoai, TrangThai = "DaDuyet", Year(NgayTao) = varSelectedYear)), SoNgayNghi)
+                                          ),
+                                        "Monthly",
+                                          ForAll(Sequence(12), 
+                                            {
+                                              Thang: Value,
+                                              TenThang: Switch(Value, 1, "Tháng 1", 2, "Tháng 2", 3, "Tháng 3", 4, "Tháng 4", 5, "Tháng 5", 6, "Tháng 6", 7, "Tháng 7", 8, "Tháng 8", 9, "Tháng 9", 10, "Tháng 10", 11, "Tháng 11", 12, "Tháng 12"),
+                                              SoDon: CountRows(Filter(DonNghiPhep, And(Month(NgayTao) = Value, Year(NgayTao) = varSelectedYear))),
+                                              SoDonDuyet: CountRows(Filter(DonNghiPhep, And(Month(NgayTao) = Value, Year(NgayTao) = varSelectedYear, TrangThai = "DaDuyet"))),
+                                              TongNgayNghi: Sum(Filter(DonNghiPhep, And(Month(NgayTao) = Value, Year(NgayTao) = varSelectedYear, TrangThai = "DaDuyet")), SoNgayNghi)
+                                            }
+                                          )
+                                      ));
+                                    Set(varIsGenerating, false)
+                                    
+            # Report Results
+            - 'Reports.Results.Container':
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =Parent.X + Parent.Width * 0.03
+                  Y: ='Reports.Controls.Container'.Y + 'Reports.Controls.Container'.Height + Parent.Height * 0.02
+                  Width: =Parent.Width * 0.94
+                  Height: =Parent.Height * 0.75
+                  Fill: =RGBA(255, 255, 255, 1)
+                  BorderColor: =RGBA(230, 230, 230, 1)
+                  BorderThickness: =Parent.Width * 0.001
+                  DropShadow: =DropShadow.Light
+                  Visible: =CountRows(varReportData) > 0
+                Children:
+                  - 'Reports.Results.Title':
+                      Control: Label
+                      Properties:
+                        X: =Parent.X + Parent.Width * 0.03
+                        Y: =Parent.Y + Parent.Height * 0.02
+                        Width: =Parent.Width * 0.94
+                        Height: =Parent.Height * 0.06
+                        Text: =Switch(varReportType,
+                          "Department", "Báo cáo theo phòng ban",
+                          "Employee", "Báo cáo theo nhân viên",
+                          "LeaveType", "Báo cáo theo loại nghỉ phép",
+                          "Monthly", "Báo cáo theo tháng",
+                          "Báo cáo thống kê")
+                        Color: =RGBA(32, 54, 71, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Bold
+                        Size: =Parent.Height * 0.03
+                        
+                  - 'Reports.Results.Gallery':
+                      Control: Gallery
+                      Variant: Vertical
+                      Properties:
+                        X: =Parent.X + Parent.Width * 0.03
+                        Y: ='Reports.Results.Title'.Y + 'Reports.Results.Title'.Height + Parent.Height * 0.02
+                        Width: =Parent.Width * 0.94
+                        Height: =Parent.Height * 0.85
+                        Items: =varReportData
+                        TemplateSize: =Self.Height / 15
+                        TemplatePadding: =Self.Height * 0.005
+                        BorderThickness: =0
+                        Fill: =RGBA(0, 0, 0, 0)
+                      Children:
+                        - 'Reports.Results.Gallery.Row':
+                            Control: GroupContainer
+                            Variant: ManualLayout
+                            Properties:
+                              X: =Parent.TemplateX
+                              Y: =Parent.TemplateY
+                              Width: =Parent.TemplateWidth
+                              Height: =Parent.TemplateHeight
+                              Fill: =If(Mod(Parent.ItemIndex, 2) = 0, RGBA(248, 250, 252, 1), RGBA(255, 255, 255, 1))
+                              BorderColor: =RGBA(229, 231, 235, 1)
+                              BorderThickness: =Parent.Width * 0.0005
+                            Children:
+                              # Dynamic content based on report type
+                              - 'Reports.Results.Gallery.Content':
+                                  Control: Label
+                                  Properties:
+                                    X: =Parent.X + Parent.Width * 0.02
+                                    Y: =Parent.Y + (Parent.Height - Self.Height) / 2
+                                    Width: =Parent.Width * 0.96
+                                    Height: =Parent.Height * 0.8
+                                    Text: =Switch(varReportType,
+                                      "Department", 
+                                        Concatenate(
+                                          ThisItem.TenDonVi, " | ",
+                                          "NV:", ThisItem.TongNhanVien, " | ",
+                                          "Đơn:", ThisItem.TongDonNghi, " | ",
+                                          "Duyệt:", ThisItem.DonDaDuyet, " | ",
+                                          "Ngày nghỉ:", ThisItem.TongNgayNghi
+                                        ),
+                                      "Employee",
+                                        Concatenate(
+                                          ThisItem.HoTen, " (", ThisItem.MaNhanVien, ") | ",
+                                          "Đơn:", ThisItem.TongDonNghi, " | ",
+                                          "Duyệt:", ThisItem.DonDaDuyet, " | ",
+                                          "Nghỉ:", ThisItem.TongNgayNghi, " | ",
+                                          "Còn lại:", ThisItem.NgayPhepConLai
+                                        ),
+                                      "LeaveType",
+                                        Concatenate(
+                                          ThisItem.TenLoai, " | ",
+                                          "Lần sử dụng:", ThisItem.SoLanSuDung, " | ",
+                                          "Tổng ngày:", ThisItem.TongNgayNghi, " | ",
+                                          "Có lương:", If(ThisItem.CoLuong, "Có", "Không")
+                                        ),
+                                      "Monthly",
+                                        Concatenate(
+                                          ThisItem.TenThang, " | ",
+                                          "Đơn:", ThisItem.SoDon, " | ",
+                                          "Duyệt:", ThisItem.SoDonDuyet, " | ",
+                                          "Ngày nghỉ:", ThisItem.TongNgayNghi
+                                        ),
+                                      "Dữ liệu báo cáo")
+                                    Color: =RGBA(55, 65, 81, 1)
+                                    Font: =Font.'Open Sans'
+                                    Size: =Parent.Height * 0.3
+                                    
+      # Access Denied Message
+      - 'Reports.AccessDenied.Container':
+          Control: GroupContainer
+          Variant: ManualLayout
+          Properties:
+            X: ='Reports.Navigation'.X + 'Reports.Navigation'.Width
+            Y: ='Reports.Header'.Y + 'Reports.Header'.Height
+            Width: =Parent.Width - 'Reports.Navigation'.Width
+            Height: =Parent.Height - 'Reports.Header'.Height
+            Fill: =RGBA(248, 250, 252, 1)
+            Visible: =Not(varCanAccessReports)
+          Children:
+            - 'Reports.AccessDenied.Icon':
+                Control: Classic/Icon
+                Properties:
+                  X: =(Parent.Width - Self.Width) / 2
+                  Y: =Parent.Y + Parent.Height * 0.3
+                  Width: =Parent.Height * 0.1
+                  Height: =Parent.Height * 0.1
+                  Icon: =Icon.Lock
+                  Color: =RGBA(244, 67, 54, 1)
+                  
+            - 'Reports.AccessDenied.Title':
+                Control: Label
+                Properties:
+                  X: =Parent.X + Parent.Width * 0.1
+                  Y: ='Reports.AccessDenied.Icon'.Y + 'Reports.AccessDenied.Icon'.Height + Parent.Height * 0.05
+                  Width: =Parent.Width * 0.8
+                  Height: =Parent.Height * 0.08
+                  Text: ="Không có quyền truy cập"
+                  Color: =RGBA(244, 67, 54, 1)
+                  Font: =Font.'Open Sans'
+                  FontWeight: =FontWeight.Bold
+                  Size: =Parent.Height * 0.04
+                  Align: =Align.Center
+                  
+            - 'Reports.AccessDenied.Message':
+                Control: Label
+                Properties:
+                  X: =Parent.X + Parent.Width * 0.1
+                  Y: ='Reports.AccessDenied.Title'.Y + 'Reports.AccessDenied.Title'.Height
+                  Width: =Parent.Width * 0.8
+                  Height: =Parent.Height * 0.12
+                  Text: ="Bạn không có quyền truy cập vào chức năng báo cáo. Vui lòng liên hệ quản trị viên để được cấp quyền."
+                  Color: =RGBA(107, 114, 128, 1)
+                  Font: =Font.'Open Sans'
+                  Size: =Parent.Height * 0.025
+                  Align: =Align.Center 

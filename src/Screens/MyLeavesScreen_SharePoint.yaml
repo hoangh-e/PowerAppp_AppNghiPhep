@@ -32,7 +32,7 @@ Screens:
             OnNavigate: =Set(varNavigateAction, true)
             
       - 'MyLeaves.Content.Container':
-          Control: GroupContainer
+          Control: Rectangle
           Variant: ManualLayout
           Properties:
             X: ='MyLeaves.Navigation'.X + 'MyLeaves.Navigation'.Width
@@ -43,7 +43,7 @@ Screens:
           Children:
             # Page Header
             - 'MyLeaves.Content.Header':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.X + Parent.Width * 0.03
@@ -95,7 +95,7 @@ Screens:
                         
                   # Filter Controls
                   - 'MyLeaves.Filter.Container':
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         X: =Parent.X
@@ -105,7 +105,7 @@ Screens:
                       Children:
                         # Period Filter
                         - 'MyLeaves.Filter.Period.Container':
-                            Control: GroupContainer
+                            Control: Rectangle
                             Variant: ManualLayout
                             Properties:
                               X: =Parent.X
@@ -138,7 +138,7 @@ Screens:
                                                       
                         # Status Filter
                         - 'MyLeaves.Filter.Status.Container':
-                            Control: GroupContainer
+                            Control: Rectangle
                             Variant: ManualLayout
                             Properties:
                               X: =Parent.Width * 0.24
@@ -171,7 +171,7 @@ Screens:
                                                       
                         # Sort Controls
                         - 'MyLeaves.Sort.Container':
-                            Control: GroupContainer
+                            Control: Rectangle
                             Variant: ManualLayout
                             Properties:
                               X: =Parent.Width * 0.48
@@ -204,7 +204,7 @@ Screens:
                                                     
             # Leaves List
             - 'MyLeaves.List.Container':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.X + Parent.Width * 0.03
@@ -218,7 +218,7 @@ Screens:
                 Children:
                   # List Header
                   - 'MyLeaves.List.Header':
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         X: =Parent.X + Parent.Width * 0.02
@@ -324,7 +324,7 @@ Screens:
                         Fill: =RGBA(0, 0, 0, 0)
                       Children:
                         - 'MyLeaves.List.Gallery.Row':
-                            Control: GroupContainer
+                            Control: Rectangle
                             Variant: ManualLayout
                             Properties:
                               X: =Parent.TemplateX
@@ -431,7 +431,7 @@ Screens:
                                     
                               # Actions
                               - 'MyLeaves.List.Gallery.Actions':
-                                  Control: GroupContainer
+                                  Control: Rectangle
                                   Variant: ManualLayout
                                   Properties:
                                     X: =Parent.Width * 0.77
@@ -505,7 +505,7 @@ Screens:
             OnSelect: =Set(varShowDetails, false)
             
       - 'MyLeaves.Details.Modal':
-          Control: GroupContainer
+          Control: Rectangle
           Variant: ManualLayout
           Properties:
             X: =(Parent.Width - Self.Width) / 2
@@ -519,7 +519,7 @@ Screens:
             Visible: =varShowDetails
           Children:
             - 'MyLeaves.Details.Header':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.X + Parent.Width * 0.04
@@ -558,7 +558,7 @@ Screens:
                         OnClick: =Set(varShowDetails, false)
                         
             - 'MyLeaves.Details.Content':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.X + Parent.Width * 0.04
@@ -604,7 +604,7 @@ Screens:
             OnSelect: =Set(varShowCancelModal, false)
             
       - 'MyLeaves.Cancel.Modal':
-          Control: GroupContainer
+          Control: Rectangle
           Variant: ManualLayout
           Properties:
             X: =(Parent.Width - Self.Width) / 2
@@ -655,7 +655,7 @@ Screens:
                   Align: =Align.Center
                   
             - 'MyLeaves.Cancel.Actions':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.X + Parent.Width * 0.05

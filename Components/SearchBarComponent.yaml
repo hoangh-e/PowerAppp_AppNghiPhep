@@ -7,7 +7,7 @@ Components:
       SearchText: =SearchInput.Text
     Children:
       - SearchContainer:
-          Control: GroupContainer
+          Control: Rectangle
           Variant: ManualLayout
           Properties:
             Width: =Parent.Width

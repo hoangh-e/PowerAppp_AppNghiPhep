@@ -1,0 +1,104 @@
+﻿ComponentDefinitions:
+  TestComponent:
+    DefinitionType: CanvasComponent
+    CustomProperties:
+      # ❌ Event property missing DataType field
+      OnClick:
+        PropertyKind: Event
+        DisplayName: OnClick
+        Description: "Click event handler"
+        ReturnType: None
+        Default: =false
+      
+      # ✅ Correct property structure  
+      Title:
+        PropertyKind: Input
+        DisplayName: Title
+        Description: "Component title"
+        DataType: Text
+        Default: ="Test Component"
+        
+      # ❌ Missing Description field
+      ShowBorder:
+        PropertyKind: Input
+        DisplayName: ShowBorder
+        DataType: Boolean
+        Default: =true
+        
+      # ❌ Missing DataType field
+      Size:
+        PropertyKind: Input
+        DisplayName: Size
+        Description: "Component size"
+        Default: ="Medium"
+        
+      # ❌ Event missing DataType
+      OnChange:
+        PropertyKind: Event
+        DisplayName: OnChange
+        Description: "Change event"
+        ReturnType: None
+        Default: =
+        
+    Properties:
+      Height: =App.Height
+      Width: =App.Width
+    Children:
+      - 'Test.Container':
+          Control: GroupContainer
+          Variant: ManualLayout
+          Properties:
+            X: =Parent.X
+            Y: =Parent.Y
+            Width: =Parent.Width
+            Height: =Parent.Height
+            Fill: =RGBA(255, 255, 255, 1)
+          Children:
+            - 'Test.Icon':
+                Control: Classic/Icon
+                Properties:
+                  X: =Parent.X + Parent.Width * 0.1
+                  Y: =Parent.Y + Parent.Height * 0.1
+                  Width: =Parent.Height * 0.1
+                  Height: =Parent.Height * 0.1
+                  # ❌ Wrong icon name
+                  Icon: =Icon.CalendarBlank
+                  Color: =RGBA(59, 130, 246, 1)
+                  
+            - 'Test.Title':
+                Control: Label
+                Properties:
+                  X: ='Test.Icon'.X + 'Test.Icon'.Width + Parent.Width * 0.02
+                  Y: ='Test.Icon'.Y
+                  Width: =Parent.Width * 0.6
+                  Height: ='Test.Icon'.Height
+                  Text: =TestComponent.Title
+                  Color: =RGBA(17, 24, 39, 1)
+                  Font: =Font.'Open Sans'
+                  FontWeight: =FontWeight.Semibold
+                  Size: =Parent.Height * 0.02
+                  
+            - 'Test.Button':
+                Control: Classic/Button
+                Properties:
+                  X: =Parent.X + Parent.Width * 0.1
+                  Y: ='Test.Icon'.Y + 'Test.Icon'.Height + Parent.Height * 0.05
+                  Width: =Parent.Width * 0.3
+                  Height: =Parent.Height * 0.08
+                  Text: ="Click Me"
+                  Fill: =RGBA(59, 130, 246, 1)
+                  Color: =RGBA(255, 255, 255, 1)
+                  BorderColor: =RGBA(37, 99, 235, 1)
+                  BorderThickness: =2
+                  OnSelect: =TestComponent.OnClick()
+                  
+            - 'Test.Calendar.Icon':
+                Control: Classic/Icon
+                Properties:
+                  X: ='Test.Button'.X + 'Test.Button'.Width + Parent.Width * 0.02
+                  Y: ='Test.Button'.Y + ('Test.Button'.Height - Self.Height) / 2
+                  Width: =Parent.Height * 0.04
+                  Height: =Parent.Height * 0.04
+                  # ❌ Another wrong icon
+                  Icon: =Icon.CalendarBlank
+                  Color: =RGBA(107, 114, 128, 1) 

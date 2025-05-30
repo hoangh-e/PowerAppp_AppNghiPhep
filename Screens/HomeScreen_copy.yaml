@@ -28,7 +28,7 @@ Screens:
             Title: ="Ứng dụng nghỉ phép - AsiaShine"
       
       - MainContainer:
-          Control: GroupContainer
+          Control: Rectangle
           Variant: ManualLayout
           Properties:
             Height: =App.Height - 74
@@ -41,7 +41,7 @@ Screens:
             DropShadow: =DropShadow.Medium
           Children:
             - WelcomeSection:
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   Height: =160
@@ -81,7 +81,7 @@ Screens:
                         PaddingLeft: =0
             
             - LeaveStats:
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   Height: =150
@@ -95,7 +95,7 @@ Screens:
                   DropShadow: =DropShadow.Small
                 Children:
                   - LeaveStatCircle:
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         Height: =100
@@ -130,7 +130,7 @@ Screens:
                               Align: =Align.Center
                   
                   - LeaveStatsInfo:
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         Height: =100
@@ -162,7 +162,7 @@ Screens:
                               Color: =RGBA(71, 110, 140, 1)
             
             - FeaturesSection:
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   Height: =400
@@ -183,7 +183,7 @@ Screens:
                         FontWeight: =FontWeight.Bold
                   
                   - FeaturesGrid:
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         Height: =340
@@ -192,7 +192,7 @@ Screens:
                         Y: =60
                       Children:
                         - FeatureCard1:
-                            Control: GroupContainer
+                            Control: Rectangle
                             Variant: ManualLayout
                             Properties:
                               Height: =160
@@ -240,7 +240,7 @@ Screens:
                                     OnSelect: =Navigate(LeaveRequestScreen)
                         
                         - FeatureCard2:
-                            Control: GroupContainer
+                            Control: Rectangle
                             Variant: ManualLayout
                             Properties:
                               Height: =160
@@ -288,7 +288,7 @@ Screens:
                                     OnSelect: =Navigate(PersonalCalendarScreen)
                         
                         - FeatureCard3:
-                            Control: GroupContainer
+                            Control: Rectangle
                             Variant: ManualLayout
                             Properties:
                               Height: =160
@@ -336,7 +336,7 @@ Screens:
                                     OnSelect: =Navigate(ProfileScreen)
                         
                         - FeatureCard4:
-                            Control: GroupContainer
+                            Control: Rectangle
                             Variant: ManualLayout
                             Properties:
                               Height: =160
@@ -385,7 +385,7 @@ Screens:
                                     Visible: =LookUp(Users, Email = User().Email).Role = "Manager" || LookUp(Users, Email = User().Email).Role = "Director"
             
             - RecentActivities:
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   Height: =250
@@ -398,7 +398,7 @@ Screens:
                   DropShadow: =DropShadow.Small
                 Children:
                   - RecentActivitiesHeader:
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         Height: =50
@@ -423,7 +423,7 @@ Screens:
                               VerticalAlign: =VerticalAlign.Middle
                   
                   - ActivityItem1:
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         Height: =50
@@ -468,7 +468,7 @@ Screens:
                               VerticalAlign: =VerticalAlign.Middle
                   
                   - ActivityItem2:
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         Height: =50
@@ -513,7 +513,7 @@ Screens:
                               VerticalAlign: =VerticalAlign.Middle
                   
                   - ActivityItem3:
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         Height: =50
@@ -558,7 +558,7 @@ Screens:
                               VerticalAlign: =VerticalAlign.Middle
                   
                   - ViewAllActivities:
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         Height: =50

@@ -32,7 +32,7 @@
             OnNavigate: =Set(varNavigateAction, true)
             
       - 'Management.Content.Container':
-          Control: GroupContainer
+          Control: Rectangle
           Variant: ManualLayout
           Properties:
             X: ='Management.Navigation'.X + 'Management.Navigation'.Width
@@ -55,7 +55,7 @@
                   Size: =Parent.Height * 0.03
                   
             - 'Management.Tabs.Container':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.X + Parent.Width * 0.03
@@ -132,7 +132,7 @@
                         OnSelect: =Set(varManagementTab, "Workflow")
                         
             - 'Management.Users.Container':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.X + Parent.Width * 0.03
@@ -186,7 +186,7 @@
                         TemplatePadding: =Parent.Height * 0.01
                       Children:
                         - 'Gallery.User.Container':
-                            Control: GroupContainer
+                            Control: Rectangle
                             Variant: ManualLayout
                             Properties:
                               X: =Parent.X
@@ -204,7 +204,7 @@
                                     Y: =Parent.Y + Parent.Height * 0.1
                                     Width: =Parent.Width * 0.7
                                     Height: =Parent.Height * 0.8
-                                    Text: =ThisItem.ID & " - " & ThisItem.FullName & Char(10) & ThisItem.Department & " - " & ThisItem.Position & Char(10) & "Email: " & ThisItem.Email
+                                    Text: =ThisItem.ID & " - " & ThisItem.FullName & Char(10) & ThisItem.Department & " - " & ThisItem.Position & Char(10) & "Email:" & ThisItem.Email
                                     Color: =RGBA(32, 54, 71, 1)
                                     Font: =Font.'Open Sans'
                                     Size: =Parent.Height * 0.15
@@ -259,7 +259,7 @@
                                     OnSelect: =Set(varSelectedUser, ThisItem); Notify("Chỉnh sửa " & ThisItem.FullName, NotificationType.Information)
                                     
             - 'Management.LeaveQuota.Container':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.X + Parent.Width * 0.03
@@ -313,7 +313,7 @@
                         TemplatePadding: =Parent.Height * 0.01
                       Children:
                         - 'Gallery.LeaveQuota.Container':
-                            Control: GroupContainer
+                            Control: Rectangle
                             Variant: ManualLayout
                             Properties:
                               X: =Parent.X
@@ -344,7 +344,7 @@
                                     Y: ='Gallery.LeaveQuota.Employee'.Y + 'Gallery.LeaveQuota.Employee'.Height + Parent.Height * 0.05
                                     Width: =Parent.Width * 0.6
                                     Height: =Parent.Height * 0.4
-                                    Text: ="Năm " & ThisItem.Year & ": " & ThisItem.TotalDays & " ngày tổng → " & ThisItem.UsedDays & " đã dùng → " & ThisItem.RemainingDays & " còn lại"
+                                    Text: ="Năm " & ThisItem.Year & ":" & ThisItem.TotalDays & " ngày tổng → " & ThisItem.UsedDays & " đã dùng → " & ThisItem.RemainingDays & " còn lại"
                                     Color: =RGBA(108, 117, 125, 1)
                                     Font: =Font.'Open Sans'
                                     Size: =Parent.Height * 0.18
@@ -381,7 +381,7 @@
                                     Align: =Align.Center
                                     
             - 'Management.Holidays.Container':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.X + Parent.Width * 0.03
@@ -435,7 +435,7 @@
                         TemplatePadding: =Parent.Height * 0.01
                       Children:
                         - 'Gallery.Holiday.Container':
-                            Control: GroupContainer
+                            Control: Rectangle
                             Variant: ManualLayout
                             Properties:
                               X: =Parent.X
@@ -499,7 +499,7 @@
                                     Align: =Align.Center
                                     
             - 'Management.Workflow.Container':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.X + Parent.Width * 0.03
@@ -565,7 +565,7 @@
                         TemplatePadding: =Parent.Height * 0.02
                       Children:
                         - 'Gallery.Workflow.Container':
-                            Control: GroupContainer
+                            Control: Rectangle
                             Variant: ManualLayout
                             Properties:
                               X: =Parent.X
@@ -609,7 +609,7 @@
                                     Y: ='Gallery.Workflow.Level'.Y + 'Gallery.Workflow.Level'.Height + Parent.Height * 0.1
                                     Width: =Parent.Width * 0.7
                                     Height: =Parent.Height * 0.3
-                                    Text: ="Áp dụng cho: " & ThisItem.RequiredFor
+                                    Text: ="Áp dụng cho:" & ThisItem.RequiredFor
                                     Color: =RGBA(108, 117, 125, 1)
                                     Font: =Font.'Open Sans'
                                     Size: =Parent.Height * 0.18

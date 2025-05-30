@@ -42,7 +42,7 @@ Screens:
             OnNavigate: =Set(varNavigateAction, true)
             
       - 'Profile.Content.Container':
-          Control: GroupContainer
+          Control: Rectangle
           Variant: ManualLayout
           Properties:
             X: ='Profile.Navigation'.X + 'Profile.Navigation'.Width
@@ -53,7 +53,7 @@ Screens:
           Children:
             # Profile Header
             - 'Profile.Info.Header':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.X + Parent.Width * 0.03
@@ -67,7 +67,7 @@ Screens:
                 Children:
                   # Avatar Section
                   - 'Profile.Avatar.Container':
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         X: =Parent.X + Parent.Width * 0.04
@@ -122,7 +122,7 @@ Screens:
                               
                   # Basic Info Section
                   - 'Profile.BasicInfo.Container':
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         X: =Parent.X + Parent.Width * 0.3
@@ -190,7 +190,7 @@ Screens:
                               
                   # Action Buttons
                   - 'Profile.Actions.Container':
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         X: =Parent.X + Parent.Width * 0.77
@@ -234,7 +234,7 @@ Screens:
                               
             # Detailed Info Tabs
             - 'Profile.Tabs.Container':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.X + Parent.Width * 0.03
@@ -248,7 +248,7 @@ Screens:
                 Children:
                   # Tab Headers
                   - 'Profile.TabHeaders.Container':
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         X: =Parent.X + Parent.Width * 0.02
@@ -300,7 +300,7 @@ Screens:
                               
                   # Tab Content
                   - 'Profile.TabContent.Container':
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         X: =Parent.X + Parent.Width * 0.02
@@ -310,7 +310,7 @@ Screens:
                       Children:
                         # Personal Info Tab
                         - 'Profile.PersonalInfo.Container':
-                            Control: GroupContainer
+                            Control: Rectangle
                             Variant: ManualLayout
                             Properties:
                               X: =Parent.X
@@ -342,7 +342,7 @@ Screens:
                                     
                         # Leave Info Tab
                         - 'Profile.LeaveInfo.Container':
-                            Control: GroupContainer
+                            Control: Rectangle
                             Variant: ManualLayout
                             Properties:
                               X: =Parent.X
@@ -352,7 +352,7 @@ Screens:
                               Visible: =varSelectedTab = "Leave"
                             Children:
                               - 'Profile.LeaveInfo.Stats':
-                                  Control: GroupContainer
+                                  Control: Rectangle
                                   Variant: ManualLayout
                                   Properties:
                                     X: =Parent.X
@@ -431,7 +431,7 @@ Screens:
                                     
             # Success/Error Messages
             - 'Profile.Messages.Container':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.X + Parent.Width * 0.03

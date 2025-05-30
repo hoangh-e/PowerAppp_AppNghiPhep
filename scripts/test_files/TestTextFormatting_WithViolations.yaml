@@ -5,7 +5,7 @@ Screens:
       OnVisible: =Set(varTestText, true)
     Children:
       - 'Text.Container':
-          Control: GroupContainer
+          Control: Rectangle
           Variant: ManualLayout
           Properties:
             X: =Parent.X
@@ -22,7 +22,7 @@ Screens:
                   Width: =Parent.Width * 0.9
                   Height: =Parent.Height * 0.1
                   # ❌ Wrong text formatting - space after colon
-                  Text: ="Name: " & ThisItem.Name
+                  Text: ="Name:" & ThisItem.Name
                   Color: =RGBA(17, 24, 39, 1)
                   Font: =Font.'Open Sans'
                   Size: =Parent.Height * 0.03
@@ -35,7 +35,7 @@ Screens:
                   Width: =Parent.Width * 0.9
                   Height: =Parent.Height * 0.1
                   # ❌ Another wrong text formatting
-                  Text: ="Email: " & ThisItem.Email
+                  Text: ="Email:" & ThisItem.Email
                   Color: =RGBA(55, 65, 81, 1)
                   Font: =Font.'Open Sans'
                   Size: =Parent.Height * 0.025
@@ -48,7 +48,7 @@ Screens:
                   Width: =Parent.Width * 0.9
                   Height: =Parent.Height * 0.1
                   # ❌ More wrong text formatting
-                  Text: ="Status: " & "Active"
+                  Text: ="Status:" & "Active"
                   Color: =RGBA(34, 197, 94, 1)
                   Font: =Font.'Open Sans'
                   Size: =Parent.Height * 0.025
@@ -61,7 +61,7 @@ Screens:
                   Width: =Parent.Width * 0.9
                   Height: =Parent.Height * 0.1
                   # ❌ Wrong format with complex text
-                  Text: ="Department: " & "IT Department"
+                  Text: ="Department:" & "IT Department"
                   Color: =RGBA(107, 114, 128, 1)
                   Font: =Font.'Open Sans'
                   Size: =Parent.Height * 0.025

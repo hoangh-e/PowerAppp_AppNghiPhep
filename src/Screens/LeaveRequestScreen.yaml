@@ -31,7 +31,7 @@
             OnNavigate: =Set(varNavigateAction, true)
             
       - 'LeaveRequest.Content.Container':
-          Control: GroupContainer
+          Control: Rectangle
           Variant: ManualLayout
           Properties:
             X: ='LeaveRequest.Navigation'.X + 'LeaveRequest.Navigation'.Width
@@ -54,7 +54,7 @@
                   Size: =24
                   
             - 'LeaveRequest.Form.Container':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.X + 30
@@ -80,7 +80,7 @@
                         Size: =16
                         
                   - 'LeaveRequest.Form.EmployeeInfo.Container':
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         X: =Parent.X + 30
@@ -379,7 +379,7 @@
                         Size: =14
                         
                   - 'LeaveRequest.Form.Attachment.Container':
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         X: =Parent.X + 30
@@ -397,7 +397,7 @@
                               Y: =Parent.Y + 10
                               Width: =Parent.Width - 120
                               Height: =40
-                              Text: ="Thông tin đính kèm tệp đã chọn (giời hạn xác định người nhận, giời hạn mở rộng, v.v.)" & Char(10) & "Hướng dẫn định dạng: PDF, Word, Excel, Image. Tệp đính kèm tối đa: 10MB"
+                              Text: ="Thông tin đính kèm tệp đã chọn (giời hạn xác định người nhận, giời hạn mở rộng, v.v.)" & Char(10) & "Hướng dẫn định dạng:PDF, Word, Excel, Image. Tệp đính kèm tối đa:10MB"
                               Color: =RGBA(108, 117, 125, 1)
                               Font: =Font.'Open Sans'
                               Size: =11
@@ -414,10 +414,10 @@
                               Color: =RGBA(255, 255, 255, 1)
                               Font: =Font.'Open Sans'
                               Size: =10
-                              OnSelect: =Set(varAttachmentFile, "demo_file.pdf"); Notify("Thông báo chọn tệp đính kèm: demo_file.pdf", NotificationType.Information)
+                              OnSelect: =Set(varAttachmentFile, "demo_file.pdf"); Notify("Thông báo chọn tệp đính kèm:demo_file.pdf", NotificationType.Information)
                         
                   - 'LeaveRequest.Form.SpecialCase.Container':
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         X: =Parent.X + 30

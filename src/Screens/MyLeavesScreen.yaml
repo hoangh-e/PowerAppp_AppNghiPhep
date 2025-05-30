@@ -32,7 +32,7 @@
             OnNavigate: =Set(varNavigateAction, true)
             
       - 'MyLeaves.Content.Container':
-          Control: GroupContainer
+          Control: Rectangle
           Variant: ManualLayout
           Properties:
             X: ='MyLeaves.Navigation'.X + 'MyLeaves.Navigation'.Width
@@ -55,7 +55,7 @@
                   Size: =Parent.Height * 0.05
                   
             - 'MyLeaves.Filters.Container':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.X + Parent.Width * 0.03
@@ -137,7 +137,7 @@
                         OnSelect: =Navigate(LeaveRequestScreen)
                         
             - 'MyLeaves.List.Container':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.X + Parent.Width * 0.03
@@ -150,7 +150,7 @@
                   DropShadow: =DropShadow.Light
                 Children:
                   - 'MyLeaves.List.Header':
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         X: =Parent.X
@@ -255,7 +255,7 @@
                         TemplatePadding: =Parent.Height * 0.005
                       Children:
                         - 'Gallery.LeaveItem.Container':
-                            Control: GroupContainer
+                            Control: Rectangle
                             Variant: ManualLayout
                             Properties:
                               X: =Parent.X

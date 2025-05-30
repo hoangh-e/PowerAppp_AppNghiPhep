@@ -152,6 +152,8 @@ Control: HeaderComponent
 - `RadiusBottomRight` - Not supported  
 - `RadiusTopLeft` - Not supported
 - `RadiusTopRight` - Not supported
+- `Variant` - Rectangle does NOT support Variant property
+- `DropShadow` - Rectangle does NOT support DropShadow property
 - Use `BorderRadius` instead for uniform radius
 
 **Classic/Button Control** - NEVER use these properties:
@@ -908,6 +910,188 @@ Properties:
 - **ALWAYS USE**: `Mode:` property for text input modes
 - **VALID VALUES**: `TextMode.Password`, `TextMode.MultiLine`, `TextMode.SingleLine`
 
+### 8.8 Gallery Property Errors
+**CRITICAL**: Gallery Variant-specific property restrictions:
+
+```yaml
+# ❌ WRONG - VariableHeight không hỗ trợ WrapCount
+- 'MyGallery':
+    Control: Gallery
+    Variant: VariableHeight
+    Properties:
+      WrapCount: =7  # Không hỗ trợ cho VariableHeight
+
+# ✅ CORRECT - Chỉ sử dụng WrapCount với Horizontal/Vertical variants
+- 'MyGallery':
+    Control: Gallery
+    Variant: Horizontal
+    Properties:
+      WrapCount: =7  # Hỗ trợ cho Horizontal/Vertical variants
+```
+
+**RULES for Gallery Properties:**
+- **VariableHeight variant**: KHÔNG hỗ trợ `WrapCount` property
+- **WrapCount**: Chỉ sử dụng với Horizontal/Vertical variants
+- **TemplateSize**: Bắt buộc cho tất cả Gallery variants
+
+### 8.19 Rectangle Variant Property
+**Error**: `Unknown property 'Variant' for control type 'Rectangle'`
+
+```yaml
+# ❌ WRONG - Rectangle không hỗ trợ Variant property
+- 'MyRectangle':
+    Control: Rectangle
+    Variant: ManualLayout  # PA2108 Error
+    Properties:
+      OnSelect: =Navigate(NextScreen)
+
+# ✅ CORRECT - Rectangle không có Variant
+- 'MyRectangle':
+    Control: Rectangle
+    Properties:
+      OnSelect: =Navigate(NextScreen)
+```
+
+### 8.20 Rectangle DropShadow Property
+**Error**: `Unknown property 'DropShadow' for control type 'Rectangle'`
+
+```yaml
+# ❌ WRONG - Rectangle không hỗ trợ DropShadow property
+- 'MyRectangle':
+    Control: Rectangle
+    Properties:
+      DropShadow: =DropShadow.Light  # PA2108 Error
+      Fill: =RGBA(255, 255, 255, 1)
+
+# ✅ CORRECT - Rectangle không có DropShadow
+- 'MyRectangle':
+    Control: Rectangle
+    Properties:
+      Fill: =RGBA(255, 255, 255, 1)
+      BorderColor: =RGBA(230, 230, 230, 1)
+      # Use BorderThickness for visual effects instead
+```
+
+---
+
+## 🚨 PA2108 ERROR FIXES
+
+### Common PA2108 Errors and Solutions
+
+#### GroupContainer with Event Properties
+**Error**: `Unknown property 'OnSelect' for control type 'GroupContainer'`
+
+```yaml
+# ❌ WRONG - GroupContainer không hỗ trợ event properties
+- 'MyContainer':
+    Control: GroupContainer
+    Variant: ManualLayout
+    Properties:
+      OnSelect: =Navigate(NextScreen)  # PA2108 Error
+
+# ✅ CORRECT - Dùng Rectangle thay thế
+- 'MyContainer':
+    Control: Rectangle
+    Properties:
+      OnSelect: =Navigate(NextScreen)  # Rectangle hỗ trợ OnSelect
+```
+
+#### Gallery VariableHeight with WrapCount
+**Error**: `Unknown property 'WrapCount' for control type 'Gallery' and variant 'VariableHeight'`
+
+```yaml
+# ❌ WRONG - VariableHeight không hỗ trợ WrapCount
+- 'MyGallery':
+    Control: Gallery
+    Variant: VariableHeight
+    Properties:
+      WrapCount: =7  # PA2108 Error
+
+# ✅ CORRECT - Xóa WrapCount cho VariableHeight
+- 'MyGallery':
+    Control: Gallery
+    Variant: VariableHeight
+    Properties:
+      # WrapCount không cần cho VariableHeight
+      Items: =MyCollection
+```
+
+#### Classic/Button Invalid Properties
+**Error**: `Unknown property 'BorderRadius' for control type 'Classic/Button'`
+
+```yaml
+# ❌ WRONG - Classic/Button không hỗ trợ một số properties
+- 'MyButton':
+    Control: Classic/Button
+    Properties:
+      BorderRadius: =8     # PA2108 Error
+      Disabled: =true      # PA2108 Error
+      Align: =Align.Center # PA2108 Error
+
+# ✅ CORRECT - Sử dụng properties hỗ trợ
+- 'MyButton':
+    Control: Classic/Button
+    Properties:
+      DisplayMode: =If(varIsDisabled, DisplayMode.Disabled, DisplayMode.Edit)
+      # BorderRadius không có cho Classic/Button
+```
+
+#### Rectangle Individual Corner Radius
+**Error**: `Unknown property 'RadiusTopLeft' for control type 'Rectangle'`
+
+```yaml
+# ❌ WRONG - Rectangle không hỗ trợ individual corner radius
+- 'MyRectangle':
+    Control: Rectangle
+    Properties:
+      RadiusTopLeft: =8      # PA2108 Error
+      RadiusTopRight: =8     # PA2108 Error
+      RadiusBottomLeft: =8   # PA2108 Error
+      RadiusBottomRight: =8  # PA2108 Error
+
+# ✅ CORRECT - Dùng BorderRadius uniform
+- 'MyRectangle':
+    Control: Rectangle
+    Properties:
+      BorderRadius: =8  # Uniform radius cho tất cả góc
+```
+
+#### Classic/TextInput Invalid Properties
+**Error**: `Unknown property 'OnFocus' for control type 'Classic/TextInput'`
+
+```yaml
+# ❌ WRONG - Classic/TextInput không hỗ trợ
+- 'MyTextInput':
+    Control: Classic/TextInput
+    Properties:
+      OnFocus: =Set(varFocused, true)   # PA2108 Error
+      OnBlur: =Set(varFocused, false)   # PA2108 Error
+      TextMode: =TextMode.Password      # PA2108 Error
+
+# ✅ CORRECT - Dùng properties hỗ trợ
+- 'MyTextInput':
+    Control: Classic/TextInput
+    Properties:
+      Mode: =TextMode.Password  # Dùng Mode thay TextMode
+      # OnFocus/OnBlur không có cho Classic/TextInput
+```
+
+### PA2108 Quick Reference Table
+
+| Control Type | Forbidden Properties | Replacement | Note |
+|--------------|---------------------|-------------|------|
+| **GroupContainer** | OnSelect, OnClick, OnHover, OnChange | Use Rectangle | Rectangle hỗ trợ events |
+| **Gallery VariableHeight** | WrapCount | Remove property | Chỉ Horizontal/Vertical hỗ trợ |
+| **Classic/Button** | BorderRadius, Disabled, Align | DisplayMode for Disabled | Use modern styling alternatives |
+| **Rectangle** | RadiusTopLeft, etc. | BorderRadius | Uniform radius only |
+| **Classic/TextInput** | OnFocus, OnBlur, TextMode | Mode for TextMode | Limited event support |
+
+### Automation Scripts Available
+
+- `scripts/fix_pa2108_properties.py` - Auto-fix PA2108 errors
+- `scripts/fix_pa2108.bat` - Windows batch runner
+- `scripts/fix_groupcontainer_onselect.py` - Specific GroupContainer fixes
+
 ---
 
 ## 9. BEST PRACTICES
@@ -1064,5 +1248,6 @@ Properties:
 17. **TEXTINPUT FOCUS PROPERTY** - Use `.Focused` not `.Focus` for Classic/TextInput
 18. **NO PIPE OPERATOR** - Avoid pipe operator (|) in YAML formulas
 19. **TEXTINPUT MODE PROPERTY** - Use `Mode:` not `TextMode:` for Classic/TextInput
+20. **RECTANGLE DROPSHADOW** - Rectangle controls do NOT support DropShadow property
 
 **Agent must follow these rules ABSOLUTELY when generating Power App YAML code.** 

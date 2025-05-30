@@ -29,7 +29,7 @@ Screens:
             Title: ="Thực hiện lập kế hoạch lựa chọn nhà thầu"
       
       - MainContent:
-          Control: GroupContainer
+          Control: Rectangle
           Variant: ManualLayout
           Properties:
             X: =0
@@ -40,7 +40,7 @@ Screens:
             Fill: =RGBA(255, 255, 255, 1)
           Children:
             - BreadcrumbContainer:
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =0
@@ -65,7 +65,7 @@ Screens:
                         Color: =RGBA(80, 80, 80, 1)
             
             - ProcessStatusSection:
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =50
@@ -88,7 +88,7 @@ Screens:
                         Size: =14
                   
                   - ProcessSteps:
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         X: =0
@@ -155,7 +155,7 @@ Screens:
                               IsActive: =false
             
             - FormSection:
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   Name: ="FormSection"
@@ -300,7 +300,7 @@ Screens:
                         ZIndex: =11
                   
                   - btnSubmitContainer:
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         Name: ="btnSubmitContainer"

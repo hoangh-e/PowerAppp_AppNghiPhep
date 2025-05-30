@@ -1,0 +1,128 @@
+﻿ComponentDefinitions:
+  AdvancedTestComponent:
+    DefinitionType: CanvasComponent
+    CustomProperties:
+      # ❌ Event property missing DataType
+      OnAdvancedClick:
+        PropertyKind: Event
+        DisplayName: OnAdvancedClick
+        Description: "Advanced click handler"
+        ReturnType: None
+        Default: =
+        
+      # ❌ Missing DisplayName
+      UserData:
+        PropertyKind: Input
+        Description: "User data object"
+        DataType: Record
+        Default: ={Name: "Test", Email: "test@example.com"}
+        
+      # ❌ Missing both Description and DataType
+      IsEnabled:
+        PropertyKind: Input
+        DisplayName: IsEnabled
+        Default: =true
+        
+      # ✅ Correct property
+      ComponentTitle:
+        PropertyKind: Input
+        DisplayName: ComponentTitle
+        Description: "Title for the component"
+        DataType: Text
+        Default: ="Advanced Component"
+        
+    Properties:
+      Height: =App.Height
+      Width: =App.Width
+    Children:
+      - 'Advanced.MainContainer':
+          Control: GroupContainer
+          Variant: ManualLayout
+          Properties:
+            X: =Parent.X
+            Y: =Parent.Y
+            Width: =Parent.Width
+            Height: =Parent.Height
+            Fill: =RGBA(255, 255, 255, 1)
+            BorderColor: =RGBA(229, 231, 235, 1)
+            BorderThickness: =1
+          Children:
+            - 'Advanced.HeaderIcon':
+                Control: Classic/Icon
+                Properties:
+                  # ❌ Absolute positioning
+                  X: 20
+                  Y: 20
+                  Width: 40
+                  Height: 40
+                  # ❌ Wrong icon
+                  Icon: =Icon.Person
+                  Color: =RGBA(59, 130, 246, 1)
+                  
+            - 'Advanced.TitleLabel':
+                Control: Label
+                Properties:
+                  X: ='Advanced.HeaderIcon'.X + 'Advanced.HeaderIcon'.Width + 10
+                  Y: ='Advanced.HeaderIcon'.Y
+                  # ❌ Absolute width
+                  Width: 300
+                  Height: ='Advanced.HeaderIcon'.Height
+                  # ❌ Wrong text formatting
+                  Text: ="Title:" & AdvancedTestComponent.ComponentTitle
+                  Color: =RGBA(17, 24, 39, 1)
+                  Font: =Font.'Open Sans'
+                  FontWeight: =FontWeight.Bold
+                  # ❌ Absolute size
+                  Size: 18
+                  
+            - 'Advanced.ContentCard':
+                Control: Rectangle
+                Properties:
+                  X: =Parent.X + 20
+                  # ❌ Absolute Y position
+                  Y: 80
+                  Width: =Parent.Width - 40
+                  # ❌ Absolute height
+                  Height: 200
+                  Fill: =RGBA(248, 250, 252, 1)
+                  BorderColor: =RGBA(229, 231, 235, 1)
+                  BorderThickness: =1
+                  BorderRadius: =8
+                  
+            - 'Advanced.StatusIcon':
+                Control: Classic/Icon
+                Properties:
+                  X: ='Advanced.ContentCard'.X + 15
+                  Y: ='Advanced.ContentCard'.Y + 15
+                  Width: =30
+                  Height: =30
+                  # ❌ Invalid icon
+                  Icon: =Icon.QuestionMark
+                  Color: =RGBA(34, 197, 94, 1)
+                  
+            - 'Advanced.InfoText':
+                Control: Label
+                Properties:
+                  X: ='Advanced.StatusIcon'.X + 'Advanced.StatusIcon'.Width + 10
+                  Y: ='Advanced.StatusIcon'.Y
+                  Width: =200
+                  Height: ='Advanced.StatusIcon'.Height
+                  # ❌ Multiple text formatting errors
+                  Text: ="Status:" & "Active" & " | " & "Department:" & "IT"
+                  Color: =RGBA(55, 65, 81, 1)
+                  Font: =Font.'Open Sans'
+                  Size: =14
+                  
+            - 'Advanced.ActionButton':
+                Control: Classic/Button
+                Properties:
+                  X: ='Advanced.ContentCard'.X + 15
+                  Y: ='Advanced.StatusIcon'.Y + 'Advanced.StatusIcon'.Height + 20
+                  Width: =150
+                  Height: =35
+                  Text: ="Execute Action"
+                  Fill: =RGBA(239, 68, 68, 1)
+                  Color: =RGBA(255, 255, 255, 1)
+                  OnSelect: =AdvancedTestComponent.OnAdvancedClick()
+                  # ❌ Invalid button property
+                  BorderRadius: =8 

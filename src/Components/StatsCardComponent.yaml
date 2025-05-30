@@ -79,7 +79,7 @@ ComponentDefinitions:
       Width: =App.Width
     Children:
       - 'StatsCard.Container':
-          Control: GroupContainer
+          Control: Rectangle
           Variant: ManualLayout
           Properties:
             X: =Parent.X
@@ -93,7 +93,7 @@ ComponentDefinitions:
           Children:
             # Main Content Container - Compact
             - 'StatsCard.Content.Container':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.X + Parent.Width * 0.025
@@ -103,7 +103,7 @@ ComponentDefinitions:
                 Children:
                   # Icon Section - Smaller
                   - 'StatsCard.Icon.Container':
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         X: =Parent.X
@@ -143,7 +143,7 @@ ComponentDefinitions:
                               
                   # Value and Title Section - Compact
                   - 'StatsCard.Info.Container':
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         X: ='StatsCard.Icon.Container'.X + 'StatsCard.Icon.Container'.Width + Parent.Width * 0.03
@@ -195,7 +195,7 @@ ComponentDefinitions:
                               
                   # Trend Indicator Section - Compact
                   - 'StatsCard.Trend.Container':
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         X: =Parent.Width - Self.Width
@@ -272,7 +272,7 @@ ComponentDefinitions:
                               
             # Progress Bar Section - Compact
             - 'StatsCard.Progress.Container':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.X + Parent.Width * 0.025

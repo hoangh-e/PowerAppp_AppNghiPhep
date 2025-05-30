@@ -3,118 +3,118 @@
     Properties:
       Fill: =RGBA(248, 250, 252, 1)
       OnVisible: |
-        =Set(varActiveScreen, "Reports"); Set(varReportPeriod, "Month"); Set(varSelectedMonth, Month(Today())); Set(varSelectedYear, Year(Today())); Set(varSelectedDepartment, "All"); Set(varMonthlyStats, Table({Month: "01/2024", TotalRequests: 15, ApprovedRequests: 12, PendingRequests: 2, RejectedRequests: 1, TotalDays: 45, Employees: 25}, {Month: "02/2024", TotalRequests: 18, ApprovedRequests: 15, PendingRequests: 1, RejectedRequests: 2, TotalDays: 52, Employees: 28}, {Month: "03/2024", TotalRequests: 12, ApprovedRequests: 10, PendingRequests: 1, RejectedRequests: 1, TotalDays: 36, Employees: 22}, {Month: "04/2024", TotalRequests: 20, ApprovedRequests: 18, PendingRequests: 0, RejectedRequests: 2, TotalDays: 65, Employees: 30})); Set(varDepartmentStats, Table({Department: "Ph貌ng C么ng ngh峄?th么ng tin", TotalRequests: 25, TotalDays: 78, AvgDays: 3.1, Employees: 8}, {Department: "Ph貌ng Nh芒n s峄?, TotalRequests: 18, TotalDays: 54, AvgDays: 3.0, Employees: 6}, {Department: "Ph貌ng K岷?to谩n", TotalRequests: 22, TotalDays: 66, AvgDays: 3.0, Employees: 7}, {Department: "Ban Gi谩m 膽峄慶", TotalRequests: 10, TotalDays: 40, AvgDays: 4.0, Employees: 4})); Set(varEmployeeStats, Table({Employee: "Nguy峄卬 V膬n An", Department: "Ph貌ng C么ng ngh峄?th么ng tin", TotalRequests: 5, TotalDays: 15, RemainingDays: 9, UsageRate: 62.5}, {Employee: "Tr岷 Th峄?B矛nh", Department: "Ph貌ng C么ng ngh峄?th么ng tin", TotalRequests: 4, TotalDays: 12, RemainingDays: 8, UsageRate: 60.0}, {Employee: "L锚 V膬n C瓢峄漬g", Department: "Ban Gi谩m 膽峄慶", TotalRequests: 3, TotalDays: 18, RemainingDays: 12, UsageRate: 60.0}, {Employee: "Ph岷 Th峄?Dung", Department: "Ban Gi谩m 膽峄慶", TotalRequests: 6, TotalDays: 22, RemainingDays: 8, UsageRate: 73.3})); Set(varIsExporting, false)
+        =Set(varActiveScreen, "Reports"); Set(varReportPeriod, "Month"); Set(varSelectedMonth, Month(Today())); Set(varSelectedYear, Year(Today())); Set(varSelectedDepartment, "All"); Set(varMonthlyStats, Table({Month: "01/2024", TotalRequests: 15, ApprovedRequests: 12, PendingRequests: 2, RejectedRequests: 1, TotalDays: 45, Employees: 25}, {Month: "02/2024", TotalRequests: 18, ApprovedRequests: 15, PendingRequests: 1, RejectedRequests: 2, TotalDays: 52, Employees: 28}, {Month: "03/2024", TotalRequests: 12, ApprovedRequests: 10, PendingRequests: 1, RejectedRequests: 1, TotalDays: 36, Employees: 22}, {Month: "04/2024", TotalRequests: 20, ApprovedRequests: 18, PendingRequests: 0, RejectedRequests: 2, TotalDays: 65, Employees: 30})); Set(varDepartmentStats, Table({Department: "Ph貌ng C么ng ngh峄?th么ng tin", TotalRequests: 25, TotalDays: 78, AvgDays: 3.1, Employees: 8}, {Department: "Ph貌ng Nh芒n s峄?, TotalRequests:18, TotalDays:54, AvgDays:3.0, Employees:6}, {Department:"Ph貌ng K岷?to谩n", TotalRequests:22, TotalDays:66, AvgDays:3.0, Employees:7}, {Department:"Ban Gi谩m 膽峄慶", TotalRequests:10, TotalDays:40, AvgDays:4.0, Employees:4})); Set(varEmployeeStats, Table({Employee:"Nguy峄卬 V膬n An", Department:"Ph貌ng C么ng ngh峄?th么ng tin", TotalRequests:5, TotalDays:15, RemainingDays:9, UsageRate:62.5}, {Employee:"Tr岷 Th峄?B矛nh", Department:"Ph貌ng C么ng ngh峄?th么ng tin", TotalRequests:4, TotalDays:12, RemainingDays:8, UsageRate:60.0}, {Employee:"L锚 V膬n C瓢峄漬g", Department:"Ban Gi谩m 膽峄慶", TotalRequests:3, TotalDays:18, RemainingDays:12, UsageRate:60.0}, {Employee:"Ph岷 Th峄?Dung", Department:"Ban Gi谩m 膽峄慶", TotalRequests:6, TotalDays:22, RemainingDays:8, UsageRate:73.3})); Set(varIsExporting, false)
     Children:
       - 'Reports.Header':
-          Control: CanvasComponent
-          ComponentName: HeaderComponent
+          Control:CanvasComponent
+          ComponentName:HeaderComponent
           Properties:
-            X: =0
-            Y: =0
-            Width: =Parent.Width
-            Height: =80
-            Title: ="B谩o c谩o ngh峄?ph茅p"
-            UserName: =varCurrentUser.FullName
-            UserRole: =varCurrentUser.Role
-            ShowNotification: =true
-            NotificationCount: =2
+            X:=0
+            Y:=0
+            Width:=Parent.Width
+            Height:=80
+            Title:="B谩o c谩o ngh峄?ph茅p"
+            UserName:=varCurrentUser.FullName
+            UserRole:=varCurrentUser.Role
+            ShowNotification:=true
+            NotificationCount:=2
             
       - 'Reports.Navigation':
-          Control: CanvasComponent
-          ComponentName: NavigationComponent
+          Control:CanvasComponent
+          ComponentName:NavigationComponent
           Properties:
-            X: =0
-            Y: ='Reports.Header'.Y + 'Reports.Header'.Height
-            Width: =250
-            Height: =Parent.Height - 'Reports.Header'.Height
-            UserRole: =varCurrentUser.Role
-            ActiveScreen: =varActiveScreen
-            OnNavigate: =Set(varNavigateAction, true)
+            X:=0
+            Y:='Reports.Header'.Y + 'Reports.Header'.Height
+            Width:=250
+            Height:=Parent.Height - 'Reports.Header'.Height
+            UserRole:=varCurrentUser.Role
+            ActiveScreen:=varActiveScreen
+            OnNavigate:=Set(varNavigateAction, true)
             
       - 'Reports.Content.Container':
-          Control: GroupContainer
-          Variant: ManualLayout
+          Control:GroupContainer
+          Variant:ManualLayout
           Properties:
-            X: ='Reports.Navigation'.X + 'Reports.Navigation'.Width
-            Y: ='Reports.Header'.Y + 'Reports.Header'.Height
-            Width: =Parent.Width - 'Reports.Navigation'.Width
-            Height: =Parent.Height - 'Reports.Header'.Height
-            Fill: =RGBA(248, 250, 252, 1)
+            X:='Reports.Navigation'.X + 'Reports.Navigation'.Width
+            Y:='Reports.Header'.Y + 'Reports.Header'.Height
+            Width:=Parent.Width - 'Reports.Navigation'.Width
+            Height:=Parent.Height - 'Reports.Header'.Height
+            Fill:=RGBA(248, 250, 252, 1)
           Children:
             - 'Reports.Content.Title':
-                Control: Label
+                Control:Label
                 Properties:
-                  X: =Parent.X + 30
-                  Y: =Parent.Y + 30
-                  Width: =Parent.Width - 60
-                  Height: =40
-                  Text: ="Dashboard b谩o c谩o ngh峄?ph茅p"
-                  Color: =RGBA(32, 54, 71, 1)
-                  Font: =Font.'Open Sans'
-                  FontWeight: =FontWeight.Bold
-                  Size: =24
+                  X:=Parent.X + 30
+                  Y:=Parent.Y + 30
+                  Width:=Parent.Width - 60
+                  Height:=40
+                  Text:="Dashboard b谩o c谩o ngh峄?ph茅p"
+                  Color:=RGBA(32, 54, 71, 1)
+                  Font:=Font.'Open Sans'
+                  FontWeight:=FontWeight.Bold
+                  Size:=24
                   
             - 'Reports.Controls.Container':
-                Control: GroupContainer
-                Variant: ManualLayout
+                Control:GroupContainer
+                Variant:ManualLayout
                 Properties:
-                  X: =Parent.X + 30
-                  Y: ='Reports.Content.Title'.Y + 'Reports.Content.Title'.Height + 20
-                  Width: =Parent.Width - 60
-                  Height: =60
-                  Fill: =RGBA(255, 255, 255, 1)
-                  BorderColor: =RGBA(230, 230, 230, 1)
-                  BorderThickness: =1
-                  DropShadow: =DropShadow.Light
+                  X:=Parent.X + 30
+                  Y:='Reports.Content.Title'.Y + 'Reports.Content.Title'.Height + 20
+                  Width:=Parent.Width - 60
+                  Height:=60
+                  Fill:=RGBA(255, 255, 255, 1)
+                  BorderColor:=RGBA(230, 230, 230, 1)
+                  BorderThickness:=1
+                  DropShadow:=DropShadow.Light
                 Children:
                   - 'Reports.Period.Label':
-                      Control: Label
+                      Control:Label
                       Properties:
-                        X: =Parent.X + 20
-                        Y: =Parent.Y + 10
-                        Width: =100
-                        Height: =20
-                        Text: ="K峄?b谩o c谩o:"
-                        Color: =RGBA(32, 54, 71, 1)
-                        Font: =Font.'Open Sans'
-                        FontWeight: =FontWeight.Semibold
-                        Size: =14
+                        X:=Parent.X + 20
+                        Y:=Parent.Y + 10
+                        Width:=100
+                        Height:=20
+                        Text:="K峄?b谩o c谩o:"
+                        Color:=RGBA(32, 54, 71, 1)
+                        Font:=Font.'Open Sans'
+                        FontWeight:=FontWeight.Semibold
+                        Size:=14
                         
                   - 'Reports.Period.Dropdown':
-                      Control: Classic/DropDown
+                      Control:Classic/DropDown
                       Properties:
-                        X: =Parent.X + 20
-                        Y: ='Reports.Period.Label'.Y + 'Reports.Period.Label'.Height + 5
-                        Width: =120
-                        Height: =35
-                        Items: =["Month", "Quarter", "Year"]
-                        Default: ="Month"
-                        BorderColor: =RGBA(230, 230, 230, 1)
-                        Font: =Font.'Open Sans'
-                        Size: =12
-                        OnChange: =Set(varReportPeriod, Self.Selected.Value)
+                        X:=Parent.X + 20
+                        Y:='Reports.Period.Label'.Y + 'Reports.Period.Label'.Height + 5
+                        Width:=120
+                        Height:=35
+                        Items:=["Month", "Quarter", "Year"]
+                        Default:="Month"
+                        BorderColor:=RGBA(230, 230, 230, 1)
+                        Font:=Font.'Open Sans'
+                        Size:=12
+                        OnChange:=Set(varReportPeriod, Self.Selected.Value)
                         
                   - 'Reports.Department.Label':
-                      Control: Label
+                      Control:Label
                       Properties:
-                        X: ='Reports.Period.Dropdown'.X + 'Reports.Period.Dropdown'.Width + 30
-                        Y: =Parent.Y + 10
-                        Width: =100
-                        Height: =20
-                        Text: ="Ph貌ng ban:"
-                        Color: =RGBA(32, 54, 71, 1)
-                        Font: =Font.'Open Sans'
-                        FontWeight: =FontWeight.Semibold
-                        Size: =14
+                        X:='Reports.Period.Dropdown'.X + 'Reports.Period.Dropdown'.Width + 30
+                        Y:=Parent.Y + 10
+                        Width:=100
+                        Height:=20
+                        Text:="Ph貌ng ban:"
+                        Color:=RGBA(32, 54, 71, 1)
+                        Font:=Font.'Open Sans'
+                        FontWeight:=FontWeight.Semibold
+                        Size:=14
                         
                   - 'Reports.Department.Dropdown':
-                      Control: Classic/DropDown
+                      Control:Classic/DropDown
                       Properties:
-                        X: ='Reports.Department.Label'.X
-                        Y: ='Reports.Department.Label'.Y + 'Reports.Department.Label'.Height + 5
-                        Width: =200
-                        Height: =35
-                        Items: =["All", "Ph貌ng C么ng ngh峄?th么ng tin", "Ph貌ng Nh芒n s峄?, "Ph貌ng K岷?to谩n", "Ban Gi谩m 膽峄慶"]
+                        X:='Reports.Department.Label'.X
+                        Y:='Reports.Department.Label'.Y + 'Reports.Department.Label'.Height + 5
+                        Width:=200
+                        Height:=35
+                        Items:=["All", "Ph貌ng C么ng ngh峄?th么ng tin", "Ph貌ng Nh芒n s峄?, "Ph貌ng K岷?to谩n", "Ban Gi谩m 膽峄慶"]
                         Default: ="All"
                         BorderColor: =RGBA(230, 230, 230, 1)
                         Font: =Font.'Open Sans'
@@ -139,7 +139,7 @@
                           =Set(varIsExporting, true); Notify("膼ang xu岷 b谩o c谩o " & varReportPeriod & " cho " & If(varSelectedDepartment = "All", "t岷 c岷?ph貌ng ban", varSelectedDepartment) & "...", NotificationType.Information); Set(varIsExporting, false); Notify("B谩o c谩o 膽茫 膽瓢峄 xu岷 th脿nh c么ng!", NotificationType.Success)
                           
             - 'Reports.Summary.Container':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.X + 30
@@ -170,10 +170,10 @@
                         Width: =(Parent.Width - 60) / 4
                         Height: =Parent.Height
                         Title: ="T峄昻g ng脿y ngh峄?
-                        Value: =Sum(varMonthlyStats, TotalDays)
-                        Icon: ="Clock"
-                        Color: =RGBA(255, 193, 7, 1)
-                        Subtitle: ="Ng脿y 膽茫 ngh峄?
+                        Value:=Sum(varMonthlyStats, TotalDays)
+                        Icon:="Clock"
+                        Color:=RGBA(255, 193, 7, 1)
+                        Subtitle:="Ng脿y 膽茫 ngh峄?
                         
                   - 'Reports.Summary.AvgDays':
                       Control: CanvasComponent
@@ -204,7 +204,7 @@
                         Subtitle: ="Ng瓢峄漣"
                         
             - 'Reports.Charts.Container':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.X + 30
@@ -213,7 +213,7 @@
                   Height: =300
                 Children:
                   - 'Reports.Chart.Monthly.Container':
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         X: =Parent.X
@@ -268,7 +268,7 @@
                               Align: =Align.Center
                               
                   - 'Reports.Chart.Department.Container':
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         X: ='Reports.Chart.Monthly.Container'.X + 'Reports.Chart.Monthly.Container'.Width + 20
@@ -318,7 +318,7 @@
                               Align: =Align.Center
                               
             - 'Reports.Tables.Container':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.X + 30
@@ -327,7 +327,7 @@
                   Height: =Parent.Height - 580
                 Children:
                   - 'Reports.Table.Department.Container':
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         X: =Parent.X
@@ -365,7 +365,7 @@
                               TemplatePadding: =5
                             Children:
                               - 'Gallery.Department.Container':
-                                  Control: GroupContainer
+                                  Control: Rectangle
                                   Variant: ManualLayout
                                   Properties:
                                     X: =0
@@ -400,7 +400,7 @@
                                           Size: =10
                                           
                   - 'Reports.Table.Employee.Container':
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         X: ='Reports.Table.Department.Container'.X + 'Reports.Table.Department.Container'.Width + 20
@@ -438,7 +438,7 @@
                               TemplatePadding: =5
                             Children:
                               - 'Gallery.Employee.Container':
-                                  Control: GroupContainer
+                                  Control: Rectangle
                                   Variant: ManualLayout
                                   Properties:
                                     X: =0

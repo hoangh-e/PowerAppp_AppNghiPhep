@@ -45,7 +45,7 @@
       Width: =App.Width
     Children:
       - 'Test.Container':
-          Control: GroupContainer
+          Control: Rectangle
           Variant: ManualLayout
           Properties:
             X: =Parent.X

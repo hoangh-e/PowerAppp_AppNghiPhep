@@ -33,7 +33,7 @@ Screens:
             OnToggleCollapse: =Set(varNavCollapsed, !varNavCollapsed)
             
       - 'Dashboard.Content.Container':
-          Control: GroupContainer
+          Control: Rectangle
           Variant: ManualLayout
           Properties:
             X: ='Dashboard.Navigation'.X + 'Dashboard.Navigation'.Width
@@ -44,7 +44,7 @@ Screens:
           Children:
             # Welcome Section - Compact
             - 'Dashboard.Content.Welcome':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.X + Parent.Width * 0.02
@@ -72,14 +72,14 @@ Screens:
                         Y: ='Dashboard.Content.Title'.Y + 'Dashboard.Content.Title'.Height
                         Width: =Parent.Width
                         Height: =Parent.Height * 0.4
-                        Text: =Concatenate("Phòng ban: ", LookUp(DonVi, MaDonVi = varCurrentUser.MaDonVi).TenDonVi, " | Chức danh: ", varCurrentUser.ChucDanh)
+                        Text: =Concatenate("Phòng ban:", LookUp(DonVi, MaDonVi = varCurrentUser.MaDonVi).TenDonVi, " | Chức danh:", varCurrentUser.ChucDanh)
                         Color: =RGBA(108, 117, 125, 1)
                         Font: =Font.'Open Sans'
                         Size: =Parent.Height * 0.18
                         
             # Stats Cards Section - Compact
             - 'Dashboard.Stats.Container':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.X + Parent.Width * 0.02
@@ -89,7 +89,7 @@ Screens:
                 Children:
                   # Leave Balance Stats Row
                   - 'Dashboard.Stats.LeaveBalance.Container':
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         X: =Parent.X
@@ -141,7 +141,7 @@ Screens:
                               
                   # Request Status Stats Row
                   - 'Dashboard.Stats.RequestStatus.Container':
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         X: =Parent.X
@@ -193,7 +193,7 @@ Screens:
                               
             # Recent Requests Section - Compact
             - 'Dashboard.RecentRequests.Container':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.X + Parent.Width * 0.02
@@ -249,7 +249,7 @@ Screens:
                         Fill: =RGBA(0, 0, 0, 0)
                       Children:
                         - 'Dashboard.RecentRequests.Gallery.Card':
-                            Control: GroupContainer
+                            Control: Rectangle
                             Variant: ManualLayout
                             Properties:
                               X: =Parent.TemplateX
@@ -302,7 +302,7 @@ Screens:
                                     
                               # Request Details
                               - 'Dashboard.RecentRequests.Gallery.Details':
-                                  Control: GroupContainer
+                                  Control: Rectangle
                                   Variant: ManualLayout
                                   Properties:
                                     X: ='Dashboard.RecentRequests.Gallery.StatusBadge'.X + 'Dashboard.RecentRequests.Gallery.StatusBadge'.Width + Parent.Width * 0.02
@@ -363,7 +363,7 @@ Screens:
                                     
             # Quick Actions Section - Compact
             - 'Dashboard.QuickActions.Container':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.X + Parent.Width * 0.02
@@ -385,7 +385,7 @@ Screens:
                         Size: =Parent.Height * 0.12
                         
                   - 'Dashboard.QuickActions.Buttons':
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         X: =Parent.X

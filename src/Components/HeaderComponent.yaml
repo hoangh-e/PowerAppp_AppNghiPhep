@@ -49,7 +49,7 @@ ComponentDefinitions:
       Width: =App.Width
     Children:
       - 'Header.Container':
-          Control: GroupContainer
+          Control: Rectangle
           Variant: ManualLayout
           Properties:
             X: =Parent.X
@@ -63,7 +63,7 @@ ComponentDefinitions:
           Children:
             # Brand/Logo Section - Compact
             - 'Header.Brand.Container':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.X + Parent.Width * 0.015
@@ -96,7 +96,7 @@ ComponentDefinitions:
                         
             # Search Bar Section - Compact (Desktop only)
             - 'Header.Search.Container':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: ='Header.Brand.Container'.X + 'Header.Brand.Container'.Width + Parent.Width * 0.015
@@ -136,7 +136,7 @@ ComponentDefinitions:
                         
             # User Info and Actions Section - Compact
             - 'Header.Actions.Container':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.Width - Self.Width - Parent.Width * 0.015
@@ -146,7 +146,7 @@ ComponentDefinitions:
                 Children:
                   # Notification Bell - Smaller
                   - 'Header.Notification.Container':
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         X: =Parent.X
@@ -195,7 +195,7 @@ ComponentDefinitions:
                               
                   # User Profile Section - Compact
                   - 'Header.UserProfile.Container':
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         X: ='Header.Notification.Container'.X + 'Header.Notification.Container'.Width + Parent.Width * 0.02
@@ -232,7 +232,7 @@ ComponentDefinitions:
                               
                         # User Info Text - Compact
                         - 'Header.User.Info.Container':
-                            Control: GroupContainer
+                            Control: Rectangle
                             Variant: ManualLayout
                             Properties:
                               X: ='Header.User.Avatar.Background'.X + 'Header.User.Avatar.Background'.Width + Parent.Width * 0.03

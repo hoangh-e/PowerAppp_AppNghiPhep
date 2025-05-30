@@ -12,14 +12,14 @@ ComponentDefinitions:
       Variant:
         PropertyKind: Input
         DisplayName: Variant
-        Description: "Kiểu button: primary, secondary, outline, ghost, danger"
+        Description: "Kiểu button:primary, secondary, outline, ghost, danger"
         DataType: Text
         Default: ="primary"
         
       Size:
         PropertyKind: Input
         DisplayName: Size
-        Description: "Kích thước: sm, md, lg, xl"
+        Description: "Kích thước:sm, md, lg, xl"
         DataType: Text
         Default: ="md"
         
@@ -33,7 +33,7 @@ ComponentDefinitions:
       IconPosition:
         PropertyKind: Input
         DisplayName: IconPosition
-        Description: "Vị trí icon: left, right"
+        Description: "Vị trí icon:left, right"
         DataType: Text
         Default: ="left"
         
@@ -146,7 +146,7 @@ ComponentDefinitions:
               
       # Icon Container (when icon is present)
       - 'Button.Icon.Container':
-          Control: GroupContainer
+          Control: Rectangle
           Variant: ManualLayout
           Properties:
             X: ='Button.Container'.X
@@ -308,8 +308,7 @@ ComponentDefinitions:
                     "button", Icon.CheckBadge,
                     "link", Icon.Link,
                     "back", Icon.ChevronLeft,
-                    "forward", Icon.ChevronRight
-                  )
+                    "forward", Icon.ChevronRight)
                   Color: =If(EnhancedButtonComponent.IsDisabled,
                     RGBA(156, 163, 175, 1),
                     Switch(EnhancedButtonComponent.Variant,

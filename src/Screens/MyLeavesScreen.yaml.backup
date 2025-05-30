@@ -1,0 +1,392 @@
+﻿Screens:
+  MyLeavesScreen:
+    Properties:
+      Fill: =RGBA(248, 250, 252, 1)
+      OnVisible: |
+        =Set(varActiveScreen, "MyLeaves"); Set(varMyLeaveRequests, Table({ID: "LR001", StartDate: "15/01/2024", EndDate: "17/01/2024", Days: 3, Type: "Nghỉ phép năm", Reason: "Nghỉ lễ Tết", Status: "Approved", StatusColor: RGBA(40, 167, 69, 1), CreatedDate: "10/01/2024"}, {ID: "LR002", StartDate: "20/02/2024", EndDate: "22/02/2024", Days: 3, Type: "Nghỉ phép năm", Reason: "Nghỉ việc cá nhân", Status: "Pending", StatusColor: RGBA(255, 193, 7, 1), CreatedDate: "15/02/2024"}, {ID: "LR003", StartDate: "10/03/2024", EndDate: "15/03/2024", Days: 6, Type: "Nghỉ phép năm", Reason: "Du lịch gia đình", Status: "Rejected", StatusColor: RGBA(220, 53, 69, 1), CreatedDate: "01/03/2024"}, {ID: "LR004", StartDate: "05/04/2024", EndDate: "05/04/2024", Days: 1, Type: "Nghỉ ốm", Reason: "Khám bệnh", Status: "Approved", StatusColor: RGBA(40, 167, 69, 1), CreatedDate: "04/04/2024"}, {ID: "LR005", StartDate: "25/04/2024", EndDate: "26/04/2024", Days: 2, Type: "Nghỉ phép năm", Reason: "Nghỉ cuối tuần dài", Status: "Pending", StatusColor: RGBA(255, 193, 7, 1), CreatedDate: "20/04/2024"})); Set(varFilterStatus, "All"); Set(varSearchText, "")
+    Children:
+      - 'MyLeaves.Header':
+          Control: CanvasComponent
+          ComponentName: HeaderComponent
+          Properties:
+            X: =Parent.X
+            Y: =Parent.Y
+            Width: =Parent.Width
+            Height: =Parent.Height * 0.08
+            Title: ="Đơn nghỉ phép của tôi"
+            UserName: =varCurrentUser.FullName
+            UserRole: =varCurrentUser.Role
+            ShowNotification: =true
+            NotificationCount: =2
+            
+      - 'MyLeaves.Navigation':
+          Control: CanvasComponent
+          ComponentName: NavigationComponent
+          Properties:
+            X: =Parent.X
+            Y: ='MyLeaves.Header'.Y + 'MyLeaves.Header'.Height
+            Width: =Parent.Width * 0.25
+            Height: =Parent.Height - 'MyLeaves.Header'.Height
+            UserRole: =varCurrentUser.Role
+            ActiveScreen: =varActiveScreen
+            OnNavigate: =Set(varNavigateAction, true)
+            
+      - 'MyLeaves.Content.Container':
+          Control: GroupContainer
+          Variant: ManualLayout
+          Properties:
+            X: ='MyLeaves.Navigation'.X + 'MyLeaves.Navigation'.Width
+            Y: ='MyLeaves.Header'.Y + 'MyLeaves.Header'.Height
+            Width: =Parent.Width - 'MyLeaves.Navigation'.Width
+            Height: =Parent.Height - 'MyLeaves.Header'.Height
+            Fill: =RGBA(248, 250, 252, 1)
+          Children:
+            - 'MyLeaves.Content.Title':
+                Control: Label
+                Properties:
+                  X: =Parent.X + Parent.Width * 0.03
+                  Y: =Parent.Y + Parent.Height * 0.04
+                  Width: =Parent.Width * 0.94
+                  Height: =Parent.Height * 0.08
+                  Text: ="Danh sách đơn nghỉ phép"
+                  Color: =RGBA(32, 54, 71, 1)
+                  Font: =Font.'Open Sans'
+                  FontWeight: =FontWeight.Bold
+                  Size: =Parent.Height * 0.05
+                  
+            - 'MyLeaves.Filters.Container':
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =Parent.X + Parent.Width * 0.03
+                  Y: ='MyLeaves.Content.Title'.Y + 'MyLeaves.Content.Title'.Height + Parent.Height * 0.03
+                  Width: =Parent.Width * 0.94
+                  Height: =Parent.Height * 0.12
+                  Fill: =RGBA(255, 255, 255, 1)
+                  BorderColor: =RGBA(230, 230, 230, 1)
+                  BorderThickness: =Parent.Height * 0.001
+                  DropShadow: =DropShadow.Light
+                Children:
+                  - 'MyLeaves.Filter.Search.Label':
+                      Control: Label
+                      Properties:
+                        X: =Parent.X + Parent.Width * 0.02
+                        Y: =Parent.Y + Parent.Height * 0.15
+                        Width: =Parent.Width * 0.15
+                        Height: =Parent.Height * 0.35
+                        Text: ="Tìm kiếm:"
+                        Color: =RGBA(32, 54, 71, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Semibold
+                        Size: =Parent.Height * 0.25
+                        
+                  - 'MyLeaves.Filter.Search.Input':
+                      Control: Classic/TextInput
+                      Properties:
+                        X: =Parent.X + Parent.Width * 0.02
+                        Y: ='MyLeaves.Filter.Search.Label'.Y + 'MyLeaves.Filter.Search.Label'.Height + Parent.Height * 0.08
+                        Width: =Parent.Width * 0.35
+                        Height: =Parent.Height * 0.6
+                        HintText: ="Tìm theo lý do, loại nghỉ.."
+                        BorderColor: =RGBA(230, 230, 230, 1)
+                        Font: =Font.'Open Sans'
+                        Size: =Parent.Height * 0.2
+                        PaddingLeft: =Parent.Width * 0.01
+                        OnChange: =Set(varSearchText, Self.Text)
+                        
+                  - 'MyLeaves.Filter.Status.Label':
+                      Control: Label
+                      Properties:
+                        X: ='MyLeaves.Filter.Search.Input'.X + 'MyLeaves.Filter.Search.Input'.Width + Parent.Width * 0.03
+                        Y: =Parent.Y + Parent.Height * 0.15
+                        Width: =Parent.Width * 0.15
+                        Height: =Parent.Height * 0.35
+                        Text: ="Trạng thái:"
+                        Color: =RGBA(32, 54, 71, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Semibold
+                        Size: =Parent.Height * 0.25
+                        
+                  - 'MyLeaves.Filter.Status.Dropdown':
+                      Control: Classic/DropDown
+                      Properties:
+                        X: ='MyLeaves.Filter.Status.Label'.X
+                        Y: ='MyLeaves.Filter.Status.Label'.Y + 'MyLeaves.Filter.Status.Label'.Height + Parent.Height * 0.08
+                        Width: =Parent.Width * 0.2
+                        Height: =Parent.Height * 0.6
+                        Items: =["All", "Pending", "Approved", "Rejected"]
+                        Default: ="All"
+                        BorderColor: =RGBA(230, 230, 230, 1)
+                        Font: =Font.'Open Sans'
+                        Size: =Parent.Height * 0.2
+                        OnChange: =Set(varFilterStatus, Self.Selected.Value)
+                        
+                  - 'MyLeaves.Filter.NewRequest.Button':
+                      Control: Classic/Button
+                      Properties:
+                        X: =Parent.Width - Self.Width - Parent.Width * 0.02
+                        Y: =(Parent.Height - Self.Height) / 2
+                        Width: =Parent.Width * 0.25
+                        Height: =Parent.Height * 0.7
+                        Text: ="📝 Tạo đơn mới"
+                        Fill: =RGBA(0, 120, 212, 1)
+                        Color: =RGBA(255, 255, 255, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Semibold
+                        Size: =Parent.Height * 0.25
+                        OnSelect: =Navigate(LeaveRequestScreen)
+                        
+            - 'MyLeaves.List.Container':
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =Parent.X + Parent.Width * 0.03
+                  Y: ='MyLeaves.Filters.Container'.Y + 'MyLeaves.Filters.Container'.Height + Parent.Height * 0.03
+                  Width: =Parent.Width * 0.94
+                  Height: =Parent.Height * 0.7
+                  Fill: =RGBA(255, 255, 255, 1)
+                  BorderColor: =RGBA(230, 230, 230, 1)
+                  BorderThickness: =Parent.Height * 0.001
+                  DropShadow: =DropShadow.Light
+                Children:
+                  - 'MyLeaves.List.Header':
+                      Control: GroupContainer
+                      Variant: ManualLayout
+                      Properties:
+                        X: =Parent.X
+                        Y: =Parent.Y
+                        Width: =Parent.Width
+                        Height: =Parent.Height * 0.08
+                        Fill: =RGBA(248, 249, 250, 1)
+                      Children:
+                        - 'MyLeaves.List.Header.ID':
+                            Control: Label
+                            Properties:
+                              X: =Parent.X + Parent.Width * 0.02
+                              Y: =(Parent.Height - Self.Height) / 2
+                              Width: =Parent.Width * 0.12
+                              Height: =Parent.Height * 0.5
+                              Text: ="Mã đơn"
+                              Color: =RGBA(32, 54, 71, 1)
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Bold
+                              Size: =Parent.Height * 0.25
+                              
+                        - 'MyLeaves.List.Header.Type':
+                            Control: Label
+                            Properties:
+                              X: ='MyLeaves.List.Header.ID'.X + 'MyLeaves.List.Header.ID'.Width
+                              Y: =(Parent.Height - Self.Height) / 2
+                              Width: =Parent.Width * 0.18
+                              Height: =Parent.Height * 0.5
+                              Text: ="Loại nghỉ"
+                              Color: =RGBA(32, 54, 71, 1)
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Bold
+                              Size: =Parent.Height * 0.25
+                              
+                        - 'MyLeaves.List.Header.Period':
+                            Control: Label
+                            Properties:
+                              X: ='MyLeaves.List.Header.Type'.X + 'MyLeaves.List.Header.Type'.Width
+                              Y: =(Parent.Height - Self.Height) / 2
+                              Width: =Parent.Width * 0.25
+                              Height: =Parent.Height * 0.5
+                              Text: ="Thời gian nghỉ"
+                              Color: =RGBA(32, 54, 71, 1)
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Bold
+                              Size: =Parent.Height * 0.25
+                              
+                        - 'MyLeaves.List.Header.Days':
+                            Control: Label
+                            Properties:
+                              X: ='MyLeaves.List.Header.Period'.X + 'MyLeaves.List.Header.Period'.Width
+                              Y: =(Parent.Height - Self.Height) / 2
+                              Width: =Parent.Width * 0.12
+                              Height: =Parent.Height * 0.5
+                              Text: ="Số ngày"
+                              Color: =RGBA(32, 54, 71, 1)
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Bold
+                              Size: =Parent.Height * 0.25
+                              
+                        - 'MyLeaves.List.Header.Reason':
+                            Control: Label
+                            Properties:
+                              X: ='MyLeaves.List.Header.Days'.X + 'MyLeaves.List.Header.Days'.Width
+                              Y: =(Parent.Height - Self.Height) / 2
+                              Width: =Parent.Width * 0.2
+                              Height: =Parent.Height * 0.5
+                              Text: ="Lý do"
+                              Color: =RGBA(32, 54, 71, 1)
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Bold
+                              Size: =Parent.Height * 0.25
+                              
+                        - 'MyLeaves.List.Header.Status':
+                            Control: Label
+                            Properties:
+                              X: ='MyLeaves.List.Header.Reason'.X + 'MyLeaves.List.Header.Reason'.Width
+                              Y: =(Parent.Height - Self.Height) / 2
+                              Width: =Parent.Width * 0.11
+                              Height: =Parent.Height * 0.5
+                              Text: ="Trạng thái"
+                              Color: =RGBA(32, 54, 71, 1)
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Bold
+                              Size: =Parent.Height * 0.25
+                              
+                  - 'MyLeaves.List.Gallery':
+                      Control: Gallery
+                      Variant: Vertical
+                      Properties:
+                        X: =Parent.X
+                        Y: ='MyLeaves.List.Header'.Y + 'MyLeaves.List.Header'.Height
+                        Width: =Parent.Width
+                        Height: =Parent.Height - 'MyLeaves.List.Header'.Height
+                        Items: =Filter(varMyLeaveRequests, 
+                          And(
+                            Or(varFilterStatus = "All", Status = varFilterStatus),
+                            Or(IsBlank(varSearchText), 
+                               varSearchText in Reason Or varSearchText in Type)
+                          ))
+                        TemplateSize: =Parent.Height * 0.12
+                        TemplatePadding: =Parent.Height * 0.005
+                      Children:
+                        - 'Gallery.LeaveItem.Container':
+                            Control: GroupContainer
+                            Variant: ManualLayout
+                            Properties:
+                              X: =Parent.X
+                              Y: =Parent.Y
+                              Width: =Parent.TemplateWidth
+                              Height: =Parent.TemplateHeight
+                              Fill: =If(Mod(ThisItem.Value, 2) = 0, RGBA(255, 255, 255, 1), RGBA(248, 249, 250, 1))
+                              BorderColor: =RGBA(230, 230, 230, 1)
+                              BorderThickness: =Parent.Height * 0.01
+                            Children:
+                              - 'Gallery.LeaveItem.ID':
+                                  Control: Label
+                                  Properties:
+                                    X: =Parent.X + Parent.Width * 0.02
+                                    Y: =Parent.Y + Parent.Height * 0.15
+                                    Width: =Parent.Width * 0.12
+                                    Height: =Parent.Height * 0.35
+                                    Text: =ThisItem.ID
+                                    Color: =RGBA(32, 54, 71, 1)
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Size: =Parent.Height * 0.2
+                                    
+                              - 'Gallery.LeaveItem.CreatedDate':
+                                  Control: Label
+                                  Properties:
+                                    X: =Parent.X + Parent.Width * 0.02
+                                    Y: ='Gallery.LeaveItem.ID'.Y + 'Gallery.LeaveItem.ID'.Height + Parent.Height * 0.08
+                                    Width: =Parent.Width * 0.12
+                                    Height: =Parent.Height * 0.25
+                                    Text: =ThisItem.CreatedDate
+                                    Color: =RGBA(108, 117, 125, 1)
+                                    Font: =Font.'Open Sans'
+                                    Size: =Parent.Height * 0.15
+                                    
+                              - 'Gallery.LeaveItem.Type':
+                                  Control: Label
+                                  Properties:
+                                    X: ='Gallery.LeaveItem.ID'.X + 'Gallery.LeaveItem.ID'.Width
+                                    Y: =Parent.Y + Parent.Height * 0.25
+                                    Width: =Parent.Width * 0.18
+                                    Height: =Parent.Height * 0.6
+                                    Text: =ThisItem.Type
+                                    Color: =RGBA(32, 54, 71, 1)
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Size: =Parent.Height * 0.2
+                                    
+                              - 'Gallery.LeaveItem.Period':
+                                  Control: Label
+                                  Properties:
+                                    X: ='Gallery.LeaveItem.Type'.X + 'Gallery.LeaveItem.Type'.Width
+                                    Y: =Parent.Y + Parent.Height * 0.25
+                                    Width: =Parent.Width * 0.25
+                                    Height: =Parent.Height * 0.6
+                                    Text: =ThisItem.StartDate & " - " & ThisItem.EndDate
+                                    Color: =RGBA(32, 54, 71, 1)
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Size: =Parent.Height * 0.2
+                                    
+                              - 'Gallery.LeaveItem.PeriodNote':
+                                  Control: Label
+                                  Properties:
+                                    X: ='Gallery.LeaveItem.Period'.X
+                                    Y: ='Gallery.LeaveItem.Period'.Y + 'Gallery.LeaveItem.Period'.Height + Parent.Height * 0.08
+                                    Width: =Parent.Width * 0.25
+                                    Height: =Parent.Height * 0.25
+                                    Text: ="(" & ThisItem.Days & " ngày)"
+                                    Color: =RGBA(108, 117, 125, 1)
+                                    Font: =Font.'Open Sans'
+                                    Size: =Parent.Height * 0.15
+                                    
+                              - 'Gallery.LeaveItem.Days':
+                                  Control: Label
+                                  Properties:
+                                    X: ='Gallery.LeaveItem.Period'.X + 'Gallery.LeaveItem.Period'.Width
+                                    Y: =(Parent.Height - Self.Height) / 2
+                                    Width: =Parent.Width * 0.12
+                                    Height: =Parent.Height * 0.5
+                                    Text: =Text(ThisItem.Days)
+                                    Color: =RGBA(0, 120, 212, 1)
+                                    Fill: =RGBA(240, 248, 255, 1)
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Bold
+                                    Size: =Parent.Height * 0.25
+                                    Align: =Align.Center
+                                    
+                              - 'Gallery.LeaveItem.Reason':
+                                  Control: Label
+                                  Properties:
+                                    X: ='Gallery.LeaveItem.Days'.X + 'Gallery.LeaveItem.Days'.Width
+                                    Y: =(Parent.Height - Self.Height) / 2
+                                    Width: =Parent.Width * 0.2
+                                    Height: =Parent.Height * 0.5
+                                    Text: =ThisItem.Reason
+                                    Color: =RGBA(32, 54, 71, 1)
+                                    Font: =Font.'Open Sans'
+                                    Size: =Parent.Height * 0.2
+                                    
+                              - 'Gallery.LeaveItem.Status':
+                                  Control: Label
+                                  Properties:
+                                    X: ='Gallery.LeaveItem.Reason'.X + 'Gallery.LeaveItem.Reason'.Width
+                                    Y: =(Parent.Height - Self.Height) / 2
+                                    Width: =Parent.Width * 0.11
+                                    Height: =Parent.Height * 0.5
+                                    Text: =Switch(ThisItem.Status,
+                                      "Approved", "Đã duyệt",
+                                      "Pending", "Chờ duyệt", 
+                                      "Rejected", "Từ chối",
+                                      "Không xác định")
+                                    Color: =RGBA(255, 255, 255, 1)
+                                    Fill: =ThisItem.StatusColor
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Size: =Parent.Height * 0.2
+                                    Align: =Align.Center
+                                    
+                              - 'Gallery.LeaveItem.ViewButton':
+                                  Control: Classic/Button
+                                  Properties:
+                                    X: =Parent.Width - Self.Width - Parent.Width * 0.02
+                                    Y: =(Parent.Height - Self.Height) / 2
+                                    Width: =Parent.Width * 0.12
+                                    Height: =Parent.Height * 0.5
+                                    Text: ="👁️"
+                                    Fill: =RGBA(248, 249, 250, 1)
+                                    Color: =RGBA(0, 120, 212, 1)
+                                    BorderColor: =RGBA(0, 120, 212, 1)
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Size: =Parent.Height * 0.18
+                                    OnSelect: =Notify("Xem chi tiết đơn nghỉ phép " & ThisItem.ID, NotificationType.Information) 

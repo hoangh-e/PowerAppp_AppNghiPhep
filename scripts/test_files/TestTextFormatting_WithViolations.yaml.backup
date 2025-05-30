@@ -1,0 +1,80 @@
+Screens:
+  TestTextFormatScreen:
+    Properties:
+      Fill: =RGBA(248, 250, 252, 1)
+      OnVisible: =Set(varTestText, true)
+    Children:
+      - 'Text.Container':
+          Control: GroupContainer
+          Variant: ManualLayout
+          Properties:
+            X: =Parent.X
+            Y: =Parent.Y
+            Width: =Parent.Width
+            Height: =Parent.Height
+            Fill: =RGBA(255, 255, 255, 1)
+          Children:
+            - 'Text.Label1':
+                Control: Label
+                Properties:
+                  X: =Parent.X + Parent.Width * 0.05
+                  Y: =Parent.Y + Parent.Height * 0.1
+                  Width: =Parent.Width * 0.9
+                  Height: =Parent.Height * 0.1
+                  # ❌ Wrong text formatting - space after colon
+                  Text: ="Name:" & ThisItem.Name
+                  Color: =RGBA(17, 24, 39, 1)
+                  Font: =Font.'Open Sans'
+                  Size: =Parent.Height * 0.03
+                  
+            - 'Text.Label2':
+                Control: Label
+                Properties:
+                  X: =Parent.X + Parent.Width * 0.05
+                  Y: ='Text.Label1'.Y + 'Text.Label1'.Height + Parent.Height * 0.02
+                  Width: =Parent.Width * 0.9
+                  Height: =Parent.Height * 0.1
+                  # ❌ Another wrong text formatting
+                  Text: ="Email:" & ThisItem.Email
+                  Color: =RGBA(55, 65, 81, 1)
+                  Font: =Font.'Open Sans'
+                  Size: =Parent.Height * 0.025
+                  
+            - 'Text.Label3':
+                Control: Label
+                Properties:
+                  X: =Parent.X + Parent.Width * 0.05
+                  Y: ='Text.Label2'.Y + 'Text.Label2'.Height + Parent.Height * 0.02
+                  Width: =Parent.Width * 0.9
+                  Height: =Parent.Height * 0.1
+                  # ❌ More wrong text formatting
+                  Text: ="Status:" & "Active"
+                  Color: =RGBA(34, 197, 94, 1)
+                  Font: =Font.'Open Sans'
+                  Size: =Parent.Height * 0.025
+                  
+            - 'Text.Label4':
+                Control: Label
+                Properties:
+                  X: =Parent.X + Parent.Width * 0.05
+                  Y: ='Text.Label3'.Y + 'Text.Label3'.Height + Parent.Height * 0.02
+                  Width: =Parent.Width * 0.9
+                  Height: =Parent.Height * 0.1
+                  # ❌ Wrong format with complex text
+                  Text: ="Department:" & "IT Department"
+                  Color: =RGBA(107, 114, 128, 1)
+                  Font: =Font.'Open Sans'
+                  Size: =Parent.Height * 0.025
+                  
+            - 'Text.LabelCorrect':
+                Control: Label
+                Properties:
+                  X: =Parent.X + Parent.Width * 0.05
+                  Y: ='Text.Label4'.Y + 'Text.Label4'.Height + Parent.Height * 0.02
+                  Width: =Parent.Width * 0.9
+                  Height: =Parent.Height * 0.1
+                  # ✅ Correct text formatting
+                  Text: ="Position:" & " " & "Developer"
+                  Color: =RGBA(59, 130, 246, 1)
+                  Font: =Font.'Open Sans'
+                  Size: =Parent.Height * 0.025 

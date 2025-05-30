@@ -20,7 +20,7 @@ ComponentDefinitions:
       Width: =250
     Children:
       - MenuContainer:
-          Control: GroupContainer
+          Control: Rectangle
           Variant: ManualLayout
           Properties:
             Fill: =RGBA(240, 244, 249, 1)
@@ -32,7 +32,7 @@ ComponentDefinitions:
             BorderThickness: =0 1 0 0
           Children:
             - UserInfoContainer:
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   Fill: =RGBA(0, 120, 212, 0.1)

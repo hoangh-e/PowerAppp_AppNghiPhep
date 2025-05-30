@@ -5,7 +5,7 @@ Screens:
       OnVisible: =Set(varTestPosition, true)
     Children:
       - 'Position.Container':
-          Control: GroupContainer
+          Control: Rectangle
           Variant: ManualLayout
           Properties:
             X: =Parent.X

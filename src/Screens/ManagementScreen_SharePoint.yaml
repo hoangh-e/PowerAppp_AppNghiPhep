@@ -43,7 +43,7 @@ Screens:
             OnNavigate: =Set(varNavigateAction, true)
             
       - 'Management.Content.Container':
-          Control: GroupContainer
+          Control: Rectangle
           Variant: ManualLayout
           Properties:
             X: ='Management.Navigation'.X + 'Management.Navigation'.Width
@@ -55,7 +55,7 @@ Screens:
           Children:
             # Management Tabs
             - 'Management.Tabs.Container':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.X + Parent.Width * 0.03
@@ -121,7 +121,7 @@ Screens:
                         
             # Tab Content
             - 'Management.TabContent.Container':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.X + Parent.Width * 0.03
@@ -131,7 +131,7 @@ Screens:
                 Children:
                   # Users Tab
                   - 'Management.Users.Container':
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         X: =Parent.X
@@ -145,7 +145,7 @@ Screens:
                         Visible: =varManagementTab = "Users"
                       Children:
                         - 'Management.Users.Header':
-                            Control: GroupContainer
+                            Control: Rectangle
                             Variant: ManualLayout
                             Properties:
                               X: =Parent.X + Parent.Width * 0.02
@@ -198,7 +198,7 @@ Screens:
                               Fill: =RGBA(0, 0, 0, 0)
                             Children:
                               - 'Management.Users.List.Item':
-                                  Control: GroupContainer
+                                  Control: Rectangle
                                   Variant: ManualLayout
                                   Properties:
                                     X: =Parent.TemplateX
@@ -227,7 +227,7 @@ Screens:
                                           Size: =Parent.Height * 0.3
                                           
                                     - 'Management.Users.List.Item.Actions':
-                                        Control: GroupContainer
+                                        Control: Rectangle
                                         Variant: ManualLayout
                                         Properties:
                                           X: =Parent.Width * 0.75
@@ -270,7 +270,7 @@ Screens:
                                                             
                   # Departments Tab
                   - 'Management.Departments.Container':
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         X: =Parent.X
@@ -284,7 +284,7 @@ Screens:
                         Visible: =varManagementTab = "Departments"
                       Children:
                         - 'Management.Departments.Header':
-                            Control: GroupContainer
+                            Control: Rectangle
                             Variant: ManualLayout
                             Properties:
                               X: =Parent.X + Parent.Width * 0.02
@@ -337,7 +337,7 @@ Screens:
                               Fill: =RGBA(0, 0, 0, 0)
                             Children:
                               - 'Management.Departments.List.Item':
-                                  Control: GroupContainer
+                                  Control: Rectangle
                                   Variant: ManualLayout
                                   Properties:
                                     X: =Parent.TemplateX
@@ -357,8 +357,8 @@ Screens:
                                           Height: =Parent.Height * 0.8
                                           Text: =Concatenate(
                                             ThisItem.TenDonVi, " (", ThisItem.MaDonVi, ") | ",
-                                            "NV: ", CountRows(Filter(NguoiDung, MaDonVi = ThisItem.MaDonVi)), " | ",
-                                            "Trưởng phòng: ", If(IsBlank(ThisItem.TruongPhong), "Chưa có", ThisItem.TruongPhong)
+                                            "NV:", CountRows(Filter(NguoiDung, MaDonVi = ThisItem.MaDonVi)), " | ",
+                                            "Trưởng phòng:", If(IsBlank(ThisItem.TruongPhong), "Chưa có", ThisItem.TruongPhong)
                                           )
                                           Color: =RGBA(55, 65, 81, 1)
                                           Font: =Font.'Open Sans'
@@ -383,7 +383,7 @@ Screens:
                                                       
       # Access Denied
       - 'Management.AccessDenied.Container':
-          Control: GroupContainer
+          Control: Rectangle
           Variant: ManualLayout
           Properties:
             X: ='Management.Navigation'.X + 'Management.Navigation'.Width

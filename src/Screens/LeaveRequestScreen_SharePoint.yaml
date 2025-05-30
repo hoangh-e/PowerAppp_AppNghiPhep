@@ -32,7 +32,7 @@ Screens:
             OnNavigate: =Set(varNavigateAction, true)
             
       - 'LeaveRequest.Content.Container':
-          Control: GroupContainer
+          Control: Rectangle
           Variant: ManualLayout
           Properties:
             X: ='LeaveRequest.Navigation'.X + 'LeaveRequest.Navigation'.Width
@@ -57,7 +57,7 @@ Screens:
                   
             # Leave Balance Info Card
             - 'LeaveRequest.BalanceInfo.Container':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.X + Parent.Width * 0.03
@@ -89,9 +89,9 @@ Screens:
                         Width: =Parent.Width * 0.96
                         Height: =Parent.Height * 0.45
                         Text: =Concatenate(
-                          "Tổng số ngày phép: ", varUserLeaveBalance.TongNgayDuocPhep, " ngày | ",
-                          "Đã sử dụng: ", varUserLeaveBalance.SoNgayDaNghi, " ngày | ",
-                          "Còn lại: ", varUserLeaveBalance.SoNgayConLai, " ngày"
+                          "Tổng số ngày phép:", varUserLeaveBalance.TongNgayDuocPhep, " ngày | ",
+                          "Đã sử dụng:", varUserLeaveBalance.SoNgayDaNghi, " ngày | ",
+                          "Còn lại:", varUserLeaveBalance.SoNgayConLai, " ngày"
                         )
                         Color: =RGBA(55, 65, 81, 1)
                         Font: =Font.'Open Sans'
@@ -99,7 +99,7 @@ Screens:
                         
             # Main Form Container
             - 'LeaveRequest.Form.Container':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.X + Parent.Width * 0.03
@@ -113,7 +113,7 @@ Screens:
                 Children:
                   # Employee Info Section
                   - 'LeaveRequest.Form.EmployeeInfo.Container':
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         X: =Parent.X + Parent.Width * 0.03
@@ -138,7 +138,7 @@ Screens:
                               Size: =Parent.Height * 0.12
                               
                         - 'LeaveRequest.Form.EmployeeInfo.Details':
-                            Control: GroupContainer
+                            Control: Rectangle
                             Variant: ManualLayout
                             Properties:
                               X: =Parent.X + Parent.Width * 0.02
@@ -153,7 +153,7 @@ Screens:
                                     Y: =Parent.Y
                                     Width: =Parent.Width * 0.3
                                     Height: =Parent.Height
-                                    Text: =Concatenate("Mã NV: ", varCurrentUser.MaNhanVien)
+                                    Text: =Concatenate("Mã NV:", varCurrentUser.MaNhanVien)
                                     Color: =RGBA(55, 65, 81, 1)
                                     Font: =Font.'Open Sans'
                                     Size: =Parent.Height * 0.35
@@ -165,7 +165,7 @@ Screens:
                                     Y: =Parent.Y
                                     Width: =Parent.Width * 0.35
                                     Height: =Parent.Height
-                                    Text: =Concatenate("Họ tên: ", varCurrentUser.HoTen)
+                                    Text: =Concatenate("Họ tên:", varCurrentUser.HoTen)
                                     Color: =RGBA(55, 65, 81, 1)
                                     Font: =Font.'Open Sans'
                                     Size: =Parent.Height * 0.35
@@ -177,14 +177,14 @@ Screens:
                                     Y: =Parent.Y
                                     Width: =Parent.Width * 0.35
                                     Height: =Parent.Height
-                                    Text: =Concatenate("Phòng ban: ", LookUp(DonVi, MaDonVi = varCurrentUser.MaDonVi).TenDonVi)
+                                    Text: =Concatenate("Phòng ban:", LookUp(DonVi, MaDonVi = varCurrentUser.MaDonVi).TenDonVi)
                                     Color: =RGBA(55, 65, 81, 1)
                                     Font: =Font.'Open Sans'
                                     Size: =Parent.Height * 0.35
                                     
                   # Leave Request Form Fields
                   - 'LeaveRequest.Form.Fields.Container':
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         X: =Parent.X + Parent.Width * 0.03
@@ -194,7 +194,7 @@ Screens:
                       Children:
                         # Leave Type Selection
                         - 'LeaveRequest.Form.LeaveType.Container':
-                            Control: GroupContainer
+                            Control: Rectangle
                             Variant: ManualLayout
                             Properties:
                               X: =Parent.X
@@ -228,7 +228,7 @@ Screens:
                                     
                         # Session Selection
                         - 'LeaveRequest.Form.Session.Container':
-                            Control: GroupContainer
+                            Control: Rectangle
                             Variant: ManualLayout
                             Properties:
                               X: =Parent.Width * 0.52
@@ -262,7 +262,7 @@ Screens:
                                     
                         # Date Range Selection
                         - 'LeaveRequest.Form.DateRange.Container':
-                            Control: GroupContainer
+                            Control: Rectangle
                             Variant: ManualLayout
                             Properties:
                               X: =Parent.X
@@ -272,7 +272,7 @@ Screens:
                             Children:
                               # Start Date
                               - 'LeaveRequest.Form.StartDate.Container':
-                                  Control: GroupContainer
+                                  Control: Rectangle
                                   Variant: ManualLayout
                                   Properties:
                                     X: =Parent.X
@@ -313,7 +313,7 @@ Screens:
                                           
                               # End Date
                               - 'LeaveRequest.Form.EndDate.Container':
-                                  Control: GroupContainer
+                                  Control: Rectangle
                                   Variant: ManualLayout
                                   Properties:
                                     X: =Parent.Width * 0.52
@@ -351,7 +351,7 @@ Screens:
                                           
                         # Calculated Days Display
                         - 'LeaveRequest.Form.CalculatedDays.Container':
-                            Control: GroupContainer
+                            Control: Rectangle
                             Variant: ManualLayout
                             Properties:
                               X: =Parent.X
@@ -369,7 +369,7 @@ Screens:
                                     Y: =Parent.Y + (Parent.Height - Self.Height) / 2
                                     Width: =Parent.Width * 0.96
                                     Height: =Parent.Height * 0.6
-                                    Text: =Concatenate("Tổng số ngày nghỉ: ", varCalculatedDays, " ngày")
+                                    Text: =Concatenate("Tổng số ngày nghỉ:", varCalculatedDays, " ngày")
                                     Color: =RGBA(33, 150, 243, 1)
                                     Font: =Font.'Open Sans'
                                     FontWeight: =FontWeight.Semibold
@@ -377,7 +377,7 @@ Screens:
                                     
                         # Reason Input
                         - 'LeaveRequest.Form.Reason.Container':
-                            Control: GroupContainer
+                            Control: Rectangle
                             Variant: ManualLayout
                             Properties:
                               X: =Parent.X
@@ -404,7 +404,7 @@ Screens:
                                     
                         # Handover Section
                         - 'LeaveRequest.Form.Handover.Container':
-                            Control: GroupContainer
+                            Control: Rectangle
                             Variant: ManualLayout
                             Properties:
                               X: =Parent.X
@@ -414,7 +414,7 @@ Screens:
                             Children:
                               # Handover Person
                               - 'LeaveRequest.Form.HandoverPerson.Container':
-                                  Control: GroupContainer
+                                  Control: Rectangle
                                   Variant: ManualLayout
                                   Properties:
                                     X: =Parent.X
@@ -446,7 +446,7 @@ Screens:
                                           
                               # Handover Content
                               - 'LeaveRequest.Form.HandoverContent.Container':
-                                  Control: GroupContainer
+                                  Control: Rectangle
                                   Variant: ManualLayout
                                   Properties:
                                     X: =Parent.Width * 0.52
@@ -472,7 +472,7 @@ Screens:
                                           
             # Form Actions
             - 'LeaveRequest.Actions.Container':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.X + Parent.Width * 0.03
@@ -552,7 +552,7 @@ Screens:
             OnSelect: =Set(varShowConfirmation, false)
             
       - 'LeaveRequest.Confirmation.Modal':
-          Control: GroupContainer
+          Control: Rectangle
           Variant: ManualLayout
           Properties:
             X: =(Parent.Width - Self.Width) / 2

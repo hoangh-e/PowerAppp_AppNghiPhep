@@ -5,14 +5,14 @@ ComponentDefinitions:
       Theme:
         PropertyKind: Input
         DisplayName: Theme
-        Description: "Theme mode: light hoặc dark"
+        Description: "Theme mode:light hoặc dark"
         DataType: Text
         Default: ="light"
       
       ColorScheme:
         PropertyKind: Input
         DisplayName: ColorScheme
-        Description: "Color scheme: blue, green, purple, orange"
+        Description: "Color scheme:blue, green, purple, orange"
         DataType: Text
         Default: ="blue"
         

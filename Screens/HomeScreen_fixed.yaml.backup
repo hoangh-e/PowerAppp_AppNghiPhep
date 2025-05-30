@@ -1,0 +1,645 @@
+Screens:
+  HomeScreen:
+    Properties:
+      Fill: =RGBA(248, 250, 252, 1)
+    Children:
+      - Background:
+          Control: Rectangle
+          Properties:
+            X: =0
+            Y: =0
+            Width: =Parent.Width
+            Height: =Parent.Height
+            Fill: =RGBA(248, 250, 252, 1)
+            BorderColor: =RGBA(0, 0, 0, 0)
+      
+      - Header:
+          Control: CanvasComponent
+          ComponentName: HeaderComponent
+          Properties:
+            X: =0
+            Y: =0
+            Width: =Parent.Width
+            Height: =64
+            Title: ="Ứng dụng nghỉ phép - AsiaShine"
+            DropShadow: =DropShadow.Small
+      
+      - NavigationMenu:
+          Control: CanvasComponent
+          ComponentName: NavigationMenuComponent
+          Properties:
+            X: =0
+            Y: =64
+            Width: =250
+            Height: =Parent.Height - 64
+            SelectedItem: ="Home"
+            UserRole: =LookUp(Users, Email = User().Email).Role
+      
+      - ContentContainer:
+          Control: GroupContainer
+          Variant: ManualLayout
+          Properties:
+            X: =250
+            Y: =64
+            Width: =Parent.Width - 250
+            Height: =Parent.Height - 64
+            Fill: =RGBA(248, 250, 252, 1)
+          Children:
+            - WelcomeHeader:
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =0
+                  Y: =0
+                  Width: =Parent.Width
+                  Height: =130
+                  Fill: =RGBA(0, 120, 212, 0.05)
+                  BorderColor: =RGBA(230, 230, 230, 1)
+                  BorderThickness: =0 0 1 0
+                Children:
+                  - WelcomeHeader.Title:
+                      Control: Label
+                      Properties:
+                        X: =40
+                        Y: =40
+                        Width: =Parent.Width - 80
+                        Height: =40
+                        Text: =User().DisplayName & " • Trang chủ"
+                        Size: =28
+                        FontWeight: =FontWeight.Bold
+                        Color: =RGBA(32, 54, 71, 1)
+                  
+                  - WelcomeHeader.Subtitle:
+                      Control: Label
+                      Properties:
+                        X: =40
+                        Y: =80
+                        Width: =Parent.Width - 80
+                        Height: =30
+                        Text: ="Xin chào, hôm nay là " & Text(Now(), "[$-vi]dddd, dd/mm/yyyy")
+                        Size: =16
+                        Color: =RGBA(71, 110, 140, 1)
+                
+                  - WelcomeHeader.Icon:
+                      Control: Classic/Icon
+                      Properties:
+                        Icon: ="Home"
+                        X: =Parent.Width - 80
+                        Y: =50
+                        Width: =32
+                        Height: =32
+                        Color: =RGBA(0, 120, 212, 1)
+            
+            - StatusRow:
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =40
+                  Y: =150
+                  Width: =Parent.Width - 80
+                  Height: =60
+                Children:
+                  - StatusRow.StatusLabel:
+                      Control: Label
+                      Properties:
+                        X: =0
+                        Y: =10
+                        Width: =200
+                        Height: =40
+                        Text: ="Trạng thái hiện tại:"
+                        Size: =14
+                        Color: =RGBA(71, 110, 140, 1)
+                  
+                  - StatusRow.StatusIndicator:
+                      Control: Rectangle
+                      Properties:
+                        X: =180
+                        Y: =20
+                        Width: =16
+                        Height: =16
+                        Fill: =RGBA(76, 209, 55, 1)
+                  
+                  - StatusRow.StatusText:
+                      Control: Label
+                      Properties:
+                        X: =205
+                        Y: =10
+                        Width: =200
+                        Height: =40
+                        Text: ="Đang làm việc"
+                        Size: =14
+                        FontWeight: =FontWeight.Semibold
+                        Color: =RGBA(32, 54, 71, 1)
+                  
+                  - StatusRow.QuickAction:
+                      Control: Classic/Button
+                      Properties:
+                        X: =Parent.Width - 180
+                        Y: =5
+                        Width: =180
+                        Height: =38
+                        Text: ="Tạo đơn nghỉ phép"
+                        Color: =RGBA(255, 255, 255, 1)
+                        Fill: =RGBA(0, 120, 212, 1)
+                        HoverFill: =ColorFade(RGBA(0, 120, 212, 1), -20%)
+                        OnSelect: |
+                          =Navigate(LeaveRequestScreen)
+                        DropShadow: =DropShadow.Small
+            
+            - DashboardGrid:
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =40
+                  Y: =230
+                  Width: =Parent.Width - 80
+                  Height: =220
+                Children:
+                  # Card 1 - Leave Balance
+                  - LeaveBalanceCard:
+                      Control: Rectangle
+                      Properties:
+                        X: =0
+                        Y: =0
+                        Width: =(Parent.Width - 40) / 3
+                        Height: =220
+                        Fill: =RGBA(255, 255, 255, 1)
+                        BorderColor: =RGBA(0, 0, 0, 0)
+                        DropShadow: =DropShadow.Small
+                  
+                  - LeaveBalanceCard.Header:
+                      Control: Rectangle
+                      Properties:
+                        X: =0
+                        Y: =0
+                        Width: =(Parent.Width - 40) / 3
+                        Height: =60
+                        Fill: =RGBA(0, 120, 212, 0.1)
+                        BorderColor: =RGBA(0, 0, 0, 0)
+                  
+                  - LeaveBalanceCard.HeaderTitle:
+                      Control: Label
+                      Properties:
+                        X: =20
+                        Y: =15
+                        Width: =(Parent.Width - 40) / 3 - 40
+                        Height: =30
+                        Text: ="Số ngày nghỉ còn lại"
+                        Size: =15
+                        Color: =RGBA(32, 54, 71, 1)
+                        FontWeight: =FontWeight.Semibold
+                  
+                  - LeaveBalanceCard.HeaderIcon:
+                      Control: Classic/Icon
+                      Properties:
+                        Icon: ="Calendar"
+                        X: =(Parent.Width - 40) / 3 - 40
+                        Y: =15
+                        Width: =30
+                        Height: =30
+                        Color: =RGBA(0, 120, 212, 1)
+                  
+                  - LeaveBalanceCard.ValueCircle:
+                      Control: Rectangle
+                      Properties:
+                        X: =((Parent.Width - 40) / 3 - 110) / 2
+                        Y: =80
+                        Width: =110
+                        Height: =110
+                        Fill: =RGBA(0, 120, 212, 0.1)
+                        BorderColor: =RGBA(0, 0, 0, 0)
+                  
+                  - LeaveBalanceCard.Value:
+                      Control: Label
+                      Properties:
+                        X: =((Parent.Width - 40) / 3 - 110) / 2
+                        Y: =80
+                        Width: =110
+                        Height: =110
+                        Text: ="12"
+                        Size: =42
+                        Color: =RGBA(0, 120, 212, 1)
+                        Align: =Align.Center
+                        VerticalAlign: =VerticalAlign.Middle
+                        FontWeight: =FontWeight.Bold
+                  
+                  - LeaveBalanceCard.Description:
+                      Control: Label
+                      Properties:
+                        X: =0
+                        Y: =195
+                        Width: =(Parent.Width - 40) / 3
+                        Height: =20
+                        Text: ="Đã sử dụng:3 ngày"
+                        Size: =12
+                        Color: =RGBA(71, 110, 140, 1)
+                        Align: =Align.Center
+                  
+                  # Card 2 - Pending Approvals
+                  - PendingRequestsCard:
+                      Control: Rectangle
+                      Properties:
+                        X: =(Parent.Width - 40) / 3 + 20
+                        Y: =0
+                        Width: =(Parent.Width - 40) / 3
+                        Height: =220
+                        Fill: =RGBA(255, 255, 255, 1)
+                        BorderColor: =RGBA(0, 0, 0, 0)
+                        DropShadow: =DropShadow.Small
+                  
+                  - PendingRequestsCard.Header:
+                      Control: Rectangle
+                      Properties:
+                        X: =(Parent.Width - 40) / 3 + 20
+                        Y: =0
+                        Width: =(Parent.Width - 40) / 3
+                        Height: =60
+                        Fill: =RGBA(255, 191, 0, 0.1)
+                        BorderColor: =RGBA(0, 0, 0, 0)
+                  
+                  - PendingRequestsCard.HeaderTitle:
+                      Control: Label
+                      Properties:
+                        X: =(Parent.Width - 40) / 3 + 40
+                        Y: =15
+                        Width: =(Parent.Width - 40) / 3 - 40
+                        Height: =30
+                        Text: ="Chờ phê duyệt"
+                        Size: =15
+                        Color: =RGBA(32, 54, 71, 1)
+                        FontWeight: =FontWeight.Semibold
+                  
+                  - PendingRequestsCard.HeaderIcon:
+                      Control: Classic/Icon
+                      Properties:
+                        Icon: ="CheckboxComposite"
+                        X: =2 * (Parent.Width - 40) / 3 - 20
+                        Y: =15
+                        Width: =30
+                        Height: =30
+                        Color: =RGBA(255, 191, 0, 1)
+                  
+                  - PendingRequestsCard.ValueCircle:
+                      Control: Rectangle
+                      Properties:
+                        X: =(Parent.Width - 40) / 3 + 20 + ((Parent.Width - 40) / 3 - 110) / 2
+                        Y: =80
+                        Width: =110
+                        Height: =110
+                        Fill: =RGBA(255, 191, 0, 0.1)
+                        BorderColor: =RGBA(0, 0, 0, 0)
+                  
+                  - PendingRequestsCard.Value:
+                      Control: Label
+                      Properties:
+                        X: =(Parent.Width - 40) / 3 + 20 + ((Parent.Width - 40) / 3 - 110) / 2
+                        Y: =80
+                        Width: =110
+                        Height: =110
+                        Text: ="2"
+                        Size: =42
+                        Color: =RGBA(255, 191, 0, 1)
+                        Align: =Align.Center
+                        VerticalAlign: =VerticalAlign.Middle
+                        FontWeight: =FontWeight.Bold
+                  
+                  - PendingRequestsCard.Description:
+                      Control: Label
+                      Properties:
+                        X: =(Parent.Width - 40) / 3 + 20
+                        Y: =195
+                        Width: =(Parent.Width - 40) / 3
+                        Height: =20
+                        Text: ="Đang chờ xử lý"
+                        Size: =12
+                        Color: =RGBA(71, 110, 140, 1)
+                        Align: =Align.Center
+                  
+                  # Card 3 - Team Status
+                  - TeamStatusCard:
+                      Control: Rectangle
+                      Properties:
+                        X: =2 * (Parent.Width - 40) / 3 + 40
+                        Y: =0
+                        Width: =(Parent.Width - 40) / 3
+                        Height: =220
+                        Fill: =RGBA(255, 255, 255, 1)
+                        BorderColor: =RGBA(0, 0, 0, 0)
+                        DropShadow: =DropShadow.Small
+                  
+                  - TeamStatusCard.Header:
+                      Control: Rectangle
+                      Properties:
+                        X: =2 * (Parent.Width - 40) / 3 + 40
+                        Y: =0
+                        Width: =(Parent.Width - 40) / 3
+                        Height: =60
+                        Fill: =RGBA(135, 100, 184, 0.1)
+                        BorderColor: =RGBA(0, 0, 0, 0)
+                  
+                  - TeamStatusCard.HeaderTitle:
+                      Control: Label
+                      Properties:
+                        X: =2 * (Parent.Width - 40) / 3 + 60
+                        Y: =15
+                        Width: =(Parent.Width - 40) / 3 - 40
+                        Height: =30
+                        Text: ="Trạng thái đội"
+                        Size: =15
+                        Color: =RGBA(32, 54, 71, 1)
+                        FontWeight: =FontWeight.Semibold
+                  
+                  - TeamStatusCard.HeaderIcon:
+                      Control: Classic/Icon
+                      Properties:
+                        Icon: ="People"
+                        X: =3 * (Parent.Width - 40) / 3
+                        Y: =15
+                        Width: =30
+                        Height: =30
+                        Color: =RGBA(135, 100, 184, 1)
+                  
+                  - TeamStatusCard.PresentValue:
+                      Control: Label
+                      Properties:
+                        X: =2 * (Parent.Width - 40) / 3 + 40
+                        Y: =80
+                        Width: =(Parent.Width - 40) / 3
+                        Height: =40
+                        Text: ="8"
+                        Size: =32
+                        Color: =RGBA(76, 209, 55, 1)
+                        Align: =Align.Center
+                        FontWeight: =FontWeight.Bold
+                  
+                  - TeamStatusCard.PresentLabel:
+                      Control: Label
+                      Properties:
+                        X: =2 * (Parent.Width - 40) / 3 + 40
+                        Y: =120
+                        Width: =(Parent.Width - 40) / 3
+                        Height: =20
+                        Text: ="Đang làm việc"
+                        Size: =12
+                        Color: =RGBA(71, 110, 140, 1)
+                        Align: =Align.Center
+                  
+                  - TeamStatusCard.AbsentValue:
+                      Control: Label
+                      Properties:
+                        X: =2 * (Parent.Width - 40) / 3 + 40
+                        Y: =150
+                        Width: =(Parent.Width - 40) / 3
+                        Height: =40
+                        Text: ="2"
+                        Size: =32
+                        Color: =RGBA(209, 82, 55, 1)
+                        Align: =Align.Center
+                        FontWeight: =FontWeight.Bold
+                  
+                  - TeamStatusCard.AbsentLabel:
+                      Control: Label
+                      Properties:
+                        X: =2 * (Parent.Width - 40) / 3 + 40
+                        Y: =190
+                        Width: =(Parent.Width - 40) / 3
+                        Height: =20
+                        Text: ="Đang nghỉ phép"
+                        Size: =12
+                        Color: =RGBA(71, 110, 140, 1)
+                        Align: =Align.Center
+            
+            # Activity Feed Section
+            - ActivityFeedSection:
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =40
+                  Y: =470
+                  Width: =Parent.Width - 80
+                  Height: =Parent.Height - 510
+                Children:
+                  - ActivityFeedSection.Header:
+                      Control: GroupContainer
+                      Variant: ManualLayout
+                      Properties:
+                        X: =0
+                        Y: =0
+                        Width: =Parent.Width
+                        Height: =40
+                      Children:
+                        - ActivityFeedSection.HeaderTitle:
+                            Control: Label
+                            Properties:
+                              X: =0
+                              Y: =0
+                              Width: =200
+                              Height: =40
+                              Text: ="Hoạt động gần đây"
+                              Size: =18
+                              FontWeight: =FontWeight.Bold
+                              Color: =RGBA(32, 54, 71, 1)
+                        
+                        - ActivityFeedSection.Filter:
+                            Control: Classic/DropDown
+                            Properties:
+                              X: =Parent.Width - 200
+                              Y: =0
+                              Width: =180
+                              Height: =38
+                              Items: =["Tất cả", "Của tôi", "Đội của tôi"]
+                              Default: ="Tất cả"
+                  
+                  - ActivityFeedSection.Container:
+                      Control: Rectangle
+                      Properties:
+                        X: =0
+                        Y: =50
+                        Width: =Parent.Width
+                        Height: =Parent.Height - 50
+                        Fill: =RGBA(255, 255, 255, 1)
+                        BorderColor: =RGBA(0, 0, 0, 0)
+                        DropShadow: =DropShadow.Small
+                  
+                  # Activity Item 1
+                  - ActivityItem1:
+                      Control: GroupContainer
+                      Variant: ManualLayout
+                      Properties:
+                        X: =20
+                        Y: =70
+                        Width: =Parent.Width - 40
+                        Height: =80
+                        Fill: =Transparent
+                        HoverFill: =RGBA(243, 246, 248, 1)
+                      Children:
+                        - ActivityItem1.Indicator:
+                            Control: Rectangle
+                            Properties:
+                              X: =0
+                              Y: =10
+                              Width: =4
+                              Height: =60
+                              Fill: =RGBA(76, 209, 55, 1)
+                              BorderColor: =RGBA(0, 0, 0, 0)
+                        
+                        - ActivityItem1.Title:
+                            Control: Label
+                            Properties:
+                              X: =24
+                              Y: =10
+                              Width: =Parent.Width - 150
+                              Height: =40
+                              Text: ="Đơn nghỉ phép của Nguyễn Văn A đã được phê duyệt"
+                              Size: =14
+                              FontWeight: =FontWeight.Semibold
+                              Color: =RGBA(32, 54, 71, 1)
+                        
+                        - ActivityItem1.Time:
+                            Control: Label
+                            Properties:
+                              X: =24
+                              Y: =45
+                              Width: =150
+                              Height: =25
+                              Text: ="10 phút trước"
+                              Size: =12
+                              Color: =RGBA(71, 110, 140, 1)
+                        
+                        - ActivityItem1.StatusIndicator:
+                            Control: Label
+                            Properties:
+                              X: =Parent.Width - 110
+                              Y: =20
+                              Width: =90
+                              Height: =30
+                              Text: ="Phê duyệt"
+                              Size: =12
+                              Color: =RGBA(76, 209, 55, 1)
+                              Fill: =RGBA(76, 209, 55, 0.1)
+                              BorderColor: =RGBA(76, 209, 55, 1)
+                              BorderThickness: =1
+                              Align: =Align.Center
+                              VerticalAlign: =VerticalAlign.Middle
+                  
+                  # Activity Item 2
+                  - ActivityItem2:
+                      Control: GroupContainer
+                      Variant: ManualLayout
+                      Properties:
+                        X: =20
+                        Y: =150
+                        Width: =Parent.Width - 40
+                        Height: =80
+                        Fill: =Transparent
+                        HoverFill: =RGBA(243, 246, 248, 1)
+                      Children:
+                        - ActivityItem2.Indicator:
+                            Control: Rectangle
+                            Properties:
+                              X: =0
+                              Y: =10
+                              Width: =4
+                              Height: =60
+                              Fill: =RGBA(255, 191, 0, 1)
+                              BorderColor: =RGBA(0, 0, 0, 0)
+                        
+                        - ActivityItem2.Title:
+                            Control: Label
+                            Properties:
+                              X: =24
+                              Y: =10
+                              Width: =Parent.Width - 150
+                              Height: =40
+                              Text: ="Trần Thị B đã gửi yêu cầu nghỉ phép"
+                              Size: =14
+                              FontWeight: =FontWeight.Semibold
+                              Color: =RGBA(32, 54, 71, 1)
+                        
+                        - ActivityItem2.Time:
+                            Control: Label
+                            Properties:
+                              X: =24
+                              Y: =45
+                              Width: =150
+                              Height: =25
+                              Text: ="1 giờ trước"
+                              Size: =12
+                              Color: =RGBA(71, 110, 140, 1)
+                        
+                        - ActivityItem2.StatusIndicator:
+                            Control: Label
+                            Properties:
+                              X: =Parent.Width - 110
+                              Y: =20
+                              Width: =90
+                              Height: =30
+                              Text: ="Chờ duyệt"
+                              Size: =12
+                              Color: =RGBA(255, 191, 0, 1)
+                              Fill: =RGBA(255, 191, 0, 0.1)
+                              BorderColor: =RGBA(255, 191, 0, 1)
+                              BorderThickness: =1
+                              Align: =Align.Center
+                              VerticalAlign: =VerticalAlign.Middle
+                  
+                  # Activity Item 3
+                  - ActivityItem3:
+                      Control: GroupContainer
+                      Variant: ManualLayout
+                      Properties:
+                        X: =20
+                        Y: =230
+                        Width: =Parent.Width - 40
+                        Height: =80
+                        Fill: =Transparent
+                        HoverFill: =RGBA(243, 246, 248, 1)
+                      Children:
+                        - ActivityItem3.Indicator:
+                            Control: Rectangle
+                            Properties:
+                              X: =0
+                              Y: =10
+                              Width: =4
+                              Height: =60
+                              Fill: =RGBA(209, 82, 55, 1)
+                              BorderColor: =RGBA(0, 0, 0, 0)
+                        
+                        - ActivityItem3.Title:
+                            Control: Label
+                            Properties:
+                              X: =24
+                              Y: =10
+                              Width: =Parent.Width - 150
+                              Height: =40
+                              Text: ="Đơn nghỉ phép của Lê Văn C đã bị từ chối"
+                              Size: =14
+                              FontWeight: =FontWeight.Semibold
+                              Color: =RGBA(32, 54, 71, 1)
+                        
+                        - ActivityItem3.Time:
+                            Control: Label
+                            Properties:
+                              X: =24
+                              Y: =45
+                              Width: =150
+                              Height: =25
+                              Text: ="2 giờ trước"
+                              Size: =12
+                              Color: =RGBA(71, 110, 140, 1)
+                        
+                        - ActivityItem3.StatusIndicator:
+                            Control: Label
+                            Properties:
+                              X: =Parent.Width - 110
+                              Y: =20
+                              Width: =90
+                              Height: =30
+                              Text: ="Từ chối"
+                              Size: =12
+                              Color: =RGBA(209, 82, 55, 1)
+                              Fill: =RGBA(209, 82, 55, 0.1)
+                              BorderColor: =RGBA(209, 82, 55, 1)
+                              BorderThickness: =1
+                              Align: =Align.Center
+                              VerticalAlign: =VerticalAlign.Middle 

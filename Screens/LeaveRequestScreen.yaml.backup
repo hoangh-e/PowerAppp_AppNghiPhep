@@ -1,0 +1,391 @@
+Screens:
+  LeaveRequestScreen:
+    Properties:
+      Fill: =RGBA(248, 250, 252, 1)
+      OnVisible: |-
+        =If(
+            IsBlank(varCurrentUser),
+            Navigate(LoginScreen, ScreenTransition.Fade),
+            // Load dữ liệu đơn nghỉ phép
+            Set(varLeaveTypes, Table(
+                {ID: 1, Name: "Nghỉ phép năm", Color: RGBA(0, 120, 212, 1)},
+                {ID: 2, Name: "Nghỉ ốm", Color: RGBA(220, 53, 69, 1)},
+                {ID: 3, Name: "Nghỉ thai sản", Color: RGBA(255, 193, 7, 1)},
+                {ID: 4, Name: "Nghỉ không lương", Color: RGBA(108, 117, 125, 1)}
+            ));
+            Set(varSelectedLeaveType, Blank());
+            Set(varStartDate, Today());
+            Set(varEndDate, Today());
+            Set(varLeaveReason, "")
+        )
+    Children:
+      - Background:
+          Control: Rectangle
+          Properties:
+            X: =0
+            Y: =0
+            Width: =Parent.Width
+            Height: =Parent.Height
+            Fill: =RGBA(248, 250, 252, 1)
+            BorderColor: =RGBA(0, 0, 0, 0)
+      
+      - Header:
+          Control: GroupContainer
+          Variant: ManualLayout
+          Properties:
+            X: =0
+            Y: =0
+            Width: =Parent.Width
+            Height: =70
+            Fill: =RGBA(255, 255, 255, 1)
+            BorderColor: =RGBA(230, 230, 230, 1)
+            BorderThickness: =0 0 1 0
+          Children:
+            - 'Header.BackButton':
+                Control: Classic/Button
+                Properties:
+                  X: =20
+                  Y: =20
+                  Width: =100
+                  Height: =30
+                  Text: ="← Quay lại"
+                  Color: =RGBA(0, 120, 212, 1)
+                  Fill: =RGBA(0, 0, 0, 0)
+                  BorderColor: =RGBA(0, 0, 0, 0)
+                  HoverFill: =RGBA(0, 120, 212, 0.1)
+                  Size: =13
+                  OnSelect: =Navigate(HomeScreen, ScreenTransition.Fade)
+            
+            - 'Header.Title':
+                Control: Label
+                Properties:
+                  X: =140
+                  Y: =20
+                  Width: =300
+                  Height: =30
+                  Text: ="Tạo đơn nghỉ phép"
+                  Size: =20
+                  FontWeight: =FontWeight.Bold
+                  Color: =RGBA(32, 54, 71, 1)
+      
+      - MainContent:
+          Control: GroupContainer
+          Variant: ManualLayout
+          Properties:
+            X: =0
+            Y: =70
+            Width: =Parent.Width
+            Height: =Parent.Height - 70
+            Fill: =RGBA(248, 250, 252, 1)
+          Children:
+            - FormContainer:
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =(Parent.Width - 600) / 2
+                  Y: =40
+                  Width: =600
+                  Height: =500
+                  Fill: =RGBA(255, 255, 255, 1)
+                  BorderColor: =RGBA(230, 230, 230, 1)
+                  BorderThickness: =1
+                  DropShadow: =DropShadow.Light
+                Children:
+                  - 'FormContainer.Header':
+                      Control: Rectangle
+                      Properties:
+                        X: =0
+                        Y: =0
+                        Width: =Parent.Width
+                        Height: =60
+                        Fill: =RGBA(0, 120, 212, 0.05)
+                        BorderColor: =RGBA(0, 0, 0, 0)
+                  
+                  - 'FormContainer.HeaderIcon':
+                      Control: Classic/Icon
+                      Properties:
+                        Icon: ="Add"
+                        X: =30
+                        Y: =20
+                        Width: =20
+                        Height: =20
+                        Color: =RGBA(0, 120, 212, 1)
+                  
+                  - 'FormContainer.HeaderTitle':
+                      Control: Label
+                      Properties:
+                        X: =60
+                        Y: =20
+                        Width: =400
+                        Height: =20
+                        Text: ="Thông tin đơn nghỉ phép"
+                        Size: =16
+                        FontWeight: =FontWeight.Bold
+                        Color: =RGBA(32, 54, 71, 1)
+                  
+                  # Loại nghỉ phép
+                  - 'FormContainer.LeaveTypeGroup':
+                      Control: GroupContainer
+                      Variant: ManualLayout
+                      Properties:
+                        X: =40
+                        Y: =80
+                        Width: =Parent.Width - 80
+                        Height: =80
+                        Fill: =RGBA(0, 0, 0, 0)
+                      Children:
+                        - 'FormContainer.LeaveTypeGroup.Label':
+                            Control: Label
+                            Properties:
+                              X: =0
+                              Y: =0
+                              Width: =Parent.Width
+                              Height: =25
+                              Text: ="Loại nghỉ phép *"
+                              Size: =14
+                              FontWeight: =FontWeight.Semibold
+                              Color: =RGBA(71, 110, 140, 1)
+                        
+                        - 'FormContainer.LeaveTypeGroup.Dropdown':
+                            Control: Classic/DropDown
+                            Properties:
+                              X: =0
+                              Y: =30
+                              Width: =Parent.Width
+                              Height: =42
+                              Items: =varLeaveTypes.Name
+                              Default: =""
+                              HintText: ="Chọn loại nghỉ phép"
+                              BorderColor: =RGBA(200, 200, 200, 1)
+                              BorderThickness: =1
+                              Fill: =RGBA(248, 250, 253, 1)
+                              HoverFill: =RGBA(255, 255, 255, 1)
+                              OnChange: =Set(varSelectedLeaveType, LookUp(varLeaveTypes, Name = Self.Selected.Value))
+                  
+                  # Ngày bắt đầu và kết thúc
+                  - 'FormContainer.DateGroup':
+                      Control: GroupContainer
+                      Variant: ManualLayout
+                      Properties:
+                        X: =40
+                        Y: =180
+                        Width: =Parent.Width - 80
+                        Height: =80
+                        Fill: =RGBA(0, 0, 0, 0)
+                      Children:
+                        - 'FormContainer.DateGroup.StartDateLabel':
+                            Control: Label
+                            Properties:
+                              X: =0
+                              Y: =0
+                              Width: =(Parent.Width - 20) / 2
+                              Height: =25
+                              Text: ="Ngày bắt đầu *"
+                              Size: =14
+                              FontWeight: =FontWeight.Semibold
+                              Color: =RGBA(71, 110, 140, 1)
+                        
+                        - 'FormContainer.DateGroup.EndDateLabel':
+                            Control: Label
+                            Properties:
+                              X: =(Parent.Width - 20) / 2 + 20
+                              Y: =0
+                              Width: =(Parent.Width - 20) / 2
+                              Height: =25
+                              Text: ="Ngày kết thúc *"
+                              Size: =14
+                              FontWeight: =FontWeight.Semibold
+                              Color: =RGBA(71, 110, 140, 1)
+                        
+                        - 'FormContainer.DateGroup.StartDatePicker':
+                            Control: Classic/DatePicker
+                            Properties:
+                              X: =0
+                              Y: =30
+                              Width: =(Parent.Width - 20) / 2
+                              Height: =42
+                              DefaultDate: =Today()
+                              BorderColor: =RGBA(200, 200, 200, 1)
+                              BorderThickness: =1
+                              Fill: =RGBA(248, 250, 253, 1)
+                              HoverFill: =RGBA(255, 255, 255, 1)
+                              OnChange: =Set(varStartDate, Self.SelectedDate)
+                        
+                        - 'FormContainer.DateGroup.EndDatePicker':
+                            Control: Classic/DatePicker
+                            Properties:
+                              X: =(Parent.Width - 20) / 2 + 20
+                              Y: =30
+                              Width: =(Parent.Width - 20) / 2
+                              Height: =42
+                              DefaultDate: =Today()
+                              BorderColor: =RGBA(200, 200, 200, 1)
+                              BorderThickness: =1
+                              Fill: =RGBA(248, 250, 253, 1)
+                              HoverFill: =RGBA(255, 255, 255, 1)
+                              OnChange: =Set(varEndDate, Self.SelectedDate)
+                  
+                  # Lý do nghỉ phép
+                  - 'FormContainer.ReasonGroup':
+                      Control: GroupContainer
+                      Variant: ManualLayout
+                      Properties:
+                        X: =40
+                        Y: =280
+                        Width: =Parent.Width - 80
+                        Height: =120
+                        Fill: =RGBA(0, 0, 0, 0)
+                      Children:
+                        - 'FormContainer.ReasonGroup.Label':
+                            Control: Label
+                            Properties:
+                              X: =0
+                              Y: =0
+                              Width: =Parent.Width
+                              Height: =25
+                              Text: ="Lý do nghỉ phép *"
+                              Size: =14
+                              FontWeight: =FontWeight.Semibold
+                              Color: =RGBA(71, 110, 140, 1)
+                        
+                        - 'FormContainer.ReasonGroup.TextInput':
+                            Control: Classic/TextInput
+                            Properties:
+                              X: =0
+                              Y: =30
+                              Width: =Parent.Width
+                              Height: =80
+                              Default: =""
+                              HintText: ="Nhập lý do nghỉ phép chi tiết..."
+                              Mode: =TextMode.MultiLine
+                              BorderColor: =RGBA(200, 200, 200, 1)
+                              BorderThickness: =1
+                              Fill: =RGBA(248, 250, 253, 1)
+                              HoverFill: =RGBA(255, 255, 255, 1)
+                              PaddingLeft: =12
+                              PaddingRight: =12
+                              PaddingTop: =12
+                              PaddingBottom: =12
+                              OnChange: =Set(varLeaveReason, Self.Text)
+                  
+                  # Buttons
+                  - 'FormContainer.ButtonGroup':
+                      Control: GroupContainer
+                      Variant: ManualLayout
+                      Properties:
+                        X: =40
+                        Y: =420
+                        Width: =Parent.Width - 80
+                        Height: =60
+                        Fill: =RGBA(0, 0, 0, 0)
+                      Children:
+                        - 'FormContainer.ButtonGroup.CancelButton':
+                            Control: Classic/Button
+                            Properties:
+                              X: =0
+                              Y: =10
+                              Width: =120
+                              Height: =40
+                              Text: ="Hủy bỏ"
+                              Color: =RGBA(108, 117, 125, 1)
+                              Fill: =RGBA(255, 255, 255, 1)
+                              BorderColor: =RGBA(108, 117, 125, 1)
+                              BorderThickness: =1
+                              HoverFill: =RGBA(108, 117, 125, 0.1)
+                              FontWeight: =FontWeight.Semibold
+                              OnSelect: =Navigate(HomeScreen, ScreenTransition.Fade)
+                        
+                        - 'FormContainer.ButtonGroup.SubmitButton':
+                            Control: Classic/Button
+                            Properties:
+                              X: =Parent.Width - 150
+                              Y: =10
+                              Width: =150
+                              Height: =40
+                              Text: ="Gửi đơn"
+                              Color: =RGBA(255, 255, 255, 1)
+                              Fill: =RGBA(0, 120, 212, 1)
+                              BorderColor: =RGBA(0, 0, 0, 0)
+                              HoverFill: =ColorFade(RGBA(0, 120, 212, 1), -15%)
+                              FontWeight: =FontWeight.Semibold
+                              OnSelect: |-
+                                =If(
+                                    IsBlank(varSelectedLeaveType) || IsBlank(varStartDate) || IsBlank(varEndDate) || IsBlank(varLeaveReason),
+                                    Notify("Vui lòng điền đầy đủ thông tin bắt buộc", NotificationType.Error),
+                                    If(
+                                        varEndDate < varStartDate,
+                                        Notify("Ngày kết thúc phải sau ngày bắt đầu", NotificationType.Error),
+                                        // Tính số ngày nghỉ
+                                        Set(varLeaveDays, DateDiff(varStartDate, varEndDate) + 1);
+                                        Notify(Concatenate("Đơn nghỉ phép đã được gửi thành công! Số ngày nghỉ:", Text(varLeaveDays)), NotificationType.Success);
+                                        Navigate(HomeScreen, ScreenTransition.Fade)
+                                    )
+                                )
+            
+            # Sidebar với thông tin hướng dẫn
+            - InfoSidebar:
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =(Parent.Width - 600) / 2 + 620
+                  Y: =40
+                  Width: =300
+                  Height: =400
+                  Fill: =RGBA(255, 255, 255, 1)
+                  BorderColor: =RGBA(230, 230, 230, 1)
+                  BorderThickness: =1
+                  DropShadow: =DropShadow.Light
+                Children:
+                  - 'InfoSidebar.Header':
+                      Control: Rectangle
+                      Properties:
+                        X: =0
+                        Y: =0
+                        Width: =Parent.Width
+                        Height: =50
+                        Fill: =RGBA(76, 209, 55, 0.1)
+                        BorderColor: =RGBA(0, 0, 0, 0)
+                  
+                  - 'InfoSidebar.HeaderIcon':
+                      Control: Classic/Icon
+                      Properties:
+                        Icon: ="Info"
+                        X: =20
+                        Y: =15
+                        Width: =20
+                        Height: =20
+                        Color: =RGBA(76, 209, 55, 1)
+                  
+                  - 'InfoSidebar.HeaderTitle':
+                      Control: Label
+                      Properties:
+                        X: =50
+                        Y: =15
+                        Width: =200
+                        Height: =20
+                        Text: ="Hướng dẫn"
+                        Size: =14
+                        FontWeight: =FontWeight.Bold
+                        Color: =RGBA(32, 54, 71, 1)
+                  
+                  - 'InfoSidebar.Content':
+                      Control: Label
+                      Properties:
+                        X: =20
+                        Y: =70
+                        Width: =Parent.Width - 40
+                        Height: =300
+                        Text: ="• Chọn loại nghỉ phép phù hợp với tình huống của bạn
+
+• Ngày bắt đầu và kết thúc phải hợp lệ
+
+• Lý do nghỉ phép cần rõ ràng và chi tiết
+
+• Đơn sẽ được gửi đến quản lý trực tiếp để phê duyệt
+
+• Bạn sẽ nhận được thông báo khi đơn được xử lý
+
+• Liên hệ HR nếu cần hỗ trợ thêm"
+                        Size: =12
+                        Color: =RGBA(71, 110, 140, 1)
+                        VerticalAlign: =VerticalAlign.Top 

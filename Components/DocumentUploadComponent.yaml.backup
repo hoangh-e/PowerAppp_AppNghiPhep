@@ -1,0 +1,80 @@
+ComponentDefinitions:
+  DocumentUploadComponent:
+    DefinitionType: CanvasComponent
+    AccessAppScope: true
+    Properties:
+      Height: =100
+      Width: =Parent.Width
+    Children:
+      - DocUploadContainer:
+          Control: GroupContainer
+          Variant: ManualLayout
+          Properties:
+            X: =0
+            Y: =0
+            Width: =Parent.Width
+            Height: =Parent.Height
+            ZIndex: =1
+            Fill: =RGBA(255, 255, 255, 1)
+          Children:
+            - iconDocType:
+                Control: Icon
+                Properties:
+                  X: =10
+                  Y: =10
+                  Width: =24
+                  Height: =24
+                  ZIndex: =1
+                  Icon: =Document
+                  Color: =RGBA(0, 120, 212, 1)
+            
+            - lblDocName:
+                Control: Label
+                Properties:
+                  X: =44
+                  Y: =12
+                  Width: =Parent.Width - 150
+                  Height: =20
+                  ZIndex: =2
+                  Text: ="Dự thảo (gớp ý).docx"
+                  Size: =12
+                  Color: =RGBA(0, 120, 212, 1)
+            
+            - UploadArea:
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =0
+                  Y: =40
+                  Width: =Parent.Width
+                  Height: =Parent.Height - 40
+                  ZIndex: =3
+                  BorderColor: =RGBA(213, 213, 213, 1)
+                  BorderThickness: =1
+                  BorderStyle: =BorderStyle.Dashed
+                  OnSelect: =OnDocUpload()
+                Children:
+                  - iconUpload:
+                      Control: Icon
+                      Properties:
+                        X: =(Parent.Width - Self.Width) / 2
+                        Y: =10
+                        Width: =32
+                        Height: =32
+                        ZIndex: =1
+                        Icon: =Add
+                        Color: =RGBA(0, 120, 212, 1)
+                        OnSelect: =OnDocUpload()
+                  
+                  - lblUploadInstruction:
+                      Control: Label
+                      Properties:
+                        X: =0
+                        Y: =50
+                        Width: =Parent.Width
+                        Height: =20
+                        ZIndex: =2
+                        Text: ="Tải lên file"
+                        Align: =Align.Center
+                        Size: =12
+                        Color: =RGBA(0, 120, 212, 1) 

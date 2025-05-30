@@ -14,7 +14,7 @@
             Fill: =RGBA(0, 120, 212, 1)
             
       - 'Login.Container':
-          Control: GroupContainer
+          Control: Rectangle
           Variant: ManualLayout
           Properties:
             X: =(Parent.Width - Self.Width) / 2

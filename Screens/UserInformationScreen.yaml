@@ -35,7 +35,7 @@ Screens:
             UserRole: =LookUp(NguoiDung, Email = User().Email).VaiTro
       
       - ContentContainer:
-          Control: GroupContainer
+          Control: Rectangle
           Variant: ManualLayout
           Properties:
             X: =250
@@ -45,7 +45,7 @@ Screens:
             Fill: =RGBA(248, 250, 252, 1)
           Children:
             - PageHeader:
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =0
@@ -71,7 +71,7 @@ Screens:
             
             # User Avatar Section
             - AvatarSection:
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =(Parent.Width - 300) / 2
@@ -101,7 +101,7 @@ Screens:
             
             # Information Cards
             - InfoCards:
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =40
@@ -499,7 +499,7 @@ Screens:
             
             # Footer
             - FooterContainer:
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =0

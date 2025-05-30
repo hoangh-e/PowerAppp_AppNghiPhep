@@ -22,6 +22,7 @@ Screens:
       
       - BadZIndexControl:
           Control: Rectangle
+            Properties:
           Properties:
             X: =Parent.X + 20
             Y: =Parent.Y + 80

@@ -1,0 +1,248 @@
+DemoData:
+  # Dữ liệu người dùng
+  Users:
+    - ID: "EMP001"
+      FullName: "Nguyễn Văn An"
+      Email: "an.nguyen@asiashine.com"
+      Phone: "0901234567"
+      Position: "Nhân viên IT"
+      Department: "Phòng Công nghệ thông tin"
+      Role: "Employee"
+      ApprovalLevel: 0
+      Manager: "EMP002"
+      
+    - ID: "EMP002"
+      FullName: "Trần Thị Bình"
+      Email: "binh.tran@asiashine.com"
+      Phone: "0901234568"
+      Position: "Trưởng phòng IT"
+      Department: "Phòng Công nghệ thông tin"
+      Role: "Manager"
+      ApprovalLevel: 1
+      Manager: "EMP003"
+      
+    - ID: "EMP003"
+      FullName: "Lê Văn Cường"
+      Email: "cuong.le@asiashine.com"
+      Phone: "0901234569"
+      Position: "Giám đốc Khối"
+      Department: "Ban Giám đốc"
+      Role: "Director"
+      ApprovalLevel: 2
+      Manager: "EMP004"
+      
+    - ID: "EMP004"
+      FullName: "Phạm Thị Dung"
+      Email: "dung.pham@asiashine.com"
+      Phone: "0901234570"
+      Position: "Giám đốc Điều hành"
+      Department: "Ban Giám đốc"
+      Role: "Director"
+      ApprovalLevel: 3
+      Manager: ""
+      
+    - ID: "HR001"
+      FullName: "Võ Thị Hoa"
+      Email: "hoa.vo@asiashine.com"
+      Phone: "0901234571"
+      Position: "Chuyên viên HR"
+      Department: "Phòng Nhân sự"
+      Role: "HR"
+      ApprovalLevel: 0
+      Manager: "EMP003"
+
+  # Dữ liệu số ngày nghỉ phép
+  LeaveBalance:
+    - EmployeeID: "EMP001"
+      Year: 2024
+      TotalDays: 12
+      UsedDays: 3
+      RemainingDays: 9
+      UnpaidDays: 0
+      
+    - EmployeeID: "EMP002"
+      Year: 2024
+      TotalDays: 15
+      UsedDays: 5
+      RemainingDays: 10
+      UnpaidDays: 0
+      
+    - EmployeeID: "EMP003"
+      Year: 2024
+      TotalDays: 18
+      UsedDays: 2
+      RemainingDays: 16
+      UnpaidDays: 0
+      
+    - EmployeeID: "EMP004"
+      Year: 2024
+      TotalDays: 20
+      UsedDays: 8
+      RemainingDays: 12
+      UnpaidDays: 0
+      
+    - EmployeeID: "HR001"
+      Year: 2024
+      TotalDays: 12
+      UsedDays: 1
+      RemainingDays: 11
+      UnpaidDays: 0
+
+  # Dữ liệu đơn nghỉ phép
+  LeaveRequests:
+    - ID: "LR001"
+      EmployeeID: "EMP001"
+      EmployeeName: "Nguyễn Văn An"
+      Department: "Phòng Công nghệ thông tin"
+      StartDate: "2024-01-15"
+      EndDate: "2024-01-17"
+      TotalDays: 3
+      LeaveType: "Nghỉ phép năm"
+      Reason: "Nghỉ lễ Tết"
+      HandoverPerson: "EMP002"
+      HandoverContent: "Hoàn thành dự án website trước khi nghỉ"
+      Status: "Approved"
+      CreatedDate: "2024-01-10"
+      ApprovalHistory:
+        - Level: 1
+          ApproverID: "EMP002"
+          ApproverName: "Trần Thị Bình"
+          Status: "Approved"
+          Comment: "Đồng ý"
+          Date: "2024-01-11"
+        - Level: 2
+          ApproverID: "EMP003"
+          ApproverName: "Lê Văn Cường"
+          Status: "Approved"
+          Comment: "Chấp thuận"
+          Date: "2024-01-12"
+          
+    - ID: "LR002"
+      EmployeeID: "EMP002"
+      EmployeeName: "Trần Thị Bình"
+      Department: "Phòng Công nghệ thông tin"
+      StartDate: "2024-02-20"
+      EndDate: "2024-02-22"
+      TotalDays: 3
+      LeaveType: "Nghỉ phép năm"
+      Reason: "Nghỉ việc cá nhân"
+      HandoverPerson: "EMP001"
+      HandoverContent: "Theo dõi tiến độ dự án"
+      Status: "Pending"
+      CreatedDate: "2024-02-15"
+      ApprovalHistory:
+        - Level: 1
+          ApproverID: "EMP003"
+          ApproverName: "Lê Văn Cường"
+          Status: "Pending"
+          Comment: ""
+          Date: ""
+          
+    - ID: "LR003"
+      EmployeeID: "EMP001"
+      EmployeeName: "Nguyễn Văn An"
+      Department: "Phòng Công nghệ thông tin"
+      StartDate: "2024-03-10"
+      EndDate: "2024-03-15"
+      TotalDays: 6
+      LeaveType: "Nghỉ phép năm"
+      Reason: "Du lịch gia đình"
+      HandoverPerson: "EMP002"
+      HandoverContent: "Bàn giao công việc maintenance hệ thống"
+      Status: "Rejected"
+      CreatedDate: "2024-03-01"
+      ApprovalHistory:
+        - Level: 1
+          ApproverID: "EMP002"
+          ApproverName: "Trần Thị Bình"
+          Status: "Rejected"
+          Comment: "Thời gian nghỉ quá dài, cần sắp xếp lại"
+          Date: "2024-03-02"
+
+  # Lịch nghỉ lễ
+  Holidays:
+    - Date: "2024-01-01"
+      Name: "Tết Dương lịch"
+      Type: "Public Holiday"
+      
+    - Date: "2024-02-10"
+      Name: "Tết Nguyên đán (Mùng 1)"
+      Type: "Public Holiday"
+      
+    - Date: "2024-02-11"
+      Name: "Tết Nguyên đán (Mùng 2)"
+      Type: "Public Holiday"
+      
+    - Date: "2024-02-12"
+      Name: "Tết Nguyên đán (Mùng 3)"
+      Type: "Public Holiday"
+      
+    - Date: "2024-04-30"
+      Name: "Ngày Giải phóng miền Nam"
+      Type: "Public Holiday"
+      
+    - Date: "2024-05-01"
+      Name: "Ngày Quốc tế Lao động"
+      Type: "Public Holiday"
+      
+    - Date: "2024-09-02"
+      Name: "Ngày Quốc khánh"
+      Type: "Public Holiday"
+
+  # Thống kê Dashboard
+  DashboardStats:
+    - Period: "2024-01"
+      TotalRequests: 15
+      ApprovedRequests: 12
+      PendingRequests: 2
+      RejectedRequests: 1
+      TotalLeaveDays: 45
+      
+    - Period: "2024-02"
+      TotalRequests: 8
+      ApprovedRequests: 6
+      PendingRequests: 1
+      RejectedRequests: 1
+      TotalLeaveDays: 24
+      
+    - Period: "2024-03"
+      TotalRequests: 12
+      ApprovedRequests: 10
+      PendingRequests: 1
+      RejectedRequests: 1
+      TotalLeaveDays: 36
+
+  # Cấu hình ứng dụng
+  AppConfig:
+    LeaveTypes:
+      - "Nghỉ phép năm"
+      - "Nghỉ ốm"
+      - "Nghỉ thai sản"
+      - "Nghỉ không lương"
+      - "Nghỉ đặc biệt"
+      
+    ApprovalLevels:
+      - Level: 1
+        Name: "Trưởng nhóm/Trưởng phòng"
+        Description: "Phê duyệt cấp 1"
+        
+      - Level: 2
+        Name: "Giám đốc Khối"
+        Description: "Phê duyệt cấp 2"
+        
+      - Level: 3
+        Name: "Giám đốc Điều hành"
+        Description: "Phê duyệt cấp 3"
+        
+    LeaveRules:
+      - DaysRange: "0.5-2"
+        AdvanceNotice: 1
+        Description: "Nghỉ 0.5-2 ngày: báo trước 1 ngày"
+        
+      - DaysRange: "3-4"
+        AdvanceNotice: 7
+        Description: "Nghỉ 3-4 ngày: báo trước 7 ngày"
+        
+      - DaysRange: "5+"
+        AdvanceNotice: 14
+        Description: "Nghỉ từ 5 ngày: báo trước 14 ngày" 

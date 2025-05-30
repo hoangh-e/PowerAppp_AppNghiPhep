@@ -1,0 +1,174 @@
+ComponentDefinitions:
+  CCTableComponent:
+    DefinitionType: CanvasComponent
+    AccessAppScope: true
+    Properties:
+      Height: =150
+      Width: =Parent.Width
+    Children:
+      - CCTableContainer:
+          Control: GroupContainer
+          Variant: ManualLayout
+          Properties:
+            X: =0
+            Y: =0
+            Width: =Parent.Width
+            Height: =Parent.Height
+            ZIndex: =1
+            Fill: =RGBA(255, 255, 255, 1)
+          Children:
+            - TableHeader:
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =0
+                  Y: =0
+                  Width: =Parent.Width
+                  Height: =30
+                  ZIndex: =1
+                  Fill: =RGBA(220, 240, 255, 1)
+                Children:
+                  - lblNoHeader:
+                      Control: Label
+                      Properties:
+                        X: =0
+                        Y: =0
+                        Width: =50
+                        Height: =30
+                        ZIndex: =1
+                        Text: ="No"
+                        VerticalAlign: =VerticalAlign.Middle
+                        Align: =Align.Center
+                        Size: =12
+                        FontWeight: =FontWeight.Bold
+                  
+                  - lblNameHeader:
+                      Control: Label
+                      Properties:
+                        X: =50
+                        Y: =0
+                        Width: =250
+                        Height: =30
+                        ZIndex: =2
+                        Text: ="Họ và tên"
+                        VerticalAlign: =VerticalAlign.Middle
+                        Size: =12
+                        FontWeight: =FontWeight.Bold
+                  
+                  - lblDepartmentHeader:
+                      Control: Label
+                      Properties:
+                        X: =300
+                        Y: =0
+                        Width: =250
+                        Height: =30
+                        ZIndex: =3
+                        Text: ="Phòng/Ban"
+                        VerticalAlign: =VerticalAlign.Middle
+                        Size: =12
+                        FontWeight: =FontWeight.Bold
+                  
+                  - lblPositionHeader:
+                      Control: Label
+                      Properties:
+                        X: =550
+                        Y: =0
+                        Width: =Parent.Width - 600
+                        Height: =30
+                        ZIndex: =4
+                        Text: ="Chức vụ"
+                        VerticalAlign: =VerticalAlign.Middle
+                        Size: =12
+                        FontWeight: =FontWeight.Bold
+                  
+                  - lblActionHeader:
+                      Control: Label
+                      Properties:
+                        X: =Parent.Width - 50
+                        Y: =0
+                        Width: =50
+                        Height: =30
+                        ZIndex: =5
+                        Text: ="Xóa"
+                        VerticalAlign: =VerticalAlign.Middle
+                        Align: =Align.Center
+                        Size: =12
+                        FontWeight: =FontWeight.Bold
+            
+            - CCGallery:
+                Control: Gallery
+                Properties:
+                  X: =0
+                  Y: =30
+                  Width: =Parent.Width
+                  Height: =Parent.Height - 30
+                  ZIndex: =2
+                  Layout: =LayoutType.Vertical
+                  TemplateFill: =RGBA(255, 255, 255, 1)
+                  TemplateSize: =40
+                  Items: =colCCData
+                Children:
+                  - lblNo:
+                      Control: Label
+                      Properties:
+                        X: =0
+                        Y: =(Parent.TemplateHeight - Self.Height) / 2
+                        Width: =50
+                        Height: =20
+                        ZIndex: =1
+                        Text: =ThisItem.No
+                        VerticalAlign: =VerticalAlign.Middle
+                        Align: =Align.Center
+                        Size: =12
+                        Color: =RGBA(80, 80, 80, 1)
+                  
+                  - lblName:
+                      Control: Label
+                      Properties:
+                        X: =50
+                        Y: =(Parent.TemplateHeight - Self.Height) / 2
+                        Width: =250
+                        Height: =20
+                        ZIndex: =2
+                        Text: =ThisItem.Name
+                        VerticalAlign: =VerticalAlign.Middle
+                        Size: =12
+                        Color: =RGBA(80, 80, 80, 1)
+                  
+                  - lblDepartment:
+                      Control: Label
+                      Properties:
+                        X: =300
+                        Y: =(Parent.TemplateHeight - Self.Height) / 2
+                        Width: =250
+                        Height: =20
+                        ZIndex: =3
+                        Text: =ThisItem.Department
+                        VerticalAlign: =VerticalAlign.Middle
+                        Size: =12
+                        Color: =RGBA(80, 80, 80, 1)
+                  
+                  - lblPosition:
+                      Control: Label
+                      Properties:
+                        X: =550
+                        Y: =(Parent.TemplateHeight - Self.Height) / 2
+                        Width: =Parent.Width - 600
+                        Height: =20
+                        ZIndex: =4
+                        Text: =ThisItem.Position
+                        VerticalAlign: =VerticalAlign.Middle
+                        Size: =12
+                        Color: =RGBA(80, 80, 80, 1)
+                  
+                  - iconDelete:
+                      Control: Icon
+                      Properties:
+                        X: =Parent.Width - 35
+                        Y: =(Parent.TemplateHeight - Self.Height) / 2
+                        Width: =20
+                        Height: =20
+                        ZIndex: =5
+                        Icon: =Trash
+                        Color: =RGBA(209, 209, 209, 1)
+                        OnSelect: =OnDeleteCC(ThisItem) 

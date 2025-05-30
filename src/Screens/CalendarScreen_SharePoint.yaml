@@ -32,7 +32,7 @@ Screens:
             OnNavigate: =Set(varNavigateAction, true)
             
       - 'Calendar.Content.Container':
-          Control: GroupContainer
+          Control: Rectangle
           Variant: ManualLayout
           Properties:
             X: ='Calendar.Navigation'.X + 'Calendar.Navigation'.Width
@@ -43,7 +43,7 @@ Screens:
           Children:
             # Calendar Header Controls
             - 'Calendar.Controls.Container':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.X + Parent.Width * 0.03
@@ -66,7 +66,7 @@ Screens:
                         
                   # Month/Year Navigation
                   - 'Calendar.Controls.MonthYear.Container':
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         X: =Parent.X
@@ -129,7 +129,7 @@ Screens:
                               
                   # View Controls
                   - 'Calendar.Controls.View.Container':
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         X: =Parent.Width * 0.45
@@ -139,7 +139,7 @@ Screens:
                       Children:
                         # View Type Filter
                         - 'Calendar.Controls.ViewType.Container':
-                            Control: GroupContainer
+                            Control: Rectangle
                             Variant: ManualLayout
                             Properties:
                               X: =Parent.X
@@ -184,7 +184,7 @@ Screens:
                                     
                         # Department Filter (if applicable)
                         - 'Calendar.Controls.Department.Container':
-                            Control: GroupContainer
+                            Control: Rectangle
                             Variant: ManualLayout
                             Properties:
                               X: =Parent.Width * 0.5
@@ -231,7 +231,7 @@ Screens:
                                     
                         # Legend
                         - 'Calendar.Controls.Legend.Container':
-                            Control: GroupContainer
+                            Control: Rectangle
                             Variant: ManualLayout
                             Properties:
                               X: =Parent.X
@@ -265,7 +265,7 @@ Screens:
                                     
             # Calendar Grid
             - 'Calendar.Grid.Container':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.X + Parent.Width * 0.03
@@ -279,7 +279,7 @@ Screens:
                 Children:
                   # Calendar Header (Days of Week)
                   - 'Calendar.Grid.Header':
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         X: =Parent.X + Parent.Width * 0.01
@@ -414,40 +414,39 @@ Screens:
                         Items: =Sequence(42, 1)
                         TemplateSize: =Self.Height / 6
                         TemplatePadding: =0
-                        WrapCount: =7
                         Fill: =RGBA(0, 0, 0, 0)
                       Children:
                         - 'Calendar.Grid.Days.Cell':
-                            Control: GroupContainer
+                            Control: Rectangle
                             Variant: ManualLayout
                             Properties:
                               X: =Parent.TemplateX
                               Y: =Parent.TemplateY
                               Width: =Parent.TemplateWidth
                               Height: =Parent.TemplateHeight
-                              Fill: =With({
+                              Fill: |
+                                =With({
                                 dayNumber: ThisItem - varFirstDayOfWeek + 1,
                                 isCurrentMonth: And(ThisItem >= varFirstDayOfWeek, ThisItem < varFirstDayOfWeek + varDaysInMonth),
                                 currentDate: Date(varSelectedYear, varSelectedMonth, ThisItem - varFirstDayOfWeek + 1),
                                 isToday: currentDate = Today(),
                                 isHoliday: currentDate in varHolidays.Ngay,
-                                isWeekend: Weekday(currentDate, StartOfWeek.Monday) in [6, 7]
-                              },
-                              If(isToday, RGBA(33, 150, 243, 0.1),
-                                If(isHoliday, RGBA(244, 67, 54, 0.1),
-                                  If(isWeekend, RGBA(248, 250, 252, 1),
-                                    If(isCurrentMonth, RGBA(255, 255, 255, 1), RGBA(248, 250, 252, 0.5))))))
+                                isWeekend: Weekday(currentDate, StartOfWeek.Monday) in [6, 7]},
+                                If(isToday, RGBA(33, 150, 243, 0.1),
+                                  If(isHoliday, RGBA(244, 67, 54, 0.1),
+                                    If(isWeekend, RGBA(248, 250, 252, 1),
+                                      If(isCurrentMonth, RGBA(255, 255, 255, 1), RGBA(248, 250, 252, 0.5))))))
                               BorderColor: =RGBA(229, 231, 235, 1)
                               BorderThickness: =Parent.Width * 0.0003
-                              OnSelect: =With({
+                              OnSelect: |
+                                =With({
                                 dayNumber: ThisItem - varFirstDayOfWeek + 1,
                                 isCurrentMonth: And(ThisItem >= varFirstDayOfWeek, ThisItem < varFirstDayOfWeek + varDaysInMonth),
-                                selectedDate: Date(varSelectedYear, varSelectedMonth, ThisItem - varFirstDayOfWeek + 1)
-                              },
-                              If(isCurrentMonth,
-                                Set(varSelectedDate, selectedDate);
-                                Set(varDayLeaves, Filter(varMonthLeaves, 
-                                  And(selectedDate >= NgayBatDau, selectedDate <= NgayKetThuc)));
+                                selectedDate: Date(varSelectedYear, varSelectedMonth, ThisItem - varFirstDayOfWeek + 1)},
+                                If(isCurrentMonth,
+                                  Set(varSelectedDate, selectedDate);
+                                  Set(varDayLeaves, Filter(varMonthLeaves, 
+                                    And(selectedDate >= NgayBatDau, selectedDate <= NgayKetThuc)));
                                 Set(varShowDayDetails, true)))
                             Children:
                               # Day Number
@@ -458,29 +457,29 @@ Screens:
                                     Y: =Parent.Y + Parent.Height * 0.05
                                     Width: =Parent.Width * 0.3
                                     Height: =Parent.Height * 0.25
-                                    Text: =With({
+                                    Text: |
+                                      =With({
                                       dayNumber: ThisItem - varFirstDayOfWeek + 1,
-                                      isCurrentMonth: And(ThisItem >= varFirstDayOfWeek, ThisItem < varFirstDayOfWeek + varDaysInMonth)
-                                    },
-                                    If(isCurrentMonth, Text(dayNumber), ""))
-                                    Color: =With({
+                                      isCurrentMonth: And(ThisItem >= varFirstDayOfWeek, ThisItem < varFirstDayOfWeek + varDaysInMonth)},
+                                      If(isCurrentMonth, Text(dayNumber), ""))
+                                    Color: |
+                                      =With({
                                       dayNumber: ThisItem - varFirstDayOfWeek + 1,
                                       isCurrentMonth: And(ThisItem >= varFirstDayOfWeek, ThisItem < varFirstDayOfWeek + varDaysInMonth),
                                       currentDate: Date(varSelectedYear, varSelectedMonth, ThisItem - varFirstDayOfWeek + 1),
                                       isToday: currentDate = Today(),
                                       isHoliday: CountRows(Filter(varHolidays, Text(currentDate, "dd/mm") = Ngay)) > 0,
-                                      isWeekend: Weekday(currentDate, StartOfWeek.Monday) in [6, 7]
-                                    },
-                                    If(isToday, RGBA(33, 150, 243, 1),
-                                      If(isHoliday, RGBA(244, 67, 54, 1),
-                                        If(isWeekend, RGBA(244, 67, 54, 1),
-                                          RGBA(55, 65, 81, 1)))))
+                                      isWeekend: Weekday(currentDate, StartOfWeek.Monday) in [6, 7]},
+                                      If(isToday, RGBA(33, 150, 243, 1),
+                                        If(isHoliday, RGBA(244, 67, 54, 1),
+                                          If(isWeekend, RGBA(244, 67, 54, 1),
+                                            RGBA(55, 65, 81, 1)))))
                                     Font: =Font.'Open Sans'
-                                    FontWeight: =With({
+                                    FontWeight: |
+                                      =With({
                                       currentDate: Date(varSelectedYear, varSelectedMonth, ThisItem - varFirstDayOfWeek + 1),
-                                      isToday: currentDate = Today()
-                                    },
-                                    If(isToday, FontWeight.Bold, FontWeight.Normal))
+                                      isToday: currentDate = Today()},
+                                      If(isToday, FontWeight.Bold, FontWeight.Normal))
                                     Size: =Parent.Height * 0.15
                                     
                               # Leave Indicators
@@ -491,19 +490,19 @@ Screens:
                                     Y: =Parent.Y + Parent.Height * 0.3
                                     Width: =Parent.Width * 0.9
                                     Height: =Parent.Height * 0.65
-                                    Text: =With({
+                                    Text: |
+                                      =With({
                                       dayNumber: ThisItem - varFirstDayOfWeek + 1,
                                       isCurrentMonth: And(ThisItem >= varFirstDayOfWeek, ThisItem < varFirstDayOfWeek + varDaysInMonth),
                                       currentDate: Date(varSelectedYear, varSelectedMonth, ThisItem - varFirstDayOfWeek + 1),
-                                      dayLeaves: Filter(varMonthLeaves, And(currentDate >= NgayBatDau, currentDate <= NgayKetThuc))
-                                    },
-                                    If(And(isCurrentMonth, CountRows(dayLeaves) > 0),
-                                      Concatenate(
-                                        If(CountRows(Filter(dayLeaves, TrangThai = "DaDuyet")) > 0, "🟢", ""),
-                                        If(CountRows(Filter(dayLeaves, TrangThai in ["ChoDuyetCap1", "ChoDuyetCap2", "ChoDuyetCap3"])) > 0, "🟡", ""),
-                                        Char(10),
-                                        Left(Concat(dayLeaves, LookUp(NguoiDung, MaNhanVien = ThisRecord.MaNhanVien).HoTen & Char(10)), 50)
-                                      ), ""))
+                                      dayLeaves: Filter(varMonthLeaves, And(currentDate >= NgayBatDau, currentDate <= NgayKetThuc))},
+                                      If(And(isCurrentMonth, CountRows(dayLeaves) > 0),
+                                        Concatenate(
+                                          If(CountRows(Filter(dayLeaves, TrangThai = "DaDuyet")) > 0, "🟢", ""),
+                                          If(CountRows(Filter(dayLeaves, TrangThai in ["ChoDuyetCap1", "ChoDuyetCap2", "ChoDuyetCap3"])) > 0, "🟡", ""),
+                                          Char(10),
+                                          Left(Concat(dayLeaves, LookUp(NguoiDung, MaNhanVien = ThisRecord.MaNhanVien).HoTen & Char(10)), 50)
+                                        ), ""))
                                     Color: =RGBA(55, 65, 81, 1)
                                     Font: =Font.'Open Sans'
                                     Size: =Parent.Height * 0.08
@@ -521,7 +520,7 @@ Screens:
             OnSelect: =Set(varShowDayDetails, false)
             
       - 'Calendar.DayDetails.Modal':
-          Control: GroupContainer
+          Control: Rectangle
           Variant: ManualLayout
           Properties:
             X: =(Parent.Width - Self.Width) / 2
@@ -535,7 +534,7 @@ Screens:
             Visible: =varShowDayDetails
           Children:
             - 'Calendar.DayDetails.Header':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.X + Parent.Width * 0.04
@@ -574,7 +573,7 @@ Screens:
                         OnClick: =Set(varShowDayDetails, false)
                         
             - 'Calendar.DayDetails.Content':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.X + Parent.Width * 0.04
@@ -597,7 +596,7 @@ Screens:
                         Fill: =RGBA(0, 0, 0, 0)
                       Children:
                         - 'Calendar.DayDetails.LeavesList.Item':
-                            Control: GroupContainer
+                            Control: Rectangle
                             Variant: ManualLayout
                             Properties:
                               X: =Parent.TemplateX

@@ -237,12 +237,12 @@ DemoData:
     LeaveRules:
       - DaysRange: "0.5-2"
         AdvanceNotice: 1
-        Description: "Nghỉ 0.5-2 ngày: báo trước 1 ngày"
+        Description: "Nghỉ 0.5-2 ngày:báo trước 1 ngày"
         
       - DaysRange: "3-4"
         AdvanceNotice: 7
-        Description: "Nghỉ 3-4 ngày: báo trước 7 ngày"
+        Description: "Nghỉ 3-4 ngày:báo trước 7 ngày"
         
       - DaysRange: "5+"
         AdvanceNotice: 14
-        Description: "Nghỉ từ 5 ngày: báo trước 14 ngày" 
+        Description: "Nghỉ từ 5 ngày:báo trước 14 ngày" 

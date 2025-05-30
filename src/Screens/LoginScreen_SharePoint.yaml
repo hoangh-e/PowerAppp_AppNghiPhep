@@ -20,7 +20,7 @@ Screens:
             Fill: =RGBA(33, 150, 243, 1)
             
       - 'Login.Container':
-          Control: GroupContainer
+          Control: Rectangle
           Variant: ManualLayout
           Properties:
             X: =(Parent.Width - Self.Width) / 2
@@ -70,7 +70,7 @@ Screens:
                   
             # Authentication Section
             - 'Login.Auth.Container':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.X + Parent.Width * 0.075
@@ -81,7 +81,7 @@ Screens:
                 Children:
                   # Current User Display (if already authenticated)
                   - 'Login.UserInfo.Container':
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         X: =Parent.X
@@ -219,7 +219,7 @@ Screens:
                         
             # Error Message
             - 'Login.Error.Container':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.X + Parent.Width * 0.075
@@ -252,7 +252,7 @@ Screens:
                         
             # System Information
             - 'Login.System.Info':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.X + Parent.Width * 0.05

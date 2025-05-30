@@ -32,7 +32,7 @@
             OnNavigate: =Set(varNavigateAction, true)
             
       - 'LeaveConfirmation.Content.Container':
-          Control: GroupContainer
+          Control: Rectangle
           Variant: ManualLayout
           Properties:
             X: ='LeaveConfirmation.Navigation'.X + 'LeaveConfirmation.Navigation'.Width
@@ -55,7 +55,7 @@
                   Size: =24
                   
             - 'LeaveConfirmation.Stats.Container':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.X + 30
@@ -106,7 +106,7 @@
                         Subtitle: ="膼茫 ph锚 duy峄噒"
                         
             - 'LeaveConfirmation.Main.Container':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.X + 30
@@ -115,7 +115,7 @@
                   Height: =Parent.Height - 180
                 Children:
                   - 'LeaveConfirmation.List.Container':
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         X: =Parent.X
@@ -141,7 +141,7 @@
                               Size: =16
                               
                         - 'LeaveConfirmation.Filter.Container':
-                            Control: GroupContainer
+                            Control: Rectangle
                             Variant: ManualLayout
                             Properties:
                               X: =Parent.X + 20
@@ -170,7 +170,7 @@
                                     Width: =150
                                     Height: =30
                                     Items: =["T岷 c岷?, "Ch峄?ghi nh岷璶", "膼茫 ghi nh岷璶"]
-                                    Default: ="T岷 c岷?
+                                    Default:="T岷 c岷?
                                     BorderColor: =RGBA(230, 230, 230, 1)
                                     Font: =Font.'Open Sans'
                                     Size: =12
@@ -190,7 +190,7 @@
                               TemplatePadding: =10
                             Children:
                               - 'Gallery.Leave.Container':
-                                  Control: GroupContainer
+                                  Control: Rectangle
                                   Variant: ManualLayout
                                   Properties:
                                     X: =0
@@ -203,7 +203,7 @@
                                     OnSelect: =Set(varSelectedLeave, ThisItem)
                                   Children:
                                     - 'Gallery.Leave.Header':
-                                        Control: GroupContainer
+                                        Control: Rectangle
                                         Variant: ManualLayout
                                         Properties:
                                           X: =Parent.X + 15
@@ -270,13 +270,13 @@
                                           Y: ='Gallery.Leave.Period'.Y + 'Gallery.Leave.Period'.Height + 2
                                           Width: =Parent.Width - 30
                                           Height: =18
-                                          Text: =ThisItem.Type & " 鈥?Duy峄噒: " & ThisItem.ApprovedDate
+                                          Text: =ThisItem.Type & " 鈥?Duy峄噒:" & ThisItem.ApprovedDate
                                           Color: =RGBA(108, 117, 125, 1)
                                           Font: =Font.'Open Sans'
                                           Size: =10
                                           
                   - 'LeaveConfirmation.Detail.Container':
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         X: ='LeaveConfirmation.List.Container'.X + 'LeaveConfirmation.List.Container'.Width + 20
@@ -303,7 +303,7 @@
                               Size: =16
                               
                         - 'LeaveConfirmation.Detail.Info.Container':
-                            Control: GroupContainer
+                            Control: Rectangle
                             Variant: ManualLayout
                             Properties:
                               X: =Parent.X + 20
@@ -319,7 +319,7 @@
                                     Y: =Parent.Y + 15
                                     Width: =Parent.Width - 30
                                     Height: =80
-                                    Text: ="馃搵 M茫 膽啤n:" & " " & "" & varSelectedLeave.ID & Char(10) & "馃懁 Nh芒n vi锚n: " & varSelectedLeave.EmployeeName & Char(10) & "馃彚 Ph貌ng ban: " & varSelectedLeave.Department & Char(10) & "馃搮 Th峄漣 gian: " & varSelectedLeave.StartDate & " - " & varSelectedLeave.EndDate
+                                    Text: ="馃搵 M茫 膽啤n:" & " " & "" & varSelectedLeave.ID & Char(10) & "馃懁 Nh芒n vi锚n:" & varSelectedLeave.EmployeeName & Char(10) & "馃彚 Ph貌ng ban:" & varSelectedLeave.Department & Char(10) & "馃搮 Th峄漣 gian:" & varSelectedLeave.StartDate & " - " & varSelectedLeave.EndDate
                                     Color: =RGBA(32, 54, 71, 1)
                                     Font: =Font.'Open Sans'
                                     Size: =12
@@ -331,7 +331,7 @@
                                     Y: ='LeaveConfirmation.Detail.LeaveInfo'.Y + 'LeaveConfirmation.Detail.LeaveInfo'.Height + 10
                                     Width: =Parent.Width - 30
                                     Height: =60
-                                    Text: ="鈴?S峄?ng脿y:" & " " & "" & varSelectedLeave.Days & " ng脿y" & Char(10) & "馃摑 Lo岷: " & varSelectedLeave.Type & Char(10) & "鉁?Ng脿y ph锚 duy峄噒: " & varSelectedLeave.ApprovedDate
+                                    Text: ="鈴?S峄?ng脿y:" & " " & "" & varSelectedLeave.Days & " ng脿y" & Char(10) & "馃摑 Lo岷:" & varSelectedLeave.Type & Char(10) & "鉁?Ng脿y ph锚 duy峄噒:" & varSelectedLeave.ApprovedDate
                                     Color: =RGBA(32, 54, 71, 1)
                                     Font: =Font.'Open Sans'
                                     Size: =12
@@ -380,7 +380,7 @@
                               DisplayMode: =If(varSelectedLeave.ConfirmationStatus = "Confirmed", DisplayMode.Disabled, DisplayMode.Edit)
                               
                         - 'LeaveConfirmation.Detail.Actions.Container':
-                            Control: GroupContainer
+                            Control: Rectangle
                             Variant: ManualLayout
                             Properties:
                               X: =Parent.X + 20
@@ -407,7 +407,7 @@
                                       =Set(varIsProcessing, true); If(Not(IsBlank(varSelectedLeave)), Set(varApprovedLeaves, ForAll(varApprovedLeaves, If(ID = varSelectedLeave.ID, {ID: ID, EmployeeID: EmployeeID, EmployeeName: EmployeeName, Department: Department, StartDate: StartDate, EndDate: EndDate, Days: Days, Type: Type, Status: Status, ApprovedDate: ApprovedDate, ConfirmationStatus: "Confirmed"}, ThisRecord))); Notify("膼茫 x谩c nh岷璶 ngh峄?ph茅p cho " & varSelectedLeave.EmployeeName & "!", NotificationType.Success); Set(varSelectedLeave, Blank()); Set(varConfirmationNote, ""); Set(varIsProcessing, false), Notify("Vui l貌ng ch峄峮 膽啤n c岷 x谩c nh岷璶!", NotificationType.Error); Set(varIsProcessing, false))
                                       
                   - 'LeaveConfirmation.NoSelection.Container':
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         X: ='LeaveConfirmation.List.Container'.X + 'LeaveConfirmation.List.Container'.Width + 20

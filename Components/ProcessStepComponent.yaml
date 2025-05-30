@@ -32,7 +32,7 @@ ComponentDefinitions:
       Width: =Parent.Width
     Children:
       - StepContainer:
-          Control: GroupContainer
+          Control: Rectangle
           Variant: ManualLayout
           Properties:
             X: =0
@@ -43,7 +43,7 @@ ComponentDefinitions:
             Fill: =If(ThisComponent.IsActive, RGBA(243, 243, 243, 1), RGBA(255, 255, 255, 1))
           Children:
             - StepNumberContainer:
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =5

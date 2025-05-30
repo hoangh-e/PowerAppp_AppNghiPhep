@@ -32,7 +32,7 @@ Screens:
             OnNavigate: =Set(varNavigateAction, true)
             
       - 'Approval.Content.Container':
-          Control: GroupContainer
+          Control: Rectangle
           Variant: ManualLayout
           Properties:
             X: ='Approval.Navigation'.X + 'Approval.Navigation'.Width
@@ -43,7 +43,7 @@ Screens:
           Children:
             # Page Title & Stats
             - 'Approval.Content.Header':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.X + Parent.Width * 0.03
@@ -71,18 +71,18 @@ Screens:
                         Y: ='Approval.Content.Title'.Y + 'Approval.Content.Title'.Height
                         Width: =Parent.Width * 0.6
                         Height: =Parent.Height * 0.35
-                        Text: =Concatenate(
-                          "Cấp phê duyệt: ", varMyApprovalLevel, 
-                          " | Đơn chờ xử lý: ", CountRows(varPendingRequests),
-                          " | Vai trò: ", LookUp(VaiTro, MaVaiTro = varCurrentUser.MaVaiTro).TenVaiTro
-                        )
+                        Text: |
+                          =Concatenate(
+                          "Cấp phê duyệt:", varMyApprovalLevel, 
+                          " | Đơn chờ xử lý:", CountRows(varPendingRequests),
+                          " | Vai trò:", LookUp(VaiTro, MaVaiTro = varCurrentUser.MaVaiTro).TenVaiTro)
                         Color: =RGBA(108, 117, 125, 1)
                         Font: =Font.'Open Sans'
                         Size: =Parent.Height * 0.15
                         
                   # Filter Controls
                   - 'Approval.Content.FilterContainer':
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         X: =Parent.Width * 0.65
@@ -115,7 +115,7 @@ Screens:
                               
             # Requests List
             - 'Approval.RequestsList.Container':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.X + Parent.Width * 0.03
@@ -128,7 +128,7 @@ Screens:
                   DropShadow: =DropShadow.Light
                 Children:
                   - 'Approval.RequestsList.Header':
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         X: =Parent.X + Parent.Width * 0.02
@@ -233,7 +233,7 @@ Screens:
                         Fill: =RGBA(0, 0, 0, 0)
                       Children:
                         - 'Approval.RequestsList.Gallery.Row':
-                            Control: GroupContainer
+                            Control: Rectangle
                             Variant: ManualLayout
                             Properties:
                               X: =Parent.TemplateX
@@ -246,7 +246,7 @@ Screens:
                             Children:
                               # Employee Info
                               - 'Approval.RequestsList.Gallery.Employee':
-                                  Control: GroupContainer
+                                  Control: Rectangle
                                   Variant: ManualLayout
                                   Properties:
                                     X: =Parent.X + Parent.Width * 0.02
@@ -306,7 +306,7 @@ Screens:
                                     
                               # Date Range
                               - 'Approval.RequestsList.Gallery.DateRange':
-                                  Control: GroupContainer
+                                  Control: Rectangle
                                   Variant: ManualLayout
                                   Properties:
                                     X: =Parent.Width * 0.35
@@ -417,7 +417,7 @@ Screens:
                                     
                               # Action Buttons
                               - 'Approval.RequestsList.Gallery.Actions':
-                                  Control: GroupContainer
+                                  Control: Rectangle
                                   Variant: ManualLayout
                                   Properties:
                                     X: =Parent.Width * 0.8
@@ -531,7 +531,7 @@ Screens:
             OnSelect: =Set(varShowApprovalModal, false)
             
       - 'Approval.Modal.Container':
-          Control: GroupContainer
+          Control: Rectangle
           Variant: ManualLayout
           Properties:
             X: =(Parent.Width - Self.Width) / 2
@@ -546,7 +546,7 @@ Screens:
           Children:
             # Modal Header
             - 'Approval.Modal.Header':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.X
@@ -590,7 +590,7 @@ Screens:
                         
             # Request Details
             - 'Approval.Modal.RequestDetails':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.X + Parent.Width * 0.03
@@ -606,9 +606,8 @@ Screens:
                         Width: =Parent.Width
                         Height: =Parent.Height * 0.2
                         Text: =Concatenate(
-                          "Nhân viên: ", LookUp(NguoiDung, MaNhanVien = varSelectedRequest.MaNhanVien).HoTen,
-                          " (", varSelectedRequest.MaNhanVien, ")"
-                        )
+                          "Nhân viên:", LookUp(NguoiDung, MaNhanVien = varSelectedRequest.MaNhanVien).HoTen,
+                          " (", varSelectedRequest.MaNhanVien, ")")
                         Color: =RGBA(32, 54, 71, 1)
                         Font: =Font.'Open Sans'
                         FontWeight: =FontWeight.Semibold
@@ -622,10 +621,10 @@ Screens:
                         Width: =Parent.Width
                         Height: =Parent.Height * 0.6
                         Text: =Concatenate(
-                          "Loại nghỉ: ", LookUp(LoaiNghi, MaLoai = varSelectedRequest.MaLoai).TenLoai, Char(10),
-                          "Thời gian: ", Text(varSelectedRequest.NgayBatDau, "dd/mm/yyyy"), " - ", Text(varSelectedRequest.NgayKetThuc, "dd/mm/yyyy"), Char(10),
-                          "Số ngày: ", varSelectedRequest.SoNgayNghi, " ngày", Char(10),
-                          "Lý do: ", varSelectedRequest.LyDo
+                          "Loại nghỉ:", LookUp(LoaiNghi, MaLoai = varSelectedRequest.MaLoai).TenLoai, Char(10),
+                          "Thời gian:", Text(varSelectedRequest.NgayBatDau, "dd/mm/yyyy"), " - ", Text(varSelectedRequest.NgayKetThuc, "dd/mm/yyyy"), Char(10),
+                          "Số ngày:", varSelectedRequest.SoNgayNghi, " ngày", Char(10),
+                          "Lý do:", varSelectedRequest.LyDo
                         )
                         Color: =RGBA(55, 65, 81, 1)
                         Font: =Font.'Open Sans'
@@ -638,7 +637,7 @@ Screens:
                         Y: ='Approval.Modal.LeaveDetails'.Y + 'Approval.Modal.LeaveDetails'.Height
                         Width: =Parent.Width
                         Height: =Parent.Height * 0.2
-                        Text: =Concatenate("Trạng thái hiện tại: ", varSelectedRequest.TrangThai)
+                        Text: =Concatenate("Trạng thái hiện tại:", varSelectedRequest.TrangThai)
                         Color: =RGBA(107, 114, 128, 1)
                         Font: =Font.'Open Sans'
                         FontWeight: =FontWeight.Semibold
@@ -646,7 +645,7 @@ Screens:
                         
             # Comment Section
             - 'Approval.Modal.CommentSection':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.X + Parent.Width * 0.03
@@ -689,7 +688,7 @@ Screens:
                         
             # Action Buttons
             - 'Approval.Modal.Actions':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.X + Parent.Width * 0.03

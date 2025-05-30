@@ -106,7 +106,7 @@
             
       # Main Header Container
       - 'Header.Container':
-          Control: GroupContainer
+          Control: Rectangle
           Variant: ManualLayout
           Properties:
             X: =Parent.X
@@ -131,7 +131,7 @@
                   
             # Brand Section
             - 'Header.Brand.Container':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.X + 'Header.DesignSystem'.Space4
@@ -164,7 +164,7 @@
                         
             # Search Section (Desktop only)
             - 'Header.Search.Container':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: ='Header.Brand.Container'.X + 'Header.Brand.Container'.Width + 'Header.DesignSystem'.Space6
@@ -203,7 +203,7 @@
                         
             # Actions Section
             - 'Header.Actions.Container':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.Width - Self.Width - 'Header.DesignSystem'.Space4
@@ -213,7 +213,7 @@
                 Children:
                   # Notification Center
                   - 'Header.Notification.Container':
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         X: =Parent.X
@@ -263,7 +263,7 @@
                               
                   # User Profile Section
                   - 'Header.UserProfile.Container':
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         X: ='Header.Notification.Container'.X + 'Header.Notification.Container'.Width + 'Header.DesignSystem'.Space3
@@ -305,7 +305,7 @@
                               
                         # User Info (Desktop only)
                         - 'Header.User.Info.Container':
-                            Control: GroupContainer
+                            Control: Rectangle
                             Variant: ManualLayout
                             Properties:
                               X: ='Header.User.Avatar'.X + 'Header.User.Avatar'.Width + 'Header.DesignSystem'.Space2
@@ -353,7 +353,7 @@
                               
                   # Mobile Menu Button (Mobile only)
                   - 'Header.Mobile.Menu.Button':
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         X: =Parent.Width - Self.Width

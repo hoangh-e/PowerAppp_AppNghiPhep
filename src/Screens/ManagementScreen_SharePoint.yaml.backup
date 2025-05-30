@@ -1,0 +1,431 @@
+Screens:
+  ManagementScreen:
+    Properties:
+      Fill: =RGBA(248, 250, 252, 1)
+      OnVisible: |
+                    =Set(varActiveScreen, "Management");
+                    Set(varCurrentUser, LookUp(NguoiDung, Email = User().Email));
+                    Set(varManagementTab, "Users");
+                    Set(varCanManage, varCurrentUser.MaVaiTro in ["HR", "ADMIN"]);
+                    Set(varSelectedUser, {});
+                    Set(varSelectedDepartment, {});
+                    Set(varSelectedLeaveType, {});
+                    Set(varShowUserModal, false);
+                    Set(varShowDepartmentModal, false);
+                    Set(varShowLeaveTypeModal, false);
+                    Set(varEditMode, false)
+    Children:
+      - 'Management.Header':
+          Control: CanvasComponent
+          ComponentName: HeaderComponent
+          Properties:
+            X: =Parent.X
+            Y: =Parent.Y
+            Width: =Parent.Width
+            Height: =Parent.Height * 0.06
+            UserName: =varCurrentUser.HoTen
+            UserRole: =varCurrentUser.MaVaiTro
+            ShowNotification: =true
+            NotificationCount: =0
+            
+      - 'Management.Navigation':
+          Control: CanvasComponent
+          ComponentName: NavigationComponent
+          Properties:
+            X: =Parent.X
+            Y: ='Management.Header'.Y + 'Management.Header'.Height
+            Width: =If(App.Width < 768, 
+              If(varMobileMenuOpen, Parent.Width * 0.75, Parent.Width * 0.001),
+              If(varNavCollapsed, Parent.Width * 0.06, Parent.Width * 0.2))
+            Height: =Parent.Height - 'Management.Header'.Height
+            UserRole: =varCurrentUser.MaVaiTro
+            ActiveScreen: =varActiveScreen
+            OnNavigate: =Set(varNavigateAction, true)
+            
+      - 'Management.Content.Container':
+          Control: GroupContainer
+          Variant: ManualLayout
+          Properties:
+            X: ='Management.Navigation'.X + 'Management.Navigation'.Width
+            Y: ='Management.Header'.Y + 'Management.Header'.Height
+            Width: =Parent.Width - 'Management.Navigation'.Width
+            Height: =Parent.Height - 'Management.Header'.Height
+            Fill: =RGBA(248, 250, 252, 1)
+            Visible: =varCanManage
+          Children:
+            # Management Tabs
+            - 'Management.Tabs.Container':
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =Parent.X + Parent.Width * 0.03
+                  Y: =Parent.Y + Parent.Height * 0.02
+                  Width: =Parent.Width * 0.94
+                  Height: =Parent.Height * 0.08
+                  Fill: =RGBA(255, 255, 255, 1)
+                  BorderColor: =RGBA(230, 230, 230, 1)
+                  BorderThickness: =Parent.Width * 0.001
+                  DropShadow: =DropShadow.Light
+                Children:
+                  - 'Management.Tabs.Users':
+                      Control: CanvasComponent
+                      ComponentName: ButtonComponent
+                      Properties:
+                        X: =Parent.X + Parent.Width * 0.02
+                        Y: =Parent.Y + (Parent.Height - Self.Height) / 2
+                        Width: =Parent.Width * 0.15
+                        Height: =Parent.Height * 0.7
+                        Text: ="Nhân viên"
+                        Variant: =If(varManagementTab = "Users", "Primary", "Ghost")
+                        Size: ="Medium"
+                        OnClick: =Set(varManagementTab, "Users")
+                        
+                  - 'Management.Tabs.Departments':
+                      Control: CanvasComponent
+                      ComponentName: ButtonComponent
+                      Properties:
+                        X: =Parent.X + Parent.Width * 0.18
+                        Y: =Parent.Y + (Parent.Height - Self.Height) / 2
+                        Width: =Parent.Width * 0.15
+                        Height: =Parent.Height * 0.7
+                        Text: ="Phòng ban"
+                        Variant: =If(varManagementTab = "Departments", "Primary", "Ghost")
+                        Size: ="Medium"
+                        OnClick: =Set(varManagementTab, "Departments")
+                        
+                  - 'Management.Tabs.LeaveTypes':
+                      Control: CanvasComponent
+                      ComponentName: ButtonComponent
+                      Properties:
+                        X: =Parent.X + Parent.Width * 0.34
+                        Y: =Parent.Y + (Parent.Height - Self.Height) / 2
+                        Width: =Parent.Width * 0.15
+                        Height: =Parent.Height * 0.7
+                        Text: ="Loại nghỉ"
+                        Variant: =If(varManagementTab = "LeaveTypes", "Primary", "Ghost")
+                        Size: ="Medium"
+                        OnClick: =Set(varManagementTab, "LeaveTypes")
+                        
+                  - 'Management.Tabs.Settings':
+                      Control: CanvasComponent
+                      ComponentName: ButtonComponent
+                      Properties:
+                        X: =Parent.X + Parent.Width * 0.5
+                        Y: =Parent.Y + (Parent.Height - Self.Height) / 2
+                        Width: =Parent.Width * 0.15
+                        Height: =Parent.Height * 0.7
+                        Text: ="Cấu hình"
+                        Variant: =If(varManagementTab = "Settings", "Primary", "Ghost")
+                        Size: ="Medium"
+                        OnClick: =Set(varManagementTab, "Settings")
+                        
+            # Tab Content
+            - 'Management.TabContent.Container':
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =Parent.X + Parent.Width * 0.03
+                  Y: ='Management.Tabs.Container'.Y + 'Management.Tabs.Container'.Height + Parent.Height * 0.02
+                  Width: =Parent.Width * 0.94
+                  Height: =Parent.Height * 0.82
+                Children:
+                  # Users Tab
+                  - 'Management.Users.Container':
+                      Control: GroupContainer
+                      Variant: ManualLayout
+                      Properties:
+                        X: =Parent.X
+                        Y: =Parent.Y
+                        Width: =Parent.Width
+                        Height: =Parent.Height
+                        Fill: =RGBA(255, 255, 255, 1)
+                        BorderColor: =RGBA(230, 230, 230, 1)
+                        BorderThickness: =Parent.Width * 0.001
+                        DropShadow: =DropShadow.Light
+                        Visible: =varManagementTab = "Users"
+                      Children:
+                        - 'Management.Users.Header':
+                            Control: GroupContainer
+                            Variant: ManualLayout
+                            Properties:
+                              X: =Parent.X + Parent.Width * 0.02
+                              Y: =Parent.Y + Parent.Height * 0.02
+                              Width: =Parent.Width * 0.96
+                              Height: =Parent.Height * 0.08
+                            Children:
+                              - 'Management.Users.Title':
+                                  Control: Label
+                                  Properties:
+                                    X: =Parent.X
+                                    Y: =Parent.Y
+                                    Width: =Parent.Width * 0.7
+                                    Height: =Parent.Height
+                                    Text: ="Quản lý nhân viên"
+                                    Color: =RGBA(32, 54, 71, 1)
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Bold
+                                    Size: =Parent.Height * 0.4
+                                    
+                              - 'Management.Users.AddButton':
+                                  Control: CanvasComponent
+                                  ComponentName: ButtonComponent
+                                  Properties:
+                                    X: =Parent.Width * 0.75
+                                    Y: =Parent.Y
+                                    Width: =Parent.Width * 0.25
+                                    Height: =Parent.Height
+                                    Text: ="Thêm nhân viên"
+                                    Variant: ="Primary"
+                                    Icon: ="Add"
+                                    Size: ="Medium"
+                                    OnClick: |
+                                                =Set(varSelectedUser, {});
+                                                Set(varEditMode, false);
+                                                Set(varShowUserModal, true)
+                                                
+                        - 'Management.Users.List':
+                            Control: Gallery
+                            Variant: Vertical
+                            Properties:
+                              X: =Parent.X + Parent.Width * 0.02
+                              Y: ='Management.Users.Header'.Y + 'Management.Users.Header'.Height + Parent.Height * 0.02
+                              Width: =Parent.Width * 0.96
+                              Height: =Parent.Height * 0.82
+                              Items: =NguoiDung
+                              TemplateSize: =Self.Height / 12
+                              TemplatePadding: =Self.Height * 0.005
+                              BorderThickness: =0
+                              Fill: =RGBA(0, 0, 0, 0)
+                            Children:
+                              - 'Management.Users.List.Item':
+                                  Control: GroupContainer
+                                  Variant: ManualLayout
+                                  Properties:
+                                    X: =Parent.TemplateX
+                                    Y: =Parent.TemplateY
+                                    Width: =Parent.TemplateWidth
+                                    Height: =Parent.TemplateHeight
+                                    Fill: =If(Mod(Parent.ItemIndex, 2) = 0, RGBA(248, 250, 252, 1), RGBA(255, 255, 255, 1))
+                                    BorderColor: =RGBA(229, 231, 235, 1)
+                                    BorderThickness: =Parent.Width * 0.0005
+                                  Children:
+                                    - 'Management.Users.List.Item.Info':
+                                        Control: Label
+                                        Properties:
+                                          X: =Parent.X + Parent.Width * 0.02
+                                          Y: =Parent.Y + (Parent.Height - Self.Height) / 2
+                                          Width: =Parent.Width * 0.7
+                                          Height: =Parent.Height * 0.8
+                                          Text: =Concatenate(
+                                            ThisItem.HoTen, " (", ThisItem.MaNhanVien, ") | ",
+                                            LookUp(DonVi, MaDonVi = ThisItem.MaDonVi).TenDonVi, " | ",
+                                            ThisItem.MaVaiTro, " | ",
+                                            ThisItem.TrangThai
+                                          )
+                                          Color: =RGBA(55, 65, 81, 1)
+                                          Font: =Font.'Open Sans'
+                                          Size: =Parent.Height * 0.3
+                                          
+                                    - 'Management.Users.List.Item.Actions':
+                                        Control: GroupContainer
+                                        Variant: ManualLayout
+                                        Properties:
+                                          X: =Parent.Width * 0.75
+                                          Y: =Parent.Y + (Parent.Height - Self.Height) / 2
+                                          Width: =Parent.Width * 0.23
+                                          Height: =Parent.Height * 0.8
+                                        Children:
+                                          - 'Management.Users.List.Item.EditButton':
+                                              Control: CanvasComponent
+                                              ComponentName: ButtonComponent
+                                              Properties:
+                                                X: =Parent.X
+                                                Y: =Parent.Y
+                                                Width: =Parent.Width * 0.45
+                                                Height: =Parent.Height
+                                                Text: ="Sửa"
+                                                Variant: ="Ghost"
+                                                Icon: ="Edit"
+                                                Size: ="Small"
+                                                OnClick: |
+                                                            =Set(varSelectedUser, ThisItem);
+                                                            Set(varEditMode, true);
+                                                            Set(varShowUserModal, true)
+                                                            
+                                          - 'Management.Users.List.Item.StatusButton':
+                                              Control: CanvasComponent
+                                              ComponentName: ButtonComponent
+                                              Properties:
+                                                X: =Parent.Width * 0.55
+                                                Y: =Parent.Y
+                                                Width: =Parent.Width * 0.45
+                                                Height: =Parent.Height
+                                                Text: =If(ThisItem.TrangThai = "HoatDong", "Vô hiệu", "Kích hoạt")
+                                                Variant: =If(ThisItem.TrangThai = "HoatDong", "Danger", "Success")
+                                                Size: ="Small"
+                                                OnClick: |
+                                                            =Patch(NguoiDung, 
+                                                              LookUp(NguoiDung, ID = ThisItem.ID),
+                                                              {TrangThai: If(ThisItem.TrangThai = "HoatDong", "KhongHoatDong", "HoatDong")})
+                                                            
+                  # Departments Tab
+                  - 'Management.Departments.Container':
+                      Control: GroupContainer
+                      Variant: ManualLayout
+                      Properties:
+                        X: =Parent.X
+                        Y: =Parent.Y
+                        Width: =Parent.Width
+                        Height: =Parent.Height
+                        Fill: =RGBA(255, 255, 255, 1)
+                        BorderColor: =RGBA(230, 230, 230, 1)
+                        BorderThickness: =Parent.Width * 0.001
+                        DropShadow: =DropShadow.Light
+                        Visible: =varManagementTab = "Departments"
+                      Children:
+                        - 'Management.Departments.Header':
+                            Control: GroupContainer
+                            Variant: ManualLayout
+                            Properties:
+                              X: =Parent.X + Parent.Width * 0.02
+                              Y: =Parent.Y + Parent.Height * 0.02
+                              Width: =Parent.Width * 0.96
+                              Height: =Parent.Height * 0.08
+                            Children:
+                              - 'Management.Departments.Title':
+                                  Control: Label
+                                  Properties:
+                                    X: =Parent.X
+                                    Y: =Parent.Y
+                                    Width: =Parent.Width * 0.7
+                                    Height: =Parent.Height
+                                    Text: ="Quản lý phòng ban"
+                                    Color: =RGBA(32, 54, 71, 1)
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Bold
+                                    Size: =Parent.Height * 0.4
+                                    
+                              - 'Management.Departments.AddButton':
+                                  Control: CanvasComponent
+                                  ComponentName: ButtonComponent
+                                  Properties:
+                                    X: =Parent.Width * 0.75
+                                    Y: =Parent.Y
+                                    Width: =Parent.Width * 0.25
+                                    Height: =Parent.Height
+                                    Text: ="Thêm phòng ban"
+                                    Variant: ="Primary"
+                                    Icon: ="Add"
+                                    Size: ="Medium"
+                                    OnClick: |
+                                                =Set(varSelectedDepartment, {});
+                                                Set(varEditMode, false);
+                                                Set(varShowDepartmentModal, true)
+                                                
+                        - 'Management.Departments.List':
+                            Control: Gallery
+                            Variant: Vertical
+                            Properties:
+                              X: =Parent.X + Parent.Width * 0.02
+                              Y: ='Management.Departments.Header'.Y + 'Management.Departments.Header'.Height + Parent.Height * 0.02
+                              Width: =Parent.Width * 0.96
+                              Height: =Parent.Height * 0.82
+                              Items: =DonVi
+                              TemplateSize: =Self.Height / 10
+                              TemplatePadding: =Self.Height * 0.005
+                              BorderThickness: =0
+                              Fill: =RGBA(0, 0, 0, 0)
+                            Children:
+                              - 'Management.Departments.List.Item':
+                                  Control: GroupContainer
+                                  Variant: ManualLayout
+                                  Properties:
+                                    X: =Parent.TemplateX
+                                    Y: =Parent.TemplateY
+                                    Width: =Parent.TemplateWidth
+                                    Height: =Parent.TemplateHeight
+                                    Fill: =If(Mod(Parent.ItemIndex, 2) = 0, RGBA(248, 250, 252, 1), RGBA(255, 255, 255, 1))
+                                    BorderColor: =RGBA(229, 231, 235, 1)
+                                    BorderThickness: =Parent.Width * 0.0005
+                                  Children:
+                                    - 'Management.Departments.List.Item.Info':
+                                        Control: Label
+                                        Properties:
+                                          X: =Parent.X + Parent.Width * 0.02
+                                          Y: =Parent.Y + (Parent.Height - Self.Height) / 2
+                                          Width: =Parent.Width * 0.75
+                                          Height: =Parent.Height * 0.8
+                                          Text: =Concatenate(
+                                            ThisItem.TenDonVi, " (", ThisItem.MaDonVi, ") | ",
+                                            "NV:", CountRows(Filter(NguoiDung, MaDonVi = ThisItem.MaDonVi)), " | ",
+                                            "Trưởng phòng:", If(IsBlank(ThisItem.TruongPhong), "Chưa có", ThisItem.TruongPhong)
+                                          )
+                                          Color: =RGBA(55, 65, 81, 1)
+                                          Font: =Font.'Open Sans'
+                                          Size: =Parent.Height * 0.3
+                                          
+                                    - 'Management.Departments.List.Item.EditButton':
+                                        Control: CanvasComponent
+                                        ComponentName: ButtonComponent
+                                        Properties:
+                                          X: =Parent.Width * 0.8
+                                          Y: =Parent.Y + (Parent.Height - Self.Height) / 2
+                                          Width: =Parent.Width * 0.18
+                                          Height: =Parent.Height * 0.8
+                                          Text: ="Sửa"
+                                          Variant: ="Ghost"
+                                          Icon: ="Edit"
+                                          Size: ="Small"
+                                          OnClick: |
+                                                      =Set(varSelectedDepartment, ThisItem);
+                                                      Set(varEditMode, true);
+                                                      Set(varShowDepartmentModal, true)
+                                                      
+      # Access Denied
+      - 'Management.AccessDenied.Container':
+          Control: GroupContainer
+          Variant: ManualLayout
+          Properties:
+            X: ='Management.Navigation'.X + 'Management.Navigation'.Width
+            Y: ='Management.Header'.Y + 'Management.Header'.Height
+            Width: =Parent.Width - 'Management.Navigation'.Width
+            Height: =Parent.Height - 'Management.Header'.Height
+            Fill: =RGBA(248, 250, 252, 1)
+            Visible: =Not(varCanManage)
+          Children:
+            - 'Management.AccessDenied.Icon':
+                Control: Classic/Icon
+                Properties:
+                  X: =(Parent.Width - Self.Width) / 2
+                  Y: =Parent.Y + Parent.Height * 0.3
+                  Width: =Parent.Height * 0.1
+                  Height: =Parent.Height * 0.1
+                  Icon: =Icon.Lock
+                  Color: =RGBA(244, 67, 54, 1)
+                  
+            - 'Management.AccessDenied.Title':
+                Control: Label
+                Properties:
+                  X: =Parent.X + Parent.Width * 0.1
+                  Y: ='Management.AccessDenied.Icon'.Y + 'Management.AccessDenied.Icon'.Height + Parent.Height * 0.05
+                  Width: =Parent.Width * 0.8
+                  Height: =Parent.Height * 0.08
+                  Text: ="Không có quyền quản lý"
+                  Color: =RGBA(244, 67, 54, 1)
+                  Font: =Font.'Open Sans'
+                  FontWeight: =FontWeight.Bold
+                  Size: =Parent.Height * 0.04
+                  Align: =Align.Center
+                  
+            - 'Management.AccessDenied.Message':
+                Control: Label
+                Properties:
+                  X: =Parent.X + Parent.Width * 0.1
+                  Y: ='Management.AccessDenied.Title'.Y + 'Management.AccessDenied.Title'.Height
+                  Width: =Parent.Width * 0.8
+                  Height: =Parent.Height * 0.12
+                  Text: ="Chỉ HR và Admin mới có quyền truy cập chức năng quản lý hệ thống."
+                  Color: =RGBA(107, 114, 128, 1)
+                  Font: =Font.'Open Sans'
+                  Size: =Parent.Height * 0.025
+                  Align: =Align.Center 

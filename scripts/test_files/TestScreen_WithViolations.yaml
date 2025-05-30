@@ -5,7 +5,7 @@
       OnVisible: =Set(varTestScreen, true)
     Children:
       - 'Header.Container':
-          Control: GroupContainer
+          Control: Rectangle
           Variant: ManualLayout
           Properties:
             X: =Parent.X
@@ -35,7 +35,7 @@
                   Width: =Parent.Width * 0.6
                   Height: =Parent.Height * 0.5
                   # ❌ Wrong text formatting - space after colon
-                  Text: ="Test Screen: " & "Demo Application"
+                  Text: ="Test Screen:" & "Demo Application"
                   Color: =RGBA(17, 24, 39, 1)
                   Font: =Font.'Open Sans'
                   FontWeight: =FontWeight.Bold
@@ -53,7 +53,7 @@
                   Color: =RGBA(107, 114, 128, 1)
                   
       - 'Content.Container':
-          Control: GroupContainer
+          Control: Rectangle
           Variant: ManualLayout
           Properties:
             X: =Parent.X
@@ -93,7 +93,7 @@
                   Width: ='Content.Card'.Width * 0.7
                   Height: ='Content.Icon.Calendar'.Height
                   # ❌ More wrong text formatting
-                  Text: ="Info: " & "This is a test component with violations"
+                  Text: ="Info:" & "This is a test component with violations"
                   Color: =RGBA(55, 65, 81, 1)
                   Font: =Font.'Open Sans'
                   Size: ='Content.Card'.Height * 0.04
@@ -121,7 +121,7 @@
                   Width: ='Content.Card'.Width * 0.5
                   Height: ='Content.Button.Test'.Height
                   # ❌ Wrong text format again
-                  Text: ="Status: " & "Testing violations detection"
+                  Text: ="Status:" & "Testing violations detection"
                   Color: =RGBA(107, 114, 128, 1)
                   Font: =Font.'Open Sans'
                   Size: ='Content.Card'.Height * 0.035 

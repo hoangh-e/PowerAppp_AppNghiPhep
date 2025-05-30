@@ -43,7 +43,7 @@ ComponentDefinitions:
       Width: =App.Width
     Children:
     - 'Navigation.Container':
-        Control: GroupContainer
+        Control: Rectangle
         Variant: ManualLayout
         Properties:
           X: =Parent.X
@@ -59,7 +59,7 @@ ComponentDefinitions:
         Children:
           # Header Section - Compact
           - 'Navigation.Header.Container':
-              Control: GroupContainer
+              Control: Rectangle
               Variant: ManualLayout
               Properties:
                 X: =Parent.X
@@ -72,7 +72,7 @@ ComponentDefinitions:
               Children:
                 # Logo Section - Compact
                 - 'Navigation.Logo.Container':
-                    Control: GroupContainer
+                    Control: Rectangle
                     Variant: ManualLayout
                     Properties:
                       X: =Parent.X + Parent.Width * 0.03
@@ -144,7 +144,7 @@ ComponentDefinitions:
                       
           # Menu Items Container - Compact
           - 'Navigation.Menu.Container':
-              Control: GroupContainer
+              Control: Rectangle
               Variant: ManualLayout
               Properties:
                 X: =Parent.X
@@ -155,7 +155,7 @@ ComponentDefinitions:
               Children:
                 # Dashboard Menu Item - Compact
                 - 'Navigation.Menu.Dashboard':
-                    Control: GroupContainer
+                    Control: Rectangle
                     Variant: ManualLayout
                     Properties:
                       X: =Parent.X + Parent.Width * 0.015
@@ -217,7 +217,7 @@ ComponentDefinitions:
                             
                 # Leave Request Menu Item - Compact
                 - 'Navigation.Menu.LeaveRequest':
-                    Control: GroupContainer
+                    Control: Rectangle
                     Variant: ManualLayout
                     Properties:
                       X: =Parent.X + Parent.Width * 0.015
@@ -279,7 +279,7 @@ ComponentDefinitions:
                             
                 # My Leaves Menu Item - Compact
                 - 'Navigation.Menu.MyLeaves':
-                    Control: GroupContainer
+                    Control: Rectangle
                     Variant: ManualLayout
                     Properties:
                       X: =Parent.X + Parent.Width * 0.015
@@ -341,7 +341,7 @@ ComponentDefinitions:
                             
                 # Profile Menu Item - Compact
                 - 'Navigation.Menu.Profile':
-                    Control: GroupContainer
+                    Control: Rectangle
                     Variant: ManualLayout
                     Properties:
                       X: =Parent.X + Parent.Width * 0.015
@@ -403,7 +403,7 @@ ComponentDefinitions:
                             
                 # Management Menu Item - Compact (Admin/HR only)
                 - 'Navigation.Menu.Management':
-                    Control: GroupContainer
+                    Control: Rectangle
                     Variant: ManualLayout
                     Properties:
                       X: =Parent.X + Parent.Width * 0.015
@@ -466,7 +466,7 @@ ComponentDefinitions:
                             
           # Footer Section - Compact
           - 'Navigation.Footer.Container':
-              Control: GroupContainer
+              Control: Rectangle
               Variant: ManualLayout
               Properties:
                 X: =Parent.X

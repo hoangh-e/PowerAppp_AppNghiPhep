@@ -5,7 +5,7 @@ ComponentDefinitions:
       Theme:
         PropertyKind: Input
         DisplayName: Theme
-        Description: "Theme mode: light hoặc dark"
+        Description: "Theme mode:light hoặc dark"
         DataType: Text
         Default: ="light"
     Properties:

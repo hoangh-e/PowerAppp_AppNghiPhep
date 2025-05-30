@@ -11,13 +11,13 @@ ComponentDefinitions:
       Variant:
         PropertyKind: Input
         DisplayName: Variant
-        Description: "Loại button: Primary, Secondary, Danger, Ghost, Outline"
+        Description: "Loại button:Primary, Secondary, Danger, Ghost, Outline"
         DataType: Text
         Default: ="Primary"
       Size:
         PropertyKind: Input
         DisplayName: Size
-        Description: "Kích thước button: Small, Medium, Large"
+        Description: "Kích thước button:Small, Medium, Large"
         DataType: Text
         Default: ="Medium"
       Icon:
@@ -29,7 +29,7 @@ ComponentDefinitions:
       IconPosition:
         PropertyKind: Input
         DisplayName: IconPosition
-        Description: "Vị trí icon: Left, Right"
+        Description: "Vị trí icon:Left, Right"
         DataType: Text
         Default: ="Left"
       IsDisabled:
@@ -145,7 +145,7 @@ ComponentDefinitions:
               
       # Icon Container - Smaller
       - 'Button.Icon.Container':
-          Control: GroupContainer
+          Control: Rectangle
           Variant: ManualLayout
           Properties:
             X: =If(ButtonComponent.IconPosition = "Left",

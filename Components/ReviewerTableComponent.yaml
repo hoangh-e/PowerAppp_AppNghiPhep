@@ -7,7 +7,7 @@ ComponentDefinitions:
       Width: =Parent.Width
     Children:
       - ReviewerTableContainer:
-          Control: GroupContainer
+          Control: Rectangle
           Variant: ManualLayout
           Properties:
             X: =0
@@ -18,7 +18,7 @@ ComponentDefinitions:
             Fill: =RGBA(255, 255, 255, 1)
           Children:
             - TableHeader:
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =0

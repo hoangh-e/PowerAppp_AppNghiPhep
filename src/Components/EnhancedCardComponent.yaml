@@ -26,14 +26,14 @@ ComponentDefinitions:
       Variant:
         PropertyKind: Input
         DisplayName: Variant
-        Description: "Kiểu card: default, elevated, outlined, filled"
+        Description: "Kiểu card:default, elevated, outlined, filled"
         DataType: Text
         Default: ="default"
         
       ColorScheme:
         PropertyKind: Input
         DisplayName: ColorScheme
-        Description: "Màu sắc: blue, green, purple, orange, red"
+        Description: "Màu sắc:blue, green, purple, orange, red"
         DataType: Text
         Default: ="blue"
         
@@ -101,7 +101,7 @@ ComponentDefinitions:
             
       # Main Card Container
       - 'Card.Container':
-          Control: GroupContainer
+          Control: Rectangle
           Variant: ManualLayout
           Properties:
             X: =Parent.X
@@ -144,7 +144,7 @@ ComponentDefinitions:
           Children:
             # Header Section
             - 'Card.Header.Container':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.X + Parent.Width * 0.04
@@ -226,7 +226,7 @@ ComponentDefinitions:
                         
             # Content Section
             - 'Card.Content.Container':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.X + Parent.Width * 0.04
@@ -251,7 +251,7 @@ ComponentDefinitions:
                         
             # Actions Section
             - 'Card.Actions.Container':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.X + Parent.Width * 0.04

@@ -26,7 +26,7 @@ Screens:
             BorderColor: =RGBA(0, 0, 0, 0)
       
       - 'Header.Brand':
-          Control: GroupContainer
+          Control: Rectangle
           Variant: ManualLayout
           Properties:
             X: =(Parent.Width - 500) / 2
@@ -78,7 +78,7 @@ Screens:
                   Color: =RGBA(71, 110, 140, 1)
       
       - LoginContainer:
-          Control: GroupContainer
+          Control: Rectangle
           Variant: ManualLayout
           Properties:
             BorderColor: =RGBA(230, 230, 230, 1)
@@ -125,7 +125,7 @@ Screens:
                   Height: =20
             
             - 'LoginContainer.UsernameGroup':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =40
@@ -149,8 +149,8 @@ Screens:
                   - 'LoginContainer.UsernameGroup.Input':
                       Control: Classic/TextInput
                       Properties:
-                        BorderColor: =If(Self.Focus, RGBA(0, 120, 212, 1), RGBA(200, 200, 200, 1))
-                        BorderThickness: =If(Self.Focus, 2, 1)
+                        BorderColor: =RGBA(200, 200, 200, 1)
+                        BorderThickness: =1
                         Default: =""
                         HintText: ="Nhập ID nhân viên hoặc 'admin'"
                         Width: =Parent.Width
@@ -164,7 +164,7 @@ Screens:
                         Size: =14
             
             - 'LoginContainer.PasswordGroup':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =40
@@ -188,8 +188,8 @@ Screens:
                   - 'LoginContainer.PasswordGroup.Input':
                       Control: Classic/TextInput
                       Properties:
-                        BorderColor: =If(Self.Focus, RGBA(0, 120, 212, 1), RGBA(200, 200, 200, 1))
-                        BorderThickness: =If(Self.Focus, 2, 1)
+                        BorderColor: =RGBA(200, 200, 200, 1)
+                        BorderThickness: =1
                         Default: =""
                         HintText: ="Nhập mật khẩu"
                         Mode: =TextMode.Password

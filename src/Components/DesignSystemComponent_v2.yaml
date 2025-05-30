@@ -337,7 +337,7 @@ ComponentDefinitions:
     Children:
       # Design System Demo/Preview Container
       - 'DesignSystem.Demo.Container':
-          Control: GroupContainer
+          Control: Rectangle
           Variant: ManualLayout
           Properties:
             X: =Parent.X
@@ -362,7 +362,7 @@ ComponentDefinitions:
                   Size: =DesignSystemComponent_v2.FontSize2XL
                   
             - 'DesignSystem.Colors.Row':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.X + DesignSystemComponent_v2.Space4
@@ -430,7 +430,7 @@ ComponentDefinitions:
                   Size: =DesignSystemComponent_v2.FontSize2XL
                   
             - 'DesignSystem.Typography.Demo':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.X + DesignSystemComponent_v2.Space4

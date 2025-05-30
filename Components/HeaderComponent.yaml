@@ -14,7 +14,7 @@ ComponentDefinitions:
       Width: =App.Width
     Children:
       - HeaderContainer:
-          Control: GroupContainer
+          Control: Rectangle
           Variant: ManualLayout
           Properties:
             Fill: =RGBA(0, 120, 212, 1)

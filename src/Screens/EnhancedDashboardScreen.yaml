@@ -61,7 +61,7 @@ Screens:
             
       # Main Content Area with enhanced layout
       - 'Dashboard.Content.Container':
-          Control: GroupContainer
+          Control: Rectangle
           Variant: ManualLayout
           Properties:
             X: ='Dashboard.Navigation'.X + 'Dashboard.Navigation'.Width
@@ -72,7 +72,7 @@ Screens:
           Children:
             # Welcome Section with enhanced typography
             - 'Dashboard.Welcome.Container':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.X + Parent.Width * 0.03
@@ -121,7 +121,7 @@ Screens:
                         
             # Enhanced Stats Cards with improved layout
             - 'Dashboard.Stats.Container':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.X + Parent.Width * 0.03
@@ -132,7 +132,7 @@ Screens:
                 Children:
                   # Primary Stats Row
                   - 'Dashboard.Stats.Primary.Row':
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         X: =Parent.X
@@ -197,7 +197,7 @@ Screens:
                               
                   # Secondary Stats Row
                   - 'Dashboard.Stats.Secondary.Row':
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         X: =Parent.X
@@ -262,7 +262,7 @@ Screens:
                               
             # Recent Requests Section with enhanced design
             - 'Dashboard.RecentRequests.Container':
-                Control: GroupContainer
+                Control: Rectangle
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.X + Parent.Width * 0.03
@@ -276,7 +276,7 @@ Screens:
                 Children:
                   # Section Header
                   - 'Dashboard.RecentRequests.Header':
-                      Control: GroupContainer
+                      Control: Rectangle
                       Variant: ManualLayout
                       Properties:
                         X: =Parent.X + Parent.Width * 0.03
@@ -336,7 +336,7 @@ Screens:
                         TemplatePadding: =5
                       Children:
                         - 'RequestItem.Container':
-                            Control: GroupContainer
+                            Control: Rectangle
                             Variant: ManualLayout
                             Properties:
                               X: =Parent.TemplateX
@@ -362,7 +362,7 @@ Screens:
                                     BorderThickness: =0
                                     
                               - 'RequestItem.Content':
-                                  Control: GroupContainer
+                                  Control: Rectangle
                                   Variant: ManualLayout
                                   Properties:
                                     X: ='RequestItem.StatusIndicator'.X + 'RequestItem.StatusIndicator'.Width + Parent.Width * 0.02
