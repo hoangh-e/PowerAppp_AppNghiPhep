@@ -1,4 +1,4 @@
-ComponentDefinitions:
+﻿ComponentDefinitions:
   HeaderComponent_v2:
     DefinitionType: CanvasComponent
     CustomProperties:
@@ -372,5 +372,6 @@ ComponentDefinitions:
                               Y: =(Parent.Height - Self.Height) / 2
                               Width: =Parent.Height * 0.5
                               Height: =Parent.Height * 0.5
-                              Icon: =Icon.HamburgerMenu
+                              Icon: =Icon.QuestionMark
                               Color: =If(HeaderComponent_v2.UseGradient, RGBA(255, 255, 255, 1), 'Header.DesignSystem'.Gray700) 
+

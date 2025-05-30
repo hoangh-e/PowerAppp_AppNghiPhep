@@ -1,0 +1,127 @@
+﻿Screens:
+  TestScreen:
+    Properties:
+      Fill: =RGBA(248, 250, 252, 1)
+      OnVisible: =Set(varTestScreen, true)
+    Children:
+      - 'Header.Container':
+          Control: GroupContainer
+          Variant: ManualLayout
+          Properties:
+            X: =Parent.X
+            Y: =Parent.Y
+            Width: =Parent.Width
+            Height: =Parent.Height * 0.1
+            Fill: =RGBA(255, 255, 255, 1)
+            BorderColor: =RGBA(229, 231, 235, 1)
+            BorderThickness: =1
+          Children:
+            - 'Header.Icon':
+                Control: Classic/Icon
+                Properties:
+                  X: =Parent.X + Parent.Width * 0.02
+                  Y: =(Parent.Height - Self.Height) / 2
+                  Width: =Parent.Height * 0.6
+                  Height: =Parent.Height * 0.6
+                  # ❌ Wrong calendar icon
+                  Icon: =Icon.CalendarBlank
+                  Color: =RGBA(59, 130, 246, 1)
+                  
+            - 'Header.Title':
+                Control: Label
+                Properties:
+                  X: ='Header.Icon'.X + 'Header.Icon'.Width + Parent.Width * 0.02
+                  Y: =(Parent.Height - Self.Height) / 2
+                  Width: =Parent.Width * 0.6
+                  Height: =Parent.Height * 0.5
+                  # ❌ Wrong text formatting - space after colon
+                  Text: ="Test Screen: " & "Demo Application"
+                  Color: =RGBA(17, 24, 39, 1)
+                  Font: =Font.'Open Sans'
+                  FontWeight: =FontWeight.Bold
+                  Size: =Parent.Height * 0.3
+                  
+            - 'Header.Menu.Icon':
+                Control: Classic/Icon
+                Properties:
+                  X: =Parent.Width - Self.Width - Parent.Width * 0.02
+                  Y: =(Parent.Height - Self.Height) / 2
+                  Width: =Parent.Height * 0.4
+                  Height: =Parent.Height * 0.4
+                  # ❌ Invalid hamburger icon name
+                  Icon: =Icon.QuestionMark
+                  Color: =RGBA(107, 114, 128, 1)
+                  
+      - 'Content.Container':
+          Control: GroupContainer
+          Variant: ManualLayout
+          Properties:
+            X: =Parent.X
+            Y: ='Header.Container'.Y + 'Header.Container'.Height
+            Width: =Parent.Width
+            Height: =Parent.Height - 'Header.Container'.Height
+            Fill: =RGBA(248, 250, 252, 1)
+          Children:
+            - 'Content.Card':
+                Control: Rectangle
+                Properties:
+                  X: =Parent.X + Parent.Width * 0.05
+                  Y: =Parent.Y + Parent.Height * 0.05
+                  Width: =Parent.Width * 0.9
+                  Height: =Parent.Height * 0.3
+                  Fill: =RGBA(255, 255, 255, 1)
+                  BorderColor: =RGBA(229, 231, 235, 1)
+                  BorderThickness: =1
+                  BorderRadius: =8
+                  
+            - 'Content.Icon.Calendar':
+                Control: Classic/Icon
+                Properties:
+                  X: ='Content.Card'.X + 'Content.Card'.Width * 0.05
+                  Y: ='Content.Card'.Y + 'Content.Card'.Height * 0.1
+                  Width: ='Content.Card'.Height * 0.15
+                  Height: ='Content.Card'.Height * 0.15
+                  # ❌ Another calendar icon violation
+                  Icon: =Icon.CalendarBlank
+                  Color: =RGBA(34, 197, 94, 1)
+                  
+            - 'Content.Text.Info':
+                Control: Label
+                Properties:
+                  X: ='Content.Icon.Calendar'.X + 'Content.Icon.Calendar'.Width + 'Content.Card'.Width * 0.03
+                  Y: ='Content.Icon.Calendar'.Y
+                  Width: ='Content.Card'.Width * 0.7
+                  Height: ='Content.Icon.Calendar'.Height
+                  # ❌ More wrong text formatting
+                  Text: ="Info: " & "This is a test component with violations"
+                  Color: =RGBA(55, 65, 81, 1)
+                  Font: =Font.'Open Sans'
+                  Size: ='Content.Card'.Height * 0.04
+                  
+            - 'Content.Button.Test':
+                Control: Classic/Button
+                Properties:
+                  X: ='Content.Icon.Calendar'.X
+                  Y: ='Content.Icon.Calendar'.Y + 'Content.Icon.Calendar'.Height + 'Content.Card'.Height * 0.05
+                  Width: ='Content.Card'.Width * 0.3
+                  Height: ='Content.Card'.Height * 0.2
+                  Text: ="Test Button"
+                  Fill: =RGBA(239, 68, 68, 1)
+                  Color: =RGBA(255, 255, 255, 1)
+                  BorderColor: =RGBA(220, 38, 38, 1)
+                  Font: =Font.'Open Sans'
+                  FontWeight: =FontWeight.Semibold
+                  OnSelect: =Navigate(NextScreen)
+                  
+            - 'Content.Status.Text':
+                Control: Label
+                Properties:
+                  X: ='Content.Button.Test'.X + 'Content.Button.Test'.Width + 'Content.Card'.Width * 0.05
+                  Y: ='Content.Button.Test'.Y
+                  Width: ='Content.Card'.Width * 0.5
+                  Height: ='Content.Button.Test'.Height
+                  # ❌ Wrong text format again
+                  Text: ="Status: " & "Testing violations detection"
+                  Color: =RGBA(107, 114, 128, 1)
+                  Font: =Font.'Open Sans'
+                  Size: ='Content.Card'.Height * 0.035 

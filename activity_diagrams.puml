@@ -7,6 +7,8 @@ start
 :Chọn chức năng muốn sử dụng;
 |System|
 :Chuyển đến giao diện được chọn;
+:Kiểm tra quyền người dùng;
+:Hiển thị view người dùng được phép truy cập;
 stop
 @enduml
 
@@ -15,17 +17,18 @@ title F02-1: Xác thực người dùng
 |User|
 start
 :Nhập thông tin đăng nhập;
-note right: Username và Password
+note right: Tài khoản (Email) và Mật khẩu
 :Nhấn nút Đăng nhập;
 |System|
 :Kiểm tra thông tin đăng nhập;
 if (Thông tin hợp lệ?) then (yes)
+  :Lấy thông tin và quyền truy cập của người dùng;
+  note right: tính toán tổng quyền của vai trò
   :Tạo session người dùng;
   :Chuyển đến trang chủ;
-  :Đăng nhập thành công;
+  :Thông báo đăng nhập thành công;
 else (no)
   :Hiển thị thông báo lỗi;
-  :Quay lại form đăng nhập;
 endif
 stop
 @enduml
@@ -38,12 +41,13 @@ start
 |System|
 :Lấy thông tin người dùng từ SharePoint;
 :Hiển thị thông tin cá nhân;
-note right: Tên, chức vụ, phòng ban
+note right: Tên, chức vụ, phòng ban,..
 :Tính toán số ngày nghỉ còn lại;
 :Hiển thị số ngày nghỉ còn lại;
-note right: Real-time từ SharePoint
+note right:  Từ SharePoint
 stop
 @enduml
+
 
 @startuml F04_Create_Leave_Request
 title F04-1: Tạo đơn nghỉ phép
@@ -57,11 +61,12 @@ note right
 - Lý do nghỉ
 - Người nhận bàn giao
 - Nội dung bàn giao
-- File đính kèm
+        ...
 end note
+:Nhấn nút xác nhận tạo đơn;
 |System|
-:Kiểm tra điều kiện thời gian tạo đơn;
-if (Thời gian tạo đơn hợp lệ?) then (yes)
+:Kiểm tra điều kiện tạo đơn;
+if (Thông tin tạo đơn hợp lệ?) then (yes)
   :Kiểm tra số ngày nghỉ phép còn lại;
   if (Đủ ngày phép?) then (yes)
     :Tạo đơn nghỉ phép;
@@ -77,12 +82,12 @@ if (Thời gian tạo đơn hợp lệ?) then (yes)
     endif
   endif
 else (no)
-  :Thông báo vi phạm điều kiện thời gian;
-  note right
-  - 0.5-2 ngày: trước 1 ngày làm việc
-  - 3-4 ngày: trước 7 ngày làm việc
-  - 5+ ngày: trước 14 ngày làm việc
-  end note
+  :Thông báo thông tin không hợp lệ;
+  /'note right'/
+  /'- 0.5-2 ngày: trước 1 ngày làm việc'/
+  /'- 3-4 ngày: trước 7 ngày làm việc'/
+  /'- 5+ ngày: trước 14 ngày làm việc'/
+  /'end note'/
 endif
 stop
 @enduml
@@ -93,6 +98,7 @@ title F04-2: Chỉnh sửa đơn nghỉ phép
 start
 :Truy cập danh sách đơn nghỉ phép cá nhân;
 :Chọn đơn cần chỉnh sửa;
+:Nhấn nút sửa;
 |System|
 :Kiểm tra trạng thái đơn;
 if (Đơn đang chờ duyệt?) then (yes)
@@ -101,13 +107,13 @@ if (Đơn đang chờ duyệt?) then (yes)
   :Cập nhật thông tin đơn nghỉ phép;
   :Xác nhận lưu thay đổi;
   |System|
-  :Kiểm tra điều kiện thời gian mới;
-  if (Thời gian hợp lệ?) then (yes)
+  :Kiểm tra thông tin hợp lệ;
+  if (Thông tin hợp lệ?) then (yes)
     :Cập nhật đơn nghỉ phép;
     :Gửi lại thông báo phê duyệt;
     :Thông báo cập nhật thành công;
   else (no)
-    :Thông báo lỗi điều kiện thời gian;
+    :Thông báo không hợp lệ;
   endif
 else (no)
   :Thông báo không thể chỉnh sửa;
@@ -116,12 +122,14 @@ endif
 stop
 @enduml
 
+
 @startuml F04_Cancel_Leave_Request
 title F04-3: Hủy đơn nghỉ phép
 |User|
 start
 :Truy cập danh sách đơn nghỉ phép cá nhân;
 :Chọn đơn cần hủy;
+:Nhấn nút hủy;
 |System|
 :Kiểm tra trạng thái đơn;
 if (Đơn đang chờ duyệt?) then (yes)
@@ -143,14 +151,13 @@ stop
 title F04-4: Xem danh sách đơn nghỉ phép cá nhân
 |User|
 start
-:Truy cập "Đơn nghỉ phép của tôi";
+:Truy cập trang Đơn nghỉ phép của người dùng;
 |System|
 :Lấy danh sách đơn nghỉ phép của user;
 :Hiển thị danh sách với bộ lọc;
 note right
 - Lọc theo trạng thái
 - Lọc theo thời gian
-- Tìm kiếm theo ID
 end note
 |User|
 :Sử dụng bộ lọc (tùy chọn);
@@ -171,20 +178,19 @@ stop
 title F05-1: Xem lịch nghỉ cá nhân
 |User|
 start
-:Truy cập calendar view cá nhân;
+:Truy cập lịch cá nhân;
 |System|
 :Lấy dữ liệu nghỉ phép cá nhân;
-:Hiển thị lịch nghỉ phép dạng calendar;
+:Hiển thị lịch nghỉ phép;
 note right: Hiển thị các ngày nghỉ đã được phê duyệt
-:Cho phép xem chi tiết từng ngày;
 stop
 @enduml
 
 @startuml F06_Company_Calendar
 title F06-1: Xem lịch nghỉ toàn công ty
-|Manager/Director/HR|
+    |Manager/Director/HR|
 start
-:Truy cập calendar view toàn công ty;
+:Truy cập Lịch nghỉ toàn công ty;
 |System|
 :Kiểm tra quyền truy cập;
 if (Có quyền xem toàn công ty?) then (yes)
@@ -215,24 +221,25 @@ note right
 - Thời gian nghỉ
 - Lý do nghỉ
 - Nội dung bàn giao
-- File đính kèm
+    ...
 end note
-:Kiểm tra tính hợp lý của đơn;
-if (Phê duyệt cấp 1?) then (yes)
+if (Phê duyệt) then (yes)
   |System|
   :Cập nhật trạng thái: "Đã duyệt cấp 1";
   :Chuyển đơn đến cấp 2 (Giám đốc khối);
   :Gửi thông báo đến Giám đốc khối;
   :Gửi thông báo đến người tạo đơn;
   note right: Thông báo đã qua cấp 1
+ stop
 else (no)
+  |Manager|
   :Nhập lý do từ chối;
   |System|
-  :Cập nhật trạng thái: "Từ chối cấp 1";
+  :Cập nhật trạng thái: "Từ chối" (cấp 1);
   :Gửi thông báo từ chối đến người tạo đơn;
   :Ghi lý do từ chối vào hệ thống;
-endif
 stop
+
 @enduml
 
 @startuml F07_2_Level2_Approval
@@ -243,29 +250,24 @@ start
 note right: Đơn đã qua cấp 1
 :Truy cập danh sách đơn chờ duyệt cấp 2;
 :Chọn đơn cần phê duyệt;
-:Xem chi tiết đơn và lịch sử phê duyệt;
-note right
-- Thông tin đầy đủ của đơn
-- Ý kiến phê duyệt cấp 1
-- Tác động đến hoạt động khối
-end note
-:Đánh giá tác động đến hoạt động khối;
-if (Phê duyệt cấp 2?) then (yes)
+:Xem chi tiết đơn và toàn bộ lịch sử phê duyệt;
+if (Phê duyệt (cấp 2)) then (yes)
   |System|
-  :Cập nhật trạng thái: "Đã duyệt cấp 2";
+  :Cập nhật trạng thái: "Đã duyệt" (cấp 2);
   :Chuyển đơn đến cấp 3 (Giám đốc điều hành);
   :Gửi thông báo đến Giám đốc điều hành;
   :Gửi thông báo đến người tạo đơn;
   note right: Thông báo đã qua cấp 2
+  stop
 else (no)
   :Nhập lý do từ chối;
   |System|
-  :Cập nhật trạng thái: "Từ chối cấp 2";
+  :Cập nhật trạng thái: "Từ chối" (cấp 2);
   :Gửi thông báo từ chối đến người tạo đơn;
   :Gửi thông báo đến Manager cấp 1;
   :Ghi lý do từ chối vào hệ thống;
+  stop
 endif
-stop
 @enduml
 
 @startuml F07_3_Level3_Approval
@@ -277,13 +279,7 @@ note right: Đơn đã qua cấp 1 và 2
 :Truy cập danh sách đơn chờ duyệt cấp 3;
 :Chọn đơn cần phê duyệt;
 :Xem chi tiết đơn và toàn bộ lịch sử phê duyệt;
-note right
-- Thông tin đầy đủ của đơn
-- Ý kiến phê duyệt cấp 1 và 2
-- Tác động đến toàn công ty
-end note
-:Đánh giá tác động tổng thể;
-if (Phê duyệt cấp 3?) then (yes)
+if (Phê duyệt (cấp 3)) then (yes)
   |System|
   :Cập nhật trạng thái: "Đã duyệt hoàn tất";
   :Gửi thông báo đến HR để ghi nhận;
@@ -291,15 +287,16 @@ if (Phê duyệt cấp 3?) then (yes)
   :Gửi thông báo phê duyệt cuối đến người tạo đơn;
   :Gửi thông báo đến Manager và Director;
   :Cập nhật số ngày phép còn lại;
+  stop
 else (no)
   :Nhập lý do từ chối;
   |System|
-  :Cập nhật trạng thái: "Từ chối cấp 3";
+  :Cập nhật trạng thái: "Từ chối" (cấp 3);
   :Gửi thông báo từ chối đến người tạo đơn;
   :Gửi thông báo đến Manager và Director;
   :Ghi lý do từ chối vào hệ thống;
+  stop
 endif
-stop
 @enduml
 
 @startuml F08_1_Add_User
@@ -317,7 +314,7 @@ note right
 - Chức danh
 - Đơn vị
 - Ngày bắt đầu làm việc
-- Role mặc định
+- Vai trò
 end note
 |System|
 :Kiểm tra mã nhân viên trùng lặp;
@@ -328,7 +325,6 @@ else (no)
   :Kiểm tra định dạng email;
   if (Email hợp lệ?) then (yes)
     :Tạo tài khoản mới trong SharePoint;
-    :Gán quyền mặc định;
     :Gửi email chào mừng đến người dùng;
     :Thông báo tạo tài khoản thành công;
   else (no)
@@ -361,12 +357,10 @@ end note
 :Kiểm tra thông tin mới;
 if (Thông tin hợp lệ?) then (yes)
   :Cập nhật thông tin trong SharePoint;
-  :Cập nhật quyền nếu role thay đổi;
   :Gửi email thông báo cập nhật;
   :Thông báo cập nhật thành công;
 else (no)
-  :Thông báo lỗi validation;
-  :Yêu cầu sửa thông tin;
+  :Thông báo không hợp lệ;
 endif
 stop
 @enduml
@@ -384,19 +378,13 @@ start
 if (Có đơn nghỉ phép đang chờ duyệt?) then (yes)
   :Thông báo không thể xóa;
   note right: Cần xử lý hết đơn chờ duyệt trước
-  stop
+  
 else (no)
   |Admin|
   :Xác nhận xóa người dùng;
-  :Chọn cách xử lý dữ liệu cũ;
-  note right
-  - Lưu trữ lịch sử
-  - Chuyển quyền sở hữu đơn
-  end note
   |System|
   :Vô hiệu hóa tài khoản;
-  :Cập nhật trạng thái thành "Đã nghỉ việc";
-  :Lưu trữ dữ liệu lịch sử;
+  :Cập nhật trạng thái tài khoản;
   :Thông báo xóa thành công;
 endif
 stop
