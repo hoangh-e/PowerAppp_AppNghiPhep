@@ -1,6 +1,6 @@
 ﻿# KET QUA KIEM TRA TEXTMODE VIOLATIONS
 
-**Thoi gian:** 2025-05-29 16:48:50
+**Thoi gian:** 2025-05-29 17:26:59
 **Tong files kiem tra:** 36
 **Tong vi pham:** 0
 

@@ -1,0 +1,31 @@
+# Test file for Control Rules violations (Section 2)
+Screens:
+  TestScreen:
+    Properties:
+      Fill: =RGBA(248, 250, 252, 1)
+    Children:
+      - BadVersionControl:
+          Control: GroupContainer@1.3.0
+          Properties:
+            X: =Parent.X
+            Y: =Parent.Y
+            Width: =Parent.Width
+            Height: =Parent.Height
+      
+      - BadComponentControl:
+          Control: HeaderComponent
+          Properties:
+            X: =Parent.X + 20
+            Y: =Parent.Y + 10
+            Width: =Parent.Width - 40
+            Height: =60
+      
+      - BadZIndexControl:
+          Control: Rectangle
+          Properties:
+            X: =Parent.X + 20
+            Y: =Parent.Y + 80
+            Width: =Parent.Width - 40
+            Height: =100
+            ZIndex: =5
+            Fill: =RGBA(255, 255, 255, 1) 

@@ -1,6 +1,6 @@
 ﻿# KET QUA KIEM TRA ICON POWER APP
 
-**Thoi gian:** 2025-05-29 16:48:50
+**Thoi gian:** 2025-05-29 17:25:59
 **Tong files kiem tra:** 36
 **Tong icon tim thay:** 18
 **Icon khong hop le:** 0

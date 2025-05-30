@@ -743,15 +743,16 @@ ComponentDefinitions:
 ```
 
 ### 8.11 YAML Syntax for Multi-line Formulas
-**CRITICAL**: Use correct YAML syntax for formulas:
+**CRITICAL**: Use correct YAML syntax for formulas based on length:
 
-#### For Short Formulas (Single Line):
+#### For Short Formulas (≤120 characters):
 ```yaml
 # ✅ CORRECT - Single line formula
 OnSelect: =Set(varExample, true); Navigate(NextScreen)
+Text: =Concatenate("Hello ", varUserName)
 ```
 
-#### For Long Formulas (Multi-line with Pipe Operator):
+#### For Long Formulas (>120 characters):
 ```yaml
 # ✅ CORRECT - Multi-line formula with pipe operator
 OnVisible: |
@@ -759,17 +760,13 @@ OnVisible: |
 
 OnSelect: |
   =Set(varIsLoading, true); Set(varLoginError, ""); If(And(Not(IsBlank('Login.Email.Input'.Text)), Not(IsBlank('Login.Password.Input'.Text))), Set(varCurrentUser, {ID: "EMP001", FullName: "Nguyễn Văn An", Email: 'Login.Email.Input'.Text, Role: "Employee", Department: "Phòng Công nghệ thông tin"}); Set(varIsLoading, false); Navigate(DashboardScreen), Set(varLoginError, "Email hoặc mật khẩu không đúng"); Set(varIsLoading, false))
-
-# ❌ WRONG - Multi-line without pipe operator causes YAML parsing error
-OnVisible: =Set(varActiveScreen, "Dashboard"); Set(varDemoStats, {TotalLeave: 12, UsedLeave: 3, RemainingLeave: 9}); 
-          Set(varRecentRequests, Table({ID: "LR001", Date: "2024-01-15", Days: 3, Status: "Approved"}))
 ```
 
-**RULES for Multi-line Formulas:**
-- **ALWAYS** use pipe operator (`|`) for formulas longer than 120 characters
+**RULES for Formula Length:**
+- **≤120 characters:** Use single line format
+- **>120 characters:** Use pipe operator (`|`) for multi-line format
 - **ALWAYS** place the pipe operator (`|`) immediately after the property name and colon
 - **ALWAYS** indent the formula content with proper spacing (typically 2 spaces)
-- **NEVER** split formula without using pipe operator
 - **ESPECIALLY** use for `OnSelect`, `OnChange`, `OnVisible` with complex logic
 
 ### 8.12 Control Reference Errors
@@ -891,22 +888,7 @@ Visible: ='MyTextInput'.Focused
 BorderColor: =If('MyTextInput'.Focused, RGBA(0, 120, 212, 1), RGBA(200, 200, 200, 1))
 ```
 
-### 8.20 Multi-line Formula Syntax Errors
-**CRITICAL**: Avoid pipe operator (|) in YAML - use single line formulas:
-
-```yaml
-# ❌ WRONG - Pipe operator causes YAML parsing issues
-Text: |
-  =Concatenate(
-    "Line 1",
-    "Line 2"
-  )
-
-# ✅ CORRECT - Single line formula
-Text: =Concatenate("Line 1", "Line 2")
-```
-
-### 8.21 Classic/TextInput Property Errors
+### 8.20 Classic/TextInput Property Errors
 **CRITICAL**: Use correct property names for Classic/TextInput:
 
 ```yaml

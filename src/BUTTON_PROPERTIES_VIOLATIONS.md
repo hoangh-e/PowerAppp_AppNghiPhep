@@ -1,10 +1,15 @@
 ﻿# BUTTON PROPERTIES VIOLATIONS REPORT
 
-**Thoi gian:** 2025-05-29 16:48:52
+**Thoi gian:** 2025-05-29 17:26:02
 **Tong files kiem tra:** 36
 **Tong vi pham phat hien:** 40
 
 ## CHI TIET VI PHAM
+
+### src\Components\EnhancedButtonComponent.yaml
+**So vi pham:** 1
+
+- CRITICAL: Line 352 - Align not supported for Classic/Button
 
 ### src\Components\NavigationComponent.yaml
 **So vi pham:** 7
@@ -16,11 +21,6 @@
 - CRITICAL: Line 491 - Align not supported for Classic/Button
 - CRITICAL: Line 491 - Align not supported for Classic/Button
 - CRITICAL: Line 491 - Align not supported for Classic/Button
-
-### src\Components\EnhancedButtonComponent.yaml
-**So vi pham:** 1
-
-- CRITICAL: Line 352 - Align not supported for Classic/Button
 
 ### src\Screens\ApprovalScreen.yaml
 **So vi pham:** 2

@@ -1,0 +1,25 @@
+# Test file for Icon Guidelines violations (Section 6)
+Screens:
+  TestScreen:
+    Properties:
+      Fill: =RGBA(248, 250, 252, 1)
+    Children:
+      - BadIcon1:
+          Control: Classic/Icon
+          Properties:
+            X: =Parent.X + 20
+            Y: =Parent.Y + 20
+            Width: =32
+            Height: =32
+            Icon: =Icon.Calendar
+            Color: =RGBA(0, 0, 0, 1)
+      
+      - BadIcon2:
+          Control: Classic/Icon
+          Properties:
+            X: =Parent.X + 60
+            Y: =Parent.Y + 20
+            Width: =32
+            Height: =32
+            Icon: =Icon.CustomIcon
+            Color: =RGBA(0, 0, 0, 1) 

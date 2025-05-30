@@ -1,0 +1,1364 @@
+﻿# FILE STRUCTURE VALIDATION REPORT
+
+**Rules Reference:** Section 1 - File Structure  
+**Generated:** 2025-05-30 11:59:27  
+**Script Version:** 2.0.0 (Clean Slate)  
+
+## SUMMARY
+
+- **Files checked:** 36
+- **Files with violations:** 35
+- **Total violations:** 617
+- **Compliance rate:** 2.78%
+
+## RULES IMPLEMENTED
+
+1. **Section 1.1:** Screen structure validation
+2. **Section 1.2:** Component structure validation  
+3. **Section 1.3:** Custom properties data types
+4. **Section 1.4:** Custom property kinds
+5. **Section 1.5:** Event properties structure
+
+
+## VIOLATIONS BY FILE
+
+### DesignSystemComponent.yaml
+
+- **Line 1:** MISSING_SCREENS_ROOT (Section 1.1) - Screen file must start with 'Screens:' root element
+  - **Suggestion:** Add 'Screens:' as the first line
+
+### EnhancedButtonComponent.yaml
+
+- **Line 1:** MISSING_SCREENS_ROOT (Section 1.1) - Screen file must start with 'Screens:' root element
+  - **Suggestion:** Add 'Screens:' as the first line
+
+### EnhancedCardComponent.yaml
+
+- **Line 1:** MISSING_SCREENS_ROOT (Section 1.1) - Screen file must start with 'Screens:' root element
+  - **Suggestion:** Add 'Screens:' as the first line
+
+### EnhancedDesignSystemComponent.yaml
+
+- **Line 1:** MISSING_SCREENS_ROOT (Section 1.1) - Screen file must start with 'Screens:' root element
+  - **Suggestion:** Add 'Screens:' as the first line
+
+### EnhancedInputComponent.yaml
+
+- **Line 1:** MISSING_SCREENS_ROOT (Section 1.1) - Screen file must start with 'Screens:' root element
+  - **Suggestion:** Add 'Screens:' as the first line
+
+### HeaderComponent.yaml
+
+- **Line 1:** MISSING_SCREENS_ROOT (Section 1.1) - Screen file must start with 'Screens:' root element
+  - **Suggestion:** Add 'Screens:' as the first line
+
+### HeaderComponent_v2.yaml
+
+- **Line 1:** MISSING_SCREENS_ROOT (Section 1.1) - Screen file must start with 'Screens:' root element
+  - **Suggestion:** Add 'Screens:' as the first line
+
+### InputComponent.yaml
+
+- **Line 1:** MISSING_SCREENS_ROOT (Section 1.1) - Screen file must start with 'Screens:' root element
+  - **Suggestion:** Add 'Screens:' as the first line
+
+### LoadingComponent.yaml
+
+- **Line 1:** MISSING_SCREENS_ROOT (Section 1.1) - Screen file must start with 'Screens:' root element
+  - **Suggestion:** Add 'Screens:' as the first line
+
+### NavigationComponent.yaml
+
+- **Line 1:** MISSING_SCREENS_ROOT (Section 1.1) - Screen file must start with 'Screens:' root element
+  - **Suggestion:** Add 'Screens:' as the first line
+
+### StatsCardComponent.yaml
+
+- **Line 1:** MISSING_SCREENS_ROOT (Section 1.1) - Screen file must start with 'Screens:' root element
+  - **Suggestion:** Add 'Screens:' as the first line
+
+### ButtonComponent.yaml
+
+- **Line 1:** MISSING_SCREENS_ROOT (Section 1.1) - Screen file must start with 'Screens:' root element
+  - **Suggestion:** Add 'Screens:' as the first line
+
+### DesignSystemComponent_v2.yaml
+
+- **Line 1:** MISSING_SCREENS_ROOT (Section 1.1) - Screen file must start with 'Screens:' root element
+  - **Suggestion:** Add 'Screens:' as the first line
+
+### ApprovalScreen.yaml
+
+- **Line 11:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 26:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 47:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 61:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 70:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 85:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 99:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 113:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 134:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 148:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 161:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 174:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 182:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 195:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 209:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 222:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 234:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 246:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 272:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 295:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 307:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 319:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 331:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 344:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 361:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 413:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 426:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 455:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+
+### ApprovalScreen_SharePoint.yaml
+
+- **Line 10:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 23:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 48:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 56:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 69:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 87:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 95:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 107:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 144:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 157:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 170:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 183:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 196:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 209:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 238:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 251:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 259:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 272:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 284:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 297:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 311:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 319:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 332:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 344:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 361:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 376:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 422:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 432:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 449:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 475:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 503:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 551:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 565:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 582:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 595:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 603:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 619:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 636:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 651:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 659:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 676:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 694:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 704:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 756:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+
+### AttachmentScreen.yaml
+
+- **Line 11:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 25:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 46:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 72:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 85:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 112:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 139:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 153:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 165:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 177:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 191:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 199:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 212:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 224:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 238:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+
+### CalendarScreen.yaml
+
+- **Line 11:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 25:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 46:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 72:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 85:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 101:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 114:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 128:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 143:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 151:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 173:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 194:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 215:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 250:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 264:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 278:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 292:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 306:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 320:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 334:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 349:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 357:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 371:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 392:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 401:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 414:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 427:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 440:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+
+### CalendarScreen_SharePoint.yaml
+
+- **Line 10:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 23:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 48:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 56:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 71:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 80:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 92:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 120:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 134:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 144:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 152:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 164:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 189:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 198:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 210:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 236:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 244:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 256:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 295:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 311:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 327:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 343:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 359:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 375:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 391:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 423:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 456:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 489:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 551:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 565:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 579:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 602:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 619:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 632:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 644:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 666:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 679:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+
+### DashboardScreen copy.yaml
+
+- **Line 11:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 25:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 46:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 59:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 72:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 81:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 95:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 109:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 123:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 132:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 146:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 160:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 173:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 200:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 221:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 239:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 252:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 264:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 287:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 301:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+
+### DashboardScreen.yaml
+
+- **Line 10:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 24:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 45:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 58:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 71:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 80:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 94:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 108:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 122:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 131:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 145:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 159:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 172:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 199:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 220:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 238:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 251:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 263:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 286:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 300:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+
+### DashboardScreen_SharePoint.yaml
+
+- **Line 10:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 23:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 49:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 57:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 70:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 84:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 94:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 103:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 117:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 131:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 146:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 155:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 169:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 183:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 210:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 225:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 239:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 254:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 278:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 307:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 315:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 328:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 340:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 353:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 368:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 376:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 390:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 399:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 412:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 425:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 439:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+
+### EnhancedDashboardScreen.yaml
+
+- **Line 33:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 49:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 89:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 99:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 112:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 147:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 165:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 183:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 212:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 230:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 248:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 290:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 300:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 314:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 329:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 352:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 376:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 389:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 401:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 413:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 434:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 446:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+
+### LeaveConfirmationScreen.yaml
+
+- **Line 11:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 25:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 46:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 60:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 69:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 83:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 97:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 111:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 132:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 146:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 154:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 167:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 181:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 195:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 208:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 216:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 229:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 243:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 256:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 268:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 294:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 317:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 329:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 341:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 354:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 367:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 385:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 425:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+
+### LeaveRequestScreen.yaml
+
+- **Line 10:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 24:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 45:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 71:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 94:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 107:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 119:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 132:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 144:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 157:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 169:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 182:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 195:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 208:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 221:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 233:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 246:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 258:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 286:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 299:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 314:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 327:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 342:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 355:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 370:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 395:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 422:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 430:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 443:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 456:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 471:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+
+### LeaveRequestScreen_SharePoint.yaml
+
+- **Line 10:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 23:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 47:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 73:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 86:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 129:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 143:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 151:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 163:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 175:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 189:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 199:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 208:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 220:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 233:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 242:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 254:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 267:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 277:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 286:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 297:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 318:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 327:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 338:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 367:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 382:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 391:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 409:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 419:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 428:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 439:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 451:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 460:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 477:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 487:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 532:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 570:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 580:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 594:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 608:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+
+### LoginScreen.yaml
+
+- **Line 29:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 39:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 53:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 66:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 79:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 93:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 106:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 121:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 151:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+
+### ManagementScreen.yaml
+
+- **Line 11:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 25:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 46:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 72:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 88:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 104:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 120:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 150:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 179:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 202:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 214:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 235:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 277:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 306:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 329:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 342:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 363:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 372:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 399:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 428:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 451:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 464:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 477:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 489:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 517:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 545:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 558:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 581:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 594:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 607:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+
+### ManagementScreen_SharePoint.yaml
+
+- **Line 21:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 34:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 73:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 86:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 99:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 112:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 126:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 150:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 158:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 172:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 203:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 214:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 232:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 241:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 258:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 289:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 297:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 311:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 342:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 353:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 370:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 398:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 408:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 422:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+
+### MyLeavesScreen.yaml
+
+- **Line 11:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 25:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 46:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 72:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 85:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 99:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 112:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 164:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 177:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 190:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 203:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 216:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 229:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 243:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 260:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 271:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 284:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 296:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 309:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 322:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 349:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 361:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+
+### MyLeavesScreen_SharePoint.yaml
+
+- **Line 10:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 23:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 48:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 56:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 69:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 86:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 100:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 110:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 118:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 130:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 143:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 151:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 163:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 176:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 184:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 196:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 234:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 247:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 260:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 273:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 286:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 299:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 314:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 329:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 341:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 354:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 367:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 381:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 422:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 436:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 446:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 463:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 481:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 535:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 549:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 563:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 571:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 622:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 632:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 646:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 660:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 669:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 696:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+
+### ProfileScreen.yaml
+
+- **Line 11:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 25:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 46:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 60:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 82:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 90:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 103:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 138:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 148:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 161:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 189:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 198:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 206:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 219:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 232:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 240:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 253:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 266:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 281:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 289:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 302:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 315:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 330:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 338:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 351:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 364:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 372:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 385:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 398:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 419:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 433:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 442:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 455:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 468:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 481:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 506:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 520:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 543:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 556:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 579:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 592:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 604:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+
+### ReportsScreen.yaml
+
+- **Line 11:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 25:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 46:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 72:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 85:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 99:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 112:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 144:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 153:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 167:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 181:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 195:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 209:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 230:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 243:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 259:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 285:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 298:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 309:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 323:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 344:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 358:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 379:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 392:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 417:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 431:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 452:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 465:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 479:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+
+### ReportsScreen_SharePoint.yaml
+
+- **Line 19:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 32:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 70:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 85:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 93:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 105:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 118:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 126:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 138:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 151:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 234:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 267:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 279:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 334:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 344:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 358:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+
+### LoginScreen_SharePoint.yaml
+
+- **Line 36:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 46:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 60:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 75:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 86:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 106:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 121:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 136:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 157:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 174:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 208:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 224:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 233:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 243:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 257:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 265:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 278:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+
+### ProfileScreen_SharePoint.yaml
+
+- **Line 20:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 33:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 72:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 91:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 105:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 127:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 135:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 148:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 160:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 179:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 195:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 204:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 221:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 265:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 278:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 291:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 305:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 315:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 324:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 347:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 357:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 366:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 380:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 394:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 407:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 436:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 445:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+- **Line 460:** MISSING_SCREEN_FILL (Section 1.1) - Screen Properties must include Fill with RGBA format
+  - **Suggestion:** Fill: =RGBA(248, 250, 252, 1)
+
+
