@@ -1,0 +1,43 @@
+ComponentDefinitions:
+  SampleButtonComponent:
+    DefinitionType: CanvasComponent
+    CustomProperties:
+      Text:
+        PropertyKind: Input
+        DisplayName: Text
+        Description: Text hiển thị trên button
+        DataType: Text
+        Default: ="Button"
+      Variant:
+        PropertyKind: Input
+        DisplayName: Variant
+        Description: 'Loại button: Primary, Secondary, Danger'
+        DataType: Text
+        Default: ="Primary"
+      IsDisabled:
+        PropertyKind: Input
+        DisplayName: IsDisabled
+        Description: Button bị disable
+        DataType: Boolean
+        Default: =false
+      OnClick:
+        PropertyKind: Event
+        DisplayName: OnClick
+        Description: Sự kiện khi click button
+        ReturnType: None
+        Default: =false
+    Properties:
+      Height: =App.Height
+      Width: =App.Width
+    Children:
+    - Button.Container:
+        Control: Classic/Button
+        Properties:
+          X: =Parent.X
+          Y: =Parent.Y
+          Width: =Parent.Width * 0.16
+          Height: =Parent.Height * 0.055
+          Text: =SampleButtonComponent.Text
+          Fill: =RGBA(227, 242, 253, 1)
+          Color: =RGBA(33, 150, 243, 1)
+          OnSelect: =SampleButtonComponent.OnClick()

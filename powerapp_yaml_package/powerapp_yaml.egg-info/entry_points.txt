@@ -1,0 +1,2 @@
+[console_scripts]
+powerapp-yaml = powerapp_yaml.cli:main

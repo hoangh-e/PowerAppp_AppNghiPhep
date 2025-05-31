@@ -1,0 +1,30 @@
+ComponentDefinitions:
+  SampleComponent:
+    DefinitionType: CanvasComponent
+    CustomProperties:
+      Title:
+        PropertyKind: Input
+        DisplayName: Title
+        Description: Tiêu đề component
+        DataType: Text
+        Default: ="Sample Title"
+      IsVisible:
+        PropertyKind: Input
+        DisplayName: IsVisible
+        Description: Hiển thị component
+        DataType: Boolean
+        Default: =true
+    Properties:
+      Height: =App.Height
+      Width: =App.Width
+    Children:
+    - SampleLabel:
+        Control: Label
+        Properties:
+          X: =Parent.X + 20
+          Y: =Parent.Y + 20
+          Width: =Parent.Width - 40
+          Height: =40
+          Text: =SampleComponent.Title
+          Fill: =RGBA(255, 255, 255, 1)
+          Color: =RGBA(0, 0, 0, 1)

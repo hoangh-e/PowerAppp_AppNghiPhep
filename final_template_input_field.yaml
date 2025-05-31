@@ -1,0 +1,36 @@
+ComponentDefinitions:
+  InputFieldComponent:
+    DefinitionType: CanvasComponent
+    CustomProperties:
+      Placeholder:
+        PropertyKind: Input
+        DisplayName: Placeholder
+        Description: Placeholder text
+        Default: ="Enter text..."
+        DataType: Text
+      Value:
+        PropertyKind: Input
+        DisplayName: Value
+        Description: Input value
+        Default: =""
+        DataType: Text
+      OnChange:
+        PropertyKind: Event
+        DisplayName: OnChange
+        Description: Sự kiện khi giá trị thay đổi
+        Default: =false
+        ReturnType: None
+    Properties:
+      Height: =App.Height
+      Width: =App.Width
+    Children:
+    - Input.Field:
+        Control: Classic/TextInput
+        Properties:
+          X: =Parent.X
+          Y: =Parent.Y
+          Width: =Parent.Width * 0.3
+          Height: =Parent.Height * 0.05
+          HintText: =InputFieldComponent.Placeholder
+          Default: =InputFieldComponent.Value
+          OnChange: =InputFieldComponent.OnChange()

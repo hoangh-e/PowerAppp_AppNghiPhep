@@ -1,4 +1,103 @@
-@startuml F01_Navigation
+/'
+================================================================================
+BẢNG MAPPING CHỨC NĂNG - CƠ SỞ DỮ LIỆU - MÀN HÌNH
+================================================================================
+
+| Mã | Chức năng chính | Các bảng SharePoint liên quan | Màn hình liên quan |
+|----|----------------|------------------------------|-------------------|
+| F01 | Điều hướng đến các chức năng chính | NguoiDung, VaiTro, Quyen | All Screens (Navigation Component) |
+| F01-1 | Điều hướng menu chính | VaiTro, Quyen | NavigationComponent, HeaderComponent |
+| F02 | Xác thực người dùng | NguoiDung, VaiTro, DonVi | LoginScreen_SharePoint |
+| F02-1 | Đăng nhập hệ thống | NguoiDung, VaiTro, Quyen | LoginScreen_SharePoint |
+| F03 | Thông tin cá nhân | NguoiDung, DonVi, SoNgayPhep | ProfileScreen_SharePoint |
+| F03-1 | Xem thông tin cá nhân và ngày nghỉ còn lại | NguoiDung, DonVi, VaiTro, SoNgayPhep | ProfileScreen_SharePoint |
+| F04 | Quản lý đơn nghỉ phép | DonNghiPhep, LoaiNghi, NguoiDung, SoNgayPhep | LeaveRequestScreen_SharePoint, MyLeavesScreen_SharePoint |
+| F04-1 | Tạo đơn nghỉ phép thường | DonNghiPhep, LoaiNghi, NguoiDung, SoNgayPhep, QuyTrinhDuyet | LeaveRequestScreen_SharePoint |
+| F04-2 | Chỉnh sửa đơn nghỉ phép | DonNghiPhep, LoaiNghi, NguoiDung | LeaveRequestScreen_SharePoint, MyLeavesScreen_SharePoint |
+| F04-3 | Hủy đơn nghỉ phép | DonNghiPhep, NguoiDung | MyLeavesScreen_SharePoint |
+| F04-4 | Xem danh sách đơn nghỉ phép cá nhân | DonNghiPhep, LoaiNghi, NguoiDung | MyLeavesScreen_SharePoint |
+| F05 | Xem lịch nghỉ cá nhân | DonNghiPhep, NgayLe, NguoiDung | ProfileScreen_SharePoint, CalendarScreen_SharePoint |
+| F05-1 | Hiển thị danh sách ngày nghỉ cá nhân | DonNghiPhep, NgayLe, LoaiNghi | CalendarScreen_SharePoint |
+| F06 | Xem lịch nghỉ toàn công ty | DonNghiPhep, NguoiDung, DonVi, NgayLe | CalendarScreen_SharePoint |
+| F06-1 | Hiển thị danh sách ngày nghỉ toàn công ty | DonNghiPhep, NguoiDung, DonVi, VaiTro | CalendarScreen_SharePoint |
+| F07 | Phê duyệt đơn nghỉ phép | DonNghiPhep, NguoiDung, QuyTrinhDuyet, VaiTro | ApprovalScreen_SharePoint |
+| F07-1 | Phê duyệt cấp 1 (Manager) | DonNghiPhep, NguoiDung, QuyTrinhDuyet, MauEmail | ApprovalScreen_SharePoint |
+| F07-2 | Phê duyệt cấp 2 (Giám đốc khối) | DonNghiPhep, NguoiDung, QuyTrinhDuyet, MauEmail | ApprovalScreen_SharePoint |
+| F07-3 | Phê duyệt cấp 3 (Giám đốc điều hành) | DonNghiPhep, NguoiDung, QuyTrinhDuyet, SoNgayPhep, MauEmail | ApprovalScreen_SharePoint |
+| F08 | Quản lý người dùng | NguoiDung, DonVi, VaiTro, SoNgayPhep | ManagementScreen_SharePoint |
+| F08-1 | Thêm người dùng mới | NguoiDung, DonVi, VaiTro, MauEmail | ManagementScreen_SharePoint |
+| F08-2 | Chỉnh sửa thông tin người dùng | NguoiDung, DonVi, VaiTro, MauEmail | ManagementScreen_SharePoint |
+| F08-3 | Xóa người dùng | NguoiDung, DonNghiPhep, QuyTrinhDuyet | ManagementScreen_SharePoint |
+| F08-4 | Ghi nhận kết quả nghỉ phép | DonNghiPhep, SoNgayPhep, NguoiDung | LeaveConfirmationScreen |
+| F09 | Import số ngày phép | SoNgayPhep, NguoiDung, MauEmail | ManagementScreen_SharePoint |
+| F09-1 | Import dữ liệu từ Excel | SoNgayPhep, NguoiDung, DonVi | ManagementScreen_SharePoint |
+| F10 | Quản lý ngày nghỉ lễ | NgayLe, CauHinhHeThong, MauEmail | ManagementScreen_SharePoint |
+| F10-1 | Điều chỉnh ngày nghỉ lễ | NgayLe, CauHinhHeThong, NguoiDung | ManagementScreen_SharePoint |
+| F10-2 | Thiết lập lịch làm việc | CauHinhHeThong, NgayLe, NguoiDung | ManagementScreen_SharePoint |
+| F11 | Thiết lập quy trình & role | QuyTrinhDuyet, VaiTro, Quyen, DonVi | ManagementScreen_SharePoint |
+| F11-1 | Thiết lập quy trình phê duyệt 3 cấp | QuyTrinhDuyet, VaiTro, DonVi, NguoiDung, DonNghiPhep | ManagementScreen_SharePoint |
+| F11-2 | Điều chỉnh role người dùng | NguoiDung, VaiTro, Quyen, MauEmail | ManagementScreen_SharePoint |
+| F12 | Dashboard báo cáo | DonNghiPhep, NguoiDung, DonVi, SoNgayPhep | DashboardScreen_SharePoint, ReportsScreen_SharePoint |
+| F12-1 | Hiển thị Dashboard báo cáo theo bộ lọc | DonNghiPhep, NguoiDung, DonVi, LoaiNghi, VaiTro | DashboardScreen_SharePoint |
+| F13 | Xuất báo cáo | DonNghiPhep, NguoiDung, DonVi, LoaiNghi, SoNgayPhep | ReportsScreen_SharePoint |
+| F13-1 | Xuất báo cáo tổng hợp | DonNghiPhep, NguoiDung, DonVi, LoaiNghi | ReportsScreen_SharePoint |
+| F13-2 | Xuất báo cáo chi tiết | DonNghiPhep, NguoiDung, DonVi, LoaiNghi, QuyTrinhDuyet | ReportsScreen_SharePoint |
+| F13-3 | Xuất báo cáo tùy chỉnh | All Tables (configurable) | ReportsScreen_SharePoint |
+| F14 | Hệ thống thông báo | MauEmail, NguoiDung, DonNghiPhep, CauHinhHeThong | All Screens (HeaderComponent) |
+| F14-1 | Hệ thống thông báo tự động | MauEmail, NguoiDung, DonNghiPhep, QuyTrinhDuyet | All Screens (notification system) |
+| F14-2 | Hệ thống thông báo email | MauEmail, NguoiDung, DonNghiPhep, CauHinhHeThong | External Email System |
+| F15 | Quản lý file đính kèm | DonNghiPhep, NguoiDung (SharePoint Document Library) | LeaveRequestScreen_SharePoint, AttachmentScreen |
+| F15-1 | Quản lý file đính kèm | DonNghiPhep, SharePoint Document Library | LeaveRequestScreen_SharePoint, AttachmentScreen |
+| F15-2 | Xem file đính kèm | DonNghiPhep, SharePoint Document Library | AttachmentScreen, MyLeavesScreen_SharePoint |
+
+================================================================================
+BẢNG SHAREPOINT LISTS (11 bảng chính)
+================================================================================
+
+MASTER DATA:
+1. Quyen - Hệ thống quyền bit-wise
+2. VaiTro - Vai trò và phân quyền (lookup Quyen)
+3. LoaiNghi - Danh mục loại nghỉ phép
+4. NgayLe - Lịch nghỉ lễ hàng năm
+5. CauHinhHeThong - Cấu hình tham số hệ thống
+6. MauEmail - Template email thông báo
+
+REFERENCE DATA:
+7. DonVi - Cấu trúc tổ chức công ty
+
+USER DATA:
+8. NguoiDung - Thông tin nhân viên (lookup DonVi, VaiTro)
+9. QuyTrinhDuyet - Cấu hình quy trình phê duyệt
+
+TRANSACTION DATA:
+10. SoNgayPhep - Quota nghỉ phép cá nhân (lookup NguoiDung)
+11. DonNghiPhep - Đơn nghỉ phép và trạng thái (lookup NguoiDung, LoaiNghi)
+
+================================================================================
+SCREENS TỔNG QUAN (Các màn hình chính)
+================================================================================
+
+1. LoginScreen_SharePoint - Đăng nhập hệ thống
+2. DashboardScreen_SharePoint - Trang chủ với dashboard
+3. ProfileScreen_SharePoint - Thông tin cá nhân
+4. LeaveRequestScreen_SharePoint - Tạo/Sửa đơn nghỉ phép
+5. MyLeavesScreen_SharePoint - Quản lý đơn nghỉ phép cá nhân
+6. ApprovalScreen_SharePoint - Phê duyệt đơn nghỉ phép
+7. CalendarScreen_SharePoint - Xem lịch nghỉ phép
+8. ReportsScreen_SharePoint - Báo cáo và thống kê
+9. ManagementScreen_SharePoint - Quản lý hệ thống
+10. AttachmentScreen - Quản lý file đính kèm
+11. LeaveConfirmationScreen - Ghi nhận kết quả nghỉ phép
+
+COMPONENTS:
+- HeaderComponent - Header với thông báo
+- NavigationComponent - Menu điều hướng
+- ButtonComponent - Các button tái sử dụng
+
+================================================================================
+'/
+
+x@startuml F01_Navigation
 title F01-1: Điều hướng đến các chức năng chính
 |User|
 start
@@ -396,42 +495,6 @@ endif
 stop
 @enduml
 
-@startuml F08_4_Leave_Confirmation
-title F08-4: Ghi nhận kết quả nghỉ phép
-|HR|
-start
-:Truy cập danh sách đơn đã phê duyệt;
-|System|
-:Hiển thị đơn đã duyệt chưa ghi nhận;
-:Lọc theo thời gian nghỉ đã qua;
-|HR|
-:Chọn đơn cần ghi nhận;
-:Xem thông tin chi tiết đơn nghỉ;
-:Kiểm tra thực tế nghỉ phép;
-note right
-- Nhân viên có thực sự nghỉ không?
-- Có nghỉ đúng số ngày đã duyệt?
-- Có vấn đề gì cần ghi chú?
-end note
-:Nhập thông tin ghi nhận;
-note right
-- Xác nhận nghỉ thực tế
-- Số ngày nghỉ thực tế
-- Ghi chú (nếu có)
-- Trạng thái: Đã ghi nhận
-end note
-:Xác nhận ghi nhận;
-|System|
-:Cập nhật trạng thái đơn: "Đã ghi nhận";
-:Cập nhật số ngày phép đã sử dụng;
-:Gửi thông báo đến nhân viên;
-note right: Thông báo đã ghi nhận nghỉ phép
-:Gửi thông báo đến Manager;
-note right: Thông báo hoàn tất quy trình
-:Lưu lịch sử ghi nhận;
-:Thông báo ghi nhận thành công;
-stop
-@enduml
 
 @startuml F09_Import_Leave_Days
 title F09-1: Nhập số ngày phép

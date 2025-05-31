@@ -1,0 +1,31 @@
+ComponentDefinitions:
+  BasicButtonComponent:
+    DefinitionType: CanvasComponent
+    CustomProperties:
+      Text:
+        PropertyKind: Input
+        DisplayName: Text
+        Description: Text hiển thị trên button
+        Default: ="Click me"
+        DataType: Text
+      OnClick:
+        PropertyKind: Event
+        DisplayName: OnClick
+        Description: Sự kiện khi click button
+        Default: =false
+        ReturnType: None
+    Properties:
+      Height: =App.Height
+      Width: =App.Width
+    Children:
+    - Button.Main:
+        Control: Classic/Button
+        Properties:
+          X: =Parent.X
+          Y: =Parent.Y
+          Width: =Parent.Width * 0.2
+          Height: =Parent.Height * 0.06
+          Text: =BasicButtonComponent.Text
+          Fill: =RGBA(33, 150, 243, 1)
+          Color: =RGBA(255, 255, 255, 1)
+          OnSelect: =BasicButtonComponent.OnClick()

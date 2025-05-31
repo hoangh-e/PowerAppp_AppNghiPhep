@@ -1,0 +1,87 @@
+Metadata-Version: 2.4
+Name: powerapp-yaml
+Version: 1.0.0
+Summary: Professional YAML handler for Power App components
+Home-page: https://github.com/powerapp/powerapp-yaml
+Author: PowerApp YAML Team
+Author-email: PowerApp YAML Team <team@powerapp-yaml.com>
+Project-URL: Homepage, https://github.com/powerapp/powerapp-yaml
+Project-URL: Documentation, https://powerapp-yaml.readthedocs.io/
+Project-URL: Repository, https://github.com/powerapp/powerapp-yaml
+Project-URL: Bug Tracker, https://github.com/powerapp/powerapp-yaml/issues
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: pyyaml>=6.0
+Requires-Dist: typing-extensions>=4.0.0; python_version < "3.10"
+Provides-Extra: dev
+Requires-Dist: pytest>=6.0; extra == "dev"
+Requires-Dist: black; extra == "dev"
+Requires-Dist: flake8; extra == "dev"
+Requires-Dist: mypy; extra == "dev"
+Requires-Dist: pre-commit; extra == "dev"
+Provides-Extra: docs
+Requires-Dist: mkdocs; extra == "docs"
+Requires-Dist: mkdocs-material; extra == "docs"
+Requires-Dist: mkdocs-autoapi; extra == "docs"
+Provides-Extra: test
+Requires-Dist: pytest; extra == "test"
+Requires-Dist: pytest-cov; extra == "test"
+Requires-Dist: pytest-benchmark; extra == "test"
+Requires-Dist: coverage; extra == "test"
+Dynamic: author
+Dynamic: home-page
+Dynamic: requires-python
+
+# PowerApp YAML
+
+Professional YAML handler for Power App components with validation, templates, and type safety.
+
+## Features
+
+- ✅ Type-safe YAML handling with dataclasses
+- ✅ Built-in Power App component validation
+- ✅ Template system for common components
+- ✅ Multiple export formats (YAML, JSON)
+- ✅ Performance optimized
+- ✅ Extensible architecture
+
+## Quick Start
+
+```python
+from powerapp_yaml import YAMLHandler
+
+# Create handler
+handler = YAMLHandler()
+
+# Create from template
+handler.create_from_template("basic_button")
+
+# Save to file
+handler.save_to_file("my_button.yaml")
+
+# Validate
+validation = handler.validate_component_structure()
+print(f"Valid: {validation.is_valid}")
+```
+
+## Installation
+
+```bash
+pip install powerapp-yaml
+```
+
+## Documentation
+
+See [docs/](docs/) for comprehensive documentation.
+
+## License
+
+MIT License - see LICENSE file for details.

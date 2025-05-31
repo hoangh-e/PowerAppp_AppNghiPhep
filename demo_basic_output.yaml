@@ -1,0 +1,28 @@
+ComponentDefinitions:
+  DemoComponent:
+    DefinitionType: CanvasComponent
+    CustomProperties:
+      Title:
+        PropertyKind: Input
+        DisplayName: Title
+        Description: Demo title
+        DataType: Text
+        Default: ="Demo Title"
+      OnAction:
+        PropertyKind: Event
+        DisplayName: OnAction
+        Description: Demo event
+        ReturnType: None
+        Default: =false
+    Properties:
+      Height: =App.Height
+      Width: =App.Width
+    Children:
+    - Demo.Label:
+        Control: Label
+        Properties:
+          X: =Parent.X
+          Y: =Parent.Y
+          Width: =Parent.Width
+          Height: =50
+          Text: =DemoComponent.Title

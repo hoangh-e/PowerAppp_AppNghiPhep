@@ -1,0 +1,58 @@
+{
+  "ComponentDefinitions": {
+    "CardComponent": {
+      "DefinitionType": "CanvasComponent",
+      "CustomProperties": {
+        "Title": {
+          "PropertyKind": "Input",
+          "DisplayName": "Title",
+          "Description": "Card title",
+          "Default": "=\"Card Title\"",
+          "DataType": "Text"
+        },
+        "Content": {
+          "PropertyKind": "Input",
+          "DisplayName": "Content",
+          "Description": "Card content",
+          "Default": "=\"Card content goes here...\"",
+          "DataType": "Text"
+        },
+        "OnSave": {
+          "PropertyKind": "Event",
+          "DisplayName": "OnSave",
+          "Description": "Save action event",
+          "Default": "=false",
+          "ReturnType": "None"
+        },
+        "OnCancel": {
+          "PropertyKind": "Event",
+          "DisplayName": "OnCancel",
+          "Description": "Cancel action event",
+          "Default": "=false",
+          "ReturnType": "None"
+        }
+      },
+      "Properties": {
+        "Height": "=App.Height",
+        "Width": "=App.Width"
+      },
+      "Children": [
+        {
+          "Card.Container": {
+            "Control": "Rectangle",
+            "Properties": {
+              "X": "=Parent.X",
+              "Y": "=Parent.Y",
+              "Width": "=Parent.Width * 0.4",
+              "Height": "=Parent.Height * 0.3",
+              "Fill": "=RGBA(255, 255, 255, 1)",
+              "BorderColor": "=RGBA(230, 230, 230, 1)",
+              "BorderThickness": "=1",
+              "BorderRadius": "=8"
+            }
+          }
+        }
+      ]
+    }
+  }
+}
