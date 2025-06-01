@@ -3,17 +3,21 @@ Screens:
     Properties:
       Fill: =RGBA(248, 250, 252, 1)
       OnVisible: |
-                    =Set(varActiveScreen, "Management");
-                    Set(varCurrentUser, LookUp(NguoiDung, Email = User().Email));
-                    Set(varManagementTab, "Users");
-                    Set(varCanManage, varCurrentUser.MaVaiTro in ["HR", "ADMIN"]);
-                    Set(varSelectedUser, {});
-                    Set(varSelectedDepartment, {});
-                    Set(varSelectedLeaveType, {});
-                    Set(varShowUserModal, false);
-                    Set(varShowDepartmentModal, false);
-                    Set(varShowLeaveTypeModal, false);
-                    Set(varEditMode, false)
+        =Set(varActiveScreen, "Management"); 
+        // Use session from Login or fallback to Microsoft 365 lookup
+        If(IsBlank(varCurrentUser), 
+          Set(varCurrentUser, LookUp(NguoiDung, Email = User().Email)));
+        // Validate current user session and permissions
+        If(Or(IsBlank(varCurrentUser), Not(varCurrentUser.MaVaiTro in ["HR", "ADMIN"])), 
+          Navigate(DashboardScreen), 
+          // Continue with management screen initialization using session data
+          Set(varAllEmployees, NguoiDung); 
+          Set(varAllDepartments, DonVi); 
+          Set(varAllRoles, VaiTro); 
+          Set(varAllLeaveRequests, DonNghiPhep); 
+          Set(varSystemStats, {TotalEmployees: CountRows(varAllEmployees), ActiveEmployees: CountRows(Filter(varAllEmployees, TrangThai.Value = "HoatDong")), TotalDepartments: CountRows(varAllDepartments), PendingRequests: CountRows(Filter(varAllLeaveRequests, TrangThai.Value in ["ChoDuyetCap1", "ChoDuyetCap2", "ChoDuyetCap3"]))}); 
+          Set(varSelectedTab, "Users"); 
+          Set(varSelectedUser, Blank()))
     Children:
       - 'Management.Header':
           Control: CanvasComponent
@@ -34,16 +38,14 @@ Screens:
           Properties:
             X: =Parent.X
             Y: ='Management.Header'.Y + 'Management.Header'.Height
-            Width: =If(App.Width < 768, 
-              If(varMobileMenuOpen, Parent.Width * 0.75, Parent.Width * 0.001),
-              If(varNavCollapsed, Parent.Width * 0.06, Parent.Width * 0.2))
+            Width: =If(varNavCollapsed, Parent.Width * 0.06, Parent.Width * 0.2)
             Height: =Parent.Height - 'Management.Header'.Height
             UserRole: =varCurrentUser.MaVaiTro
             ActiveScreen: =varActiveScreen
             OnNavigate: =Set(varNavigateAction, true)
             
       - 'Management.Content.Container':
-          Control: Rectangle
+          Control: GroupContainer
           Variant: ManualLayout
           Properties:
             X: ='Management.Navigation'.X + 'Management.Navigation'.Width
@@ -55,11 +57,11 @@ Screens:
           Children:
             # Management Tabs
             - 'Management.Tabs.Container':
-                Control: Rectangle
+                Control: GroupContainer
                 Variant: ManualLayout
                 Properties:
-                  X: =Parent.X + Parent.Width * 0.03
-                  Y: =Parent.Y + Parent.Height * 0.02
+                  X: =Parent.Width * 0.03
+                  Y: =Parent.Height * 0.02
                   Width: =Parent.Width * 0.94
                   Height: =Parent.Height * 0.08
                   Fill: =RGBA(255, 255, 255, 1)
@@ -71,8 +73,8 @@ Screens:
                       Control: CanvasComponent
                       ComponentName: ButtonComponent
                       Properties:
-                        X: =Parent.X + Parent.Width * 0.02
-                        Y: =Parent.Y + (Parent.Height - Self.Height) / 2
+                        X: =Parent.Width * 0.02
+                        Y: =(Parent.Height - Self.Height) / 2
                         Width: =Parent.Width * 0.15
                         Height: =Parent.Height * 0.7
                         Text: ="Nhân viên"
@@ -84,8 +86,8 @@ Screens:
                       Control: CanvasComponent
                       ComponentName: ButtonComponent
                       Properties:
-                        X: =Parent.X + Parent.Width * 0.18
-                        Y: =Parent.Y + (Parent.Height - Self.Height) / 2
+                        X: =Parent.Width * 0.18
+                        Y: =(Parent.Height - Self.Height) / 2
                         Width: =Parent.Width * 0.15
                         Height: =Parent.Height * 0.7
                         Text: ="Phòng ban"
@@ -97,8 +99,8 @@ Screens:
                       Control: CanvasComponent
                       ComponentName: ButtonComponent
                       Properties:
-                        X: =Parent.X + Parent.Width * 0.34
-                        Y: =Parent.Y + (Parent.Height - Self.Height) / 2
+                        X: =Parent.Width * 0.34
+                        Y: =(Parent.Height - Self.Height) / 2
                         Width: =Parent.Width * 0.15
                         Height: =Parent.Height * 0.7
                         Text: ="Loại nghỉ"
@@ -110,8 +112,8 @@ Screens:
                       Control: CanvasComponent
                       ComponentName: ButtonComponent
                       Properties:
-                        X: =Parent.X + Parent.Width * 0.5
-                        Y: =Parent.Y + (Parent.Height - Self.Height) / 2
+                        X: =Parent.Width * 0.5
+                        Y: =(Parent.Height - Self.Height) / 2
                         Width: =Parent.Width * 0.15
                         Height: =Parent.Height * 0.7
                         Text: ="Cấu hình"
@@ -121,17 +123,17 @@ Screens:
                         
             # Tab Content
             - 'Management.TabContent.Container':
-                Control: Rectangle
+                Control: GroupContainer
                 Variant: ManualLayout
                 Properties:
-                  X: =Parent.X + Parent.Width * 0.03
+                  X: =Parent.Width * 0.03
                   Y: ='Management.Tabs.Container'.Y + 'Management.Tabs.Container'.Height + Parent.Height * 0.02
                   Width: =Parent.Width * 0.94
                   Height: =Parent.Height * 0.82
                 Children:
                   # Users Tab
                   - 'Management.Users.Container':
-                      Control: Rectangle
+                      Control: GroupContainer
                       Variant: ManualLayout
                       Properties:
                         X: =Parent.X
@@ -145,11 +147,11 @@ Screens:
                         Visible: =varManagementTab = "Users"
                       Children:
                         - 'Management.Users.Header':
-                            Control: Rectangle
+                            Control: GroupContainer
                             Variant: ManualLayout
                             Properties:
-                              X: =Parent.X + Parent.Width * 0.02
-                              Y: =Parent.Y + Parent.Height * 0.02
+                              X: =Parent.Width * 0.02
+                              Y: =Parent.Height * 0.02
                               Width: =Parent.Width * 0.96
                               Height: =Parent.Height * 0.08
                             Children:
@@ -187,7 +189,7 @@ Screens:
                             Control: Gallery
                             Variant: Vertical
                             Properties:
-                              X: =Parent.X + Parent.Width * 0.02
+                              X: =Parent.Width * 0.02
                               Y: ='Management.Users.Header'.Y + 'Management.Users.Header'.Height + Parent.Height * 0.02
                               Width: =Parent.Width * 0.96
                               Height: =Parent.Height * 0.82
@@ -198,7 +200,7 @@ Screens:
                               Fill: =RGBA(0, 0, 0, 0)
                             Children:
                               - 'Management.Users.List.Item':
-                                  Control: Rectangle
+                                  Control: GroupContainer
                                   Variant: ManualLayout
                                   Properties:
                                     X: =Parent.TemplateX
@@ -212,8 +214,8 @@ Screens:
                                     - 'Management.Users.List.Item.Info':
                                         Control: Label
                                         Properties:
-                                          X: =Parent.X + Parent.Width * 0.02
-                                          Y: =Parent.Y + (Parent.Height - Self.Height) / 2
+                                          X: =Parent.Width * 0.02
+                                          Y: =(Parent.Height - Self.Height) / 2
                                           Width: =Parent.Width * 0.7
                                           Height: =Parent.Height * 0.8
                                           Text: =Concatenate(
@@ -227,11 +229,11 @@ Screens:
                                           Size: =Parent.Height * 0.3
                                           
                                     - 'Management.Users.List.Item.Actions':
-                                        Control: Rectangle
+                                        Control: GroupContainer
                                         Variant: ManualLayout
                                         Properties:
                                           X: =Parent.Width * 0.75
-                                          Y: =Parent.Y + (Parent.Height - Self.Height) / 2
+                                          Y: =(Parent.Height - Self.Height) / 2
                                           Width: =Parent.Width * 0.23
                                           Height: =Parent.Height * 0.8
                                         Children:
@@ -270,7 +272,7 @@ Screens:
                                                             
                   # Departments Tab
                   - 'Management.Departments.Container':
-                      Control: Rectangle
+                      Control: GroupContainer
                       Variant: ManualLayout
                       Properties:
                         X: =Parent.X
@@ -284,11 +286,11 @@ Screens:
                         Visible: =varManagementTab = "Departments"
                       Children:
                         - 'Management.Departments.Header':
-                            Control: Rectangle
+                            Control: GroupContainer
                             Variant: ManualLayout
                             Properties:
-                              X: =Parent.X + Parent.Width * 0.02
-                              Y: =Parent.Y + Parent.Height * 0.02
+                              X: =Parent.Width * 0.02
+                              Y: =Parent.Height * 0.02
                               Width: =Parent.Width * 0.96
                               Height: =Parent.Height * 0.08
                             Children:
@@ -326,7 +328,7 @@ Screens:
                             Control: Gallery
                             Variant: Vertical
                             Properties:
-                              X: =Parent.X + Parent.Width * 0.02
+                              X: =Parent.Width * 0.02
                               Y: ='Management.Departments.Header'.Y + 'Management.Departments.Header'.Height + Parent.Height * 0.02
                               Width: =Parent.Width * 0.96
                               Height: =Parent.Height * 0.82
@@ -337,7 +339,7 @@ Screens:
                               Fill: =RGBA(0, 0, 0, 0)
                             Children:
                               - 'Management.Departments.List.Item':
-                                  Control: Rectangle
+                                  Control: GroupContainer
                                   Variant: ManualLayout
                                   Properties:
                                     X: =Parent.TemplateX
@@ -351,8 +353,8 @@ Screens:
                                     - 'Management.Departments.List.Item.Info':
                                         Control: Label
                                         Properties:
-                                          X: =Parent.X + Parent.Width * 0.02
-                                          Y: =Parent.Y + (Parent.Height - Self.Height) / 2
+                                          X: =Parent.Width * 0.02
+                                          Y: =(Parent.Height - Self.Height) / 2
                                           Width: =Parent.Width * 0.75
                                           Height: =Parent.Height * 0.8
                                           Text: =Concatenate(
@@ -369,7 +371,7 @@ Screens:
                                         ComponentName: ButtonComponent
                                         Properties:
                                           X: =Parent.Width * 0.8
-                                          Y: =Parent.Y + (Parent.Height - Self.Height) / 2
+                                          Y: =(Parent.Height - Self.Height) / 2
                                           Width: =Parent.Width * 0.18
                                           Height: =Parent.Height * 0.8
                                           Text: ="Sửa"
@@ -383,7 +385,7 @@ Screens:
                                                       
       # Access Denied
       - 'Management.AccessDenied.Container':
-          Control: Rectangle
+          Control: GroupContainer
           Variant: ManualLayout
           Properties:
             X: ='Management.Navigation'.X + 'Management.Navigation'.Width
@@ -397,7 +399,7 @@ Screens:
                 Control: Classic/Icon
                 Properties:
                   X: =(Parent.Width - Self.Width) / 2
-                  Y: =Parent.Y + Parent.Height * 0.3
+                  Y: =Parent.Height * 0.3
                   Width: =Parent.Height * 0.1
                   Height: =Parent.Height * 0.1
                   Icon: =Icon.Lock
@@ -406,7 +408,7 @@ Screens:
             - 'Management.AccessDenied.Title':
                 Control: Label
                 Properties:
-                  X: =Parent.X + Parent.Width * 0.1
+                  X: =Parent.Width * 0.1
                   Y: ='Management.AccessDenied.Icon'.Y + 'Management.AccessDenied.Icon'.Height + Parent.Height * 0.05
                   Width: =Parent.Width * 0.8
                   Height: =Parent.Height * 0.08
@@ -420,7 +422,7 @@ Screens:
             - 'Management.AccessDenied.Message':
                 Control: Label
                 Properties:
-                  X: =Parent.X + Parent.Width * 0.1
+                  X: =Parent.Width * 0.1
                   Y: ='Management.AccessDenied.Title'.Y + 'Management.AccessDenied.Title'.Height
                   Width: =Parent.Width * 0.8
                   Height: =Parent.Height * 0.12

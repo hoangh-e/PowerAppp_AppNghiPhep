@@ -2,7 +2,21 @@ Screens:
   MyLeavesScreen:
     Properties:
       Fill: =RGBA(248, 250, 252, 1)
-      OnVisible: =Set(varActiveScreen, "MyLeaves"); Set(varCurrentUser, LookUp(NguoiDung, Email = User().Email)); Set(varMyLeaveRequests, Filter(DonNghiPhep, MaNhanVien = varCurrentUser.MaNhanVien)); Set(varLeaveTypes, LoaiNghi); Set(varFilterPeriod, "All"); Set(varFilterStatus, "All"); Set(varSortBy, "NgayTao"); Set(varSortOrder, "Desc"); Set(varSelectedLeave, {}); Set(varShowDetails, false); Set(varShowCancelModal, false); Set(varIsProcessing, false); Set(varFilteredLeaves, varMyLeaveRequests)
+      OnVisible: |
+        =Set(varActiveScreen, "MyLeaves"); 
+        // Use session from Login or fallback to Microsoft 365 lookup
+        If(IsBlank(varCurrentUser), 
+          Set(varCurrentUser, LookUp(NguoiDung, Email = User().Email)));
+        // Validate current user session
+        If(IsBlank(varCurrentUser), 
+          Navigate(LoginScreen), 
+          // Continue with screen initialization using session data
+          Set(varMyLeaveRequests, Filter(DonNghiPhep, MaNhanVien.Value = varCurrentUser.MaNhanVien.Value)); 
+          Set(varLeaveTypes, LoaiNghi); 
+          Set(varFilterPeriod, "All"); 
+          Set(varFilterStatus, "All"); 
+          Set(varFilterType, "All"); 
+          Set(varSelectedRequest, Blank()))
     Children:
       - 'MyLeaves.Header':
           Control: CanvasComponent
@@ -23,16 +37,14 @@ Screens:
           Properties:
             X: =Parent.X
             Y: ='MyLeaves.Header'.Y + 'MyLeaves.Header'.Height
-            Width: =If(App.Width < 768, 
-              If(varMobileMenuOpen, Parent.Width * 0.75, Parent.Width * 0.001),
-              If(varNavCollapsed, Parent.Width * 0.06, Parent.Width * 0.2))
+            Width: =If(varNavCollapsed, Parent.Width * 0.06, Parent.Width * 0.2)
             Height: =Parent.Height - 'MyLeaves.Header'.Height
             UserRole: =varCurrentUser.MaVaiTro
             ActiveScreen: =varActiveScreen
             OnNavigate: =Set(varNavigateAction, true)
             
       - 'MyLeaves.Content.Container':
-          Control: Rectangle
+          Control: GroupContainer
           Variant: ManualLayout
           Properties:
             X: ='MyLeaves.Navigation'.X + 'MyLeaves.Navigation'.Width
@@ -43,11 +55,11 @@ Screens:
           Children:
             # Page Header
             - 'MyLeaves.Content.Header':
-                Control: Rectangle
+                Control: GroupContainer
                 Variant: ManualLayout
                 Properties:
-                  X: =Parent.X + Parent.Width * 0.03
-                  Y: =Parent.Y + Parent.Height * 0.02
+                  X: =Parent.Width * 0.03
+                  Y: =Parent.Height * 0.02
                   Width: =Parent.Width * 0.94
                   Height: =Parent.Height * 0.12
                 Children:
@@ -85,7 +97,7 @@ Screens:
                       ComponentName: ButtonComponent
                       Properties:
                         X: =Parent.Width - Self.Width
-                        Y: =Parent.Y + (Parent.Height * 0.65 - Self.Height) / 2
+                        Y: =(Parent.Height * 0.65 - Self.Height) / 2
                         Width: =Parent.Width * 0.18
                         Height: =Parent.Height * 0.35
                         Text: ="Tạo đơn mới"
@@ -95,17 +107,17 @@ Screens:
                         
                   # Filter Controls
                   - 'MyLeaves.Filter.Container':
-                      Control: Rectangle
+                      Control: GroupContainer
                       Variant: ManualLayout
                       Properties:
                         X: =Parent.X
-                        Y: =Parent.Y + Parent.Height * 0.7
+                        Y: =Parent.Height * 0.7
                         Width: =Parent.Width
                         Height: =Parent.Height * 0.3
                       Children:
                         # Period Filter
                         - 'MyLeaves.Filter.Period.Container':
-                            Control: Rectangle
+                            Control: GroupContainer
                             Variant: ManualLayout
                             Properties:
                               X: =Parent.X
@@ -129,7 +141,7 @@ Screens:
                                   Control: Classic/DropDown
                                   Properties:
                                     X: =Parent.X
-                                    Y: =Parent.Y + Parent.Height * 0.4
+                                    Y: =Parent.Height * 0.4
                                     Width: =Parent.Width
                                     Height: =Parent.Height * 0.6
                                     Items: =["All", "ThisMonth", "LastMonth", "Last3Months", "ThisYear"]
@@ -138,7 +150,7 @@ Screens:
                                                       
                         # Status Filter
                         - 'MyLeaves.Filter.Status.Container':
-                            Control: Rectangle
+                            Control: GroupContainer
                             Variant: ManualLayout
                             Properties:
                               X: =Parent.Width * 0.24
@@ -162,7 +174,7 @@ Screens:
                                   Control: Classic/DropDown
                                   Properties:
                                     X: =Parent.X
-                                    Y: =Parent.Y + Parent.Height * 0.4
+                                    Y: =Parent.Height * 0.4
                                     Width: =Parent.Width
                                     Height: =Parent.Height * 0.6
                                     Items: =["All", "ChoDuyetCap1", "ChoDuyetCap2", "ChoDuyetCap3", "DaDuyet", "TuChoi", "Huy"]
@@ -171,7 +183,7 @@ Screens:
                                                       
                         # Sort Controls
                         - 'MyLeaves.Sort.Container':
-                            Control: Rectangle
+                            Control: GroupContainer
                             Variant: ManualLayout
                             Properties:
                               X: =Parent.Width * 0.48
@@ -195,7 +207,7 @@ Screens:
                                   Control: Classic/DropDown
                                   Properties:
                                     X: =Parent.X
-                                    Y: =Parent.Y + Parent.Height * 0.4
+                                    Y: =Parent.Height * 0.4
                                     Width: =Parent.Width
                                     Height: =Parent.Height * 0.6
                                     Items: =["NgayTao Desc", "NgayTao Asc", "NgayBatDau Desc", "NgayBatDau Asc", "TrangThai"]
@@ -204,10 +216,10 @@ Screens:
                                                     
             # Leaves List
             - 'MyLeaves.List.Container':
-                Control: Rectangle
+                Control: GroupContainer
                 Variant: ManualLayout
                 Properties:
-                  X: =Parent.X + Parent.Width * 0.03
+                  X: =Parent.Width * 0.03
                   Y: ='MyLeaves.Content.Header'.Y + 'MyLeaves.Content.Header'.Height + Parent.Height * 0.02
                   Width: =Parent.Width * 0.94
                   Height: =Parent.Height * 0.8
@@ -218,11 +230,11 @@ Screens:
                 Children:
                   # List Header
                   - 'MyLeaves.List.Header':
-                      Control: Rectangle
+                      Control: GroupContainer
                       Variant: ManualLayout
                       Properties:
-                        X: =Parent.X + Parent.Width * 0.02
-                        Y: =Parent.Y + Parent.Height * 0.02
+                        X: =Parent.Width * 0.02
+                        Y: =Parent.Height * 0.02
                         Width: =Parent.Width * 0.96
                         Height: =Parent.Height * 0.08
                         Fill: =RGBA(248, 249, 250, 1)
@@ -232,8 +244,8 @@ Screens:
                         - 'MyLeaves.List.Header.Type':
                             Control: Label
                             Properties:
-                              X: =Parent.X + Parent.Width * 0.02
-                              Y: =Parent.Y + (Parent.Height - Self.Height) / 2
+                              X: =Parent.Width * 0.02
+                              Y: =(Parent.Height - Self.Height) / 2
                               Width: =Parent.Width * 0.15
                               Height: =Parent.Height * 0.6
                               Text: ="Loại nghỉ"
@@ -246,7 +258,7 @@ Screens:
                             Control: Label
                             Properties:
                               X: =Parent.Width * 0.17
-                              Y: =Parent.Y + (Parent.Height - Self.Height) / 2
+                              Y: =(Parent.Height - Self.Height) / 2
                               Width: =Parent.Width * 0.2
                               Height: =Parent.Height * 0.6
                               Text: ="Thời gian nghỉ"
@@ -259,7 +271,7 @@ Screens:
                             Control: Label
                             Properties:
                               X: =Parent.Width * 0.37
-                              Y: =Parent.Y + (Parent.Height - Self.Height) / 2
+                              Y: =(Parent.Height - Self.Height) / 2
                               Width: =Parent.Width * 0.1
                               Height: =Parent.Height * 0.6
                               Text: ="Số ngày"
@@ -272,7 +284,7 @@ Screens:
                             Control: Label
                             Properties:
                               X: =Parent.Width * 0.47
-                              Y: =Parent.Y + (Parent.Height - Self.Height) / 2
+                              Y: =(Parent.Height - Self.Height) / 2
                               Width: =Parent.Width * 0.15
                               Height: =Parent.Height * 0.6
                               Text: ="Trạng thái"
@@ -285,7 +297,7 @@ Screens:
                             Control: Label
                             Properties:
                               X: =Parent.Width * 0.62
-                              Y: =Parent.Y + (Parent.Height - Self.Height) / 2
+                              Y: =(Parent.Height - Self.Height) / 2
                               Width: =Parent.Width * 0.15
                               Height: =Parent.Height * 0.6
                               Text: ="Ngày tạo"
@@ -298,7 +310,7 @@ Screens:
                             Control: Label
                             Properties:
                               X: =Parent.Width * 0.77
-                              Y: =Parent.Y + (Parent.Height - Self.Height) / 2
+                              Y: =(Parent.Height - Self.Height) / 2
                               Width: =Parent.Width * 0.21
                               Height: =Parent.Height * 0.6
                               Text: ="Thao tác"
@@ -312,7 +324,7 @@ Screens:
                       Control: Gallery
                       Variant: Vertical
                       Properties:
-                        X: =Parent.X + Parent.Width * 0.02
+                        X: =Parent.Width * 0.02
                         Y: ='MyLeaves.List.Header'.Y + 'MyLeaves.List.Header'.Height + Parent.Height * 0.01
                         Width: =Parent.Width * 0.96
                         Height: =Parent.Height * 0.87
@@ -324,7 +336,7 @@ Screens:
                         Fill: =RGBA(0, 0, 0, 0)
                       Children:
                         - 'MyLeaves.List.Gallery.Row':
-                            Control: Rectangle
+                            Control: GroupContainer
                             Variant: ManualLayout
                             Properties:
                               X: =Parent.TemplateX
@@ -339,8 +351,8 @@ Screens:
                               - 'MyLeaves.List.Gallery.LeaveType':
                                   Control: Label
                                   Properties:
-                                    X: =Parent.X + Parent.Width * 0.02
-                                    Y: =Parent.Y + (Parent.Height - Self.Height) / 2
+                                    X: =Parent.Width * 0.02
+                                    Y: =(Parent.Height - Self.Height) / 2
                                     Width: =Parent.Width * 0.15
                                     Height: =Parent.Height * 0.6
                                     Text: =LookUp(LoaiNghi, MaLoai = ThisItem.MaLoai).TenLoai
@@ -353,7 +365,7 @@ Screens:
                                   Control: Label
                                   Properties:
                                     X: =Parent.Width * 0.17
-                                    Y: =Parent.Y + (Parent.Height - Self.Height) / 2
+                                    Y: =(Parent.Height - Self.Height) / 2
                                     Width: =Parent.Width * 0.2
                                     Height: =Parent.Height * 0.6
                                     Text: =Text(ThisItem.NgayBatDau, "dd/mm/yyyy") & " - " & Text(ThisItem.NgayKetThuc, "dd/mm/yyyy")
@@ -366,7 +378,7 @@ Screens:
                                   Control: Label
                                   Properties:
                                     X: =Parent.Width * 0.37
-                                    Y: =Parent.Y + (Parent.Height - Self.Height) / 2
+                                    Y: =(Parent.Height - Self.Height) / 2
                                     Width: =Parent.Width * 0.1
                                     Height: =Parent.Height * 0.6
                                     Text: =ThisItem.SoNgayNghi & " ngày"
@@ -380,7 +392,7 @@ Screens:
                                   Control: Label
                                   Properties:
                                     X: =Parent.Width * 0.47
-                                    Y: =Parent.Y + (Parent.Height - Self.Height) / 2
+                                    Y: =(Parent.Height - Self.Height) / 2
                                     Width: =Parent.Width * 0.15
                                     Height: =Parent.Height * 0.5
                                     Text: =Switch(ThisItem.TrangThai,
@@ -421,7 +433,7 @@ Screens:
                                   Control: Label
                                   Properties:
                                     X: =Parent.Width * 0.62
-                                    Y: =Parent.Y + (Parent.Height - Self.Height) / 2
+                                    Y: =(Parent.Height - Self.Height) / 2
                                     Width: =Parent.Width * 0.15
                                     Height: =Parent.Height * 0.6
                                     Text: =Text(ThisItem.NgayTao, "dd/mm/yyyy")
@@ -431,11 +443,11 @@ Screens:
                                     
                               # Actions
                               - 'MyLeaves.List.Gallery.Actions':
-                                  Control: Rectangle
+                                  Control: GroupContainer
                                   Variant: ManualLayout
                                   Properties:
                                     X: =Parent.Width * 0.77
-                                    Y: =Parent.Y + (Parent.Height - Self.Height) / 2
+                                    Y: =(Parent.Height - Self.Height) / 2
                                     Width: =Parent.Width * 0.21
                                     Height: =Parent.Height * 0.7
                                   Children:
@@ -461,7 +473,7 @@ Screens:
                                         Control: CanvasComponent
                                         ComponentName: ButtonComponent
                                         Properties:
-                                          X: =Parent.X + Parent.Width * 0.35
+                                          X: =Parent.Width * 0.35
                                           Y: =Parent.Y
                                           Width: =Parent.Width * 0.3
                                           Height: =Parent.Height
@@ -479,7 +491,7 @@ Screens:
                                         Control: CanvasComponent
                                         ComponentName: ButtonComponent
                                         Properties:
-                                          X: =Parent.X + Parent.Width * 0.7
+                                          X: =Parent.Width * 0.7
                                           Y: =Parent.Y
                                           Width: =Parent.Width * 0.3
                                           Height: =Parent.Height
@@ -496,16 +508,17 @@ Screens:
       - 'MyLeaves.Details.Overlay':
           Control: Rectangle
           Properties:
-            X: =Parent.X
-            Y: =Parent.Y
+            X: =0
+            Y: =0
             Width: =Parent.Width
             Height: =Parent.Height
             Fill: =RGBA(0, 0, 0, 0.5)
             Visible: =varShowDetails
-            OnSelect: =Set(varShowDetails, false)
+            OnSelect: |
+              =Set(varShowDetails, false)
             
       - 'MyLeaves.Details.Modal':
-          Control: Rectangle
+          Control: GroupContainer
           Variant: ManualLayout
           Properties:
             X: =(Parent.Width - Self.Width) / 2
@@ -519,11 +532,11 @@ Screens:
             Visible: =varShowDetails
           Children:
             - 'MyLeaves.Details.Header':
-                Control: Rectangle
+                Control: GroupContainer
                 Variant: ManualLayout
                 Properties:
-                  X: =Parent.X + Parent.Width * 0.04
-                  Y: =Parent.Y + Parent.Height * 0.04
+                  X: =Parent.Width * 0.04
+                  Y: =Parent.Height * 0.04
                   Width: =Parent.Width * 0.92
                   Height: =Parent.Height * 0.1
                   Fill: =RGBA(248, 249, 250, 1)
@@ -533,8 +546,8 @@ Screens:
                   - 'MyLeaves.Details.Title':
                       Control: Label
                       Properties:
-                        X: =Parent.X + Parent.Width * 0.03
-                        Y: =Parent.Y + (Parent.Height - Self.Height) / 2
+                        X: =Parent.Width * 0.03
+                        Y: =(Parent.Height - Self.Height) / 2
                         Width: =Parent.Width * 0.8
                         Height: =Parent.Height * 0.6
                         Text: ="Chi tiết đơn nghỉ phép"
@@ -548,7 +561,7 @@ Screens:
                       ComponentName: ButtonComponent
                       Properties:
                         X: =Parent.Width * 0.85
-                        Y: =Parent.Y + (Parent.Height - Self.Height) / 2
+                        Y: =(Parent.Height - Self.Height) / 2
                         Width: =Parent.Width * 0.12
                         Height: =Parent.Height * 0.6
                         Text: ="Đóng"
@@ -558,10 +571,10 @@ Screens:
                         OnClick: =Set(varShowDetails, false)
                         
             - 'MyLeaves.Details.Content':
-                Control: Rectangle
+                Control: GroupContainer
                 Variant: ManualLayout
                 Properties:
-                  X: =Parent.X + Parent.Width * 0.04
+                  X: =Parent.Width * 0.04
                   Y: ='MyLeaves.Details.Header'.Y + 'MyLeaves.Details.Header'.Height + Parent.Height * 0.02
                   Width: =Parent.Width * 0.92
                   Height: =Parent.Height * 0.8
@@ -595,16 +608,17 @@ Screens:
       - 'MyLeaves.Cancel.Overlay':
           Control: Rectangle
           Properties:
-            X: =Parent.X
-            Y: =Parent.Y
+            X: =0
+            Y: =0
             Width: =Parent.Width
             Height: =Parent.Height
             Fill: =RGBA(0, 0, 0, 0.5)
             Visible: =varShowCancelModal
-            OnSelect: =Set(varShowCancelModal, false)
+            OnSelect: |
+              =Set(varShowCancelModal, false)
             
       - 'MyLeaves.Cancel.Modal':
-          Control: Rectangle
+          Control: GroupContainer
           Variant: ManualLayout
           Properties:
             X: =(Parent.Width - Self.Width) / 2
@@ -621,7 +635,7 @@ Screens:
                 Control: Classic/Icon
                 Properties:
                   X: =(Parent.Width - Self.Width) / 2
-                  Y: =Parent.Y + Parent.Height * 0.1
+                  Y: =Parent.Height * 0.1
                   Width: =Parent.Height * 0.15
                   Height: =Parent.Height * 0.15
                   Icon: =Icon.Warning
@@ -630,7 +644,7 @@ Screens:
             - 'MyLeaves.Cancel.Title':
                 Control: Label
                 Properties:
-                  X: =Parent.X + Parent.Width * 0.05
+                  X: =Parent.Width * 0.05
                   Y: ='MyLeaves.Cancel.Icon'.Y + 'MyLeaves.Cancel.Icon'.Height + Parent.Height * 0.05
                   Width: =Parent.Width * 0.9
                   Height: =Parent.Height * 0.15
@@ -644,7 +658,7 @@ Screens:
             - 'MyLeaves.Cancel.Message':
                 Control: Label
                 Properties:
-                  X: =Parent.X + Parent.Width * 0.05
+                  X: =Parent.Width * 0.05
                   Y: ='MyLeaves.Cancel.Title'.Y + 'MyLeaves.Cancel.Title'.Height
                   Width: =Parent.Width * 0.9
                   Height: =Parent.Height * 0.25
@@ -655,10 +669,10 @@ Screens:
                   Align: =Align.Center
                   
             - 'MyLeaves.Cancel.Actions':
-                Control: Rectangle
+                Control: GroupContainer
                 Variant: ManualLayout
                 Properties:
-                  X: =Parent.X + Parent.Width * 0.05
+                  X: =Parent.Width * 0.05
                   Y: =Parent.Height * 0.75
                   Width: =Parent.Width * 0.9
                   Height: =Parent.Height * 0.2

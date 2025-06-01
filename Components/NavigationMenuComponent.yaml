@@ -15,13 +15,25 @@ ComponentDefinitions:
         Description: The role of the current user
         DataType: Text
         Default: ="NhanVien"
+      OnNavigate:
+        PropertyKind: Event
+        DisplayName: OnNavigate
+        Description: Event triggered when navigation occurs
+        ReturnType: None
+        Default: =
+        Parameters:
+          - ScreenName:
+              Description: "Target screen name"
+              DataType: Text
+              IsOptional: false
+              Default: ="HomeScreen"
     Properties:
-      Height: =500
-      Width: =250
+      Height: =App.Height
+      Width: =App.Width * 0.2
     Children:
-      - MenuContainer:
+      # LAYER 1: Background (Rectangle for visual)
+      - MenuBackground:
           Control: Rectangle
-          Variant: ManualLayout
           Properties:
             Fill: =RGBA(240, 244, 249, 1)
             X: =0
@@ -30,26 +42,46 @@ ComponentDefinitions:
             Height: =Parent.Height
             BorderColor: =RGBA(230, 230, 230, 1)
             BorderThickness: =0 1 0 0
+      
+      # LAYER 2: Content Container (GroupContainer for logic)
+      - MenuContainer:
+          Control: GroupContainer
+          Variant: ManualLayout
+          Properties:
+            X: =0
+            Y: =0
+            Width: =Parent.Width
+            Height: =Parent.Height
           Children:
-            - UserInfoContainer:
+            # LAYER 2.1: User Info Background
+            - UserInfoBackground:
                 Control: Rectangle
-                Variant: ManualLayout
                 Properties:
                   Fill: =RGBA(0, 120, 212, 0.1)
                   X: =0
                   Y: =0
                   Width: =Parent.Width
-                  Height: =150
+                  Height: =Parent.Height * 0.3
                   BorderColor: =RGBA(230, 230, 230, 1)
                   BorderThickness: =0 0 1 0
+            
+            # LAYER 2.2: User Info Container
+            - UserInfoContainer:
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =0
+                  Y: =0
+                  Width: =Parent.Width
+                  Height: =Parent.Height * 0.3
                 Children:
                   - UserInfoContainer.AvatarBackground:
                       Control: Rectangle
                       Properties:
-                        X: =(Parent.Width - 84) / 2
-                        Y: =18
-                        Width: =84
-                        Height: =84
+                        X: =(Parent.Width - Parent.Width * 0.35) / 2
+                        Y: =Parent.Height * 0.12
+                        Width: =Parent.Width * 0.35
+                        Height: =Parent.Width * 0.35
                         Fill: =RGBA(255, 255, 255, 1)
                         BorderColor: =RGBA(0, 120, 212, 0.3)
                         BorderThickness: =1
@@ -57,10 +89,10 @@ ComponentDefinitions:
                   - UserInfoContainer.Avatar:
                       Control: Image
                       Properties:
-                        X: =(Parent.Width - 80) / 2
-                        Y: =20
-                        Width: =80
-                        Height: =80
+                        X: =(Parent.Width - Parent.Width * 0.32) / 2
+                        Y: =Parent.Height * 0.135
+                        Width: =Parent.Width * 0.32
+                        Height: =Parent.Width * 0.32
                         BorderColor: =RGBA(0, 120, 212, 1)
                         BorderThickness: =0
                         Image: ="https://static.vecteezy.com/system/resources/previews/009/292/244/original/default-avatar-icon-of-social-media-user-vector.jpg"
@@ -69,38 +101,40 @@ ComponentDefinitions:
                       Control: Label
                       Properties:
                         X: =0
-                        Y: =110
+                        Y: =Parent.Height * 0.73
                         Width: =Parent.Width
-                        Height: =30
+                        Height: =Parent.Height * 0.2
                         Text: ="Xin chào, " & LookUp(NguoiDung, Email = User().Email).HoTen
                         Color: =RGBA(32, 54, 71, 1)
-                        Size: =13
+                        Size: =Parent.Height * 0.086
                         Align: =Align.Center
                         FontWeight: =FontWeight.Semibold
             
+            # LAYER 2.3: Menu Separator
             - MenuContainer.Separator:
                 Control: Rectangle
                 Properties:
-                  X: =20
-                  Y: =151
-                  Width: =Parent.Width - 40
+                  X: =Parent.Width * 0.08
+                  Y: =Parent.Height * 0.302
+                  Width: =Parent.Width * 0.84
                   Height: =1
                   Fill: =RGBA(230, 230, 230, 1)
                   BorderColor: =RGBA(0, 0, 0, 0)
             
+            # LAYER 2.4: Menu Buttons
             - MenuContainer.HomeButton:
                 Control: Classic/Button
                 Properties:
                   X: =0
-                  Y: =160
+                  Y: =Parent.Height * 0.32
                   Width: =Parent.Width
-                  Height: =48
+                  Height: =Parent.Height * 0.096
                   Text: ="   Trang chủ"
                   Fill: =If(ThisComponent.SelectedItem = "Home", RGBA(0, 120, 212, 0.1), Transparent)
                   Color: =If(ThisComponent.SelectedItem = "Home", RGBA(0, 120, 212, 1), RGBA(32, 54, 71, 1))
-                  Size: =14
+                  Size: =Parent.Height * 0.028
                   Align: =Align.Left
-                  PaddingLeft: =40
+                  PaddingLeft: =Parent.Width * 0.16
                   BorderColor: =Transparent
                   OnSelect: |
                     =ThisComponent.OnNavigate({ScreenName: "HomeScreen"})
@@ -108,26 +142,26 @@ ComponentDefinitions:
             - MenuContainer.HomeIcon:
                 Control: Classic/Icon
                 Properties:
-                  X: =14
-                  Y: =171
-                  Width: =24
-                  Height: =24
-                  Icon: ="Home"
+                  X: =Parent.Width * 0.056
+                  Y: =Parent.Height * 0.342
+                  Width: =Parent.Width * 0.096
+                  Height: =Parent.Width * 0.096
+                  Icon: =Icon.House
                   Color: =If(ThisComponent.SelectedItem = "Home", RGBA(0, 120, 212, 1), RGBA(32, 54, 71, 0.7))
             
             - MenuContainer.ProfileButton:
                 Control: Classic/Button
                 Properties:
                   X: =0
-                  Y: =208
+                  Y: =Parent.Height * 0.416
                   Width: =Parent.Width
-                  Height: =48
+                  Height: =Parent.Height * 0.096
                   Text: ="   Thông tin cá nhân"
                   Fill: =If(ThisComponent.SelectedItem = "Profile", RGBA(0, 120, 212, 0.1), Transparent)
                   Color: =If(ThisComponent.SelectedItem = "Profile", RGBA(0, 120, 212, 1), RGBA(32, 54, 71, 1))
-                  Size: =14
+                  Size: =Parent.Height * 0.028
                   Align: =Align.Left
-                  PaddingLeft: =40
+                  PaddingLeft: =Parent.Width * 0.16
                   BorderColor: =Transparent
                   OnSelect: |
                     =ThisComponent.OnNavigate({ScreenName: "ProfileScreen"})
@@ -136,26 +170,26 @@ ComponentDefinitions:
             - MenuContainer.ProfileIcon:
                 Control: Classic/Icon
                 Properties:
-                  X: =14
-                  Y: =219
-                  Width: =24
-                  Height: =24
-                  Icon: ="Contact"
+                  X: =Parent.Width * 0.056
+                  Y: =Parent.Height * 0.438
+                  Width: =Parent.Width * 0.096
+                  Height: =Parent.Width * 0.096
+                  Icon: =Icon.Person
                   Color: =If(ThisComponent.SelectedItem = "Profile", RGBA(0, 120, 212, 1), RGBA(32, 54, 71, 0.7))
             
             - MenuContainer.LeaveRequestButton:
                 Control: Classic/Button
                 Properties:
                   X: =0
-                  Y: =256
+                  Y: =Parent.Height * 0.512
                   Width: =Parent.Width
-                  Height: =48
+                  Height: =Parent.Height * 0.096
                   Text: ="   Tạo đơn nghỉ phép"
                   Fill: =If(ThisComponent.SelectedItem = "LeaveRequest", RGBA(0, 120, 212, 0.1), Transparent)
                   Color: =If(ThisComponent.SelectedItem = "LeaveRequest", RGBA(0, 120, 212, 1), RGBA(32, 54, 71, 1))
-                  Size: =14
+                  Size: =Parent.Height * 0.028
                   Align: =Align.Left
-                  PaddingLeft: =40
+                  PaddingLeft: =Parent.Width * 0.16
                   BorderColor: =Transparent
                   OnSelect: |
                     =ThisComponent.OnNavigate({ScreenName: "LeaveRequestScreen"})
@@ -164,26 +198,26 @@ ComponentDefinitions:
             - MenuContainer.LeaveRequestIcon:
                 Control: Classic/Icon
                 Properties:
-                  X: =14
-                  Y: =267
-                  Width: =24
-                  Height: =24
-                  Icon: ="Add"
+                  X: =Parent.Width * 0.056
+                  Y: =Parent.Height * 0.534
+                  Width: =Parent.Width * 0.096
+                  Height: =Parent.Width * 0.096
+                  Icon: =Icon.Add
                   Color: =If(ThisComponent.SelectedItem = "LeaveRequest", RGBA(0, 120, 212, 1), RGBA(32, 54, 71, 0.7))
             
             - MenuContainer.CalendarButton:
                 Control: Classic/Button
                 Properties:
                   X: =0
-                  Y: =304
+                  Y: =Parent.Height * 0.608
                   Width: =Parent.Width
-                  Height: =48
+                  Height: =Parent.Height * 0.096
                   Text: ="   Lịch cá nhân"
                   Fill: =If(ThisComponent.SelectedItem = "Calendar", RGBA(0, 120, 212, 0.1), Transparent)
                   Color: =If(ThisComponent.SelectedItem = "Calendar", RGBA(0, 120, 212, 1), RGBA(32, 54, 71, 1))
-                  Size: =14
+                  Size: =Parent.Height * 0.028
                   Align: =Align.Left
-                  PaddingLeft: =40
+                  PaddingLeft: =Parent.Width * 0.16
                   BorderColor: =Transparent
                   OnSelect: |
                     =ThisComponent.OnNavigate({ScreenName: "PersonalCalendarScreen"})
@@ -192,26 +226,26 @@ ComponentDefinitions:
             - MenuContainer.CalendarIcon:
                 Control: Classic/Icon
                 Properties:
-                  X: =14
-                  Y: =315
-                  Width: =24
-                  Height: =24
-                  Icon: ="Calendar"
+                  X: =Parent.Width * 0.056
+                  Y: =Parent.Height * 0.63
+                  Width: =Parent.Width * 0.096
+                  Height: =Parent.Width * 0.096
+                  Icon: =Icon.CalendarBlank
                   Color: =If(ThisComponent.SelectedItem = "Calendar", RGBA(0, 120, 212, 1), RGBA(32, 54, 71, 0.7))
             
             - MenuContainer.TeamCalendarButton:
                 Control: Classic/Button
                 Properties:
                   X: =0
-                  Y: =352
+                  Y: =Parent.Height * 0.704
                   Width: =Parent.Width
-                  Height: =48
+                  Height: =Parent.Height * 0.096
                   Text: ="   Lịch chung"
                   Fill: =If(ThisComponent.SelectedItem = "TeamCalendar", RGBA(0, 120, 212, 0.1), Transparent)
                   Color: =If(ThisComponent.SelectedItem = "TeamCalendar", RGBA(0, 120, 212, 1), RGBA(32, 54, 71, 1))
-                  Size: =14
+                  Size: =Parent.Height * 0.028
                   Align: =Align.Left
-                  PaddingLeft: =40
+                  PaddingLeft: =Parent.Width * 0.16
                   BorderColor: =Transparent
                   OnSelect: |
                     =ThisComponent.OnNavigate({ScreenName: "TeamCalendarScreen"})
@@ -220,26 +254,26 @@ ComponentDefinitions:
             - MenuContainer.TeamCalendarIcon:
                 Control: Classic/Icon
                 Properties:
-                  X: =14
-                  Y: =363
-                  Width: =24
-                  Height: =24
-                  Icon: ="CalendarAgenda"
+                  X: =Parent.Width * 0.056
+                  Y: =Parent.Height * 0.726
+                  Width: =Parent.Width * 0.096
+                  Height: =Parent.Width * 0.096
+                  Icon: =Icon.CalendarBlank
                   Color: =If(ThisComponent.SelectedItem = "TeamCalendar", RGBA(0, 120, 212, 1), RGBA(32, 54, 71, 0.7))
             
             - MenuContainer.ApprovalButton:
                 Control: Classic/Button
                 Properties:
                   X: =0
-                  Y: =400
+                  Y: =Parent.Height * 0.8
                   Width: =Parent.Width
-                  Height: =48
+                  Height: =Parent.Height * 0.096
                   Text: ="   Phê duyệt đơn nghỉ"
                   Fill: =If(ThisComponent.SelectedItem = "Approval", RGBA(0, 120, 212, 0.1), Transparent)
                   Color: =If(ThisComponent.SelectedItem = "Approval", RGBA(0, 120, 212, 1), RGBA(32, 54, 71, 1))
-                  Size: =14
+                  Size: =Parent.Height * 0.028
                   Align: =Align.Left
-                  PaddingLeft: =40
+                  PaddingLeft: =Parent.Width * 0.16
                   BorderColor: =Transparent
                   OnSelect: |
                     =ThisComponent.OnNavigate({ScreenName: "ApprovalScreen"})
@@ -248,26 +282,26 @@ ComponentDefinitions:
             - MenuContainer.ApprovalIcon:
                 Control: Classic/Icon
                 Properties:
-                  X: =14
-                  Y: =411
-                  Width: =24
-                  Height: =24
-                  Icon: ="CheckMark"
+                  X: =Parent.Width * 0.056
+                  Y: =Parent.Height * 0.822
+                  Width: =Parent.Width * 0.096
+                  Height: =Parent.Width * 0.096
+                  Icon: =Icon.CheckBadge
                   Color: =If(ThisComponent.SelectedItem = "Approval", RGBA(0, 120, 212, 1), RGBA(32, 54, 71, 0.7))
             
             - MenuContainer.UserManagementButton:
                 Control: Classic/Button
                 Properties:
                   X: =0
-                  Y: =448
+                  Y: =Parent.Height * 0.896
                   Width: =Parent.Width
-                  Height: =48
+                  Height: =Parent.Height * 0.096
                   Text: ="   Quản lý người dùng"
                   Fill: =If(ThisComponent.SelectedItem = "UserManagement", RGBA(0, 120, 212, 0.1), Transparent)
                   Color: =If(ThisComponent.SelectedItem = "UserManagement", RGBA(0, 120, 212, 1), RGBA(32, 54, 71, 1))
-                  Size: =14
+                  Size: =Parent.Height * 0.028
                   Align: =Align.Left
-                  PaddingLeft: =40
+                  PaddingLeft: =Parent.Width * 0.16
                   BorderColor: =Transparent
                   OnSelect: |
                     =ThisComponent.OnNavigate({ScreenName: "UserManagementScreen"})
@@ -276,19 +310,20 @@ ComponentDefinitions:
             - MenuContainer.UserManagementIcon:
                 Control: Classic/Icon
                 Properties:
-                  X: =14
-                  Y: =459
-                  Width: =24
-                  Height: =24
-                  Icon: ="Group"
+                  X: =Parent.Width * 0.056
+                  Y: =Parent.Height * 0.918
+                  Width: =Parent.Width * 0.096
+                  Height: =Parent.Width * 0.096
+                  Icon: =Icon.People
                   Color: =If(ThisComponent.SelectedItem = "UserManagement", RGBA(0, 120, 212, 1), RGBA(32, 54, 71, 0.7))
             
+            # LAYER 2.5: Bottom Section
             - MenuContainer.BottomSeparator:
                 Control: Rectangle
                 Properties:
-                  X: =20
-                  Y: =Parent.Height - 49
-                  Width: =Parent.Width - 40
+                  X: =Parent.Width * 0.08
+                  Y: =Parent.Height - Parent.Height * 0.098
+                  Width: =Parent.Width * 0.84
                   Height: =1
                   Fill: =RGBA(230, 230, 230, 1)
                   BorderColor: =RGBA(0, 0, 0, 0)
@@ -297,14 +332,14 @@ ComponentDefinitions:
             - MenuContainer.LogoutButton:
                 Control: Classic/Button
                 Properties:
-                  X: =20
-                  Y: =Parent.Height - 40
-                  Width: =Parent.Width - 40
-                  Height: =32
+                  X: =Parent.Width * 0.08
+                  Y: =Parent.Height - Parent.Height * 0.08
+                  Width: =Parent.Width * 0.84
+                  Height: =Parent.Height * 0.064
                   Text: ="Đăng xuất"
                   Fill: =Transparent
                   Color: =RGBA(209, 82, 55, 1)
-                  Size: =12
+                  Size: =Parent.Height * 0.024
                   Align: =Align.Center
                   BorderColor: =RGBA(209, 82, 55, 0.5)
                   BorderThickness: =1

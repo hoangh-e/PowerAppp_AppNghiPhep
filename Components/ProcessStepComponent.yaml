@@ -13,13 +13,13 @@ ComponentDefinitions:
         PropertyKind: Input
         DisplayName: Step Title
         Description: The title of the process step
-        DataType: String
+        DataType: Text
         Default: =""
       StepStatus:
         PropertyKind: Input
         DisplayName: Step Status
         Description: The status of the step (Completed, Pending)
-        DataType: String
+        DataType: Text
         Default: ="Pending"
       IsActive:
         PropertyKind: Input
@@ -28,30 +28,48 @@ ComponentDefinitions:
         DataType: Boolean
         Default: =false
     Properties:
-      Height: =Parent.Height
-      Width: =Parent.Width
+      Height: =App.Height * 0.08
+      Width: =App.Width
     Children:
-      - StepContainer:
+      # LAYER 1: Background (Rectangle for visual)
+      - StepBackground:
           Control: Rectangle
+          Properties:
+            X: =0
+            Y: =0
+            Width: =Parent.Width
+            Height: =Parent.Height
+            Fill: =If(ThisComponent.IsActive, RGBA(243, 243, 243, 1), RGBA(255, 255, 255, 1))
+      
+      # LAYER 2: Content Container (GroupContainer for logic)
+      - StepContainer:
+          Control: GroupContainer
           Variant: ManualLayout
           Properties:
             X: =0
             Y: =0
             Width: =Parent.Width
             Height: =Parent.Height
-            ZIndex: =1
-            Fill: =If(ThisComponent.IsActive, RGBA(243, 243, 243, 1), RGBA(255, 255, 255, 1))
           Children:
-            - StepNumberContainer:
+            # LAYER 2.1: Step Number Background
+            - StepNumberBackground:
                 Control: Rectangle
+                Properties:
+                  X: =Parent.Width * 0.01
+                  Y: =(Parent.Height - Self.Height) / 2
+                  Width: =Parent.Height * 0.75
+                  Height: =Parent.Height * 0.75
+                  Fill: =If(ThisComponent.StepStatus = "Completed", RGBA(76, 202, 80, 1), RGBA(166, 166, 166, 1))
+            
+            # LAYER 2.2: Step Number Container
+            - StepNumberContainer:
+                Control: GroupContainer
                 Variant: ManualLayout
                 Properties:
-                  X: =5
-                  Y: =(Parent.Height - Self.Height) / 2
-                  Width: =30
-                  Height: =30
-                  ZIndex: =1
-                  Fill: =If(ThisComponent.StepStatus = "Completed", RGBA(76, 202, 80, 1), RGBA(166, 166, 166, 1))
+                  X: =Parent.Width * 0.01
+                  Y: =(Parent.Height - Parent.Height * 0.75) / 2
+                  Width: =Parent.Height * 0.75
+                  Height: =Parent.Height * 0.75
                 Children:
                   - lblStepNumber:
                       Control: Label
@@ -60,34 +78,34 @@ ComponentDefinitions:
                         Y: =0
                         Width: =Parent.Width
                         Height: =Parent.Height
-                        ZIndex: =1
                         Text: =ThisComponent.StepNumber
                         Align: =Align.Center
                         VerticalAlign: =VerticalAlign.Middle
                         Color: =RGBA(255, 255, 255, 1)
                         FontWeight: =FontWeight.Bold
+                        Size: =Parent.Height * 0.5
             
+            # LAYER 2.3: Step Title
             - lblStepTitle:
                 Control: Label
                 Properties:
-                  X: =45
+                  X: =Parent.Width * 0.05 + Parent.Height * 0.75
                   Y: =(Parent.Height - Self.Height) / 2
-                  Width: =Parent.Width - 60
-                  Height: =20
-                  ZIndex: =2
+                  Width: =Parent.Width * 0.8
+                  Height: =Parent.Height * 0.5
                   Text: =ThisComponent.StepTitle
-                  Size: =13
+                  Size: =Parent.Height * 0.32
                   Color: =If(ThisComponent.IsActive, RGBA(0, 0, 0, 1), RGBA(80, 80, 80, 1))
                   FontWeight: =If(ThisComponent.IsActive, FontWeight.Bold, FontWeight.Normal)
             
+            # LAYER 2.4: Check Icon (Top layer)
             - iconCheck:
-                Control: Icon
+                Control: Classic/Icon
                 Properties:
-                  X: =Parent.Width - 30
+                  X: =Parent.Width * 0.9
                   Y: =(Parent.Height - Self.Height) / 2
-                  Width: =20
-                  Height: =20
-                  ZIndex: =3
-                  Icon: =CheckMark
+                  Width: =Parent.Height * 0.5
+                  Height: =Parent.Height * 0.5
+                  Icon: =Icon.CheckBadge
                   Color: =If(ThisComponent.StepStatus = "Completed", RGBA(76, 202, 80, 1), Transparent)
                   Visible: =ThisComponent.StepStatus = "Completed" 

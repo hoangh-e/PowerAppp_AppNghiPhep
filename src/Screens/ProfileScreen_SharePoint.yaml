@@ -3,16 +3,20 @@ Screens:
     Properties:
       Fill: =RGBA(248, 250, 252, 1)
       OnVisible: |
-                    =Set(varActiveScreen, "Profile");
-                    Set(varCurrentUser, LookUp(NguoiDung, Email = User().Email));
-                    Set(varEditMode, false);
-                    Set(varIsUpdating, false);
-                    Set(varUpdateSuccess, false);
-                    Set(varUpdateError, "");
-                    Set(varUserLeaveQuota, LookUp(SoNgayPhep, And(MaNhanVien = varCurrentUser.MaNhanVien, Nam = Year(Today()))));
-                    Set(varUserLeaveHistory, Filter(DonNghiPhep, MaNhanVien = varCurrentUser.MaNhanVien));
-                    Set(varDepartmentInfo, LookUp(DonVi, MaDonVi = varCurrentUser.MaDonVi));
-                    Set(varManagerInfo, LookUp(NguoiDung, MaNhanVien = varCurrentUser.MaQuanLy))
+        =Set(varActiveScreen, "Profile"); 
+        // Use session from Login or fallback to Microsoft 365 lookup
+        If(IsBlank(varCurrentUser), 
+          Set(varCurrentUser, LookUp(NguoiDung, Email = User().Email)));
+        // Validate current user session
+        If(IsBlank(varCurrentUser), 
+          Navigate(LoginScreen), 
+          // Continue with profile screen initialization using session data
+          Set(varUserDepartment, LookUp(DonVi, MaDonVi = varCurrentUser.MaDonVi)); 
+          Set(varUserRole, LookUp(VaiTro, MaVaiTro = varCurrentUser.MaVaiTro)); 
+          Set(varUserLeaveBalance, LookUp(SoNgayPhep, And(MaNhanVien.Value = varCurrentUser.MaNhanVien.Value, Nam = Year(Today())))); 
+          Set(varUserLeaveHistory, Filter(DonNghiPhep, MaNhanVien.Value = varCurrentUser.MaNhanVien.Value)); 
+          Set(varEditMode, false); 
+          Set(varProfileErrors, {}))
     Children:
       - 'Profile.Header':
           Control: CanvasComponent
@@ -33,16 +37,14 @@ Screens:
           Properties:
             X: =Parent.X
             Y: ='Profile.Header'.Y + 'Profile.Header'.Height
-            Width: =If(App.Width < 768, 
-              If(varMobileMenuOpen, Parent.Width * 0.75, Parent.Width * 0.001),
-              If(varNavCollapsed, Parent.Width * 0.06, Parent.Width * 0.2))
+            Width: =If(varNavCollapsed, Parent.Width * 0.06, Parent.Width * 0.2)
             Height: =Parent.Height - 'Profile.Header'.Height
             UserRole: =varCurrentUser.MaVaiTro
             ActiveScreen: =varActiveScreen
             OnNavigate: =Set(varNavigateAction, true)
             
       - 'Profile.Content.Container':
-          Control: Rectangle
+          Control: GroupContainer
           Variant: ManualLayout
           Properties:
             X: ='Profile.Navigation'.X + 'Profile.Navigation'.Width
@@ -53,11 +55,11 @@ Screens:
           Children:
             # Profile Header
             - 'Profile.Info.Header':
-                Control: Rectangle
+                Control: GroupContainer
                 Variant: ManualLayout
                 Properties:
-                  X: =Parent.X + Parent.Width * 0.03
-                  Y: =Parent.Y + Parent.Height * 0.02
+                  X: =Parent.Width * 0.03
+                  Y: =Parent.Height * 0.02
                   Width: =Parent.Width * 0.94
                   Height: =Parent.Height * 0.25
                   Fill: =RGBA(255, 255, 255, 1)
@@ -67,11 +69,11 @@ Screens:
                 Children:
                   # Avatar Section
                   - 'Profile.Avatar.Container':
-                      Control: Rectangle
+                      Control: GroupContainer
                       Variant: ManualLayout
                       Properties:
-                        X: =Parent.X + Parent.Width * 0.04
-                        Y: =Parent.Y + Parent.Height * 0.1
+                        X: =Parent.Width * 0.04
+                        Y: =Parent.Height * 0.1
                         Width: =Parent.Width * 0.25
                         Height: =Parent.Height * 0.8
                       Children:
@@ -122,11 +124,11 @@ Screens:
                               
                   # Basic Info Section
                   - 'Profile.BasicInfo.Container':
-                      Control: Rectangle
+                      Control: GroupContainer
                       Variant: ManualLayout
                       Properties:
-                        X: =Parent.X + Parent.Width * 0.3
-                        Y: =Parent.Y + Parent.Height * 0.1
+                        X: =Parent.Width * 0.3
+                        Y: =Parent.Height * 0.1
                         Width: =Parent.Width * 0.45
                         Height: =Parent.Height * 0.8
                       Children:
@@ -147,7 +149,7 @@ Screens:
                             Control: Label
                             Properties:
                               X: =Parent.X
-                              Y: =Parent.Y + Parent.Height * 0.25
+                              Y: =Parent.Height * 0.25
                               Width: =Parent.Width
                               Height: =Parent.Height * 0.2
                               Text: ="Mã NV:" & " " & varCurrentUser.MaNhanVien
@@ -159,7 +161,7 @@ Screens:
                             Control: Label
                             Properties:
                               X: =Parent.X
-                              Y: =Parent.Y + Parent.Height * 0.45
+                              Y: =Parent.Height * 0.45
                               Width: =Parent.Width
                               Height: =Parent.Height * 0.2
                               Text: =Switch(varCurrentUser.MaVaiTro,
@@ -178,23 +180,23 @@ Screens:
                             Control: Label
                             Properties:
                               X: =Parent.X
-                              Y: =Parent.Y + Parent.Height * 0.65
+                              Y: =Parent.Height * 0.65
                               Width: =Parent.Width
                               Height: =Parent.Height * 0.35
-                              Text: =If(Not(IsBlank(varDepartmentInfo)), 
-                                varDepartmentInfo.TenDonVi & Char(10) & 
-                                If(Not(IsBlank(varManagerInfo)), "Quản lý:" & " " & varManagerInfo.HoTen, ""), "")
+                              Text: =If(Not(IsBlank(varUserDepartment)), 
+                                varUserDepartment.TenDonVi & Char(10) & 
+                                If(Not(IsBlank(varUserRole)), "Quản lý:" & " " & varUserRole.HoTen, ""), "")
                               Color: =RGBA(55, 65, 81, 1)
                               Font: =Font.'Open Sans'
                               Size: =14
                               
                   # Action Buttons
                   - 'Profile.Actions.Container':
-                      Control: Rectangle
+                      Control: GroupContainer
                       Variant: ManualLayout
                       Properties:
-                        X: =Parent.X + Parent.Width * 0.77
-                        Y: =Parent.Y + Parent.Height * 0.1
+                        X: =Parent.Width * 0.77
+                        Y: =Parent.Height * 0.1
                         Width: =Parent.Width * 0.2
                         Height: =Parent.Height * 0.8
                       Children:
@@ -212,7 +214,7 @@ Screens:
                               Size: ="Medium"
                               OnClick: |
                                           =Set(varEditMode, Not(varEditMode));
-                                          Set(varUpdateError, "");
+                                          Set(varProfileErrors, {});
                                           Set(varUpdateSuccess, false)
                               
                         - 'Profile.SaveButton':
@@ -220,7 +222,7 @@ Screens:
                             ComponentName: ButtonComponent
                             Properties:
                               X: =Parent.X
-                              Y: =Parent.Y + Parent.Height * 0.5
+                              Y: =Parent.Height * 0.5
                               Width: =Parent.Width
                               Height: =Parent.Height * 0.4
                               Text: ="Lưu"
@@ -230,14 +232,14 @@ Screens:
                               Visible: =varEditMode
                               IsLoading: =varIsUpdating
                               LoadingText: ="Đang lưu..."
-                              OnClick: =Set(varIsUpdating, true); Set(varUpdateError, ""); Set(varUpdateSuccess, false)
+                              OnClick: =Set(varIsUpdating, true); Set(varProfileErrors, {}); Set(varUpdateSuccess, false)
                               
             # Detailed Info Tabs
             - 'Profile.Tabs.Container':
-                Control: Rectangle
+                Control: GroupContainer
                 Variant: ManualLayout
                 Properties:
-                  X: =Parent.X + Parent.Width * 0.03
+                  X: =Parent.Width * 0.03
                   Y: ='Profile.Info.Header'.Y + 'Profile.Info.Header'.Height + Parent.Height * 0.02
                   Width: =Parent.Width * 0.94
                   Height: =Parent.Height * 0.68
@@ -248,11 +250,11 @@ Screens:
                 Children:
                   # Tab Headers
                   - 'Profile.TabHeaders.Container':
-                      Control: Rectangle
+                      Control: GroupContainer
                       Variant: ManualLayout
                       Properties:
-                        X: =Parent.X + Parent.Width * 0.02
-                        Y: =Parent.Y + Parent.Height * 0.02
+                        X: =Parent.Width * 0.02
+                        Y: =Parent.Height * 0.02
                         Width: =Parent.Width * 0.96
                         Height: =Parent.Height * 0.08
                         Fill: =RGBA(248, 249, 250, 1)
@@ -263,8 +265,8 @@ Screens:
                             Control: CanvasComponent
                             ComponentName: ButtonComponent
                             Properties:
-                              X: =Parent.X + Parent.Width * 0.02
-                              Y: =Parent.Y + (Parent.Height - Self.Height) / 2
+                              X: =Parent.Width * 0.02
+                              Y: =(Parent.Height - Self.Height) / 2
                               Width: =Parent.Width * 0.18
                               Height: =Parent.Height * 0.8
                               Text: ="Thông tin cá nhân"
@@ -276,8 +278,8 @@ Screens:
                             Control: CanvasComponent
                             ComponentName: ButtonComponent
                             Properties:
-                              X: =Parent.X + Parent.Width * 0.22
-                              Y: =Parent.Y + (Parent.Height - Self.Height) / 2
+                              X: =Parent.Width * 0.22
+                              Y: =(Parent.Height - Self.Height) / 2
                               Width: =Parent.Width * 0.18
                               Height: =Parent.Height * 0.8
                               Text: ="Nghỉ phép"
@@ -289,8 +291,8 @@ Screens:
                             Control: CanvasComponent
                             ComponentName: ButtonComponent
                             Properties:
-                              X: =Parent.X + Parent.Width * 0.42
-                              Y: =Parent.Y + (Parent.Height - Self.Height) / 2
+                              X: =Parent.Width * 0.42
+                              Y: =(Parent.Height - Self.Height) / 2
                               Width: =Parent.Width * 0.18
                               Height: =Parent.Height * 0.8
                               Text: ="Cài đặt"
@@ -300,17 +302,17 @@ Screens:
                               
                   # Tab Content
                   - 'Profile.TabContent.Container':
-                      Control: Rectangle
+                      Control: GroupContainer
                       Variant: ManualLayout
                       Properties:
-                        X: =Parent.X + Parent.Width * 0.02
+                        X: =Parent.Width * 0.02
                         Y: ='Profile.TabHeaders.Container'.Y + 'Profile.TabHeaders.Container'.Height + Parent.Height * 0.02
                         Width: =Parent.Width * 0.96
                         Height: =Parent.Height * 0.85
                       Children:
                         # Personal Info Tab
                         - 'Profile.PersonalInfo.Container':
-                            Control: Rectangle
+                            Control: GroupContainer
                             Variant: ManualLayout
                             Properties:
                               X: =Parent.X
@@ -322,8 +324,8 @@ Screens:
                               - 'Profile.PersonalInfo.Details':
                                   Control: Label
                                   Properties:
-                                    X: =Parent.X + Parent.Width * 0.02
-                                    Y: =Parent.Y + Parent.Height * 0.02
+                                    X: =Parent.Width * 0.02
+                                    Y: =Parent.Height * 0.02
                                     Width: =Parent.Width * 0.96
                                     Height: =Parent.Height * 0.96
                                     Text: =Concatenate(
@@ -342,7 +344,7 @@ Screens:
                                     
                         # Leave Info Tab
                         - 'Profile.LeaveInfo.Container':
-                            Control: Rectangle
+                            Control: GroupContainer
                             Variant: ManualLayout
                             Properties:
                               X: =Parent.X
@@ -352,7 +354,7 @@ Screens:
                               Visible: =varSelectedTab = "Leave"
                             Children:
                               - 'Profile.LeaveInfo.Stats':
-                                  Control: Rectangle
+                                  Control: GroupContainer
                                   Variant: ManualLayout
                                   Properties:
                                     X: =Parent.X
@@ -369,7 +371,7 @@ Screens:
                                           Width: =Parent.Width * 0.32
                                           Height: =Parent.Height
                                           Title: ="Tổng ngày phép"
-                                          Value: =If(Not(IsBlank(varUserLeaveQuota)), Text(varUserLeaveQuota.TongNgayDuocPhep), "0")
+                                          Value: =If(Not(IsBlank(varUserLeaveBalance)), Text(varUserLeaveBalance.TongNgayDuocPhep), "0")
                                           Icon: ="Calendar"
                                           BackgroundColor: =RGBA(33, 150, 243, 0.1)
                                           IconColor: =RGBA(33, 150, 243, 1)
@@ -383,7 +385,7 @@ Screens:
                                           Width: =Parent.Width * 0.32
                                           Height: =Parent.Height
                                           Title: ="Đã sử dụng"
-                                          Value: =If(Not(IsBlank(varUserLeaveQuota)), Text(varUserLeaveQuota.SoNgayDaNghi), "0")
+                                          Value: =If(Not(IsBlank(varUserLeaveBalance)), Text(varUserLeaveBalance.SoNgayDaNghi), "0")
                                           Icon: ="CheckMark"
                                           BackgroundColor: =RGBA(76, 175, 80, 0.1)
                                           IconColor: =RGBA(76, 175, 80, 1)
@@ -397,7 +399,7 @@ Screens:
                                           Width: =Parent.Width * 0.32
                                           Height: =Parent.Height
                                           Title: ="Còn lại"
-                                          Value: =If(Not(IsBlank(varUserLeaveQuota)), Text(varUserLeaveQuota.SoNgayConLai), "0")
+                                          Value: =If(Not(IsBlank(varUserLeaveBalance)), Text(varUserLeaveBalance.SoNgayConLai), "0")
                                           Icon: ="Clock"
                                           BackgroundColor: =RGBA(255, 152, 0, 0.1)
                                           IconColor: =RGBA(255, 152, 0, 1)
@@ -405,8 +407,8 @@ Screens:
                               - 'Profile.LeaveInfo.History':
                                   Control: Label
                                   Properties:
-                                    X: =Parent.X + Parent.Width * 0.02
-                                    Y: =Parent.Y + Parent.Height * 0.35
+                                    X: =Parent.Width * 0.02
+                                    Y: =Parent.Height * 0.35
                                     Width: =Parent.Width * 0.96
                                     Height: =Parent.Height * 0.6
                                     Text: =Concatenate(
@@ -431,14 +433,14 @@ Screens:
                                     
             # Success/Error Messages
             - 'Profile.Messages.Container':
-                Control: Rectangle
+                Control: GroupContainer
                 Variant: ManualLayout
                 Properties:
-                  X: =Parent.X + Parent.Width * 0.03
-                  Y: =Parent.Y + Parent.Height * 0.95
+                  X: =Parent.Width * 0.03
+                  Y: =Parent.Height * 0.95
                   Width: =Parent.Width * 0.94
                   Height: =Parent.Height * 0.03
-                  Visible: =varUpdateSuccess Or Not(IsBlank(varUpdateError))
+                  Visible: =varUpdateSuccess Or Not(IsBlank(varProfileErrors))
                 Children:
                   - 'Profile.Success.Message':
                       Control: Label
@@ -462,10 +464,10 @@ Screens:
                         Y: =Parent.Y
                         Width: =Parent.Width
                         Height: =Parent.Height
-                        Text: ="❌ " & varUpdateError
+                        Text: ="❌ " & varProfileErrors
                         Color: =RGBA(244, 67, 54, 1)
                         Font: =Font.'Open Sans'
                         FontWeight: =FontWeight.Semibold
                         Size: =14
                         Align: =Align.Center
-                        Visible: =Not(IsBlank(varUpdateError)) 
+                        Visible: =Not(IsBlank(varProfileErrors)) 

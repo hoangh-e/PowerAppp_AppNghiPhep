@@ -2,173 +2,200 @@ ComponentDefinitions:
   ReviewerTableComponent:
     DefinitionType: CanvasComponent
     AccessAppScope: true
+    CustomProperties:
+      Items:
+        PropertyKind: Input
+        DisplayName: Items
+        Description: Data items for the reviewer table
+        DataType: Table
+        Default: =Table()
+      OnDeleteReviewer:
+        PropertyKind: Event
+        DisplayName: OnDeleteReviewer
+        Description: Event triggered when reviewer is deleted
+        ReturnType: None
+        Default: =
+        Parameters:
+          - Item:
+              Description: "The reviewer item to delete"
+              DataType: Record
+              IsOptional: false
     Properties:
-      Height: =150
+      Height: =App.Height * 0.19
       Width: =Parent.Width
     Children:
-      - ReviewerTableContainer:
+      # LAYER 1: Background (Rectangle for visual)
+      - ReviewerTableBackground:
           Control: Rectangle
+          Properties:
+            X: =0
+            Y: =0
+            Width: =Parent.Width
+            Height: =Parent.Height
+            Fill: =RGBA(255, 255, 255, 1)
+      
+      # LAYER 2: Content Container (GroupContainer for logic)
+      - ReviewerTableContainer:
+          Control: GroupContainer
           Variant: ManualLayout
           Properties:
             X: =0
             Y: =0
             Width: =Parent.Width
             Height: =Parent.Height
-            ZIndex: =1
-            Fill: =RGBA(255, 255, 255, 1)
           Children:
-            - TableHeader:
+            # LAYER 2.1: Table Header Background
+            - TableHeaderBackground:
                 Control: Rectangle
+                Properties:
+                  X: =0
+                  Y: =0
+                  Width: =Parent.Width
+                  Height: =Parent.Height * 0.2
+                  Fill: =RGBA(232, 255, 233, 1)
+            
+            # LAYER 2.2: Table Header Container
+            - TableHeader:
+                Control: GroupContainer
                 Variant: ManualLayout
                 Properties:
                   X: =0
                   Y: =0
                   Width: =Parent.Width
-                  Height: =30
-                  ZIndex: =1
-                  Fill: =RGBA(232, 255, 233, 1)
+                  Height: =Parent.Height * 0.2
                 Children:
                   - lblNoHeader:
                       Control: Label
                       Properties:
                         X: =0
                         Y: =0
-                        Width: =50
-                        Height: =30
-                        ZIndex: =1
+                        Width: =Parent.Width * 0.05
+                        Height: =Parent.Height
                         Text: ="No"
                         VerticalAlign: =VerticalAlign.Middle
                         Align: =Align.Center
-                        Size: =12
+                        Size: =Parent.Height * 0.4
                         FontWeight: =FontWeight.Bold
                   
                   - lblNameHeader:
                       Control: Label
                       Properties:
-                        X: =50
+                        X: =Parent.Width * 0.05
                         Y: =0
-                        Width: =250
-                        Height: =30
-                        ZIndex: =2
+                        Width: =Parent.Width * 0.3
+                        Height: =Parent.Height
                         Text: ="Họ và tên"
                         VerticalAlign: =VerticalAlign.Middle
-                        Size: =12
+                        Size: =Parent.Height * 0.4
                         FontWeight: =FontWeight.Bold
                   
                   - lblDepartmentHeader:
                       Control: Label
                       Properties:
-                        X: =300
+                        X: =Parent.Width * 0.35
                         Y: =0
-                        Width: =250
-                        Height: =30
-                        ZIndex: =3
+                        Width: =Parent.Width * 0.3
+                        Height: =Parent.Height
                         Text: ="Phòng/Ban"
                         VerticalAlign: =VerticalAlign.Middle
-                        Size: =12
+                        Size: =Parent.Height * 0.4
                         FontWeight: =FontWeight.Bold
                   
                   - lblPositionHeader:
                       Control: Label
                       Properties:
-                        X: =550
+                        X: =Parent.Width * 0.65
                         Y: =0
-                        Width: =Parent.Width - 600
-                        Height: =30
-                        ZIndex: =4
+                        Width: =Parent.Width * 0.25
+                        Height: =Parent.Height
                         Text: ="Chức vụ"
                         VerticalAlign: =VerticalAlign.Middle
-                        Size: =12
+                        Size: =Parent.Height * 0.4
                         FontWeight: =FontWeight.Bold
                   
                   - lblActionHeader:
                       Control: Label
                       Properties:
-                        X: =Parent.Width - 50
+                        X: =Parent.Width * 0.9
                         Y: =0
-                        Width: =50
-                        Height: =30
-                        ZIndex: =5
+                        Width: =Parent.Width * 0.1
+                        Height: =Parent.Height
                         Text: ="Xóa"
                         VerticalAlign: =VerticalAlign.Middle
                         Align: =Align.Center
-                        Size: =12
+                        Size: =Parent.Height * 0.4
                         FontWeight: =FontWeight.Bold
             
+            # LAYER 2.3: Gallery
             - ReviewerGallery:
                 Control: Gallery
+                Variant: Vertical
                 Properties:
                   X: =0
-                  Y: =30
+                  Y: =Parent.Height * 0.2
                   Width: =Parent.Width
-                  Height: =Parent.Height - 30
-                  ZIndex: =2
-                  Layout: =LayoutType.Vertical
+                  Height: =Parent.Height * 0.8
                   TemplateFill: =RGBA(255, 255, 255, 1)
-                  TemplateSize: =40
-                  Items: =colReviewersData
+                  TemplateSize: =Parent.Height * 0.27
+                  Items: =ThisComponent.Items
                 Children:
                   - lblNo:
                       Control: Label
                       Properties:
                         X: =0
                         Y: =(Parent.TemplateHeight - Self.Height) / 2
-                        Width: =50
-                        Height: =20
-                        ZIndex: =1
+                        Width: =Parent.Width * 0.05
+                        Height: =Parent.TemplateHeight * 0.5
                         Text: =ThisItem.No
                         VerticalAlign: =VerticalAlign.Middle
                         Align: =Align.Center
-                        Size: =12
+                        Size: =Parent.TemplateHeight * 0.3
                         Color: =RGBA(80, 80, 80, 1)
                   
                   - lblName:
                       Control: Label
                       Properties:
-                        X: =50
+                        X: =Parent.Width * 0.05
                         Y: =(Parent.TemplateHeight - Self.Height) / 2
-                        Width: =250
-                        Height: =20
-                        ZIndex: =2
+                        Width: =Parent.Width * 0.3
+                        Height: =Parent.TemplateHeight * 0.5
                         Text: =ThisItem.Name
                         VerticalAlign: =VerticalAlign.Middle
-                        Size: =12
+                        Size: =Parent.TemplateHeight * 0.3
                         Color: =RGBA(80, 80, 80, 1)
                   
                   - lblDepartment:
                       Control: Label
                       Properties:
-                        X: =300
+                        X: =Parent.Width * 0.35
                         Y: =(Parent.TemplateHeight - Self.Height) / 2
-                        Width: =250
-                        Height: =20
-                        ZIndex: =3
+                        Width: =Parent.Width * 0.3
+                        Height: =Parent.TemplateHeight * 0.5
                         Text: =ThisItem.Department
                         VerticalAlign: =VerticalAlign.Middle
-                        Size: =12
+                        Size: =Parent.TemplateHeight * 0.3
                         Color: =RGBA(80, 80, 80, 1)
                   
                   - lblPosition:
                       Control: Label
                       Properties:
-                        X: =550
+                        X: =Parent.Width * 0.65
                         Y: =(Parent.TemplateHeight - Self.Height) / 2
-                        Width: =Parent.Width - 600
-                        Height: =20
-                        ZIndex: =4
+                        Width: =Parent.Width * 0.25
+                        Height: =Parent.TemplateHeight * 0.5
                         Text: =ThisItem.Position
                         VerticalAlign: =VerticalAlign.Middle
-                        Size: =12
+                        Size: =Parent.TemplateHeight * 0.3
                         Color: =RGBA(80, 80, 80, 1)
                   
                   - iconDelete:
-                      Control: Icon
+                      Control: Classic/Icon
                       Properties:
-                        X: =Parent.Width - 35
+                        X: =Parent.Width * 0.93
                         Y: =(Parent.TemplateHeight - Self.Height) / 2
-                        Width: =20
-                        Height: =20
-                        ZIndex: =5
-                        Icon: =Trash
+                        Width: =Parent.TemplateHeight * 0.5
+                        Height: =Parent.TemplateHeight * 0.5
+                        Icon: =Icon.Trash
                         Color: =RGBA(209, 209, 209, 1)
-                        OnSelect: =OnDeleteReviewer(ThisItem) 
+                        OnSelect: |
+                          =ThisComponent.OnDeleteReviewer({Item: ThisItem}) 

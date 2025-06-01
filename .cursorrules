@@ -8,12 +8,14 @@
 1. [File Structure](mdc:#1-file-structure)
 2. [Control Rules](mdc:#2-control-rules)
 3. [Position & Size Rules](mdc:#3-position--size-rules)
-4. [Allowed Controls](mdc:#4-allowed-controls)
-5. [Properties Guidelines](mdc:#5-properties-guidelines)
-6. [Icon Guidelines](mdc:#6-icon-guidelines)
-7. [Naming Conventions](mdc:#7-naming-conventions)
-8. [Common Mistakes](mdc:#8-common-mistakes)
-9. [Best Practices](mdc:#9-best-practices)
+4. [Control Z-Index & Rendering Order](mdc:#4-control-z-index--rendering-order)
+5. [Allowed Controls](mdc:#5-allowed-controls)
+6. [Properties Guidelines](mdc:#6-properties-guidelines)
+7. [Icon Guidelines](mdc:#7-icon-guidelines)
+8. [Naming Conventions](mdc:#8-naming-conventions)
+9. [Common Mistakes](mdc:#9-common-mistakes)
+10. [Best Practices](mdc:#10-best-practices)
+11. [SharePoint Integration Rules](mdc:#11-sharepoint-integration-rules)
 
 ---
 
@@ -154,7 +156,8 @@ Control: HeaderComponent
 - `RadiusTopRight` - Not supported
 - `Variant` - Rectangle does NOT support Variant property
 - `DropShadow` - Rectangle does NOT support DropShadow property
-- Use `BorderRadius` instead for uniform radius
+- `BorderRadius` - Rectangle does NOT support BorderRadius property
+- Use `BorderThickness` and `BorderColor` for visual effects instead
 
 **Classic/Button Control** - NEVER use these properties:
 - `BorderRadius` - Not supported for Classic/Button
@@ -165,7 +168,58 @@ Control: HeaderComponent
 - `Self.Focused` - Not recognized, use `Self.Focus` instead
 - `Self.IsHovered` - Not recognized, use hover events instead
 
-### 2.5 Required Properties for All Controls
+### 2.5 Geometric Controls Container Restrictions
+**CRITICAL**: Geometric controls (Rectangle, Circle, Triangle, etc.) CANNOT contain other controls as children.
+
+```yaml
+# ❌ WRONG - Geometric controls with Children
+- 'MyContainer':
+    Control: Rectangle
+    Children:        # ❌ WRONG - Rectangle cannot have children
+      - 'ChildControl':
+          Control: Label
+
+- 'MyShape':
+    Control: Circle
+    Children:        # ❌ WRONG - Circle cannot have children
+      - 'InnerControl':
+          Control: Classic/Button
+
+# ✅ CORRECT - Use geometric controls for visual purposes only
+- 'Background.Shape':
+    Control: Rectangle
+    Properties:
+      Fill: =RGBA(255, 255, 255, 1)
+      # No Children property
+
+# ✅ CORRECT - Use GroupContainer for containers
+- 'Content.Container':
+    Control: GroupContainer
+    Variant: ManualLayout
+    Children:
+      - 'Child.Control':
+          Control: Label
+
+# ✅ CORRECT - Use DataTable for data display
+- 'Data.Display':
+    Control: DataTable
+    Properties:
+      Items: =MyCollection
+```
+
+**RULES for Container Usage:**
+- **GroupContainer**: Use for layout containers and grouping controls
+- **Rectangle/Circle/Triangle**: Use ONLY for backgrounds, borders, visual decoration
+- **DataTable**: Use for displaying tabular data
+- **Gallery**: Use for repeating data items with custom templates
+
+**Geometric Controls Purpose:**
+- **Rectangle**: Backgrounds, borders, visual separators
+- **Circle**: Avatars backgrounds, decorative elements  
+- **Triangle/Pentagon/etc.**: Icons, decorative shapes
+- **Arrow**: Directional indicators, decorative elements
+
+### 2.6 Required Properties for All Controls
 Every control MUST have these properties when applicable:
 - `X` - Horizontal position (relative to parent)
 - `Y` - Vertical position (relative to parent)  
@@ -207,7 +261,166 @@ X: 100
 Y: 50
 ```
 
-### 3.3 Arithmetic Operations - AVOID FIXED NUMBERS
+### 3.3 Parent-Child Coordinate System - CRITICAL UNDERSTANDING
+**MANDATORY**: When a control is inside a parent container, its coordinates are RELATIVE to the parent's boundaries.
+
+```yaml
+# ✅ CORRECT - Child control positioning inside parent
+- 'Parent.Container':
+    Control: Rectangle
+    Properties:
+      X: =100  # Screen position
+      Y: =50   # Screen position
+      Width: =400
+      Height: =300
+    Children:
+      - 'Child.Control':
+          Control: Label
+          Properties:
+            X: =0           # = Parent.X (100) - left edge of parent
+            Y: =0           # = Parent.Y (50) - top edge of parent
+            Width: =Parent.Width    # = 400 - full parent width
+            Height: =Parent.Height  # = 300 - full parent height
+
+      - 'Child.Centered':
+          Control: Classic/Button
+          Properties:
+            X: =(Parent.Width - Self.Width) / 2   # Centered in parent
+            Y: =(Parent.Height - Self.Height) / 2  # Centered in parent
+            Width: =Parent.Width * 0.8             # 80% of parent width
+            Height: =50                            # Fixed height
+
+      - 'Child.TopRight':
+          Control: Classic/Icon
+          Properties:
+            X: =Parent.Width - Self.Width   # Right edge of parent
+            Y: =0                           # Top edge of parent
+            Width: =40
+            Height: =40
+```
+
+#### **Parent-Child Coordinate Rules:**
+
+**When Control B is inside Control A:**
+- `B.X = 0` → B starts at A's left edge
+- `B.Y = 0` → B starts at A's top edge  
+- `B.X = Parent.Width` → B starts at A's right edge
+- `B.Y = Parent.Height` → B starts at A's bottom edge
+- `B.Width = Parent.Width` → B spans A's full width
+- `B.Height = Parent.Height` → B spans A's full height
+
+#### **Common Parent-Child Patterns:**
+
+```yaml
+# Full container coverage
+X: =0
+Y: =0
+Width: =Parent.Width
+Height: =Parent.Height
+
+# Centered in container
+X: =(Parent.Width - Self.Width) / 2
+Y: =(Parent.Height - Self.Height) / 2
+
+# Margin inside container
+X: =Parent.Width * 0.05          # 5% left margin
+Y: =Parent.Height * 0.05         # 5% top margin
+Width: =Parent.Width * 0.9       # 90% width (5% margin each side)
+Height: =Parent.Height * 0.9     # 90% height (5% margin each side)
+
+# Positioned relative to other children
+X: =SiblingControl.X + SiblingControl.Width + 10  # Next to sibling
+Y: =SiblingControl.Y                               # Same Y as sibling
+
+# Aligned to parent edges
+X: =0                            # Left edge
+X: =Parent.Width - Self.Width    # Right edge
+Y: =0                            # Top edge
+Y: =Parent.Height - Self.Height  # Bottom edge
+```
+
+#### **❌ WRONG Parent-Child Positioning:**
+
+```yaml
+# DON'T use absolute screen coordinates for child controls
+- 'Parent.Container':
+    Control: Rectangle
+    Properties:
+      X: =100
+      Y: =50
+      Width: =400
+      Height: =300
+    Children:
+      - 'Child.Control':
+          Control: Label
+          Properties:
+            X: =120    # ❌ WRONG - Absolute screen coordinate
+            Y: =70     # ❌ WRONG - Absolute screen coordinate
+            # Should be X: =20, Y: =20 (relative to parent)
+```
+
+#### **✅ CORRECT Parent-Child Positioning:**
+
+```yaml
+# Use parent-relative coordinates
+- 'Parent.Container':
+    Control: Rectangle
+    Properties:
+      X: =100
+      Y: =50
+      Width: =400
+      Height: =300
+    Children:
+      - 'Child.Control':
+          Control: Label
+          Properties:
+            X: =20           # 20px from parent's left edge
+            Y: =20           # 20px from parent's top edge
+            Width: =Parent.Width - 40    # Parent width minus margins
+            Height: =Parent.Height - 40  # Parent height minus margins
+```
+
+#### **Real-World Examples:**
+
+```yaml
+# Login Card with internal controls
+- 'Login.Container':
+    Control: Rectangle
+    Properties:
+      X: =(Parent.Width - Self.Width) / 2
+      Y: =(Parent.Height - Self.Height) / 2
+      Width: =400
+      Height: =500
+    Children:
+      # Header at top of card
+      - 'Login.Header':
+          Control: Label
+          Properties:
+            X: =0                    # Left edge of card
+            Y: =0                    # Top edge of card
+            Width: =Parent.Width     # Full card width
+            Height: =Parent.Height * 0.15  # 15% of card height
+
+      # Input field in middle
+      - 'Login.Input':
+          Control: Classic/TextInput
+          Properties:
+            X: =Parent.Width * 0.1   # 10% margin from left
+            Y: =Parent.Height * 0.4  # 40% from top
+            Width: =Parent.Width * 0.8   # 80% of card width
+            Height: =50              # Fixed height
+
+      # Button at bottom
+      - 'Login.Button':
+          Control: Classic/Button
+          Properties:
+            X: =(Parent.Width - Self.Width) / 2  # Centered
+            Y: =Parent.Height - Self.Height - 20 # 20px from bottom
+            Width: =Parent.Width * 0.6           # 60% of card width
+            Height: =50                          # Fixed height
+```
+
+### 3.4 Arithmetic Operations - AVOID FIXED NUMBERS
 **CRITICAL**: Minimize use of fixed numbers in positioning/sizing calculations. Prefer relative calculations.
 
 ```yaml
@@ -254,7 +467,7 @@ X: =Parent.X + Self.Height / 4      # Quarter of own height
 Y: =PrevControl.Y + PrevControl.Height / 2  # Half of previous control height
 ```
 
-### 3.4 Screen-Level Properties
+### 3.5 Screen-Level Properties
 For screens, use these specific properties:
 
 ```yaml
@@ -265,9 +478,263 @@ Properties:
 
 ---
 
-## 4. ALLOWED CONTROLS
+## 4. CONTROL Z-INDEX & RENDERING ORDER
 
-### 4.1 Input Controls
+### 4.1 Critical Z-Index Rules
+**MANDATORY**: Controls are rendered in the order they appear in YAML. Later controls appear **ON TOP** of earlier controls.
+
+```yaml
+# ✅ CORRECT - Proper layering order
+Children:
+  # 1. BACKGROUND LAYERS (rendered first, at bottom)
+  - Background:
+      Control: Rectangle
+      
+  # 2. CONTAINER LAYERS 
+  - MainContainer:
+      Control: GroupContainer
+      
+  # 3. CONTENT LAYERS
+  - ContentArea:
+      Control: Rectangle
+      Children:
+        - TextLabel:
+            Control: Label
+        - InputField:
+            Control: Classic/TextInput
+            
+  # 4. INTERACTIVE LAYERS
+  - ActionButton:
+      Control: Classic/Button
+      
+  # 5. OVERLAY LAYERS (rendered last, at top)
+  - HoverOverlay:
+      Control: Rectangle
+  - FocusIndicator:
+      Control: Rectangle
+  - LoadingSpinner:
+      Control: Classic/Icon
+
+# ❌ WRONG - Overlay renders first, gets hidden by content
+Children:
+  - HoverOverlay:  # This will be BEHIND other controls
+      Control: Rectangle
+  - MainContent:   # This will COVER the overlay
+      Control: Rectangle
+```
+
+### 4.2 Mandatory Layer Hierarchy
+**CRITICAL**: Always follow this exact order for control declarations:
+
+#### Level 1: Background & Foundation (First)
+```yaml
+# Background controls - rendered at bottom layer
+- 'Screen.Background':
+    Control: Rectangle
+- 'Container.Background':
+    Control: Rectangle
+```
+
+#### Level 2: Layout Containers
+```yaml
+# Container controls - structural layout
+- 'Main.Container':
+    Control: GroupContainer
+- 'Content.Container':
+    Control: Rectangle
+```
+
+#### Level 3: Static Content
+```yaml
+# Static display elements
+- 'Header.Logo':
+    Control: Image
+- 'Title.Label':
+    Control: Label
+- 'Description.Text':
+    Control: Label
+```
+
+#### Level 4: Interactive Content
+```yaml
+# Form inputs and data displays
+- 'Input.Field':
+    Control: Classic/TextInput
+- 'Data.Gallery':
+    Control: Gallery
+- 'Selection.Dropdown':
+    Control: Classic/DropDown
+```
+
+#### Level 5: Action Controls
+```yaml
+# Buttons and action triggers
+- 'Submit.Button':
+    Control: Classic/Button
+- 'Cancel.Button':
+    Control: Classic/Button
+```
+
+#### Level 6: Status & Feedback (Last)
+```yaml
+# Status indicators and overlays - rendered at top layer
+- 'Error.Message':
+    Control: Rectangle
+- 'Loading.Overlay':
+    Control: Rectangle
+- 'Hover.Effect':
+    Control: Rectangle
+- 'Focus.Ring':
+    Control: Rectangle
+```
+
+### 4.3 Component Internal Layering
+**CRITICAL**: Within components, follow the same hierarchy:
+
+```yaml
+# ✅ CORRECT - ButtonComponent internal layering
+ComponentDefinitions:
+  ButtonComponent:
+    Children:
+      # 1. Base button (background)
+      - 'Button.Container':
+          Control: Classic/Button
+          
+      # 2. Content elements
+      - 'Button.Icon':
+          Control: Classic/Icon
+          
+      # 3. Loading indicator
+      - 'Button.Loading':
+          Control: Classic/Icon
+          
+      # 4. Interactive overlays (top layer)
+      - 'Button.Hover':
+          Control: Rectangle
+      - 'Button.Focus':
+          Control: Rectangle
+```
+
+### 4.4 Gallery Template Layering
+**CRITICAL**: In Gallery templates, maintain proper layering:
+
+```yaml
+# ✅ CORRECT - Gallery template layering
+TemplateBody:
+  # 1. Background
+  - 'Item.Background':
+      Control: Rectangle
+      
+  # 2. Content
+  - 'Item.Title':
+      Control: Label
+  - 'Item.Description':
+      Control: Label
+      
+  # 3. Actions
+  - 'Item.EditButton':
+      Control: Classic/Button
+      
+  # 4. Status overlays
+  - 'Item.StatusBadge':
+      Control: Rectangle
+  - 'Item.HoverHighlight':
+      Control: Rectangle
+```
+
+### 4.5 Modal and Popup Layering
+**CRITICAL**: For modals, overlays must be declared last:
+
+```yaml
+# ✅ CORRECT - Modal layering
+Children:
+  # Main content first
+  - 'Main.Content':
+      Control: Rectangle
+      
+  # Modal background overlay
+  - 'Modal.Background':
+      Control: Rectangle
+      Properties:
+        Fill: =RGBA(0, 0, 0, 0.5)  # Semi-transparent
+        
+  # Modal content on top
+  - 'Modal.Container':
+      Control: Rectangle
+      Properties:
+        Fill: =RGBA(255, 255, 255, 1)
+```
+
+### 4.6 Z-Index Debugging
+**DEBUGGING TIPS** when controls are hidden:
+
+1. **Check Declaration Order**: Later = Higher Z-Index
+2. **Verify Container Hierarchy**: Child controls inherit parent z-index context
+3. **Test Visibility**: Use `Visible: =false` to temporarily hide suspected overlapping controls
+4. **Check Fill Transparency**: Invisible overlays can still block clicks
+
+```yaml
+# Debugging overlapping controls
+- 'Suspected.Overlay':
+    Control: Rectangle
+    Properties:
+      Visible: =false  # Temporarily hide to test
+      Fill: =RGBA(255, 0, 0, 0.3)  # Make visible with red tint
+```
+
+### 4.7 Interactive Control Protection
+**MANDATORY**: Ensure interactive controls are not covered:
+
+```yaml
+# ✅ CORRECT - Button not covered by overlay
+Children:
+  - 'Content.Background':
+      Control: Rectangle
+  - 'Action.Button':
+      Control: Classic/Button  # Interactive element
+  - 'Decorative.Overlay':
+      Control: Rectangle
+      Properties:
+        Fill: =RGBA(0, 0, 0, 0)  # Transparent, won't block clicks
+
+# ❌ WRONG - Button covered by solid overlay
+Children:
+  - 'Action.Button':
+      Control: Classic/Button
+  - 'Blocking.Overlay':      # This will cover the button!
+      Control: Rectangle
+      Properties:
+        Fill: =RGBA(255, 255, 255, 0.8)  # Semi-solid, blocks interaction
+```
+
+### 4.8 Layer Priority by Control Type
+**REFERENCE**: Default z-index priority by control type:
+
+#### **Lowest Priority (Declare First)**:
+- Rectangle (backgrounds)
+- GroupContainer (layout)
+- Image (decorative)
+
+#### **Medium Priority**:
+- Label (text content)
+- Gallery (data display)
+- Form (structured input)
+
+#### **High Priority**:
+- Classic/Button (actions)
+- Classic/TextInput (inputs)
+- Classic/DropDown (selections)
+
+#### **Highest Priority (Declare Last)**:
+- Classic/Icon (status indicators)
+- Rectangle (overlays, modals)
+- Error/Loading states
+
+---
+
+## 5. ALLOWED CONTROLS
+
+### 5.1 Input Controls
 ```yaml
 # Text Input
 Control: Classic/TextInput
@@ -291,7 +758,7 @@ Control: Rating
 Control: PenInput
 ```
 
-### 4.2 Display Controls
+### 5.2 Display Controls
 ```yaml
 # Text Display
 Control: Label
@@ -306,7 +773,7 @@ Control: PDFViewer
 Control: Classic/Icon
 ```
 
-### 4.3 Layout Controls
+### 5.3 Layout Controls
 ```yaml
 # Containers
 Control: GroupContainer
@@ -319,14 +786,14 @@ Control: FormViewer
 Control: DataTable
 ```
 
-### 4.4 Component Controls
+### 5.4 Component Controls
 ```yaml
 # Canvas Components
 Control: CanvasComponent
 ComponentName: ComponentName
 ```
 
-### 4.5 Shape Controls
+### 5.5 Shape Controls
 ```yaml
 Control: Circle
 Control: Triangle
@@ -337,7 +804,7 @@ Control: Arrow
 Control: PartialCircle
 ```
 
-### 4.6 Chart Controls
+### 5.6 Chart Controls
 ```yaml
 Control: BarChart
 Control: LineChart
@@ -345,7 +812,7 @@ Control: PieChart
 Control: Legend
 ```
 
-### 4.7 Media & Data Controls
+### 5.7 Media & Data Controls
 ```yaml
 # Media
 Control: AddMedia
@@ -360,9 +827,9 @@ Control: PowerBI
 
 ---
 
-## 5. PROPERTIES GUIDELINES
+## 6. PROPERTIES GUIDELINES
 
-### 5.1 Color Properties
+### 6.1 Color Properties
 **ALWAYS** use RGBA format:
 
 ```yaml
@@ -371,7 +838,7 @@ Color: =RGBA(32, 54, 71, 1)
 BorderColor: =RGBA(230, 230, 230, 1)
 ```
 
-### 5.2 DropShadow Properties
+### 6.2 DropShadow Properties
 **ONLY** use these values:
 ```yaml
 DropShadow: =DropShadow.Light
@@ -382,7 +849,7 @@ DropShadow: =DropShadow.Semilight
 DropShadow: =DropShadow.None
 ```
 
-### 5.3 Font Properties
+### 6.3 Font Properties
 ```yaml
 FontWeight: =FontWeight.Bold
 FontWeight: =FontWeight.Semibold
@@ -390,7 +857,7 @@ FontWeight: =FontWeight.Normal
 Font: =Font.'Open Sans'
 ```
 
-### 5.4 Formula Properties
+### 6.4 Formula Properties
 **ALL** dynamic properties MUST start with `=`:
 
 ```yaml
@@ -404,7 +871,7 @@ Visible: varShowControl
 Text: "Static text" # Use this only for truly static text
 ```
 
-### 5.5 Icon Properties
+### 6.5 Icon Properties
 **ONLY** use valid icon references:
 
 ```yaml
@@ -418,7 +885,7 @@ Icon: =Icon.Cancel
 Icon: =Icon.Calendar  # Does not exist
 ```
 
-### 5.6 Text Formatting
+### 6.6 Text Formatting
 **PROPER** text concatenation formatting:
 
 ```yaml
@@ -431,7 +898,7 @@ Text: ="Email: " & ThisItem.Email
 Text: ="Status: " & ThisItem.Status
 ```
 
-### 5.7 Variants for Controls
+### 6.7 Variants for Controls
 ```yaml
 # GroupContainer
 Variant: ManualLayout
@@ -457,9 +924,9 @@ Variant: 12Points
 
 ---
 
-## 6. ICON GUIDELINES
+## 7. ICON GUIDELINES
 
-### 6.1 Allowed Icons
+### 7.1 Allowed Icons
 **CRITICAL**: Icons can ONLY be used from this approved list. Using any icon not in this list will cause errors.
 
 **ALLOWED ICONS:**
@@ -467,7 +934,7 @@ Variant: 12Points
 Add, AddDocument, AddLibrary, AddToCalendar, AddUser, Airplane, Alarm, ArrowDown, ArrowLeft, ArrowRight, ArrowUp, BackArrow, Bell, Blocked, Bookmark, BookmarkFilled, Bug, Bus, Calculator, CalendarBlank, Camera, CameraAperture, Cancel, CancelBadge, Cars, Check, CheckBadge, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, ClearDrawing, Clock, CollapseView, ColorPicker, Compose, ComputerDesktop, Controller, Copy, Crop, Currency, Cut, Database, DetailList, Devices, Diamond, DockCheckProperties, DockLeft, DockRight, Document, DocumentPDF, DocumentWithContent, Download, Draw, Edit, EmojiFrown, EmojiHappy, EmojiNeutral, EmojiSad, EmojiSmile, Enhance, Erase, Error, ExpandView, Export, Filter, FilterFlat, FilterFlatFilled, Flag, Folder, ForkKnife, Globe, GlobeChangesPending, GlobeError, GlobeNotConnected, GlobeRefresh, GlobeWarning, HalfFilledCircle, Hamburger, Health, Heart, Help, Hide, History, Home, HorizontalLine, Hospital, Import, Information, Items, Journal, Key, Laptop, Leave, LevelsLayersItems, Lightbulb, LightningBolt, LikeDislike, LineWeight, Link, ListScrollEmpty, ListScrollWatchlist, ListWatchlistRemind, Location, Lock, LogJournal, Mail, Manufacture, Medical, Message, Microphone, Mobile, Money, More, Newspaper, NextArrow, Note, Notebook, OpenInNewWindow, OptionsList, PaperClip, Paste, People, Person, Phone, Phonebook, Pictures, Pin, Post, Print, Printing3D, Publish, QuestionMark, RadarActivityMonitor, Redo, Reload, Save, Scan, Search, Send, Settings, Share, Shirt, Shop, ShoppingCart, Show, ShowDrawing, SignOut, Site, SkipBack, SkipForward, SkipNext, SkipPrevious, Slider, Sort, Speed, Split, SplitHorizontal, SplitVertical, Star, StarFilled, Stop, Strikethrough, Subtract, Support, Sync, Tablet, Tag, Text, ThumbsDown, ThumbsDownFilled, ThumbsUp, ThumbsUpFilled, Tools, Train, Transportation, Trash, Tray, Trending, TrendingHashtag, TrendingUpwards, Undo, Unlock, VerticalLine, Video, View, Waffle, Warning, Waypoint, Weather, ZoomIn, ZoomOut
 ```
 
-### 6.2 Icon Usage Examples
+### 7.2 Icon Usage Examples
 ```yaml
 # ✅ CORRECT - Using allowed icons
 Icon: =Icon.CalendarBlank
@@ -482,7 +949,9 @@ Icon: =Icon.MyIcon         # Not in allowed list
 Icon: =Icon.SpecialIcon    # Not in allowed list
 ```
 
-### 6.3 Icon Mapping for Common Use Cases
+**IMPORTANT**: Even if an icon is in the approved list, always test it in Power Apps Studio as some icons may not be recognized in certain contexts. If you get "Name isn't valid" errors, replace with a similar functional icon from the approved list.
+
+### 7.3 Icon Mapping for Common Use Cases
 ```yaml
 # User/Profile related
 "User" → Icon.Person
@@ -523,9 +992,9 @@ Icon: =Icon.SpecialIcon    # Not in allowed list
 
 ---
 
-## 7. NAMING CONVENTIONS
+## 8. NAMING CONVENTIONS
 
-### 7.1 Special Character Handling
+### 8.1 Special Character Handling
 **REQUIRED**: Wrap names with special characters in single quotes:
 
 ```yaml
@@ -542,7 +1011,7 @@ Icon: =Icon.SpecialIcon    # Not in allowed list
 - UserInfo:
 ```
 
-### 7.2 Naming Best Practices
+### 8.2 Naming Best Practices
 ```yaml
 # Use descriptive, hierarchical names
 - 'Header.UserInfo.Avatar':
@@ -553,9 +1022,9 @@ Icon: =Icon.SpecialIcon    # Not in allowed list
 
 ---
 
-## 8. COMMON MISTAKES TO AVOID
+## 9. COMMON MISTAKES TO AVOID
 
-### 8.1 Component Definition Structure Errors
+### 9.1 Component Definition Structure Errors
 **CRITICAL**: Use the correct component structure:
 
 ```yaml
@@ -584,7 +1053,7 @@ ComponentDefinitions:
       Width: =App.Width
 ```
 
-### 8.2 Component Control Declaration Errors
+### 9.2 Component Control Declaration Errors
 **CRITICAL**: Use correct component control syntax:
 
 ```yaml
@@ -604,7 +1073,7 @@ Control: CanvasComponent
 ComponentName: StatsCardComponent
 ```
 
-### 8.3 Custom Properties Errors
+### 9.3 Custom Properties Errors
 **NEVER USE** these old property names:
 - `PropertyType` → Use `PropertyKind`
 - `PropertyDataType` → Use `DataType`
@@ -616,7 +1085,7 @@ ComponentName: StatsCardComponent
 - `DataType` - Data type
 - `Default` - Default value
 
-### 8.4 Event Property Errors
+### 9.4 Event Property Errors
 **WRONG** event structure:
 ```yaml
 # ❌ WRONG
@@ -643,7 +1112,7 @@ OnNavigate:
         Default: ="Dashboard"
 ```
 
-### 8.5 Event Call Syntax Errors
+### 9.5 Event Call Syntax Errors
 **WRONG** event call syntax:
 ```yaml
 # ❌ WRONG
@@ -656,7 +1125,7 @@ OnSelect: =NavigationComponent.OnNavigate; Set(varActiveScreen, "Dashboard")
 OnSelect: =NavigationComponent.OnNavigate(); Set(varActiveScreen, "Dashboard")
 ```
 
-### 8.6 Text Property Formatting
+### 9.6 Text Property Formatting
 **AVOID** spaces after colons in text content:
 
 ```yaml
@@ -669,7 +1138,7 @@ Text: ="Demo: Phần lớn của ứng dụng"
 Text: ="Email: " & ThisItem.Email
 ```
 
-### 8.7 Absolute Positioning
+### 9.7 Absolute Positioning
 **NEVER** use absolute values for positioning:
 
 ```yaml
@@ -686,7 +1155,7 @@ Width: =Parent.Width - 40
 Height: =Parent.Height / 4
 ```
 
-### 8.8 Fixed Numbers in Calculations
+### 9.8 Fixed Numbers in Calculations
 **CRITICAL**: Avoid excessive use of fixed numbers in positioning/sizing calculations:
 
 ```yaml
@@ -716,7 +1185,7 @@ Size: =14               # Standard font size
 - **PREFER**: Percentage-based calculations
 - **USE**: Relative calculations with other control properties
 
-### 8.9 Missing Required Properties
+### 9.9 Missing Required Properties
 **ALWAYS** include these for positioned controls:
 
 ```yaml
@@ -728,7 +1197,7 @@ Properties:
   # Other properties...
 ```
 
-### 8.10 Missing Component-Level Properties
+### 9.10 Missing Component-Level Properties
 **ALWAYS** include these for components:
 
 ```yaml
@@ -744,7 +1213,7 @@ ComponentDefinitions:
       # Child controls here
 ```
 
-### 8.11 YAML Syntax for Multi-line Formulas
+### 9.11 YAML Syntax for Multi-line Formulas
 **CRITICAL**: Use correct YAML syntax for formulas based on length:
 
 #### For Short Formulas (≤120 characters):
@@ -771,7 +1240,7 @@ OnSelect: |
 - **ALWAYS** indent the formula content with proper spacing (typically 2 spaces)
 - **ESPECIALLY** use for `OnSelect`, `OnChange`, `OnVisible` with complex logic
 
-### 8.12 Control Reference Errors
+### 9.12 Control Reference Errors
 **CRITICAL**: Use single quotes for control names with dots:
 
 ```yaml
@@ -782,7 +1251,7 @@ Text: =LoginCard.FormSection.UsernameInput.Text
 Text: ='LoginCard.FormSection.UsernameInput'.Text
 ```
 
-### 8.13 Invalid Self Properties
+### 9.13 Invalid Self Properties
 **NEVER USE** these invalid Self properties:
 
 ```yaml
@@ -795,7 +1264,7 @@ BorderColor: =If(Self.Focus, RGBA(0, 120, 212, 1), RGBA(200, 200, 200, 1))
 # Use OnHover events instead of Self.IsHovered
 ```
 
-### 8.14 Button Property Errors
+### 9.14 Button Property Errors
 **NEVER USE** these properties for Classic/Button:
 
 ```yaml
@@ -812,7 +1281,7 @@ Properties:
   # Use Fill and other styling properties instead
 ```
 
-### 8.15 Rectangle Radius Errors
+### 9.15 Rectangle Radius Errors
 **NEVER USE** individual corner radius properties for Rectangle:
 
 ```yaml
@@ -828,7 +1297,7 @@ Properties:
   BorderRadius: =8
 ```
 
-### 8.16 Invalid Icon References
+### 9.16 Invalid Icon References
 **NEVER USE** non-existent icons:
 
 ```yaml
@@ -847,7 +1316,7 @@ Icon: =Icon.Person
 Icon: =Icon.Settings
 ```
 
-### 8.17 Invalid Icon Usage from Approved List
+### 9.17 Invalid Icon Usage from Approved List
 **CRITICAL**: Only use icons from the approved list in section 6.1:
 
 ```yaml
@@ -864,7 +1333,7 @@ Icon: =Icon.Settings
 Icon: =Icon.Search
 ```
 
-### 8.18 Text Function with RGBA Values
+### 9.18 Text Function with RGBA Values
 **CRITICAL**: Never use Text() function with RGBA values:
 
 ```yaml
@@ -877,7 +1346,7 @@ Text: =Concatenate("Color: RGBA(255, 0, 0, 1)")
 Text: ="Primary: RGBA(59, 130, 246, 1)"
 ```
 
-### 8.19 Invalid Focus Properties for TextInput
+### 9.19 Invalid Focus Properties for TextInput
 **CRITICAL**: Use correct focus properties for Classic/TextInput:
 
 ```yaml
@@ -890,7 +1359,7 @@ Visible: ='MyTextInput'.Focused
 BorderColor: =If('MyTextInput'.Focused, RGBA(0, 120, 212, 1), RGBA(200, 200, 200, 1))
 ```
 
-### 8.20 Classic/TextInput Property Errors
+### 9.20 Classic/TextInput Property Errors
 **CRITICAL**: Use correct property names for Classic/TextInput:
 
 ```yaml
@@ -910,7 +1379,7 @@ Properties:
 - **ALWAYS USE**: `Mode:` property for text input modes
 - **VALID VALUES**: `TextMode.Password`, `TextMode.MultiLine`, `TextMode.SingleLine`
 
-### 8.8 Gallery Property Errors
+### 9.8 Gallery Property Errors
 **CRITICAL**: Gallery Variant-specific property restrictions:
 
 ```yaml
@@ -934,7 +1403,7 @@ Properties:
 - **WrapCount**: Chỉ sử dụng với Horizontal/Vertical variants
 - **TemplateSize**: Bắt buộc cho tất cả Gallery variants
 
-### 8.19 Rectangle Variant Property
+### 9.19 Rectangle Variant Property
 **Error**: `Unknown property 'Variant' for control type 'Rectangle'`
 
 ```yaml
@@ -952,7 +1421,7 @@ Properties:
       OnSelect: =Navigate(NextScreen)
 ```
 
-### 8.20 Rectangle DropShadow Property
+### 9.20 Rectangle DropShadow Property
 **Error**: `Unknown property 'DropShadow' for control type 'Rectangle'`
 
 ```yaml
@@ -970,6 +1439,27 @@ Properties:
       Fill: =RGBA(255, 255, 255, 1)
       BorderColor: =RGBA(230, 230, 230, 1)
       # Use BorderThickness for visual effects instead
+```
+
+### 9.21 Rectangle BorderRadius Property
+**Error**: `Unknown property 'BorderRadius' for control type 'Rectangle'`
+
+```yaml
+# ❌ WRONG - Rectangle không hỗ trợ BorderRadius property
+- 'MyRectangle':
+    Control: Rectangle
+    Properties:
+      BorderRadius: =8  # PA2108 Error
+      Fill: =RGBA(255, 255, 255, 1)
+
+# ✅ CORRECT - Rectangle không có BorderRadius
+- 'MyRectangle':
+    Control: Rectangle
+    Properties:
+      Fill: =RGBA(255, 255, 255, 1)
+      BorderColor: =RGBA(230, 230, 230, 1)
+      BorderThickness: =2
+      # Use other controls for rounded corners if needed
 ```
 
 ---
@@ -1083,7 +1573,7 @@ Properties:
 | **GroupContainer** | OnSelect, OnClick, OnHover, OnChange | Use Rectangle | Rectangle hỗ trợ events |
 | **Gallery VariableHeight** | WrapCount | Remove property | Chỉ Horizontal/Vertical hỗ trợ |
 | **Classic/Button** | BorderRadius, Disabled, Align | DisplayMode for Disabled | Use modern styling alternatives |
-| **Rectangle** | RadiusTopLeft, etc. | BorderRadius | Uniform radius only |
+| **Rectangle** | RadiusTopLeft, etc., Variant, DropShadow, BorderRadius | BorderThickness, BorderColor | No radius or shadow support |
 | **Classic/TextInput** | OnFocus, OnBlur, TextMode | Mode for TextMode | Limited event support |
 
 ### Automation Scripts Available
@@ -1094,61 +1584,61 @@ Properties:
 
 ---
 
-## 9. BEST PRACTICES
+## 10. BEST PRACTICES
 
-### 9.1 Component Structure Best Practices
+### 10.1 Component Structure Best Practices
 - Always use `ComponentDefinitions` (plural) as root
 - Include component name as child of `ComponentDefinitions`
 - Always include `Properties` section with `Height` and `Width`
 - Use descriptive `DisplayName` and `Description` for all custom properties
 - Group related custom properties logically
 
-### 9.2 Component Control Declaration Best Practices
+### 10.2 Component Control Declaration Best Practices
 - Always use `Control: CanvasComponent` for component references
 - Always include `ComponentName: ComponentName` property
 - Never use direct component references like `Control: HeaderComponent`
 - Maintain consistent indentation for component properties
 
-### 9.3 Custom Properties Best Practices
+### 10.3 Custom Properties Best Practices
 - Use `Input` for most custom properties
 - Use `Event` for callback functions
 - Use `Output` for computed values
 - Always provide meaningful default values
 - Include parameter definitions for event properties
 
-### 9.4 Event Handling Best Practices
+### 10.4 Event Handling Best Practices
 - Always call event properties with parentheses: `ComponentName.EventName()`
 - Define parameters for events when needed
 - Use `ReturnType: None` for most events
 - Mark optional parameters with `IsOptional: true`
 
-### 9.5 Multi-line Formula Best Practices
+### 10.5 Multi-line Formula Best Practices
 - Use pipe operator (`|`) for formulas longer than 120 characters
 - Maintain consistent indentation (2 spaces recommended)
 - Keep the entire formula logic on the indented line after the pipe
 - Use for complex `OnSelect`, `OnChange`, `OnVisible` properties
 - Apply to both OnVisible and OnSelect formulas consistently
 
-### 9.6 Text Formatting Best Practices
+### 10.6 Text Formatting Best Practices
 - Always separate colon and space in text concatenation
 - Use `"Label:" & " " & Value` instead of `"Label: " & Value`
 - Maintain consistency across all text properties
 - Avoid spaces after colons in quoted strings
 
-### 9.7 Icon Reference Best Practices
+### 10.7 Icon Reference Best Practices
 - Always verify icon names exist in Power Apps
 - Use `Icon.CalendarBlank` instead of `Icon.Calendar`
 - Use `Icon.CheckBadge` for checkmarks
 - Use `Icon.Cancel` for cancel/close actions
 - Test icon references in Power Apps Studio
 
-### 9.8 Consistency
+### 10.8 Consistency
 - Use consistent naming patterns across similar controls
 - Apply consistent spacing and sizing formulas
 - Use consistent color schemes (RGBA values)
 - Maintain consistent component declaration patterns
 
-### 9.9 Relative References
+### 10.9 Relative References
 **ALWAYS** use relative references:
 ```yaml
 # Parent references
@@ -1162,7 +1652,7 @@ Height: =Self.Size * 1.2
 Y: =HeaderControl.Y + HeaderControl.Height + 10
 ```
 
-### 9.10 Relative Calculations Best Practices
+### 10.10 Relative Calculations Best Practices
 **CRITICAL**: Minimize fixed numbers in favor of relative calculations:
 
 ```yaml
@@ -1197,12 +1687,12 @@ Height: =200
 4. **Small fixed adjustments**: `X: =Parent.X + 5`
 5. **Standard fixed values**: `Size: =14` (fonts, borders)
 
-### 9.11 Hierarchy Maintenance
+### 10.11 Hierarchy Maintenance
 - Maintain clear parent-child relationships
 - Use logical grouping with GroupContainer
 - Keep related controls together in the YAML structure
 
-### 9.12 Property Organization
+### 10.12 Property Organization
 Organize properties in this order:
 1. Position (X, Y)
 2. Size (Width, Height)  
@@ -1225,6 +1715,502 @@ Properties:
   FontWeight: =FontWeight.Semibold
 ```
 
+### 10.13 Component Sizing Best Practices
+**CRITICAL**: Component initialization must use proportional sizing relative to App dimensions.
+
+```yaml
+# ❌ WRONG - Full App dimensions (không phù hợp cho most components)
+ComponentDefinitions:
+  NavigationComponent:
+    Properties:
+      Height: =App.Height  # Takes full height - wrong for navigation
+      Width: =App.Width   # Takes full width - wrong for side navigation
+
+# ✅ CORRECT - Proportional sizing phù hợp với component purpose
+ComponentDefinitions:
+  NavigationComponent:
+    Properties:
+      Height: =App.Height           # Full height OK for navigation
+      Width: =App.Width * 0.2       # 20% width cho side navigation
+      
+  HeaderComponent:
+    Properties:
+      Height: =App.Height * 0.08    # 8% height cho header
+      Width: =App.Width             # Full width OK for header
+      
+  ButtonComponent:
+    Properties:
+      Height: =App.Height * 0.06    # 6% height cho button
+      Width: =App.Width * 0.15      # 15% width cho button
+      
+  CardComponent:
+    Properties:
+      Height: =App.Height * 0.3     # 30% height cho card
+      Width: =App.Width * 0.45      # 45% width cho card
+```
+
+**COMPONENT SIZING GUIDELINES:**
+- **NavigationComponent**: Width = App.Width * 0.15-0.25 (side nav), App.Width (top nav)
+- **HeaderComponent**: Height = App.Height * 0.06-0.1, Width = App.Width
+- **ButtonComponent**: Height = App.Height * 0.045-0.065, Width = App.Width * 0.12-0.2
+- **CardComponent**: Height = App.Height * 0.25-0.4, Width = App.Width * 0.3-0.5
+- **InputComponent**: Height = App.Height * 0.05-0.07, Width = App.Width * 0.2-0.8
+- **StatsCardComponent**: Height = App.Height * 0.15-0.25, Width = App.Width * 0.2-0.3
+
+### 10.14 Component Parent-Fitting Rules
+**CRITICAL**: Components must adapt to their parent container context, not always use App dimensions.
+
+```yaml
+# ❌ WRONG - Component always uses App reference
+ComponentDefinitions:
+  ButtonComponent:
+    Properties:
+      Height: =App.Height * 0.06    # Ignores parent context
+      Width: =App.Width * 0.15      # May not fit parent layout
+    Children:
+      - Button.Container:
+          Width: =Self.Width          # Fixed to component size
+          Height: =Self.Height        # No flexibility
+
+# ✅ CORRECT - Component adapts to parent AND provides sensible defaults
+ComponentDefinitions:
+  ButtonComponent:
+    Properties:
+      Height: =App.Height * 0.06     # Default sizing for app-level usage
+      Width: =App.Width * 0.15       # Default sizing for app-level usage
+    Children:
+      - Button.Container:
+          Width: =If(Parent.Width > 0,
+            Min(Parent.Width, Max(Parent.Width * 0.8, 120)),  # Adapt to parent
+            Self.Width)  # Fallback to component default
+          Height: =If(Parent.Height > 0,
+            Min(Parent.Height, Max(Parent.Height * 0.8, 40)), # Adapt to parent
+            Self.Height) # Fallback to component default
+```
+
+**PARENT-FITTING PRINCIPLES:**
+1. **Responsive Width**: `Width: =Min(Parent.Width * 0.9, MaxWidth)`
+2. **Responsive Height**: `Height: =Min(Parent.Height * 0.8, MaxHeight)`
+3. **Minimum Constraints**: Always set minimum usable sizes
+4. **Maximum Constraints**: Prevent components from becoming too large
+5. **Context Awareness**: Use Parent dimensions when available, App dimensions as fallback
+
+**RESPONSIVE COMPONENT PATTERNS:**
+```yaml
+# Adaptive Button Width
+Width: =If(Parent.Width > 0,
+  If(Parent.Width < 200, Parent.Width * 0.9,
+    If(Parent.Width < 400, Parent.Width * 0.8, 
+      Min(Parent.Width * 0.7, 300))),
+  App.Width * 0.15)
+
+# Adaptive Button Height  
+Height: =If(Parent.Height > 0,
+  Max(Min(Parent.Height * 0.15, 56), 40),
+  App.Height * 0.06)
+
+# Container-Aware Sizing
+Width: =If(And(Parent.Width > 0, Parent.Width < App.Width * 0.6),
+  Parent.Width * 0.85,    # Small container - take most width
+  Min(Parent.Width * 0.6, 400))  # Large container - limited width
+```
+
+### 10.15 Z-Index Management Best Practices
+**CRITICAL**: Follow these layering best practices:
+
+#### Consistent Layer Naming
+```yaml
+# Use consistent naming for layers
+- 'Component.Background':     # Layer 1: Background
+- 'Component.Container':      # Layer 2: Structure  
+- 'Component.Content':        # Layer 3: Content
+- 'Component.Actions':        # Layer 4: Interactive
+- 'Component.Overlay':        # Layer 5: Effects
+```
+
+#### Component Layer Documentation
+```yaml
+# Document layer purpose in component definitions
+ComponentDefinitions:
+  ButtonComponent:
+    Children:
+      # === LAYER 1: BASE ===
+      - 'Button.Container':
+          Control: Classic/Button
+          
+      # === LAYER 2: CONTENT ===  
+      - 'Button.Icon':
+          Control: Classic/Icon
+          
+      # === LAYER 3: STATES ===
+      - 'Button.Loading':
+          Control: Classic/Icon
+          
+      # === LAYER 4: EFFECTS ===
+      - 'Button.Hover':
+          Control: Rectangle
+      - 'Button.Focus':
+          Control: Rectangle
+```
+
+#### Container-Based Layering
+```yaml
+# Group related controls in containers for better layer management
+- 'Background.Layer':
+    Control: GroupContainer
+    Children:
+      - 'Screen.Background':
+          Control: Rectangle
+          
+- 'Content.Layer':
+    Control: GroupContainer
+    Children:
+      - 'Main.Content':
+          Control: Rectangle
+          
+- 'Interactive.Layer':
+    Control: GroupContainer
+    Children:
+      - 'Action.Buttons':
+          Control: Rectangle
+          
+- 'Overlay.Layer':
+    Control: GroupContainer
+    Children:
+      - 'Modal.Background':
+          Control: Rectangle
+      - 'Loading.Indicator':
+          Control: Classic/Icon
+```
+
+#### Conditional Layer Visibility
+```yaml
+# Use visibility to manage layers dynamically
+- 'Button.Hover.Effect':
+    Control: Rectangle
+    Properties:
+      Visible: =And(Self.Parent.IsHovered, Not(varIsLoading))
+      
+- 'Loading.Overlay':
+    Control: Rectangle
+    Properties:
+      Visible: =varIsLoading
+      
+- 'Error.Message':
+    Control: Rectangle
+    Properties:
+      Visible: =Not(IsBlank(varErrorMessage))
+```
+
+---
+
+## 11. SHAREPOINT INTEGRATION RULES
+
+### 11.1 SharePoint Column Types - CRITICAL `.Value` Usage
+**CRITICAL**: Only use `.Value` syntax for actual Lookup and Choice columns. Many columns that appear to be Lookup/Choice are actually TEXT columns.
+
+**RULE**: Test column behavior first. If you get "The '.' operator cannot be used on Text values" error, the column is TEXT type.
+
+```yaml
+# ✅ CORRECT - Text columns (NO .Value needed)
+Text: =ThisItem.MaVaiTro & " - " & ThisItem.MaDonVi
+Fill: =If(ThisItem.MaVaiTro = "Admin", RGBA(0, 255, 0, 1), RGBA(255, 0, 0, 1))
+Visible: =ThisItem.MaVaiTro = "Admin"
+
+# ✅ CORRECT - Actual Lookup/Choice columns (REQUIRES .Value)
+Text: =ThisItem.TrangThai.Value & " - " & ThisItem.ChucDanh.Value
+Fill: =If(ThisItem.TrangThai.Value = "HoatDong", RGBA(0, 255, 0, 1), RGBA(255, 0, 0, 1))
+Visible: =ThisItem.GioiTinh.Value = "Nam"
+
+# ❌ WRONG - Using .Value on Text columns
+Text: =ThisItem.MaVaiTro.Value & " - " & ThisItem.MaDonVi.Value
+Fill: =If(ThisItem.MaVaiTro.Value = "Admin", RGBA(0, 255, 0, 1), RGBA(255, 0, 0, 1))
+
+# ❌ WRONG - Missing .Value on Choice columns
+Text: =ThisItem.TrangThai & " - " & ThisItem.ChucDanh
+Fill: =If(ThisItem.TrangThai = "HoatDong", RGBA(0, 255, 0, 1), RGBA(255, 0, 0, 1))
+```
+
+### 11.2 SharePoint Column Types Reference - UPDATED
+**CRITICAL**: Categorized by actual column implementation:
+
+#### Text Columns (NO `.Value` needed):
+- `MaVaiTro` (Text column - stores role code as text)
+- `MaDonVi` (Text column - stores department code as text)  
+- `MaQuyen` (Text column - stores permission code as text)
+- `Title`, `TenQuyen`, `MoTa`, `GiaTri` (Text/Number)
+- `HoTen`, `Email`, `SoDienThoai`, `DiaChi` (Text)
+- `NgayVaoLam`, `NgaySinh`, `NgayBatDau`, `NgayKetThuc` (Date)
+- `TongNgayDuocPhep`, `SoNgayDaNghi`, `SoNgayConLai` (Number)
+- `CoLuong`, `DangHoatDong` (Boolean)
+- `MaDon`, `MaSoPhep`, `MaPheDuyet`, `MaQuyTrinh` (Text - GUID or codes)
+
+#### Actual Lookup Columns (Require `.Value`):
+- `MaNhanVien` (Lookup to NguoiDung table)
+- `MaQuanLy` (Lookup to NguoiDung table) 
+- `DonViCha` (Lookup to DonVi table) - if implemented as Lookup
+- `CacQuyen` (Lookup to Quyen table)
+- `NguoiBanGiao` (Lookup to NguoiDung table)
+- `NguoiTao` (Lookup to NguoiDung table) 
+- `MaLoai` (Lookup to LoaiNghi table)
+- `MaDonVi` (Lookup to DonVi table) - in some contexts
+- `MaVaiTro` (Lookup to VaiTro table) - in some contexts
+
+#### Actual Choice Columns (Require `.Value`):
+- `TrangThai` (Choice column with values "HoatDong", "KhongHoatDong", "ChoDuyetCap1", "ChoDuyetCap2", "ChoDuyetCap3", "DaDuyet", "TuChoi", "Huy", "HetHan")
+- `ChucDanh` (Choice column) - if implemented as Choice
+- `GioiTinh` (Choice column) - if implemented as Choice  
+- `Buoi` (Choice column) - if implemented as Choice
+- `BuoiNghi` (Choice column) - if implemented as Choice
+- `UuTien` (Choice column) - if implemented as Choice
+- `QuyetDinh` (Choice column with values "DaDuyet", "TuChoi")
+- `Cap` (Choice column with values "1", "2", "3")
+
+**IMPORTANT**: Always test column behavior before assuming Lookup/Choice type!
+
+### 11.3 SharePoint Database Structure
+**CURRENT DATABASE SCHEMA** for the Leave Management Application:
+
+#### 📄 List `Quyen` (Rights/Permissions)
+```yaml
+# Table structure:
+Title: Text
+TenQuyen: Text
+MoTa: Text
+GiaTri: Number
+MaQuyen: Text
+```
+
+#### 📄 List `VaiTro` (Roles)
+```yaml
+# Table structure:
+Title: Text
+TenVaiTro: Text
+MoTa: Text
+CacQuyen: Lookup (to Quyen) # REQUIRES .Value
+MaVaiTro: Text
+```
+
+#### 📄 List `DonVi` (Departments)
+```yaml
+# Table structure:
+Title: Text
+TenDonVi: Text
+DonViCha: Lookup (to DonVi) # REQUIRES .Value
+MaDonVi: Text
+```
+
+#### 📄 List `NguoiDung` (Users)
+```yaml
+# Table structure:
+Title: Text
+HoTen: Text
+Email: Text
+SoDienThoai: Text
+MatKhau: Text
+ChucDanh: Choice # REQUIRES .Value
+  # Values: "Nhân viên", "Giám đốc khối", "Giám đốc điều hành", "Chuyên viên", "Trưởng phòng"
+MaDonVi: Lookup (to DonVi) # REQUIRES .Value
+MaVaiTro: Lookup (to VaiTro) # REQUIRES .Value
+NgayVaoLam: Date
+NgaySinh: Date
+GioiTinh: Choice # REQUIRES .Value
+  # Values: "Nam", "Nữ"
+DiaChi: Text
+TrangThai: Choice # REQUIRES .Value
+  # Values: "HoatDong", "KhongHoatDong"
+Avatar: Image/Attachment
+MaQuanLy: Lookup (to NguoiDung) # REQUIRES .Value
+MaNguoiDung: Text
+```
+
+#### 📄 List `SoNgayPhep` (Leave Days)
+```yaml
+# Table structure:
+Title: Text
+MaNhanVien: Lookup (to NguoiDung) # REQUIRES .Value
+Nam: Number
+TongNgayDuocPhep: Number
+SoNgayDaNghi: Number
+SoNgayConLai: Number
+SoNgayKhongLuong: Number
+MaSoPhep: Text
+```
+
+#### 📄 List `NgayLe` (Holidays)
+```yaml
+# Table structure:
+TenNgayLe: Text
+Ngay: Text # or Date
+Buoi: Choice # REQUIRES .Value
+Nam: Number
+MaNgayLe: Text
+```
+
+#### 📄 List `LoaiNghi` (Leave Types)
+```yaml
+# Table structure:
+Title: Text
+TenLoai: Text
+CoLuong: Boolean
+MoTa: Text
+MaLoai: Text
+```
+
+#### 📄 List `CauHinhHeThong` (System Configuration)
+```yaml
+# Table structure:
+Title: Text
+TenCauHinh: Text
+KieuDuLieu: Choice # REQUIRES .Value
+  # Values: "Number", "Text", "Boolean"
+GiaTri: Text
+MoTa: Text
+MaCauHinh: Text
+```
+
+#### 📄 List `MauEmail` (Email Templates)
+```yaml
+# Table structure:
+Title: Text
+TenMau: Text
+TieuDe: Text
+NoiDung: Multiline Text (HTML)
+ThamSo: JSON String
+LoaiSuKien: Choice # REQUIRES .Value
+TrangThai: Choice # REQUIRES .Value
+  # Values: "HoatDong", "KhongHoatDong"
+MaMau: Text
+```
+
+#### 📄 List `DonNghiPhep` (Leave Requests)
+```yaml
+# Table structure:
+Title: Text (GUID)
+MaNguoiDung: Lookup (to NguoiDung) # REQUIRES .Value
+NgayBatDau: Date
+NgayKetThuc: Date
+SoNgayNghi: Number
+MaLoai: Lookup (to LoaiNghi) # REQUIRES .Value
+LyDo: Text
+NguoiBanGiao: Lookup (to NguoiDung) # REQUIRES .Value
+NoiDungBanGiao: Text
+TrangThai: Choice # REQUIRES .Value
+  # Values: "ChoDuyetCap1", "ChoDuyetCap2", "ChoDuyetCap3", "DaDuyet", "TuChoi", "Huy", "HetHan"
+BuoiNghi: Choice # REQUIRES .Value
+  # Values: "CaNgay", "Sang", "Chieu"
+NguoiTao: Lookup (to NguoiDung) # REQUIRES .Value
+ThoiHanPheDuyet: Date
+UuTien: Choice # REQUIRES .Value
+  # Values: "BinhThuong", "KhanCap"
+GhiChuHR: Text
+MaDon: Text (GUID)
+```
+
+#### 📄 List `PheDuyetDon` (Approval Records)
+```yaml
+# Table structure:
+MaPheDuyet: Text
+MaDon: Lookup (to DonNghiPhep) # REQUIRES .Value
+Cap: Choice # REQUIRES .Value
+  # Values: "1", "2", "3"
+QuyếtDinh: Choice # REQUIRES .Value
+  # Values: "DaDuyet", "TuChoi"
+GhiChu: Text
+MaNguoiDuyet: Lookup (to NguoiDung) # REQUIRES .Value
+```
+
+#### 📄 List `QuyTrinhDuyet` (Approval Workflow)
+```yaml
+# Table structure:
+MaQuyTrinh: Text
+MaDonVi: Lookup (to DonVi) # REQUIRES .Value
+Cap: Choice # REQUIRES .Value
+  # Values: "1", "2", "3"
+MaVaiTro: Lookup (to VaiTro) # REQUIRES .Value
+NguoiDuyetMacDinh: Lookup (to NguoiDung) # REQUIRES .Value
+DangHoatDong: Boolean
+```
+
+### 11.4 SharePoint Formula Examples
+**CORRECT** usage patterns for SharePoint data:
+
+```yaml
+# Gallery Items with SharePoint data
+Items: =Filter(DonNghiPhep, MaNguoiDung.Value = varCurrentUser.ID)
+
+# Text display with Lookup Values
+Text: =ThisItem.MaNguoiDung.Value & " - " & ThisItem.TrangThai.Value
+
+# Conditional logic with Choice Values
+Visible: =ThisItem.TrangThai.Value = "Pending"
+Fill: =Switch(ThisItem.TrangThai.Value, "Approved", RGBA(0, 255, 0, 0.1), "Rejected", RGBA(255, 0, 0, 0.1), "Pending", RGBA(255, 255, 0, 0.1), RGBA(128, 128, 128, 0.1))
+
+# Filter with multiple Lookup/Choice conditions
+Items: =Filter(DonNghiPhep, And(MaNguoiDung.Value = varSelectedUser.ID, TrangThai.Value In ["Pending", "Approved"], MaLoai.Value = varSelectedLeaveType.ID))
+```
+
+### 11.5 SharePoint Data Validation Rules
+**MANDATORY** validation for SharePoint integration:
+
+```yaml
+# ✅ CORRECT - Always use .Value for SharePoint Lookup/Choice
+OnSelect: =If(And(Not(IsBlank(ThisItem.MaNguoiDung.Value)), ThisItem.TrangThai.Value = "Pending"), Navigate(ApprovalScreen, ScreenTransition.Slide), Notify("Không thể thực hiện thao tác này", NotificationType.Error))
+
+# ❌ WRONG - Missing .Value will cause errors
+OnSelect: =If(And(Not(IsBlank(ThisItem.MaNguoiDung)), ThisItem.TrangThai = "Pending"), Navigate(ApprovalScreen, ScreenTransition.Slide), Notify("Không thể thực hiện thao tác này", NotificationType.Error))
+```
+
+### 11.6 SharePoint Choice Values Reference
+**CRITICAL**: Use these EXACT values when working with Choice columns:
+
+#### **PheDuyetDon** Choice Values:
+```yaml
+Cap: "1", "2", "3"
+QuyetDinh: "DaDuyet", "TuChoi"
+```
+
+#### **DonNghiPhep** Choice Values:
+```yaml
+TrangThai: "ChoDuyetCap1", "ChoDuyetCap2", "ChoDuyetCap3", "DaDuyet", "TuChoi", "Huy", "HetHan"
+BuoiNghi: "CaNgay", "Sang", "Chieu"
+UuTien: "BinhThuong", "KhanCap"
+```
+
+#### **QuyTrinhDuyet** Choice Values:
+```yaml
+Cap: "1", "2", "3"
+```
+
+#### **NguoiDung** Choice Values:
+```yaml
+ChucDanh: "Nhân viên", "Giám đốc khối", "Giám đốc điều hành", "Chuyên viên", "Trưởng phòng"
+GioiTinh: "Nam", "Nữ"
+TrangThai: "HoatDong", "KhongHoatDong"
+```
+
+#### **MauEmail** Choice Values:
+```yaml
+TrangThai: "HoatDong", "KhongHoatDong"
+```
+
+#### **CauHinhHeThong** Choice Values:
+```yaml
+KieuDuLieu: "Number", "Text", "Boolean"
+```
+
+#### **Usage Examples with Choice Values:**
+```yaml
+# ✅ CORRECT - Using exact Choice values with .Value
+Visible: =ThisItem.TrangThai.Value = "ChoDuyetCap1"
+Fill: =If(ThisItem.GioiTinh.Value = "Nam", RGBA(0, 120, 212, 1), RGBA(232, 17, 35, 1))
+Items: =Filter(DonNghiPhep, TrangThai.Value In ["ChoDuyetCap1", "ChoDuyetCap2", "ChoDuyetCap3"])
+
+# ❌ WRONG - Using incorrect Choice values
+Visible: =ThisItem.TrangThai.Value = "Pending"  # Should be "ChoDuyetCap1"
+Fill: =If(ThisItem.GioiTinh.Value = "Male", ...) # Should be "Nam"
+```
+
 ---
 
 ## 🚨 CRITICAL REMINDERS
@@ -1245,9 +2231,342 @@ Properties:
 14. **APPROVED ICONS ONLY** - Only use icons from the approved list in section 6.1
 15. **VALID ICON NAMES** - Verify all icon references exist in Power Apps
 16. **TEXT FUNCTION WITH RGBA** - Never use Text() function with RGBA values
-17. **TEXTINPUT FOCUS PROPERTY** - Use `.Focused` not `.Focus` for Classic/TextInput
-18. **NO PIPE OPERATOR** - Avoid pipe operator (|) in YAML formulas
+17. **TEXTINPUT FOCUS PROPERTY** - Classic/TextInput does NOT support .Focused property. Use solid colors instead
+18. **ACTION PROPERTIES PIPE** - ALWAYS use pipe operator (|) for ALL action properties (OnVisible, OnSelect, OnChange, etc.)
 19. **TEXTINPUT MODE PROPERTY** - Use `Mode:` not `TextMode:` for Classic/TextInput
 20. **RECTANGLE DROPSHADOW** - Rectangle controls do NOT support DropShadow property
+21. **RECTANGLE BORDERRADIUS** - Rectangle controls do NOT support BorderRadius property
+22. **SHAREPOINT COLUMN TESTING** - CRITICAL: Test column behavior first. If "The '.' operator cannot be used on Text values" error occurs, it's a TEXT column
+23. **SHAREPOINT CHOICE COLUMNS** - TrangThai is Choice column (REQUIRES .Value), e.g., TrangThai.Value = "HoatDong"
+24. **SHAREPOINT TEXT COLUMNS** - MaVaiTro, MaDonVi are TEXT columns (NO .Value needed), e.g., MaVaiTro = "Admin"
+25. **SHAREPOINT CHOICE VALUES** - Use EXACT values from database schema (e.g., "HoatDong", "Nam", "ChoDuyetCap1")
+26. **COMPONENT PROPORTIONAL SIZING** - Components must use proportional App sizing (e.g., Width: =App.Width * 0.2)
+27. **COMPONENT PARENT-FITTING** - Components must adapt to parent context with responsive constraints (Min/Max sizing)
+28. **CONTROL Z-INDEX ORDER** - CRITICAL: Later controls appear ON TOP. Order: Background→Content→Interactive→Overlays
+29. **LAYERING HIERARCHY** - MANDATORY: Follow exact order: Background(1st)→Containers(2nd)→Content(3rd)→Actions(4th)→Effects(5th)→Overlays(Last)
+30. **PARENT-CHILD COORDINATES** - CRITICAL: Child control X=0/Y=0 equals Parent's left/top edge. Always use parent-relative positioning for child controls
+31. **GEOMETRIC CONTROLS CONTAINERS** - CRITICAL: Rectangle, Circle, Triangle cannot have Children. Use GroupContainer for containers, DataTable for data tables
+32. **RECTANGLE VARIANT PROPERTY** - CRITICAL: Rectangle controls do NOT support Variant property. Never use Variant with Rectangle controls
+33. **GALLERY TEMPLATEBODY SYNTAX** - CRITICAL: Gallery controls use Children property, NOT TemplateBody property in Power Apps YAML. Never use TemplateBody: array syntax - use Children: array instead
+34. **YAML SYNTAX COMPLIANCE** - CRITICAL: Never use TemplateBody property for Gallery controls. Power Apps YAML requires Children property for Gallery template controls
+35. **YAML INDENTATION COMPLIANCE** - CRITICAL: Always maintain proper YAML indentation and hierarchy. Child controls must be properly nested with consistent spacing (2 or 4 spaces). Incorrect indentation causes "did not find expected key" parsing errors
+36. **COMPONENT EVENT CALL SYNTAX** - CRITICAL: When calling component events in screen properties, use proper syntax: ComponentName.EventName(); followed by additional actions. Never call events without parentheses or proper component reference
+37. **PREVIEW DEMO DATA** - CRITICAL: Always provide fallback demo data in OnVisible for better preview experience when SharePoint/external data sources are not available. Use simple object structures for user data and sample collections for galleries
+38. **DEMO DATA TYPE COMPATIBILITY** - CRITICAL: When creating demo data in context variables, use simple text/number values instead of nested objects like {Value: "text"}. This avoids "Incompatible type" errors while still allowing SharePoint .Value access patterns in real data scenarios. Demo data should use flat structure: `MaVaiTro: "Employee"` not `MaVaiTro: {Value: "Employee"}`
+39. **COMPONENT PROPERTY BINDING** - CRITICAL: When using components in screens, ALL custom properties must be properly bound. Never leave component custom properties unset - this causes display and behavior issues. Check component definition for all custom properties and bind them appropriately
+40. **COMPONENT EVENT BINDING** - CRITICAL: Component events must be bound to actions in screens, not called directly. Use proper event binding syntax: `OnEventName: |` followed by action formulas. Never call component events like `ComponentName.EventName()` from screens - this causes "Component behavior can only be invoked from within a component" errors
+41. **YAML COMMENT SYNTAX** - CRITICAL: Never use inline comments in YAML property values. Comments must be on separate lines above the property. WRONG: `Width: =100 # comment`. CORRECT: `# comment` then `Width: =100` on next line
 
-**Agent must follow these rules ABSOLUTELY when generating Power App YAML code.** 
+**Agent must follow these rules ABSOLUTELY when generating Power App YAML code.**
+
+### 9.22 Control Z-Index Violations
+**CRITICAL**: Avoid these common z-index mistakes:
+
+```yaml
+# ❌ WRONG - Control not in correct layer
+- 'Suspected.Overlay':
+    Control: Rectangle
+    Properties:
+      Visible: =false  # Temporarily hide to test
+      Fill: =RGBA(255, 0, 0, 0.3)  # Make visible with red tint
+```
+
+### 9.23 Parent-Child Coordinate Errors
+**CRITICAL**: Avoid these common parent-child positioning mistakes:
+
+#### Using Absolute Screen Coordinates for Child Controls
+```yaml
+# ❌ WRONG - Child using absolute screen coordinates
+- 'Login.Container':
+    Control: Rectangle
+    Properties:
+      X: =100
+      Y: =50
+      Width: =400
+      Height: =300
+    Children:
+      - 'Login.Title':
+          Control: Label
+          Properties:
+            X: =120    # ❌ WRONG - Absolute screen coordinate
+            Y: =70     # ❌ WRONG - Absolute screen coordinate
+            # This positions the title at screen coordinate (120, 70)
+            # instead of being 20px from parent's edges
+
+# ✅ CORRECT - Child using parent-relative coordinates
+- 'Login.Container':
+    Control: Rectangle
+    Properties:
+      X: =100
+      Y: =50
+      Width: =400
+      Height: =300
+    Children:
+      - 'Login.Title':
+          Control: Label
+          Properties:
+            X: =20     # ✅ CORRECT - 20px from parent's left edge
+            Y: =20     # ✅ CORRECT - 20px from parent's top edge
+```
+
+#### Misunderstanding Parent.X and Parent.Y References
+```yaml
+# ❌ WRONG - Misusing Parent.X/Parent.Y in child controls
+- 'Container':
+    Control: Rectangle
+    Properties:
+      X: =100
+      Y: =50
+    Children:
+      - 'Child':
+          Control: Label
+          Properties:
+            X: =Parent.X + 20    # ❌ WRONG - Results in X=120 (absolute)
+            Y: =Parent.Y + 20    # ❌ WRONG - Results in Y=70 (absolute)
+            # Child coordinates are already relative to parent!
+
+# ✅ CORRECT - Direct relative positioning
+- 'Container':
+    Control: Rectangle
+    Properties:
+      X: =100
+      Y: =50
+    Children:
+      - 'Child':
+          Control: Label
+          Properties:
+            X: =20               # ✅ CORRECT - 20px from parent's left edge
+            Y: =20               # ✅ CORRECT - 20px from parent's top edge
+```
+
+#### Incorrect Full-Container Coverage
+```yaml
+# ❌ WRONG - Trying to cover full parent incorrectly
+- 'Container':
+    Control: Rectangle
+    Properties:
+      X: =100
+      Y: =50
+      Width: =400
+      Height: =300
+    Children:
+      - 'Background':
+          Control: Rectangle
+          Properties:
+            X: =Parent.X         # ❌ WRONG - Results in X=100 (offset from parent)
+            Y: =Parent.Y         # ❌ WRONG - Results in Y=50 (offset from parent)
+            Width: =400          # ❌ WRONG - Hardcoded value
+            Height: =300         # ❌ WRONG - Hardcoded value
+
+# ✅ CORRECT - Proper full-container coverage
+- 'Container':
+    Control: Rectangle
+    Properties:
+      X: =100
+      Y: =50
+      Width: =400
+      Height: =300
+    Children:
+      - 'Background':
+          Control: Rectangle
+          Properties:
+            X: =0                # ✅ CORRECT - Left edge of parent
+            Y: =0                # ✅ CORRECT - Top edge of parent
+            Width: =Parent.Width # ✅ CORRECT - Full parent width
+            Height: =Parent.Height # ✅ CORRECT - Full parent height
+```
+
+#### Wrong Edge Alignment in Containers
+```yaml
+# ❌ WRONG - Incorrect right/bottom edge alignment
+- 'Container':
+    Control: Rectangle
+    Properties:
+      Width: =400
+      Height: =300
+    Children:
+      - 'TopRightIcon':
+          Control: Classic/Icon
+          Properties:
+            X: =Parent.X + Parent.Width - 40  # ❌ WRONG - Double offset
+            Y: =Parent.Y                      # ❌ WRONG - Unnecessary Parent.Y
+            Width: =40
+            Height: =40
+
+# ✅ CORRECT - Proper edge alignment
+- 'Container':
+    Control: Rectangle
+    Properties:
+      Width: =400
+      Height: =300
+    Children:
+      - 'TopRightIcon':
+          Control: Classic/Icon
+          Properties:
+            X: =Parent.Width - 40             # ✅ CORRECT - Right edge alignment
+            Y: =0                             # ✅ CORRECT - Top edge alignment
+            Width: =40
+            Height: =40
+```
+
+#### Incorrect Centering in Parent
+```yaml
+# ❌ WRONG - Incorrect centering calculation
+- 'Container':
+    Control: Rectangle
+    Properties:
+      X: =100
+      Y: =50
+      Width: =400
+      Height: =300
+    Children:
+      - 'CenteredButton':
+          Control: Classic/Button
+          Properties:
+            X: =Parent.X + (Parent.Width - Self.Width) / 2  # ❌ WRONG - Double offset
+            Y: =Parent.Y + (Parent.Height - Self.Height) / 2 # ❌ WRONG - Double offset
+            Width: =200
+            Height: =50
+
+# ✅ CORRECT - Proper centering in parent
+- 'Container':
+    Control: Rectangle
+    Properties:
+      X: =100
+      Y: =50
+      Width: =400
+      Height: =300
+    Children:
+      - 'CenteredButton':
+          Control: Classic/Button
+          Properties:
+            X: =(Parent.Width - Self.Width) / 2   # ✅ CORRECT - Centered horizontally
+            Y: =(Parent.Height - Self.Height) / 2 # ✅ CORRECT - Centered vertically
+            Width: =200
+            Height: =50
+```
+
+#### **REMEMBER**: 
+- **Child coordinates are ALWAYS relative to parent boundaries**
+- **X=0, Y=0 means parent's top-left corner**
+- **Never add Parent.X or Parent.Y to child coordinates**
+- **Use Parent.Width/Parent.Height for sizing, not absolute values**
+
+### 9.11 YAML Syntax for Action Properties
+**CRITICAL**: Use pipe operator (`|`) for ALL action properties to ensure consistency and prevent YAML parsing errors:
+
+#### For ALL Action Properties (OnVisible, OnSelect, OnChange, etc.):
+```yaml
+# ✅ CORRECT - Always use pipe operator for action properties
+OnVisible: |
+  =Set(varActiveScreen, "Dashboard"); Set(varCurrentUser, LookUp(NguoiDung, Email = User().Email))
+
+OnSelect: |
+  =Set(varIsLoading, true); Navigate(NextScreen)
+
+OnChange: |
+  =Set(varInputValue, Self.Text); UpdateContext({localVar: true})
+
+# ❌ WRONG - Single line action properties can cause YAML parsing issues
+OnVisible: =Set(varActiveScreen, "Dashboard"); Set(varCurrentUser, LookUp(NguoiDung, Email = User().Email))
+OnSelect: =Set(varIsLoading, true); Navigate(NextScreen)
+```
+
+#### For Simple Display Properties:
+```yaml
+# ✅ CORRECT - Single line for simple properties
+Text: =Concatenate("Hello ", varUserName)
+Visible: =varShowControl
+Fill: =RGBA(255, 255, 255, 1)
+
+# ✅ CORRECT - Use pipe operator for complex display properties
+Text: |
+  =Concatenate("Status: ", Switch(ThisItem.Status, "Active", "Hoạt động", "Inactive", "Không hoạt động", "Unknown"))
+```
+
+**MANDATORY Rules for Action Properties:**
+- **OnVisible**: ALWAYS use pipe operator (`|`)
+- **OnSelect**: ALWAYS use pipe operator (`|`) 
+- **OnChange**: ALWAYS use pipe operator (`|`)
+- **OnHover**: ALWAYS use pipe operator (`|`)
+- **OnFocus**: ALWAYS use pipe operator (`|`)
+- **OnBlur**: ALWAYS use pipe operator (`|`)
+- **ALWAYS** place the pipe operator (`|`) immediately after the property name and colon
+- **ALWAYS** indent the formula content with proper spacing (typically 2 spaces)
+
+**RULES for Property Types:**
+- **Action Properties (OnXXX):** ALWAYS use pipe operator (`|`)
+- **Simple Display Properties:** Use single line unless formula is complex
+- **Complex Display Properties:** Use pipe operator (`|`) for readability
+
+### 9.24 YAML Indentation and Hierarchy Errors
+**CRITICAL**: Maintain proper YAML indentation to avoid "did not find expected key" parsing errors:
+
+```yaml
+# ❌ WRONG - Incorrect indentation hierarchy
+Children:
+  - 'Container1':
+      Control: GroupContainer
+      Children:
+        - 'Child1':
+            Control: Label
+- 'Container2':        # ❌ WRONG - Inconsistent indentation
+    Control: Rectangle
+
+# ✅ CORRECT - Proper indentation hierarchy
+Children:
+  - 'Container1':
+      Control: GroupContainer
+      Children:
+        - 'Child1':
+            Control: Label
+  - 'Container2':      # ✅ CORRECT - Consistent indentation level
+      Control: Rectangle
+```
+
+**RULES for YAML Indentation:**
+- **Consistent Spacing**: Use consistent indentation (2 or 4 spaces throughout)
+- **Proper Hierarchy**: Child elements must be properly nested under parent
+- **Array Items**: Use `-` for array items at correct indentation level
+- **Property Alignment**: Properties within same level should align perfectly
+
+**COMMON INDENTATION ERRORS:**
+- Mixing tabs and spaces
+- Inconsistent indentation levels
+- Improper nesting of Children arrays
+- Missing or extra spaces in property declarations
+
+### 9.25 Component Event Binding Errors
+**CRITICAL ERROR**: "Component behavior can only be invoked from within a component"
+
+```yaml
+# ❌ WRONG - Calling component events directly from screens
+- 'MyComponent':
+    Control: CanvasComponent
+    ComponentName: NavigationComponent
+    Properties:
+      OnNavigate: ='MyComponent'.OnNavigate(); Set(varAction, true)    # ERROR
+      OnToggleCollapse: ='MyComponent'.OnToggleCollapse(); Set(varCollapsed, true)  # ERROR
+
+# ✅ CORRECT - Binding actions to component events
+- 'MyComponent':
+    Control: CanvasComponent
+    ComponentName: NavigationComponent
+    Properties:
+      OnNavigate: |
+        =Set(varAction, true)                    # Bind action to event
+      OnToggleCollapse: |
+        =Set(varCollapsed, !varCollapsed)        # Bind action to event
+```
+
+**COMPONENT EVENT BINDING RULES:**
+- **In Screen**: Bind actions to component event properties using pipe operator (`|`)
+- **In Component**: Call internal events using `ComponentName.EventName()` syntax
+- **NEVER**: Call component events directly from screens with `ComponentInstance.EventName()` syntax
+- **ALWAYS**: Use event binding pattern for screen-to-component communication
+
+**CORRECT WORKFLOW:**
+1. **Component Definition**: Define event as custom property with `PropertyKind: Event`
+2. **Component Internal**: Call `ComponentName.EventName()` on button clicks
+3. **Screen Usage**: Bind actions to event properties with `OnEventName: | =Action()`
+4. **Execution**: Component triggers event → Screen bound action executes

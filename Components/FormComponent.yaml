@@ -9,15 +9,31 @@ ComponentDefinitions:
         Description: The title of the form
         DataType: Text
         Default: ="Thông tin đơn xin nghỉ"
+      OnSubmit:
+        PropertyKind: Event
+        DisplayName: OnSubmit
+        Description: Event triggered when form is submitted
+        ReturnType: None
+        Default: =
     Properties:
-      Height: =320
+      Height: =App.Height * 0.4
       Width: =App.Width
     Children:
-      - FormContainer:
+      # LAYER 1: Background (Rectangle for visual)
+      - FormBackground:
           Control: Rectangle
-          Variant: ManualLayout
           Properties:
             Fill: =RGBA(240, 240, 240, 1)
+            X: =0
+            Y: =0
+            Width: =Parent.Width
+            Height: =Parent.Height
+      
+      # LAYER 2: Content Container (GroupContainer for logic)
+      - FormContainer:
+          Control: GroupContainer
+          Variant: ManualLayout
+          Properties:
             X: =0
             Y: =0
             Width: =Parent.Width
@@ -26,45 +42,44 @@ ComponentDefinitions:
             - FormContainer.TitleLabel:
                 Control: Label
                 Properties:
-                  X: =20
-                  Y: =16
-                  Width: =280
-                  Height: =40
+                  X: =Parent.Width * 0.025
+                  Y: =Parent.Height * 0.05
+                  Width: =Parent.Width * 0.7
+                  Height: =Parent.Height * 0.125
                   Text: =ThisComponent.FormTitle
                   Color: =RGBA(51, 51, 51, 1)
-                  Size: =18
+                  Size: =Parent.Height * 0.056
                   FontWeight: =FontWeight.Bold
             
             - FormContainer.NameLabel:
                 Control: Label
                 Properties:
-                  X: =20
-                  Y: =70
-                  Width: =100
-                  Height: =32
+                  X: =Parent.Width * 0.025
+                  Y: =Parent.Height * 0.22
+                  Width: =Parent.Width * 0.25
+                  Height: =Parent.Height * 0.1
                   Text: ="Họ và tên:"
                   Color: =RGBA(51, 51, 51, 1)
-                  Size: =14
-            
+                  Size: =Parent.Height * 0.044
             
             - FormContainer.EmailLabel:
                 Control: Label
                 Properties:
-                  X: =20
-                  Y: =130
-                  Width: =100
-                  Height: =32
+                  X: =Parent.Width * 0.025
+                  Y: =Parent.Height * 0.41
+                  Width: =Parent.Width * 0.25
+                  Height: =Parent.Height * 0.1
                   Text: ="Email:"
                   Color: =RGBA(51, 51, 51, 1)
-                  Size: =14
+                  Size: =Parent.Height * 0.044
             
             - FormContainer.SubmitButton:
-                Control: Button
+                Control: Classic/Button
                 Properties:
-                  X: =130
-                  Y: =200
-                  Width: =120
-                  Height: =40
+                  X: =Parent.Width * 0.325
+                  Y: =Parent.Height * 0.625
+                  Width: =Parent.Width * 0.3
+                  Height: =Parent.Height * 0.125
                   Text: ="Gửi đơn"
                   BorderColor: =RGBA(0, 120, 212, 1)
                   Fill: =RGBA(0, 120, 212, 1)
@@ -72,6 +87,7 @@ ComponentDefinitions:
                   DisabledColor: =RGBA(166, 166, 166, 1)
                   DisabledFill: =RGBA(244, 244, 244, 1)
                   HoverFill: =RGBA(0, 98, 173, 1)
-                  Size: =14
+                  Size: =Parent.Height * 0.044
                   FontWeight: =FontWeight.Semibold
-                  OnSelect: =ThisComponent.OnSubmit 
+                  OnSelect: |
+                    =ThisComponent.OnSubmit() 

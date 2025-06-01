@@ -5,333 +5,190 @@ ComponentDefinitions:
       Title:
         PropertyKind: Input
         DisplayName: Title
-        Description: "Tiêu đề card"
+        Description: "Tiêu đề của card"
         DataType: Text
-        Default: ="Card Title"
-        
-      Subtitle:
-        PropertyKind: Input
-        DisplayName: Subtitle
-        Description: "Phụ đề card"
-        DataType: Text
-        Default: =""
-        
+        Default: ="Tiêu đề Card"
       Content:
         PropertyKind: Input
         DisplayName: Content
-        Description: "Nội dung card"
+        Description: "Nội dung chính"
         DataType: Text
-        Default: ="Card content goes here..."
-        
-      Variant:
-        PropertyKind: Input
-        DisplayName: Variant
-        Description: "Kiểu card:default, elevated, outlined, filled"
-        DataType: Text
-        Default: ="default"
-        
-      ColorScheme:
-        PropertyKind: Input
-        DisplayName: ColorScheme
-        Description: "Màu sắc:blue, green, purple, orange, red"
-        DataType: Text
-        Default: ="blue"
-        
-      ShowIcon:
-        PropertyKind: Input
-        DisplayName: ShowIcon
-        Description: "Hiển thị icon"
-        DataType: Boolean
-        Default: =false
-        
+        Default: ="Nội dung card..."
       Icon:
         PropertyKind: Input
         DisplayName: Icon
-        Description: "Icon cho card"
+        Description: "Icon hiển thị"
         DataType: Text
-        Default: ="document"
-        
-      IsClickable:
+        Default: =""
+      ActionText:
         PropertyKind: Input
-        DisplayName: IsClickable
-        Description: "Card có thể click được"
+        DisplayName: ActionText
+        Description: "Text của action button"
+        DataType: Text
+        Default: =""
+      ShowAction:
+        PropertyKind: Input
+        DisplayName: ShowAction
+        Description: "Hiển thị action button"
         DataType: Boolean
         Default: =false
-        
-      ShowActions:
+      Variant:
         PropertyKind: Input
-        DisplayName: ShowActions
-        Description: "Hiển thị action buttons"
-        DataType: Boolean
-        Default: =false
-        
-      OnCardClick:
+        DisplayName: Variant
+        Description: "Kiểu card: Default, Primary, Secondary, Info, Warning, Error, Success"
+        DataType: Text
+        Default: ="Default"
+      OnAction:
         PropertyKind: Event
-        DisplayName: OnCardClick
-        Description: "Sự kiện khi click card"
+        DisplayName: OnAction
+        Description: "Sự kiện khi click action"
         ReturnType: None
         Default: =false
-        
-      OnPrimaryAction:
-        PropertyKind: Event
-        DisplayName: OnPrimaryAction
-        Description: "Sự kiện primary action"
-        ReturnType: None
-        Default: =false
-        
-      OnSecondaryAction:
-        PropertyKind: Event
-        DisplayName: OnSecondaryAction
-        Description: "Sự kiện secondary action"
-        ReturnType: None
-        Default: =false
-        
     Properties:
-      Height: =App.Height
-      Width: =App.Width
+      Height: =App.Height * 0.25
+      Width: =App.Width * 0.3
     Children:
-      - 'Card.DesignSystem':
-          Control: CanvasComponent
-          ComponentName: EnhancedDesignSystemComponent
+      # Card Background (Rectangle for visual only)
+      - 'EnhancedCard.Background':
+          Control: Rectangle
           Properties:
             X: =0
             Y: =0
-            Width: =1
-            Height: =1
-            
-      # Main Card Container
-      - 'Card.Container':
-          Control: Rectangle
-          Variant: ManualLayout
-          Properties:
-            X: =Parent.X
-            Y: =Parent.Y
             Width: =Parent.Width
             Height: =Parent.Height
-            Fill: =Switch(EnhancedCardComponent.Variant,
-              "filled", Switch(EnhancedCardComponent.ColorScheme,
-                "blue", RGBA(227, 242, 253, 1),
-                "green", RGBA(232, 245, 233, 1),
-                "purple", RGBA(243, 229, 245, 1),
-                "orange", RGBA(255, 243, 224, 1),
-                "red", RGBA(252, 228, 236, 1),
-                RGBA(227, 242, 253, 1)),
-              RGBA(255, 255, 255, 1))
+            Fill: =RGBA(255, 255, 255, 1)
             BorderColor: =Switch(EnhancedCardComponent.Variant,
-              "outlined", Switch(EnhancedCardComponent.ColorScheme,
-                "blue", RGBA(187, 222, 251, 1),
-                "green", RGBA(200, 230, 201, 1),
-                "purple", RGBA(206, 147, 216, 1),
-                "orange", RGBA(255, 224, 178, 1),
-                "red", RGBA(248, 187, 208, 1),
-                RGBA(187, 222, 251, 1)),
-              "filled", Switch(EnhancedCardComponent.ColorScheme,
-                "blue", RGBA(187, 222, 251, 1),
-                "green", RGBA(200, 230, 201, 1),
-                "purple", RGBA(206, 147, 216, 1),
-                "orange", RGBA(255, 224, 178, 1),
-                "red", RGBA(248, 187, 208, 1),
-                RGBA(187, 222, 251, 1)),
+              "Primary", RGBA(59, 130, 246, 1),
+              "Secondary", RGBA(107, 114, 128, 1),
+              "Info", RGBA(34, 197, 94, 1),
+              "Warning", RGBA(249, 115, 22, 1),
+              "Error", RGBA(239, 68, 68, 1),
+              "Success", RGBA(34, 197, 94, 1),
               RGBA(229, 231, 235, 1))
-            BorderThickness: =Switch(EnhancedCardComponent.Variant,
-              "outlined", Parent.Height * 0.002,
-              "filled", Parent.Height * 0.001,
-              Parent.Height * 0.001)
-            DropShadow: =Switch(EnhancedCardComponent.Variant,
-              "elevated", DropShadow.Light,
-              "default", DropShadow.Semilight,
-              DropShadow.None)
+            BorderThickness: =2
+            
+      # Card Container (GroupContainer for logic)
+      - 'EnhancedCard.Container':
+          Control: GroupContainer
+          Variant: ManualLayout
+          Properties:
+            X: =0
+            Y: =0
+            Width: =Parent.Width
+            Height: =Parent.Height
           Children:
             # Header Section
-            - 'Card.Header.Container':
-                Control: Rectangle
+            - 'EnhancedCard.Header.Container':
+                Control: GroupContainer
                 Variant: ManualLayout
                 Properties:
-                  X: =Parent.X + Parent.Width * 0.04
-                  Y: =Parent.Y + Parent.Height * 0.04
+                  X: =Parent.Width * 0.04
+                  Y: =Parent.Height * 0.05
                   Width: =Parent.Width * 0.92
-                  Height: =If(IsBlank(EnhancedCardComponent.Subtitle), 
-                    Parent.Height * 0.15, 
-                    Parent.Height * 0.2)
-                  Fill: =RGBA(0, 0, 0, 0)
+                  Height: =Parent.Height * 0.25
                 Children:
-                  # Icon (if enabled)
-                  - 'Card.Header.Icon':
+                  # Icon (if provided)
+                  - 'EnhancedCard.Icon':
                       Control: Classic/Icon
                       Properties:
-                        X: =Parent.X
-                        Y: =Parent.Y
-                        Width: =Parent.Height * 0.4
-                        Height: =Parent.Height * 0.4
+                        X: =0
+                        Y: =(Parent.Height - Self.Height) / 2
+                        Width: =Parent.Height * 0.8
+                        Height: =Parent.Height * 0.8
                         Icon: =Switch(EnhancedCardComponent.Icon,
-                          "document", Icon.DocumentWithContent,
-                          "user", Icon.Person,
-                          "calendar", Icon.CalendarBlank,
-                          "settings", Icon.Settings,
-                          "mail", Icon.Mail,
-                          "phone", Icon.Phone,
-                          "home", Icon.Home,
-                          "edit", Icon.Edit,
-                          "delete", Icon.Cancel,
-                          "add", Icon.Add,
-                          "search", Icon.Search,
-                          "filter", Icon.Filter,
-                          Icon.DocumentWithContent)
-                        Color: =Switch(EnhancedCardComponent.ColorScheme,
-                          "blue", RGBA(33, 150, 243, 1),
-                          "green", RGBA(76, 175, 80, 1),
-                          "purple", RGBA(156, 39, 176, 1),
-                          "orange", RGBA(255, 152, 0, 1),
-                          "red", RGBA(233, 30, 99, 1),
-                          RGBA(33, 150, 243, 1))
-                        Visible: =EnhancedCardComponent.ShowIcon
+                          "Info", Icon.Information,
+                          "Warning", Icon.Warning,
+                          "Error", Icon.Error,
+                          "Success", Icon.CheckBadge,
+                          "Calendar", Icon.CalendarBlank,
+                          "Person", Icon.Person,
+                          "Settings", Icon.Settings,
+                          "Document", Icon.DocumentWithContent,
+                          Icon.Information)
+                        Color: =Switch(EnhancedCardComponent.Variant,
+                          "Primary", RGBA(59, 130, 246, 1),
+                          "Secondary", RGBA(107, 114, 128, 1),
+                          "Info", RGBA(34, 197, 94, 1),
+                          "Warning", RGBA(249, 115, 22, 1),
+                          "Error", RGBA(239, 68, 68, 1),
+                          "Success", RGBA(34, 197, 94, 1),
+                          RGBA(107, 114, 128, 1))
+                        Visible: =Not(IsBlank(EnhancedCardComponent.Icon))
                         
                   # Title
-                  - 'Card.Header.Title':
+                  - 'EnhancedCard.Title':
                       Control: Label
                       Properties:
-                        X: =If(EnhancedCardComponent.ShowIcon,
-                          'Card.Header.Icon'.X + 'Card.Header.Icon'.Width + Parent.Width * 0.03,
-                          Parent.X)
-                        Y: =Parent.Y
-                        Width: =If(EnhancedCardComponent.ShowIcon,
-                          Parent.Width * 0.8,
+                        X: =If(Not(IsBlank(EnhancedCardComponent.Icon)),
+                          'EnhancedCard.Icon'.X + 'EnhancedCard.Icon'.Width + Parent.Width * 0.04,
+                          0)
+                        Y: =0
+                        Width: =If(Not(IsBlank(EnhancedCardComponent.Icon)),
+                          Parent.Width * 0.75,
                           Parent.Width)
-                        Height: =If(IsBlank(EnhancedCardComponent.Subtitle),
-                          Parent.Height,
-                          Parent.Height * 0.6)
+                        Height: =Parent.Height
                         Text: =EnhancedCardComponent.Title
-                        Color: =RGBA(55, 65, 81, 1)
+                        Color: =RGBA(17, 24, 39, 1)
                         Font: =Font.'Open Sans'
                         FontWeight: =FontWeight.Bold
-                        Size: =Parent.Height * 0.18
-                        
-                  # Subtitle
-                  - 'Card.Header.Subtitle':
-                      Control: Label
-                      Properties:
-                        X: =If(EnhancedCardComponent.ShowIcon,
-                          'Card.Header.Icon'.X + 'Card.Header.Icon'.Width + Parent.Width * 0.03,
-                          Parent.X)
-                        Y: ='Card.Header.Title'.Y + 'Card.Header.Title'.Height
-                        Width: =If(EnhancedCardComponent.ShowIcon,
-                          Parent.Width * 0.8,
-                          Parent.Width)
-                        Height: =Parent.Height * 0.4
-                        Text: =EnhancedCardComponent.Subtitle
-                        Color: =RGBA(107, 114, 128, 1)
-                        Font: =Font.'Open Sans'
-                        Size: =Parent.Height * 0.12
-                        Visible: =Not(IsBlank(EnhancedCardComponent.Subtitle))
+                        Size: =Parent.Height * 0.4
                         
             # Content Section
-            - 'Card.Content.Container':
-                Control: Rectangle
+            - 'EnhancedCard.Content.Container':
+                Control: GroupContainer
                 Variant: ManualLayout
                 Properties:
-                  X: =Parent.X + Parent.Width * 0.04
-                  Y: ='Card.Header.Container'.Y + 'Card.Header.Container'.Height + Parent.Height * 0.02
+                  X: =Parent.Width * 0.04
+                  Y: ='EnhancedCard.Header.Container'.Y + 'EnhancedCard.Header.Container'.Height + Parent.Height * 0.02
                   Width: =Parent.Width * 0.92
-                  Height: =If(EnhancedCardComponent.ShowActions,
-                    Parent.Height * 0.5,
-                    Parent.Height * 0.7)
-                  Fill: =RGBA(0, 0, 0, 0)
+                  Height: =If(EnhancedCardComponent.ShowAction, 
+                    Parent.Height * 0.5, 
+                    Parent.Height * 0.65)
                 Children:
-                  - 'Card.Content.Text':
+                  - 'EnhancedCard.Content':
                       Control: Label
                       Properties:
-                        X: =Parent.X
-                        Y: =Parent.Y
+                        X: =0
+                        Y: =0
                         Width: =Parent.Width
                         Height: =Parent.Height
                         Text: =EnhancedCardComponent.Content
                         Color: =RGBA(75, 85, 99, 1)
                         Font: =Font.'Open Sans'
-                        Size: =Parent.Height * 0.08
+                        Size: =Parent.Height * 0.15
                         
-            # Actions Section
-            - 'Card.Actions.Container':
-                Control: Rectangle
+            # Action Section (if enabled)
+            - 'EnhancedCard.Action.Container':
+                Control: GroupContainer
                 Variant: ManualLayout
                 Properties:
-                  X: =Parent.X + Parent.Width * 0.04
+                  X: =Parent.Width * 0.04
                   Y: =Parent.Height - Self.Height - Parent.Height * 0.04
                   Width: =Parent.Width * 0.92
                   Height: =Parent.Height * 0.15
-                  Fill: =RGBA(0, 0, 0, 0)
-                  Visible: =EnhancedCardComponent.ShowActions
+                  Visible: =EnhancedCardComponent.ShowAction
                 Children:
-                  # Primary Action Button
-                  - 'Card.Actions.Primary':
+                  - 'EnhancedCard.Action.Button':
                       Control: Classic/Button
                       Properties:
                         X: =Parent.Width - Self.Width
-                        Y: =(Parent.Height - Self.Height) / 2
-                        Width: =Parent.Width * 0.25
-                        Height: =Parent.Height * 0.7
-                        Text: ="Xem chi tiết"
-                        Fill: =Switch(EnhancedCardComponent.ColorScheme,
-                          "blue", RGBA(33, 150, 243, 1),
-                          "green", RGBA(76, 175, 80, 1),
-                          "purple", RGBA(156, 39, 176, 1),
-                          "orange", RGBA(255, 152, 0, 1),
-                          "red", RGBA(233, 30, 99, 1),
-                          RGBA(33, 150, 243, 1))
+                        Y: =0
+                        Width: =Parent.Width * 0.3
+                        Height: =Parent.Height
+                        Text: =EnhancedCardComponent.ActionText
+                        Fill: =Switch(EnhancedCardComponent.Variant,
+                          "Primary", RGBA(59, 130, 246, 1),
+                          "Secondary", RGBA(107, 114, 128, 1),
+                          "Info", RGBA(34, 197, 94, 1),
+                          "Warning", RGBA(249, 115, 22, 1),
+                          "Error", RGBA(239, 68, 68, 1),
+                          "Success", RGBA(34, 197, 94, 1),
+                          RGBA(59, 130, 246, 1))
                         Color: =RGBA(255, 255, 255, 1)
-                        BorderColor: =Switch(EnhancedCardComponent.ColorScheme,
-                          "blue", RGBA(33, 150, 243, 1),
-                          "green", RGBA(76, 175, 80, 1),
-                          "purple", RGBA(156, 39, 176, 1),
-                          "orange", RGBA(255, 152, 0, 1),
-                          "red", RGBA(233, 30, 99, 1),
-                          RGBA(33, 150, 243, 1))
-                        BorderThickness: =Parent.Height * 0.02
+                        BorderColor: =RGBA(0, 0, 0, 0)
+                        BorderThickness: =0
                         Font: =Font.'Open Sans'
                         FontWeight: =FontWeight.Semibold
-                        Size: =Parent.Height * 0.2
-                        OnSelect: =EnhancedCardComponent.OnPrimaryAction()
-                        
-                  # Secondary Action Button
-                  - 'Card.Actions.Secondary':
-                      Control: Classic/Button
-                      Properties:
-                        X: ='Card.Actions.Primary'.X - Self.Width - Parent.Width * 0.03
-                        Y: =(Parent.Height - Self.Height) / 2
-                        Width: =Parent.Width * 0.2
-                        Height: =Parent.Height * 0.7
-                        Text: ="Sửa"
-                        Fill: =RGBA(255, 255, 255, 1)
-                        Color: =Switch(EnhancedCardComponent.ColorScheme,
-                          "blue", RGBA(33, 150, 243, 1),
-                          "green", RGBA(76, 175, 80, 1),
-                          "purple", RGBA(156, 39, 176, 1),
-                          "orange", RGBA(255, 152, 0, 1),
-                          "red", RGBA(233, 30, 99, 1),
-                          RGBA(33, 150, 243, 1))
-                        BorderColor: =Switch(EnhancedCardComponent.ColorScheme,
-                          "blue", RGBA(33, 150, 243, 1),
-                          "green", RGBA(76, 175, 80, 1),
-                          "purple", RGBA(156, 39, 176, 1),
-                          "orange", RGBA(255, 152, 0, 1),
-                          "red", RGBA(233, 30, 99, 1),
-                          RGBA(33, 150, 243, 1))
-                        BorderThickness: =Parent.Height * 0.02
-                        Font: =Font.'Open Sans'
-                        FontWeight: =FontWeight.Semibold
-                        Size: =Parent.Height * 0.2
-                        OnSelect: =EnhancedCardComponent.OnSecondaryAction()
-                        
-            # Clickable Overlay (if card is clickable)
-            - 'Card.Clickable.Overlay':
-                Control: Classic/Button
-                Properties:
-                  X: =Parent.X
-                  Y: =Parent.Y
-                  Width: =Parent.Width
-                  Height: =Parent.Height
-                  Text: =""
-                  Fill: =RGBA(0, 0, 0, 0)
-                  BorderColor: =RGBA(0, 0, 0, 0)
-                  BorderThickness: =0
-                  Visible: =And(EnhancedCardComponent.IsClickable, Not(EnhancedCardComponent.ShowActions))
-                  OnSelect: =EnhancedCardComponent.OnCardClick() 
+                        Size: =Parent.Height * 0.35
+                        OnSelect: |
+                          =true 

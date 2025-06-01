@@ -78,46 +78,55 @@ ComponentDefinitions:
       Height: =App.Height
       Width: =App.Width
     Children:
-      - 'StatsCard.Container':
+      # Card Background (Rectangle for visual only)
+      - 'StatsCard.Background':
           Control: Rectangle
-          Variant: ManualLayout
           Properties:
-            X: =Parent.X
-            Y: =Parent.Y
+            X: =0
+            Y: =0
             Width: =Parent.Width
-            Height: =Parent.Height * 0.1
+            Height: =Parent.Height
             Fill: =RGBA(255, 255, 255, 1)
             BorderColor: =RGBA(224, 224, 224, 1)
             BorderThickness: =Parent.Height * 0.0005
-            DropShadow: =DropShadow.Semilight
+            
+      # Main Content Container (GroupContainer for logic)
+      - 'StatsCard.Container':
+          Control: GroupContainer
+          Variant: ManualLayout
+          Properties:
+            X: =0
+            Y: =0
+            Width: =Parent.Width
+            Height: =Parent.Height
           Children:
             # Main Content Container - Compact
             - 'StatsCard.Content.Container':
-                Control: Rectangle
+                Control: GroupContainer
                 Variant: ManualLayout
                 Properties:
-                  X: =Parent.X + Parent.Width * 0.025
-                  Y: =Parent.Y + Parent.Height * 0.06
+                  X: =Parent.Width * 0.025
+                  Y: =Parent.Height * 0.06
                   Width: =Parent.Width * 0.95
                   Height: =Parent.Height * 0.88
                 Children:
                   # Icon Section - Smaller
                   - 'StatsCard.Icon.Container':
-                      Control: Rectangle
+                      Control: GroupContainer
                       Variant: ManualLayout
                       Properties:
-                        X: =Parent.X
-                        Y: =Parent.Y
+                        X: =0
+                        Y: =0
                         Width: =Parent.Height * 0.7
                         Height: =Parent.Height * 0.7
                       Children:
                         - 'StatsCard.Icon.Background':
                             Control: Circle
                             Properties:
-                              X: =Parent.X
-                              Y: =Parent.Y
+                              X: =0
+                              Y: =0
                               Width: =Parent.Width
-                              Height: =Parent.Height
+                              Height: =Parent.Width
                               Fill: =ColorFade(StatsCardComponent.Color, 0.95)
                               BorderColor: =ColorFade(StatsCardComponent.Color, 0.85)
                               BorderThickness: =Parent.Height * 0.015
@@ -125,12 +134,13 @@ ComponentDefinitions:
                         - 'StatsCard.Icon':
                             Control: Classic/Icon
                             Properties:
-                              X: =Parent.X + (Parent.Width - Self.Width) / 2
-                              Y: =Parent.Y + (Parent.Height - Self.Height) / 2
+                              X: =(Parent.Width - Self.Width) / 2
+                              Y: =(Parent.Height - Self.Height) / 2
                               Width: =Parent.Width * 0.55
                               Height: =Parent.Height * 0.55
                               Icon: =Switch(StatsCardComponent.Icon,
                                 "Calendar", Icon.CalendarBlank,
+                                "CalendarBlank", Icon.CalendarBlank,
                                 "CheckBadge", Icon.CheckBadge,
                                 "Clock", Icon.Clock,
                                 "Cancel", Icon.Cancel,
@@ -143,11 +153,11 @@ ComponentDefinitions:
                               
                   # Value and Title Section - Compact
                   - 'StatsCard.Info.Container':
-                      Control: Rectangle
+                      Control: GroupContainer
                       Variant: ManualLayout
                       Properties:
                         X: ='StatsCard.Icon.Container'.X + 'StatsCard.Icon.Container'.Width + Parent.Width * 0.03
-                        Y: =Parent.Y
+                        Y: =0
                         Width: =Parent.Width * 0.55
                         Height: =Parent.Height
                       Children:
@@ -155,8 +165,8 @@ ComponentDefinitions:
                         - 'StatsCard.Value':
                             Control: Label
                             Properties:
-                              X: =Parent.X
-                              Y: =Parent.Y
+                              X: =0
+                              Y: =0
                               Width: =Parent.Width
                               Height: =Parent.Height * 0.4
                               Text: =Text(StatsCardComponent.Value)
@@ -169,7 +179,7 @@ ComponentDefinitions:
                         - 'StatsCard.Title':
                             Control: Label
                             Properties:
-                              X: =Parent.X
+                              X: =0
                               Y: ='StatsCard.Value'.Y + 'StatsCard.Value'.Height
                               Width: =Parent.Width
                               Height: =Parent.Height * 0.35
@@ -183,7 +193,7 @@ ComponentDefinitions:
                         - 'StatsCard.Subtitle':
                             Control: Label
                             Properties:
-                              X: =Parent.X
+                              X: =0
                               Y: ='StatsCard.Title'.Y + 'StatsCard.Title'.Height
                               Width: =Parent.Width
                               Height: =Parent.Height * 0.25
@@ -195,151 +205,85 @@ ComponentDefinitions:
                               
                   # Trend Indicator Section - Compact
                   - 'StatsCard.Trend.Container':
-                      Control: Rectangle
+                      Control: GroupContainer
                       Variant: ManualLayout
                       Properties:
-                        X: =Parent.Width - Self.Width
-                        Y: =Parent.Y
-                        Width: =Parent.Width * 0.2
-                        Height: =Parent.Height * 0.35
+                        X: =Parent.Width * 0.08
+                        Y: =Parent.Height * 0.88
+                        Width: =Parent.Width * 0.84
+                        Height: =Parent.Height * 0.12
                         Visible: =StatsCardComponent.ShowTrend
                       Children:
-                        # Trend Arrow Background - Light colors
-                        - 'StatsCard.Trend.Background':
-                            Control: Rectangle
-                            Properties:
-                              X: =Parent.X
-                              Y: =Parent.Y
-                              Width: =Parent.Width
-                              Height: =Parent.Height * 0.6
-                              Fill: =If(StatsCardComponent.TrendValue > 0, 
-                                RGBA(232, 245, 233, 1), 
-                                If(StatsCardComponent.TrendValue < 0,
-                                  RGBA(255, 235, 238, 1),
-                                  RGBA(245, 245, 245, 1)))
-                              
-                        # Trend Arrow Icon - Smaller
+                        # Trend Icon
                         - 'StatsCard.Trend.Icon':
                             Control: Classic/Icon
                             Properties:
-                              X: =Parent.X + Parent.Width * 0.08
-                              Y: =Parent.Y + Parent.Height * 0.03
-                              Width: =Parent.Width * 0.25
-                              Height: =Parent.Height * 0.45
-                              Icon: =If(StatsCardComponent.TrendValue > 0, 
-                                Icon.ChevronUp, 
-                                If(StatsCardComponent.TrendValue < 0,
-                                  Icon.ChevronDown,
-                                  Icon.Cancel))
-                              Color: =If(StatsCardComponent.TrendValue > 0, 
-                                RGBA(76, 175, 80, 1), 
-                                If(StatsCardComponent.TrendValue < 0,
-                                  RGBA(244, 67, 54, 1),
-                                  RGBA(158, 158, 158, 1)))
-                                  
-                        # Trend Value - Smaller
-                        - 'StatsCard.Trend.Value':
-                            Control: Label
-                            Properties:
-                              X: ='StatsCard.Trend.Icon'.X + 'StatsCard.Trend.Icon'.Width
-                              Y: =Parent.Y + Parent.Height * 0.03
-                              Width: =Parent.Width * 0.65
-                              Height: =Parent.Height * 0.45
-                              Text: =Abs(StatsCardComponent.TrendValue) & "%"
-                              Color: =If(StatsCardComponent.TrendValue > 0, 
-                                RGBA(76, 175, 80, 1), 
-                                If(StatsCardComponent.TrendValue < 0,
-                                  RGBA(244, 67, 54, 1),
-                                  RGBA(158, 158, 158, 1)))
-                              Font: =Font.'Open Sans'
-                              FontWeight: =FontWeight.Semibold
-                              Size: =Parent.Height * 0.2
+                              X: =0
+                              Y: =(Parent.Height - Self.Height) / 2
+                              Width: =Parent.Height * 0.6
+                              Height: =Parent.Height * 0.6
+                              Icon: =If(StatsCardComponent.TrendValue > 0, Icon.ChevronUp, If(StatsCardComponent.TrendValue < 0, Icon.ChevronDown, Icon.HorizontalLine))
+                              Color: =If(StatsCardComponent.TrendValue > 0, RGBA(76, 175, 80, 1), If(StatsCardComponent.TrendValue < 0, RGBA(244, 67, 54, 1), RGBA(158, 158, 158, 1)))
                               
-                        # Trend Text - Smaller
+                        # Trend Text
                         - 'StatsCard.Trend.Text':
                             Control: Label
                             Properties:
-                              X: =Parent.X
-                              Y: =Parent.Y + Parent.Height * 0.55
-                              Width: =Parent.Width
-                              Height: =Parent.Height * 0.4
+                              X: ='StatsCard.Trend.Icon'.X + 'StatsCard.Trend.Icon'.Width + Parent.Width * 0.03
+                              Y: =(Parent.Height - Self.Height) / 2
+                              Width: =Parent.Width * 0.75
+                              Height: =Parent.Height * 0.7
                               Text: =StatsCardComponent.TrendText
-                              Color: =RGBA(107, 114, 128, 1)
+                              Color: =If(StatsCardComponent.TrendValue > 0, RGBA(76, 175, 80, 1), If(StatsCardComponent.TrendValue < 0, RGBA(244, 67, 54, 1), RGBA(158, 158, 158, 1)))
                               Font: =Font.'Open Sans'
-                              Size: =Parent.Height * 0.12
-                              Align: =Align.Center
-                              Visible: =Not(IsBlank(StatsCardComponent.TrendText))
+                              FontWeight: =FontWeight.Semibold
+                              Size: =Parent.Height * 0.45
                               
-            # Progress Bar Section - Compact
-            - 'StatsCard.Progress.Container':
-                Control: Rectangle
-                Variant: ManualLayout
-                Properties:
-                  X: =Parent.X + Parent.Width * 0.025
-                  Y: =Parent.Y + Parent.Height * 0.88
-                  Width: =Parent.Width * 0.95
-                  Height: =Parent.Height * 0.06
-                  Visible: =StatsCardComponent.ShowProgress
-                Children:
-                  # Progress Background - Light
-                  - 'StatsCard.Progress.Background':
-                      Control: Rectangle
+                  # Progress Bar Section - Only if enabled
+                  - 'StatsCard.Progress.Container':
+                      Control: GroupContainer
+                      Variant: ManualLayout
                       Properties:
-                        X: =Parent.X
-                        Y: =Parent.Y
-                        Width: =Parent.Width
-                        Height: =Parent.Height
-                        Fill: =RGBA(248, 250, 252, 1)
-                        
-                  # Progress Fill - Light color
-                  - 'StatsCard.Progress.Fill':
-                      Control: Rectangle
-                      Properties:
-                        X: =Parent.X
-                        Y: =Parent.Y
-                        Width: =Parent.Width * (StatsCardComponent.Value / StatsCardComponent.MaxValue)
-                        Height: =Parent.Height
-                        Fill: =ColorFade(StatsCardComponent.Color, 0.7)
-                        
-                  # Progress Text - Smaller
-                  - 'StatsCard.Progress.Text':
-                      Control: Label
-                      Properties:
-                        X: =Parent.X
-                        Y: =Parent.Y
-                        Width: =Parent.Width
-                        Height: =Parent.Height
-                        Text: =Round((StatsCardComponent.Value / StatsCardComponent.MaxValue) * 100, 0) & "%"
-                        Color: =RGBA(55, 65, 81, 1)
-                        Font: =Font.'Open Sans'
-                        FontWeight: =FontWeight.Semibold
-                        Size: =Parent.Height * 0.4
-                        Align: =Align.Center
-                        
-            # Click Overlay - Invisible button for click handling
-            - 'StatsCard.Click.Overlay':
+                        X: =Parent.Width * 0.025
+                        Y: =Parent.Height * 0.88
+                        Width: =Parent.Width * 0.95
+                        Height: =Parent.Height * 0.1
+                        Visible: =And(StatsCardComponent.ShowProgress, Not(StatsCardComponent.ShowTrend))
+                      Children:
+                        # Progress Background
+                        - 'StatsCard.Progress.Background':
+                            Control: Rectangle
+                            Properties:
+                              X: =0
+                              Y: =0
+                              Width: =Parent.Width
+                              Height: =Parent.Height
+                              Fill: =RGBA(243, 244, 246, 1)
+                              BorderColor: =RGBA(0, 0, 0, 0)
+                              
+                        # Progress Fill
+                        - 'StatsCard.Progress.Fill':
+                            Control: Rectangle
+                            Properties:
+                              X: =0
+                              Y: =0
+                              Width: =Parent.Width * (StatsCardComponent.Value / Max(StatsCardComponent.MaxValue, 1))
+                              Height: =Parent.Height
+                              Fill: =StatsCardComponent.Color
+                              BorderColor: =RGBA(0, 0, 0, 0)
+                              
+            # Click Overlay for Clickable Cards
+            - 'StatsCard.ClickOverlay':
                 Control: Classic/Button
                 Properties:
-                  X: =Parent.X
-                  Y: =Parent.Y
+                  X: =0
+                  Y: =0
                   Width: =Parent.Width
                   Height: =Parent.Height
                   Text: =""
                   Fill: =RGBA(0, 0, 0, 0)
                   BorderColor: =RGBA(0, 0, 0, 0)
-                  BorderThickness: =Parent.Height * 0.001
+                  BorderThickness: =0
                   Visible: =StatsCardComponent.IsClickable
-                  OnSelect: =StatsCardComponent.OnClick()
-                  
-            # Hover Effect Overlay - Light
-            - 'StatsCard.Hover.Indicator':
-                Control: Rectangle
-                Properties:
-                  X: =Parent.X
-                  Y: =Parent.Y
-                  Width: =Parent.Width
-                  Height: =Parent.Height
-                  Fill: =ColorFade(StatsCardComponent.Color, 0.95)
-                  BorderColor: =ColorFade(StatsCardComponent.Color, 0.8)
-                  BorderThickness: =Parent.Height * 0.001
-                  Visible: =false 
+                  OnSelect: |
+                    =StatsCardComponent.OnClick() 

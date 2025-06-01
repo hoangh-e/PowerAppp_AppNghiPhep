@@ -2,7 +2,25 @@ Screens:
   LeaveRequestScreen:
     Properties:
       Fill: =RGBA(248, 250, 252, 1)
-      OnVisible: =Set(varActiveScreen, "LeaveRequest"); Set(varCurrentUser, LookUp(NguoiDung, Email = User().Email)); Set(varUserLeaveBalance, LookUp(SoNgayPhep, And(MaNhanVien = varCurrentUser.MaNhanVien, Nam = Year(Today())))); Set(varLeaveTypes, ShowColumns(LoaiNghi, "MaLoai", "TenLoai", "CoLuong")); Set(varEmployeesForHandover, Filter(NguoiDung, And(MaDonVi = varCurrentUser.MaDonVi, MaNhanVien <> varCurrentUser.MaNhanVien, TrangThai = "HoatDong"))); Set(varSystemConfig, AddColumns(CauHinhHeThong, "ParsedValue", Switch(KieuDuLieu, "Number", Value(GiaTri), "Boolean", GiaTri = "true", GiaTri))); Set(varMinAdvanceDays, LookUp(varSystemConfig, MaCauHinh = "MIN_ADVANCE_DAYS").ParsedValue); Set(varMaxContinuousDays, LookUp(varSystemConfig, MaCauHinh = "MAX_CONTINUOUS_DAYS").ParsedValue); Set(varFormData, {StartDate: DateAdd(Today(), varMinAdvanceDays), EndDate: DateAdd(Today(), varMinAdvanceDays + 1), LeaveType: First(varLeaveTypes).MaLoai, Reason: "", HandoverPerson: "", HandoverContent: "", Session: "CaNgay"}); Set(varFormErrors, {}); Set(varIsSubmitting, false); Set(varShowConfirmation, false)
+      OnVisible: |
+        =Set(varActiveScreen, "LeaveRequest"); 
+        // Use session from Login or fallback to Microsoft 365 lookup
+        If(IsBlank(varCurrentUser), 
+          Set(varCurrentUser, LookUp(NguoiDung, Email = User().Email)));
+        // Validate current user session
+        If(IsBlank(varCurrentUser), 
+          Navigate(LoginScreen), 
+          // Continue with screen initialization using session data
+          Set(varUserLeaveBalance, LookUp(SoNgayPhep, And(MaNhanVien.Value = varCurrentUser.MaNhanVien.Value, Nam = Year(Today())))); 
+          Set(varLeaveTypes, ShowColumns(LoaiNghi, "MaLoai", "TenLoai", "CoLuong")); 
+          Set(varSelectedLeaveType, Blank()); 
+          Set(varStartDate, Today()); 
+          Set(varEndDate, Today()); 
+          Set(varLeaveReason, ""); 
+          Set(varHandoverPerson, Blank()); 
+          Set(varHandoverContent, ""); 
+          Set(varSubmissionSuccess, false); 
+          Set(varIsSubmitting, false))
     Children:
       - 'LeaveRequest.Header':
           Control: CanvasComponent
@@ -23,16 +41,14 @@ Screens:
           Properties:
             X: =Parent.X
             Y: ='LeaveRequest.Header'.Y + 'LeaveRequest.Header'.Height
-            Width: =If(App.Width < 768, 
-              If(varMobileMenuOpen, Parent.Width * 0.75, Parent.Width * 0.001),
-              If(varNavCollapsed, Parent.Width * 0.06, Parent.Width * 0.2))
+            Width: =If(varNavCollapsed, Parent.Width * 0.06, Parent.Width * 0.2)
             Height: =Parent.Height - 'LeaveRequest.Header'.Height
             UserRole: =varCurrentUser.MaVaiTro
             ActiveScreen: =varActiveScreen
             OnNavigate: =Set(varNavigateAction, true)
             
       - 'LeaveRequest.Content.Container':
-          Control: Rectangle
+          Control: GroupContainer
           Variant: ManualLayout
           Properties:
             X: ='LeaveRequest.Navigation'.X + 'LeaveRequest.Navigation'.Width
@@ -45,8 +61,8 @@ Screens:
             - 'LeaveRequest.Content.Title':
                 Control: Label
                 Properties:
-                  X: =Parent.X + Parent.Width * 0.03
-                  Y: =Parent.Y + Parent.Height * 0.02
+                  X: =Parent.Width * 0.03
+                  Y: =Parent.Height * 0.02
                   Width: =Parent.Width * 0.7
                   Height: =Parent.Height * 0.05
                   Text: ="Tạo đơn nghỉ phép"
@@ -57,10 +73,10 @@ Screens:
                   
             # Leave Balance Info Card
             - 'LeaveRequest.BalanceInfo.Container':
-                Control: Rectangle
+                Control: GroupContainer
                 Variant: ManualLayout
                 Properties:
-                  X: =Parent.X + Parent.Width * 0.03
+                  X: =Parent.Width * 0.03
                   Y: ='LeaveRequest.Content.Title'.Y + 'LeaveRequest.Content.Title'.Height + Parent.Height * 0.02
                   Width: =Parent.Width * 0.94
                   Height: =Parent.Height * 0.08
@@ -71,8 +87,8 @@ Screens:
                   - 'LeaveRequest.BalanceInfo.Title':
                       Control: Label
                       Properties:
-                        X: =Parent.X + Parent.Width * 0.02
-                        Y: =Parent.Y + Parent.Height * 0.1
+                        X: =Parent.Width * 0.02
+                        Y: =Parent.Height * 0.1
                         Width: =Parent.Width * 0.96
                         Height: =Parent.Height * 0.35
                         Text: ="Thông tin số ngày phép"
@@ -84,7 +100,7 @@ Screens:
                   - 'LeaveRequest.BalanceInfo.Details':
                       Control: Label
                       Properties:
-                        X: =Parent.X + Parent.Width * 0.02
+                        X: =Parent.Width * 0.02
                         Y: ='LeaveRequest.BalanceInfo.Title'.Y + 'LeaveRequest.BalanceInfo.Title'.Height
                         Width: =Parent.Width * 0.96
                         Height: =Parent.Height * 0.45
@@ -99,10 +115,10 @@ Screens:
                         
             # Main Form Container
             - 'LeaveRequest.Form.Container':
-                Control: Rectangle
+                Control: GroupContainer
                 Variant: ManualLayout
                 Properties:
-                  X: =Parent.X + Parent.Width * 0.03
+                  X: =Parent.Width * 0.03
                   Y: ='LeaveRequest.BalanceInfo.Container'.Y + 'LeaveRequest.BalanceInfo.Container'.Height + Parent.Height * 0.02
                   Width: =Parent.Width * 0.94
                   Height: =Parent.Height * 0.65
@@ -113,11 +129,11 @@ Screens:
                 Children:
                   # Employee Info Section
                   - 'LeaveRequest.Form.EmployeeInfo.Container':
-                      Control: Rectangle
+                      Control: GroupContainer
                       Variant: ManualLayout
                       Properties:
-                        X: =Parent.X + Parent.Width * 0.03
-                        Y: =Parent.Y + Parent.Height * 0.03
+                        X: =Parent.Width * 0.03
+                        Y: =Parent.Height * 0.03
                         Width: =Parent.Width * 0.94
                         Height: =Parent.Height * 0.12
                         Fill: =RGBA(248, 249, 250, 1)
@@ -127,8 +143,8 @@ Screens:
                         - 'LeaveRequest.Form.EmployeeInfo.Title':
                             Control: Label
                             Properties:
-                              X: =Parent.X + Parent.Width * 0.02
-                              Y: =Parent.Y + Parent.Height * 0.05
+                              X: =Parent.Width * 0.02
+                              Y: =Parent.Height * 0.05
                               Width: =Parent.Width * 0.96
                               Height: =Parent.Height * 0.25
                               Text: ="Thông tin nhân viên"
@@ -138,10 +154,10 @@ Screens:
                               Size: =Parent.Height * 0.12
                               
                         - 'LeaveRequest.Form.EmployeeInfo.Details':
-                            Control: Rectangle
+                            Control: GroupContainer
                             Variant: ManualLayout
                             Properties:
-                              X: =Parent.X + Parent.Width * 0.02
+                              X: =Parent.Width * 0.02
                               Y: ='LeaveRequest.Form.EmployeeInfo.Title'.Y + 'LeaveRequest.Form.EmployeeInfo.Title'.Height
                               Width: =Parent.Width * 0.96
                               Height: =Parent.Height * 0.65
@@ -184,17 +200,17 @@ Screens:
                                     
                   # Leave Request Form Fields
                   - 'LeaveRequest.Form.Fields.Container':
-                      Control: Rectangle
+                      Control: GroupContainer
                       Variant: ManualLayout
                       Properties:
-                        X: =Parent.X + Parent.Width * 0.03
+                        X: =Parent.Width * 0.03
                         Y: ='LeaveRequest.Form.EmployeeInfo.Container'.Y + 'LeaveRequest.Form.EmployeeInfo.Container'.Height + Parent.Height * 0.03
                         Width: =Parent.Width * 0.94
                         Height: =Parent.Height * 0.75
                       Children:
                         # Leave Type Selection
                         - 'LeaveRequest.Form.LeaveType.Container':
-                            Control: Rectangle
+                            Control: GroupContainer
                             Variant: ManualLayout
                             Properties:
                               X: =Parent.X
@@ -213,22 +229,22 @@ Screens:
                                     Label: ="Loại nghỉ phép"
                                     IsRequired: =true
                                     InputType: ="Dropdown"
-                                    Value: =varFormData.LeaveType
+                                    Value: =varSelectedLeaveType
                                     
                               - 'LeaveRequest.Form.LeaveType.Dropdown':
                                   Control: Classic/DropDown
                                   Properties:
                                     X: =Parent.X
-                                    Y: =Parent.Y + Parent.Height * 0.6
+                                    Y: =Parent.Height * 0.6
                                     Width: =Parent.Width
                                     Height: =Parent.Height * 0.4
                                     Items: =varLeaveTypes
-                                    DefaultSelectedItems: =Filter(varLeaveTypes, MaLoai = varFormData.LeaveType)
-                                    OnChange: =Set(varFormData, Patch(varFormData, {LeaveType: Self.Selected.MaLoai}))
+                                    DefaultSelectedItems: =Filter(varLeaveTypes, MaLoai = varSelectedLeaveType)
+                                    OnChange: =Set(varSelectedLeaveType, Self.Selected.MaLoai)
                                     
                         # Session Selection
                         - 'LeaveRequest.Form.Session.Container':
-                            Control: Rectangle
+                            Control: GroupContainer
                             Variant: ManualLayout
                             Properties:
                               X: =Parent.Width * 0.52
@@ -247,22 +263,22 @@ Screens:
                                     Label: ="Buổi nghỉ"
                                     IsRequired: =true
                                     InputType: ="Dropdown"
-                                    Value: =varFormData.Session
+                                    Value: =varStartDate
                                     
                               - 'LeaveRequest.Form.Session.Dropdown':
                                   Control: Classic/DropDown
                                   Properties:
                                     X: =Parent.X
-                                    Y: =Parent.Y + Parent.Height * 0.6
+                                    Y: =Parent.Height * 0.6
                                     Width: =Parent.Width
                                     Height: =Parent.Height * 0.4
                                     Items: =["CaNgay", "BuoiSang", "BuoiChieu"]
-                                    Default: =varFormData.Session
-                                    OnChange: =Set(varFormData, Patch(varFormData, {Session: Self.Selected.Value}))
+                                    Default: =varStartDate
+                                    OnChange: =Set(varStartDate, Self.Selected.Value); Set(varEndDate, If(Self.Selected.Value = "CaNgay", varStartDate, DateAdd(varStartDate, 0.5)))
                                     
                         # Date Range Selection
                         - 'LeaveRequest.Form.DateRange.Container':
-                            Control: Rectangle
+                            Control: GroupContainer
                             Variant: ManualLayout
                             Properties:
                               X: =Parent.X
@@ -272,7 +288,7 @@ Screens:
                             Children:
                               # Start Date
                               - 'LeaveRequest.Form.StartDate.Container':
-                                  Control: Rectangle
+                                  Control: GroupContainer
                                   Variant: ManualLayout
                                   Properties:
                                     X: =Parent.X
@@ -296,24 +312,22 @@ Screens:
                                         Control: Classic/DatePicker
                                         Properties:
                                           X: =Parent.X
-                                          Y: =Parent.Y + Parent.Height * 0.6
+                                          Y: =Parent.Height * 0.6
                                           Width: =Parent.Width
                                           Height: =Parent.Height * 0.4
-                                          DefaultDate: =varFormData.StartDate
+                                          DefaultDate: =varStartDate
                                           StartOfWeek: =StartOfWeek.Monday
                                           OnChange: |
-                                                      =Set(varFormData, Patch(varFormData, {
-                                                        StartDate: Self.SelectedDate,
-                                                        EndDate: If(Self.SelectedDate > varFormData.EndDate, Self.SelectedDate, varFormData.EndDate)
-                                                      }));
+                                                      =Set(varStartDate, Self.SelectedDate);
+                                                      Set(varEndDate, If(Self.SelectedDate > varEndDate, Self.SelectedDate, varEndDate));
                                                       Set(varCalculatedDays, 
-                                                        If(varFormData.Session = "CaNgay",
-                                                          DateDiff(varFormData.StartDate, varFormData.EndDate) + 1,
+                                                        If(varSelectedLeaveType = "CaNgay",
+                                                          DateDiff(varStartDate, varEndDate) + 1,
                                                           0.5))
                                           
                               # End Date
                               - 'LeaveRequest.Form.EndDate.Container':
-                                  Control: Rectangle
+                                  Control: GroupContainer
                                   Variant: ManualLayout
                                   Properties:
                                     X: =Parent.Width * 0.52
@@ -337,21 +351,21 @@ Screens:
                                         Control: Classic/DatePicker
                                         Properties:
                                           X: =Parent.X
-                                          Y: =Parent.Y + Parent.Height * 0.6
+                                          Y: =Parent.Height * 0.6
                                           Width: =Parent.Width
                                           Height: =Parent.Height * 0.4
-                                          DefaultDate: =varFormData.EndDate
+                                          DefaultDate: =varEndDate
                                           StartOfWeek: =StartOfWeek.Monday
                                           OnChange: |
-                                                      =Set(varFormData, Patch(varFormData, {EndDate: Self.SelectedDate}));
+                                                      =Set(varEndDate, Self.SelectedDate);
                                                       Set(varCalculatedDays, 
-                                                        If(varFormData.Session = "CaNgay",
-                                                          DateDiff(varFormData.StartDate, varFormData.EndDate) + 1,
+                                                        If(varSelectedLeaveType = "CaNgay",
+                                                          DateDiff(varStartDate, varEndDate) + 1,
                                                           0.5))
                                           
                         # Calculated Days Display
                         - 'LeaveRequest.Form.CalculatedDays.Container':
-                            Control: Rectangle
+                            Control: GroupContainer
                             Variant: ManualLayout
                             Properties:
                               X: =Parent.X
@@ -365,8 +379,8 @@ Screens:
                               - 'LeaveRequest.Form.CalculatedDays.Label':
                                   Control: Label
                                   Properties:
-                                    X: =Parent.X + Parent.Width * 0.02
-                                    Y: =Parent.Y + (Parent.Height - Self.Height) / 2
+                                    X: =Parent.Width * 0.02
+                                    Y: =(Parent.Height - Self.Height) / 2
                                     Width: =Parent.Width * 0.96
                                     Height: =Parent.Height * 0.6
                                     Text: =Concatenate("Tổng số ngày nghỉ:", varCalculatedDays, " ngày")
@@ -377,7 +391,7 @@ Screens:
                                     
                         # Reason Input
                         - 'LeaveRequest.Form.Reason.Container':
-                            Control: Rectangle
+                            Control: GroupContainer
                             Variant: ManualLayout
                             Properties:
                               X: =Parent.X
@@ -397,14 +411,14 @@ Screens:
                                     Placeholder: ="Nhập lý do nghỉ phép..."
                                     IsRequired: =true
                                     InputType: ="Multiline"
-                                    Value: =varFormData.Reason
+                                    Value: =varLeaveReason
                                     MaxLength: =1000
                                     ShowCharacterCount: =true
-                                    OnChange: =Set(varFormData, Patch(varFormData, {Reason: Self.Text}))
+                                    OnChange: =Set(varLeaveReason, Self.Text)
                                     
                         # Handover Section
                         - 'LeaveRequest.Form.Handover.Container':
-                            Control: Rectangle
+                            Control: GroupContainer
                             Variant: ManualLayout
                             Properties:
                               X: =Parent.X
@@ -414,7 +428,7 @@ Screens:
                             Children:
                               # Handover Person
                               - 'LeaveRequest.Form.HandoverPerson.Container':
-                                  Control: Rectangle
+                                  Control: GroupContainer
                                   Variant: ManualLayout
                                   Properties:
                                     X: =Parent.X
@@ -438,15 +452,15 @@ Screens:
                                         Control: Classic/DropDown
                                         Properties:
                                           X: =Parent.X
-                                          Y: =Parent.Y + Parent.Height * 0.6
+                                          Y: =Parent.Height * 0.6
                                           Width: =Parent.Width
                                           Height: =Parent.Height * 0.4
                                           Items: =varEmployeesForHandover
-                                          OnChange: =Set(varFormData, Patch(varFormData, {HandoverPerson: Self.Selected.MaNhanVien}))
+                                          OnChange: =Set(varHandoverPerson, Self.Selected.MaNhanVien)
                                           
                               # Handover Content
                               - 'LeaveRequest.Form.HandoverContent.Container':
-                                  Control: Rectangle
+                                  Control: GroupContainer
                                   Variant: ManualLayout
                                   Properties:
                                     X: =Parent.Width * 0.52
@@ -466,16 +480,16 @@ Screens:
                                           Placeholder: ="Mô tả công việc cần bàn giao..."
                                           IsRequired: =false
                                           InputType: ="Multiline"
-                                          Value: =varFormData.HandoverContent
+                                          Value: =varHandoverContent
                                           MaxLength: =2000
-                                          OnChange: =Set(varFormData, Patch(varFormData, {HandoverContent: Self.Text}))
+                                          OnChange: =Set(varHandoverContent, Self.Text)
                                           
             # Form Actions
             - 'LeaveRequest.Actions.Container':
-                Control: Rectangle
+                Control: GroupContainer
                 Variant: ManualLayout
                 Properties:
-                  X: =Parent.X + Parent.Width * 0.03
+                  X: =Parent.Width * 0.03
                   Y: ='LeaveRequest.Form.Container'.Y + 'LeaveRequest.Form.Container'.Height + Parent.Height * 0.02
                   Width: =Parent.Width * 0.94
                   Height: =Parent.Height * 0.08
@@ -486,7 +500,7 @@ Screens:
                       ComponentName: ButtonComponent
                       Properties:
                         X: =Parent.Width - (Self.Width * 2) - Parent.Width * 0.02
-                        Y: =Parent.Y + (Parent.Height - Self.Height) / 2
+                        Y: =(Parent.Height - Self.Height) / 2
                         Width: =Parent.Width * 0.15
                         Height: =Parent.Height * 0.7
                         Text: ="Gửi đơn"
@@ -495,9 +509,9 @@ Screens:
                         IsLoading: =varIsSubmitting
                         LoadingText: ="Đang gửi..."
                         IsDisabled: =Or(
-                          IsBlank(varFormData.Reason),
-                          IsBlank(varFormData.LeaveType),
-                          varFormData.StartDate > varFormData.EndDate,
+                          IsBlank(varLeaveReason),
+                          IsBlank(varSelectedLeaveType),
+                          varStartDate > varEndDate,
                           varCalculatedDays > varUserLeaveBalance.SoNgayConLai
                         )
                         OnClick: |
@@ -505,15 +519,15 @@ Screens:
                                     Set(varNewLeaveRequest, Patch(Defaults(DonNghiPhep), {
                                       MaDon: GUID(),
                                       MaNhanVien: varCurrentUser.MaNhanVien,
-                                      NgayBatDau: varFormData.StartDate,
-                                      NgayKetThuc: varFormData.EndDate,
+                                      NgayBatDau: varStartDate,
+                                      NgayKetThuc: varEndDate,
                                       SoNgayNghi: varCalculatedDays,
-                                      MaLoai: varFormData.LeaveType,
-                                      LyDo: varFormData.Reason,
-                                      NguoiBanGiao: varFormData.HandoverPerson,
-                                      NoiDungBanGiao: varFormData.HandoverContent,
+                                      MaLoai: varSelectedLeaveType,
+                                      LyDo: varLeaveReason,
+                                      NguoiBanGiao: varHandoverPerson,
+                                      NoiDungBanGiao: varHandoverContent,
                                       TrangThai: "ChoDuyetCap1",
-                                      BuoiNghi: varFormData.Session,
+                                      BuoiNghi: varStartDate,
                                       NguoiTao: varCurrentUser.MaNhanVien,
                                       NgayTao: Now(),
                                       ThoiHanPheDuyet: DateAdd(Now(), varMinAdvanceDays),
@@ -521,7 +535,7 @@ Screens:
                                     }));
                                     Set(varSubmitResult, Patch(DonNghiPhep, Defaults(DonNghiPhep), varNewLeaveRequest));
                                     If(Not(IsError(varSubmitResult)),
-                                      Set(varShowConfirmation, true),
+                                      Set(varSubmissionSuccess, true),
                                       Set(varFormErrors, {Submit: "Có lỗi xảy ra khi gửi đơn. Vui lòng thử lại."}));
                                     Set(varIsSubmitting, false)
                         
@@ -531,7 +545,7 @@ Screens:
                       ComponentName: ButtonComponent
                       Properties:
                         X: =Parent.Width - Self.Width
-                        Y: =Parent.Y + (Parent.Height - Self.Height) / 2
+                        Y: =(Parent.Height - Self.Height) / 2
                         Width: =Parent.Width * 0.15
                         Height: =Parent.Height * 0.7
                         Text: ="Hủy"
@@ -548,8 +562,9 @@ Screens:
             Width: =Parent.Width
             Height: =Parent.Height
             Fill: =RGBA(0, 0, 0, 0.5)
-            Visible: =varShowConfirmation
-            OnSelect: =Set(varShowConfirmation, false)
+            Visible: =varSubmissionSuccess
+            OnSelect: |
+              =Set(varSubmissionSuccess, false)
             
       - 'LeaveRequest.Confirmation.Modal':
           Control: Rectangle
@@ -563,13 +578,13 @@ Screens:
             BorderColor: =RGBA(200, 230, 201, 1)
             BorderThickness: =Parent.Width * 0.002
             DropShadow: =DropShadow.Bold
-            Visible: =varShowConfirmation
+            Visible: =varSubmissionSuccess
           Children:
             - 'LeaveRequest.Confirmation.Icon':
                 Control: Classic/Icon
                 Properties:
                   X: =(Parent.Width - Self.Width) / 2
-                  Y: =Parent.Y + Parent.Height * 0.1
+                  Y: =Parent.Height * 0.1
                   Width: =Parent.Height * 0.15
                   Height: =Parent.Height * 0.15
                   Icon: =Icon.Check
@@ -578,7 +593,7 @@ Screens:
             - 'LeaveRequest.Confirmation.Title':
                 Control: Label
                 Properties:
-                  X: =Parent.X + Parent.Width * 0.05
+                  X: =Parent.Width * 0.05
                   Y: ='LeaveRequest.Confirmation.Icon'.Y + 'LeaveRequest.Confirmation.Icon'.Height + Parent.Height * 0.05
                   Width: =Parent.Width * 0.9
                   Height: =Parent.Height * 0.15
@@ -592,7 +607,7 @@ Screens:
             - 'LeaveRequest.Confirmation.Message':
                 Control: Label
                 Properties:
-                  X: =Parent.X + Parent.Width * 0.05
+                  X: =Parent.Width * 0.05
                   Y: ='LeaveRequest.Confirmation.Title'.Y + 'LeaveRequest.Confirmation.Title'.Height
                   Width: =Parent.Width * 0.9
                   Height: =Parent.Height * 0.25
@@ -612,4 +627,17 @@ Screens:
                   Height: =Parent.Height * 0.15
                   Text: ="OK"
                   Variant: ="Primary"
-                  OnClick: =Set(varShowConfirmation, false); Navigate(MyLeavesScreen) 
+                  OnClick: =Set(varSubmissionSuccess, false); Navigate(MyLeavesScreen) 
+
+      # Success Modal Overlay
+      - 'LeaveRequest.Success.Overlay':
+          Control: Rectangle
+          Properties:
+            X: =0
+            Y: =0
+            Width: =Parent.Width
+            Height: =Parent.Height
+            Fill: =RGBA(0, 0, 0, 0.5)
+            Visible: =varSubmissionSuccess
+            OnSelect: |
+              =Set(varSubmissionSuccess, false) 

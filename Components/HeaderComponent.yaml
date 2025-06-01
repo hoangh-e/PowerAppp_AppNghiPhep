@@ -10,14 +10,24 @@ ComponentDefinitions:
         DataType: Text
         Default: ="App Header"
     Properties:
-      Height: =64
+      Height: =App.Height * 0.08
       Width: =App.Width
     Children:
-      - HeaderContainer:
+      # LAYER 1: Background (Rectangle for visual)
+      - HeaderBackground:
           Control: Rectangle
-          Variant: ManualLayout
           Properties:
             Fill: =RGBA(0, 120, 212, 1)
+            X: =0
+            Y: =0
+            Width: =Parent.Width
+            Height: =Parent.Height
+      
+      # LAYER 2: Content Container (GroupContainer for logic)
+      - HeaderContainer:
+          Control: GroupContainer
+          Variant: ManualLayout
+          Properties:
             X: =0
             Y: =0
             Width: =Parent.Width
@@ -26,26 +36,26 @@ ComponentDefinitions:
             - HeaderContainer.Title:
                 Control: Label
                 Properties:
-                  X: =24
+                  X: =Parent.Width * 0.03
                   Y: =(Parent.Height - Self.Height) / 2
-                  Width: =Parent.Width - 200
-                  Height: =40
+                  Width: =Parent.Width * 0.75
+                  Height: =Parent.Height * 0.6
                   Text: =ThisComponent.Title
                   Color: =RGBA(255, 255, 255, 1)
-                  Size: =21
+                  Size: =Parent.Height * 0.3
                   FontWeight: =FontWeight.Bold
                   Align: =Align.Left
             
             - HeaderContainer.UserInfo:
                 Control: Label
                 Properties:
-                  X: =Parent.Width - 170
+                  X: =Parent.Width * 0.8
                   Y: =(Parent.Height - Self.Height) / 2
-                  Width: =150
-                  Height: =40
+                  Width: =Parent.Width * 0.18
+                  Height: =Parent.Height * 0.6
                   Text: =LookUp(NguoiDung, Email = User().Email).HoTen
                   Color: =RGBA(255, 255, 255, 1)
-                  Size: =14
+                  Size: =Parent.Height * 0.2
                   FontWeight: =FontWeight.Semibold
                   Align: =Align.Right
 

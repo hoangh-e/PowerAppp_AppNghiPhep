@@ -2,155 +2,174 @@ ComponentDefinitions:
   DocumentTableComponent:
     DefinitionType: CanvasComponent
     AccessAppScope: true
+    CustomProperties:
+      Items:
+        PropertyKind: Input
+        DisplayName: Items
+        Description: Data items for the document table
+        DataType: Table
+        Default: =Table()
+      OnEditDocument:
+        PropertyKind: Event
+        DisplayName: OnEditDocument
+        Description: Event triggered when document is edited
+        ReturnType: None
+        Default: =
+        Parameters:
+          - Item:
+              Description: "The document item to edit"
+              DataType: Record
+              IsOptional: false
     Properties:
-      Height: =150
+      Height: =App.Height * 0.19
       Width: =Parent.Width
     Children:
-      - DocTableContainer:
+      # LAYER 1: Background (Rectangle for visual)
+      - DocumentTableBackground:
           Control: Rectangle
+          Properties:
+            X: =0
+            Y: =0
+            Width: =Parent.Width
+            Height: =Parent.Height
+            Fill: =RGBA(255, 255, 255, 1)
+      
+      # LAYER 2: Content Container (GroupContainer for logic)
+      - DocumentTableContainer:
+          Control: GroupContainer
           Variant: ManualLayout
           Properties:
             X: =0
             Y: =0
             Width: =Parent.Width
             Height: =Parent.Height
-            ZIndex: =1
-            Fill: =RGBA(255, 255, 255, 1)
           Children:
-            - TableHeader:
+            # LAYER 2.1: Table Header Background
+            - TableHeaderBackground:
                 Control: Rectangle
+                Properties:
+                  X: =0
+                  Y: =0
+                  Width: =Parent.Width
+                  Height: =Parent.Height * 0.2
+                  Fill: =RGBA(220, 240, 255, 1)
+            
+            # LAYER 2.2: Table Header Container
+            - TableHeader:
+                Control: GroupContainer
                 Variant: ManualLayout
                 Properties:
                   X: =0
                   Y: =0
                   Width: =Parent.Width
-                  Height: =30
-                  ZIndex: =1
-                  Fill: =RGBA(243, 243, 243, 1)
+                  Height: =Parent.Height * 0.2
                 Children:
                   - lblNoHeader:
                       Control: Label
                       Properties:
                         X: =0
                         Y: =0
-                        Width: =50
-                        Height: =30
-                        ZIndex: =1
-                        Text: ="No"
+                        Width: =Parent.Width * 0.08
+                        Height: =Parent.Height
+                        Text: ="STT"
                         VerticalAlign: =VerticalAlign.Middle
                         Align: =Align.Center
-                        Size: =12
+                        Size: =Parent.Height * 0.4
                         FontWeight: =FontWeight.Bold
                   
-                  - lblDocHeader:
+                  - lblNameHeader:
                       Control: Label
                       Properties:
-                        X: =50
+                        X: =Parent.Width * 0.08
                         Y: =0
-                        Width: =Parent.Width - 650
-                        Height: =30
-                        ZIndex: =2
-                        Text: ="Văn bản"
+                        Width: =Parent.Width * 0.6
+                        Height: =Parent.Height
+                        Text: ="Tên tài liệu"
                         VerticalAlign: =VerticalAlign.Middle
-                        Size: =12
+                        Size: =Parent.Height * 0.4
                         FontWeight: =FontWeight.Bold
                   
-                  - lblReasonHeader:
+                  - lblActionHeader:
                       Control: Label
                       Properties:
-                        X: =Parent.Width - 600
+                        X: =Parent.Width * 0.68
                         Y: =0
-                        Width: =600
-                        Height: =30
-                        ZIndex: =3
-                        Text: ="Lý do thay đổi"
+                        Width: =Parent.Width * 0.32
+                        Height: =Parent.Height
+                        Text: ="Hành động"
                         VerticalAlign: =VerticalAlign.Middle
-                        Size: =12
+                        Align: =Align.Center
+                        Size: =Parent.Height * 0.4
                         FontWeight: =FontWeight.Bold
             
-            - DocGallery:
+            # LAYER 2.3: Gallery
+            - DocumentGallery:
                 Control: Gallery
+                Variant: Vertical
                 Properties:
                   X: =0
-                  Y: =30
+                  Y: =Parent.Height * 0.2
                   Width: =Parent.Width
-                  Height: =Parent.Height - 30
-                  ZIndex: =2
-                  Layout: =LayoutType.Vertical
+                  Height: =Parent.Height * 0.8
                   TemplateFill: =RGBA(255, 255, 255, 1)
-                  TemplateSize: =40
-                  Items: =colDocumentsData
+                  TemplateSize: =Parent.Height * 0.27
+                  Items: =ThisComponent.Items
                 Children:
                   - lblNo:
                       Control: Label
                       Properties:
                         X: =0
                         Y: =(Parent.TemplateHeight - Self.Height) / 2
-                        Width: =50
-                        Height: =20
-                        ZIndex: =1
+                        Width: =Parent.Width * 0.08
+                        Height: =Parent.TemplateHeight * 0.5
                         Text: =ThisItem.No
                         VerticalAlign: =VerticalAlign.Middle
                         Align: =Align.Center
-                        Size: =12
+                        Size: =Parent.TemplateHeight * 0.3
                         Color: =RGBA(80, 80, 80, 1)
                   
-                  - iconFileType:
-                      Control: Icon
+                  - iconDocType:
+                      Control: Classic/Icon
                       Properties:
-                        X: =60
+                        X: =Parent.Width * 0.1
                         Y: =(Parent.TemplateHeight - Self.Height) / 2
-                        Width: =20
-                        Height: =20
-                        ZIndex: =2
-                        Icon: =Switch(
-                          ThisItem.DocType,
-                          "PDF", PDF,
-                          "XLSX", Excel,
-                          "DOC", Document,
-                          Document
-                        )
-                        Color: =Switch(
-                          ThisItem.DocType,
-                          "PDF", RGBA(224, 0, 0, 1),
-                          "XLSX", RGBA(33, 115, 70, 1),
-                          "DOC", RGBA(0, 120, 212, 1),
-                          RGBA(0, 120, 212, 1)
-                        )
+                        Width: =Parent.TemplateHeight * 0.5
+                        Height: =Parent.TemplateHeight * 0.5
+                        Icon: =Icon.Document
+                        Color: =RGBA(209, 82, 55, 1)
                   
                   - lblDocName:
                       Control: Label
                       Properties:
-                        X: =90
+                        X: =Parent.Width * 0.18
                         Y: =(Parent.TemplateHeight - Self.Height) / 2
-                        Width: =Parent.Width - 740
-                        Height: =20
-                        ZIndex: =3
-                        Text: =ThisItem.DocName
-                        Size: =12
-                        Color: =RGBA(0, 120, 212, 1)
-                  
-                  - lblReason:
-                      Control: Label
-                      Properties:
-                        X: =Parent.Width - 600
-                        Y: =(Parent.TemplateHeight - Self.Height) / 2
-                        Width: =600
-                        Height: =20
-                        ZIndex: =4
-                        Text: =ThisItem.Reason
-                        Size: =12
+                        Width: =Parent.Width * 0.5
+                        Height: =Parent.TemplateHeight * 0.5
+                        Text: =ThisItem.Name
+                        VerticalAlign: =VerticalAlign.Middle
+                        Size: =Parent.TemplateHeight * 0.3
                         Color: =RGBA(80, 80, 80, 1)
                   
-                  - rbSelect:
-                      Control: RadioButton
+                  - iconEdit:
+                      Control: Classic/Icon
                       Properties:
-                        X: =Parent.Width - 40
+                        X: =Parent.Width * 0.75
                         Y: =(Parent.TemplateHeight - Self.Height) / 2
-                        Width: =30
-                        Height: =30
-                        ZIndex: =5
-                        Size: =20
-                        BorderColor: =RGBA(166, 166, 166, 1)
-                        Fill: =RGBA(0, 120, 212, 1)
-                        OnSelect: =Select(Parent) 
+                        Width: =Parent.TemplateHeight * 0.5
+                        Height: =Parent.TemplateHeight * 0.5
+                        Icon: =Icon.Edit
+                        Color: =RGBA(0, 120, 212, 1)
+                        OnSelect: |
+                          =ThisComponent.OnEditDocument({Item: ThisItem})
+                  
+                  - iconDelete:
+                      Control: Classic/Icon
+                      Properties:
+                        X: =Parent.Width * 0.85
+                        Y: =(Parent.TemplateHeight - Self.Height) / 2
+                        Width: =Parent.TemplateHeight * 0.5
+                        Height: =Parent.TemplateHeight * 0.5
+                        Icon: =Icon.Trash
+                        Color: =RGBA(209, 82, 55, 1)
+                        OnSelect: |
+                          =ThisComponent.OnEditDocument({Item: ThisItem}) 

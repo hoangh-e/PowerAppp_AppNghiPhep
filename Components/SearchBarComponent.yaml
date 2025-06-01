@@ -1,38 +1,64 @@
-Components:
+ComponentDefinitions:
   SearchBarComponent:
+    DefinitionType: CanvasComponent
+    AccessAppScope: true
+    CustomProperties:
+      SearchText:
+        PropertyKind: Output
+        DisplayName: Search Text
+        Description: The current search text value
+        DataType: Text
+        Default: =""
+      OnReset:
+        PropertyKind: Event
+        DisplayName: OnReset
+        Description: Event triggered when search is reset
+        ReturnType: None
+        Default: =
     Properties:
-      Width: =300
-      Height: =40
-      OnReset: =Reset(SearchInput)
-      SearchText: =SearchInput.Text
+      Width: =App.Width * 0.25
+      Height: =App.Height * 0.05
     Children:
-      - SearchContainer:
+      # LAYER 1: Background (Rectangle for visual)
+      - SearchBackground:
           Control: Rectangle
+          Properties:
+            Width: =Parent.Width
+            Height: =Parent.Height
+            X: =0
+            Y: =0
+            Fill: =RGBA(255, 255, 255, 1)
+            BorderColor: =RGBA(230, 230, 230, 1)
+            BorderThickness: =1
+      
+      # LAYER 2: Content Container (GroupContainer for logic)
+      - SearchContainer:
+          Control: GroupContainer
           Variant: ManualLayout
           Properties:
             Width: =Parent.Width
             Height: =Parent.Height
-            Fill: =RGBA(255, 255, 255, 1)
-            BorderColor: =RGBA(230, 230, 230, 1)
-            BorderThickness: =1
-            CornerRadius: =4
+            X: =0
+            Y: =0
           Children:
             - SearchIcon:
-                Control: Icon
+                Control: Classic/Icon
                 Properties:
-                  X: =8
+                  X: =Parent.Width * 0.03
                   Y: =(Parent.Height - Self.Height) / 2
+                  Width: =Parent.Height * 0.5
+                  Height: =Parent.Height * 0.5
                   Icon: =Icon.Search
-                  Size: =20
+                  Color: =RGBA(128, 128, 128, 1)
                   AccessibleLabel: ="Search icon"
                   TabIndex: =0
             
             - SearchInput:
-                Control: TextInput
+                Control: Classic/TextInput
                 Properties:
-                  X: =40
+                  X: =Parent.Width * 0.13
                   Y: =0
-                  Width: =Parent.Width - 80
+                  Width: =Parent.Width * 0.8
                   Height: =Parent.Height
                   BorderThickness: =0
                   DisabledBorderColor: =RGBA(0, 0, 0, 0)
@@ -43,7 +69,7 @@ Components:
                   PressedFill: =RGBA(0, 0, 0, 0)
                   HoverFill: =RGBA(0, 0, 0, 0)
                   Fill: =RGBA(0, 0, 0, 0)
-                  Size: =13
+                  Size: =Parent.Height * 0.32
                   FontWeight: =FontWeight.Normal
                   Align: =Align.Left
                   VirtualKeyboardMode: =VirtualKeyboardMode.Auto

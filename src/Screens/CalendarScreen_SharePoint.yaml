@@ -2,7 +2,22 @@ Screens:
   CalendarScreen:
     Properties:
       Fill: =RGBA(248, 250, 252, 1)
-      OnVisible: =Set(varActiveScreen, "Calendar"); Set(varCurrentUser, LookUp(NguoiDung, Email = User().Email)); Set(varSelectedMonth, Month(Today())); Set(varSelectedYear, Year(Today())); Set(varCalendarDate, Date(varSelectedYear, varSelectedMonth, 1)); Set(varDaysInMonth, Day(DateAdd(DateAdd(varCalendarDate, 1, TimeUnit.Months), -1, TimeUnit.Days))); Set(varFirstDayOfWeek, Weekday(varCalendarDate, StartOfWeek.Monday)); Set(varTotalWeeks, RoundUp((varDaysInMonth + varFirstDayOfWeek - 1) / 7, 0)); Set(varCalendarView, "Team"); Set(varSelectedDepartment, varCurrentUser.MaDonVi); Set(varTeamMembers, Filter(NguoiDung, And(MaDonVi = varSelectedDepartment, TrangThai = "HoatDong"))); Set(varMonthLeaves, Filter(DonNghiPhep, And(NgayBatDau <= DateAdd(varCalendarDate, 1, TimeUnit.Months), NgayKetThuc >= varCalendarDate, TrangThai in ["DaDuyet", "ChoDuyetCap1", "ChoDuyetCap2", "ChoDuyetCap3"], Switch(varCalendarView, "Team", MaNhanVien in varTeamMembers.MaNhanVien, "Department", MaNhanVien in Filter(NguoiDung, MaDonVi = varSelectedDepartment).MaNhanVien, "All", true, "Personal", MaNhanVien = varCurrentUser.MaNhanVien, true)))); Set(varHolidays, Filter(NgayLe, Nam = varSelectedYear)); Set(varSelectedDate, Today()); Set(varShowDayDetails, false); Set(varDayLeaves, [])
+      OnVisible: |
+        =Set(varActiveScreen, "Calendar"); 
+        // Use session from Login or fallback to Microsoft 365 lookup
+        If(IsBlank(varCurrentUser), 
+          Set(varCurrentUser, LookUp(NguoiDung, Email = User().Email)));
+        // Validate current user session
+        If(IsBlank(varCurrentUser), 
+          Navigate(LoginScreen), 
+          // Continue with screen initialization using session data
+          Set(varSelectedMonth, Month(Today())); 
+          Set(varSelectedYear, Year(Today())); 
+          Set(varCalendarDate, Date(varSelectedYear, varSelectedMonth, 1)); 
+          Set(varMyCalendarLeaves, Filter(DonNghiPhep, MaNhanVien.Value = varCurrentUser.MaNhanVien.Value)); 
+          Set(varTeamCalendarLeaves, If(varCurrentUser.MaVaiTro in ["MANAGER", "DIRECTOR", "HR", "ADMIN"], Filter(DonNghiPhep, MaNhanVien.Value in Filter(NguoiDung, MaDonVi = varCurrentUser.MaDonVi).MaNhanVien.Value), varMyCalendarLeaves)); 
+          Set(varCalendarView, "Month"); 
+          Set(varSelectedDate, Today()))
     Children:
       - 'Calendar.Header':
           Control: CanvasComponent
@@ -23,16 +38,14 @@ Screens:
           Properties:
             X: =Parent.X
             Y: ='Calendar.Header'.Y + 'Calendar.Header'.Height
-            Width: =If(App.Width < 768, 
-              If(varMobileMenuOpen, Parent.Width * 0.75, Parent.Width * 0.001),
-              If(varNavCollapsed, Parent.Width * 0.06, Parent.Width * 0.2))
+            Width: =If(varNavCollapsed, Parent.Width * 0.06, Parent.Width * 0.2)
             Height: =Parent.Height - 'Calendar.Header'.Height
             UserRole: =varCurrentUser.MaVaiTro
             ActiveScreen: =varActiveScreen
             OnNavigate: =Set(varNavigateAction, true)
             
       - 'Calendar.Content.Container':
-          Control: Rectangle
+          Control: GroupContainer
           Variant: ManualLayout
           Properties:
             X: ='Calendar.Navigation'.X + 'Calendar.Navigation'.Width
@@ -43,11 +56,11 @@ Screens:
           Children:
             # Calendar Header Controls
             - 'Calendar.Controls.Container':
-                Control: Rectangle
+                Control: GroupContainer
                 Variant: ManualLayout
                 Properties:
-                  X: =Parent.X + Parent.Width * 0.03
-                  Y: =Parent.Y + Parent.Height * 0.02
+                  X: =Parent.Width * 0.03
+                  Y: =Parent.Height * 0.02
                   Width: =Parent.Width * 0.94
                   Height: =Parent.Height * 0.12
                 Children:
@@ -66,11 +79,11 @@ Screens:
                         
                   # Month/Year Navigation
                   - 'Calendar.Controls.MonthYear.Container':
-                      Control: Rectangle
+                      Control: GroupContainer
                       Variant: ManualLayout
                       Properties:
                         X: =Parent.X
-                        Y: =Parent.Y + Parent.Height * 0.45
+                        Y: =Parent.Height * 0.45
                         Width: =Parent.Width * 0.4
                         Height: =Parent.Height * 0.5
                       Children:
@@ -90,7 +103,7 @@ Screens:
                         - 'Calendar.Controls.MonthYear.Label':
                             Control: Label
                             Properties:
-                              X: =Parent.X + Parent.Width * 0.15
+                              X: =Parent.Width * 0.15
                               Y: =Parent.Y
                               Width: =Parent.Width * 0.7
                               Height: =Parent.Height
@@ -129,7 +142,7 @@ Screens:
                               
                   # View Controls
                   - 'Calendar.Controls.View.Container':
-                      Control: Rectangle
+                      Control: GroupContainer
                       Variant: ManualLayout
                       Properties:
                         X: =Parent.Width * 0.45
@@ -139,7 +152,7 @@ Screens:
                       Children:
                         # View Type Filter
                         - 'Calendar.Controls.ViewType.Container':
-                            Control: Rectangle
+                            Control: GroupContainer
                             Variant: ManualLayout
                             Properties:
                               X: =Parent.X
@@ -163,7 +176,7 @@ Screens:
                                   Control: Classic/DropDown
                                   Properties:
                                     X: =Parent.X
-                                    Y: =Parent.Y + Parent.Height * 0.45
+                                    Y: =Parent.Height * 0.45
                                     Width: =Parent.Width
                                     Height: =Parent.Height * 0.55
                                     Items: =["Personal", "Team", "Department", "All"]
@@ -184,7 +197,7 @@ Screens:
                                     
                         # Department Filter (if applicable)
                         - 'Calendar.Controls.Department.Container':
-                            Control: Rectangle
+                            Control: GroupContainer
                             Variant: ManualLayout
                             Properties:
                               X: =Parent.Width * 0.5
@@ -209,7 +222,7 @@ Screens:
                                   Control: Classic/DropDown
                                   Properties:
                                     X: =Parent.X
-                                    Y: =Parent.Y + Parent.Height * 0.45
+                                    Y: =Parent.Height * 0.45
                                     Width: =Parent.Width
                                     Height: =Parent.Height * 0.55
                                     Items: =DonVi
@@ -231,11 +244,11 @@ Screens:
                                     
                         # Legend
                         - 'Calendar.Controls.Legend.Container':
-                            Control: Rectangle
+                            Control: GroupContainer
                             Variant: ManualLayout
                             Properties:
                               X: =Parent.X
-                              Y: =Parent.Y + Parent.Height * 0.6
+                              Y: =Parent.Height * 0.6
                               Width: =Parent.Width
                               Height: =Parent.Height * 0.4
                             Children:
@@ -254,7 +267,7 @@ Screens:
                               - 'Calendar.Controls.Legend.Items':
                                   Control: Label
                                   Properties:
-                                    X: =Parent.X + Parent.Width * 0.16
+                                    X: =Parent.Width * 0.16
                                     Y: =Parent.Y
                                     Width: =Parent.Width * 0.84
                                     Height: =Parent.Height
@@ -265,10 +278,10 @@ Screens:
                                     
             # Calendar Grid
             - 'Calendar.Grid.Container':
-                Control: Rectangle
+                Control: GroupContainer
                 Variant: ManualLayout
                 Properties:
-                  X: =Parent.X + Parent.Width * 0.03
+                  X: =Parent.Width * 0.03
                   Y: ='Calendar.Controls.Container'.Y + 'Calendar.Controls.Container'.Height + Parent.Height * 0.02
                   Width: =Parent.Width * 0.94
                   Height: =Parent.Height * 0.8
@@ -279,11 +292,11 @@ Screens:
                 Children:
                   # Calendar Header (Days of Week)
                   - 'Calendar.Grid.Header':
-                      Control: Rectangle
+                      Control: GroupContainer
                       Variant: ManualLayout
                       Properties:
-                        X: =Parent.X + Parent.Width * 0.01
-                        Y: =Parent.Y + Parent.Height * 0.01
+                        X: =Parent.Width * 0.01
+                        Y: =Parent.Height * 0.01
                         Width: =Parent.Width * 0.98
                         Height: =Parent.Height * 0.08
                         Fill: =RGBA(248, 249, 250, 1)
@@ -309,7 +322,7 @@ Screens:
                         - 'Calendar.Grid.Header.Tuesday':
                             Control: Label
                             Properties:
-                              X: =Parent.X + Parent.Width / 7
+                              X: =Parent.Width / 7
                               Y: =Parent.Y
                               Width: =Parent.Width / 7
                               Height: =Parent.Height
@@ -325,7 +338,7 @@ Screens:
                         - 'Calendar.Grid.Header.Wednesday':
                             Control: Label
                             Properties:
-                              X: =Parent.X + Parent.Width / 7 * 2
+                              X: =Parent.Width / 7 * 2
                               Y: =Parent.Y
                               Width: =Parent.Width / 7
                               Height: =Parent.Height
@@ -341,7 +354,7 @@ Screens:
                         - 'Calendar.Grid.Header.Thursday':
                             Control: Label
                             Properties:
-                              X: =Parent.X + Parent.Width / 7 * 3
+                              X: =Parent.Width / 7 * 3
                               Y: =Parent.Y
                               Width: =Parent.Width / 7
                               Height: =Parent.Height
@@ -357,7 +370,7 @@ Screens:
                         - 'Calendar.Grid.Header.Friday':
                             Control: Label
                             Properties:
-                              X: =Parent.X + Parent.Width / 7 * 4
+                              X: =Parent.Width / 7 * 4
                               Y: =Parent.Y
                               Width: =Parent.Width / 7
                               Height: =Parent.Height
@@ -373,7 +386,7 @@ Screens:
                         - 'Calendar.Grid.Header.Saturday':
                             Control: Label
                             Properties:
-                              X: =Parent.X + Parent.Width / 7 * 5
+                              X: =Parent.Width / 7 * 5
                               Y: =Parent.Y
                               Width: =Parent.Width / 7
                               Height: =Parent.Height
@@ -389,7 +402,7 @@ Screens:
                         - 'Calendar.Grid.Header.Sunday':
                             Control: Label
                             Properties:
-                              X: =Parent.X + Parent.Width / 7 * 6
+                              X: =Parent.Width / 7 * 6
                               Y: =Parent.Y
                               Width: =Parent.Width / 7
                               Height: =Parent.Height
@@ -407,7 +420,7 @@ Screens:
                       Control: Gallery
                       Variant: VariableHeight
                       Properties:
-                        X: =Parent.X + Parent.Width * 0.01
+                        X: =Parent.Width * 0.01
                         Y: ='Calendar.Grid.Header'.Y + 'Calendar.Grid.Header'.Height
                         Width: =Parent.Width * 0.98
                         Height: =Parent.Height * 0.9
@@ -417,7 +430,7 @@ Screens:
                         Fill: =RGBA(0, 0, 0, 0)
                       Children:
                         - 'Calendar.Grid.Days.Cell':
-                            Control: Rectangle
+                            Control: GroupContainer
                             Variant: ManualLayout
                             Properties:
                               X: =Parent.TemplateX
@@ -453,8 +466,8 @@ Screens:
                               - 'Calendar.Grid.Days.Cell.Number':
                                   Control: Label
                                   Properties:
-                                    X: =Parent.X + Parent.Width * 0.05
-                                    Y: =Parent.Y + Parent.Height * 0.05
+                                    X: =Parent.Width * 0.05
+                                    Y: =Parent.Height * 0.05
                                     Width: =Parent.Width * 0.3
                                     Height: =Parent.Height * 0.25
                                     Text: |
@@ -486,8 +499,8 @@ Screens:
                               - 'Calendar.Grid.Days.Cell.Leaves':
                                   Control: Label
                                   Properties:
-                                    X: =Parent.X + Parent.Width * 0.05
-                                    Y: =Parent.Y + Parent.Height * 0.3
+                                    X: =Parent.Width * 0.05
+                                    Y: =Parent.Height * 0.3
                                     Width: =Parent.Width * 0.9
                                     Height: =Parent.Height * 0.65
                                     Text: |
@@ -508,19 +521,20 @@ Screens:
                                     Size: =Parent.Height * 0.08
                                     
       # Day Details Modal
-      - 'Calendar.DayDetails.Overlay':
+      - 'Calendar.Modal.Overlay':
           Control: Rectangle
           Properties:
-            X: =Parent.X
-            Y: =Parent.Y
+            X: =0
+            Y: =0
             Width: =Parent.Width
             Height: =Parent.Height
             Fill: =RGBA(0, 0, 0, 0.5)
             Visible: =varShowDayDetails
-            OnSelect: =Set(varShowDayDetails, false)
+            OnSelect: |
+              =Set(varShowDayDetails, false)
             
       - 'Calendar.DayDetails.Modal':
-          Control: Rectangle
+          Control: GroupContainer
           Variant: ManualLayout
           Properties:
             X: =(Parent.Width - Self.Width) / 2
@@ -534,11 +548,11 @@ Screens:
             Visible: =varShowDayDetails
           Children:
             - 'Calendar.DayDetails.Header':
-                Control: Rectangle
+                Control: GroupContainer
                 Variant: ManualLayout
                 Properties:
-                  X: =Parent.X + Parent.Width * 0.04
-                  Y: =Parent.Y + Parent.Height * 0.04
+                  X: =Parent.Width * 0.04
+                  Y: =Parent.Height * 0.04
                   Width: =Parent.Width * 0.92
                   Height: =Parent.Height * 0.1
                   Fill: =RGBA(248, 249, 250, 1)
@@ -548,8 +562,8 @@ Screens:
                   - 'Calendar.DayDetails.Title':
                       Control: Label
                       Properties:
-                        X: =Parent.X + Parent.Width * 0.03
-                        Y: =Parent.Y + (Parent.Height - Self.Height) / 2
+                        X: =Parent.Width * 0.03
+                        Y: =(Parent.Height - Self.Height) / 2
                         Width: =Parent.Width * 0.8
                         Height: =Parent.Height * 0.6
                         Text: ="Nghỉ phép ngày " & Text(varSelectedDate, "dd/mm/yyyy")
@@ -563,7 +577,7 @@ Screens:
                       ComponentName: ButtonComponent
                       Properties:
                         X: =Parent.Width * 0.85
-                        Y: =Parent.Y + (Parent.Height - Self.Height) / 2
+                        Y: =(Parent.Height - Self.Height) / 2
                         Width: =Parent.Width * 0.12
                         Height: =Parent.Height * 0.6
                         Text: ="Đóng"
@@ -573,10 +587,10 @@ Screens:
                         OnClick: =Set(varShowDayDetails, false)
                         
             - 'Calendar.DayDetails.Content':
-                Control: Rectangle
+                Control: GroupContainer
                 Variant: ManualLayout
                 Properties:
-                  X: =Parent.X + Parent.Width * 0.04
+                  X: =Parent.Width * 0.04
                   Y: ='Calendar.DayDetails.Header'.Y + 'Calendar.DayDetails.Header'.Height + Parent.Height * 0.02
                   Width: =Parent.Width * 0.92
                   Height: =Parent.Height * 0.8
@@ -596,7 +610,7 @@ Screens:
                         Fill: =RGBA(0, 0, 0, 0)
                       Children:
                         - 'Calendar.DayDetails.LeavesList.Item':
-                            Control: Rectangle
+                            Control: GroupContainer
                             Variant: ManualLayout
                             Properties:
                               X: =Parent.TemplateX
@@ -616,8 +630,8 @@ Screens:
                               - 'Calendar.DayDetails.LeavesList.Item.Employee':
                                   Control: Label
                                   Properties:
-                                    X: =Parent.X + Parent.Width * 0.02
-                                    Y: =Parent.Y + Parent.Height * 0.1
+                                    X: =Parent.Width * 0.02
+                                    Y: =Parent.Height * 0.1
                                     Width: =Parent.Width * 0.3
                                     Height: =Parent.Height * 0.35
                                     Text: =LookUp(NguoiDung, MaNhanVien = ThisItem.MaNhanVien).HoTen
@@ -630,7 +644,7 @@ Screens:
                                   Control: Label
                                   Properties:
                                     X: =Parent.Width * 0.32
-                                    Y: =Parent.Y + Parent.Height * 0.1
+                                    Y: =Parent.Height * 0.1
                                     Width: =Parent.Width * 0.25
                                     Height: =Parent.Height * 0.35
                                     Text: =LookUp(LoaiNghi, MaLoai = ThisItem.MaLoai).TenLoai
@@ -642,7 +656,7 @@ Screens:
                                   Control: Label
                                   Properties:
                                     X: =Parent.Width * 0.57
-                                    Y: =Parent.Y + Parent.Height * 0.1
+                                    Y: =Parent.Height * 0.1
                                     Width: =Parent.Width * 0.2
                                     Height: =Parent.Height * 0.35
                                     Text: =Switch(ThisItem.TrangThai,
@@ -664,7 +678,7 @@ Screens:
                                   Control: Label
                                   Properties:
                                     X: =Parent.Width * 0.77
-                                    Y: =Parent.Y + Parent.Height * 0.1
+                                    Y: =Parent.Height * 0.1
                                     Width: =Parent.Width * 0.21
                                     Height: =Parent.Height * 0.35
                                     Text: =ThisItem.SoNgayNghi & " ngày"
@@ -676,8 +690,8 @@ Screens:
                               - 'Calendar.DayDetails.LeavesList.Item.Reason':
                                   Control: Label
                                   Properties:
-                                    X: =Parent.X + Parent.Width * 0.02
-                                    Y: =Parent.Y + Parent.Height * 0.5
+                                    X: =Parent.Width * 0.02
+                                    Y: =Parent.Height * 0.5
                                     Width: =Parent.Width * 0.96
                                     Height: =Parent.Height * 0.4
                                     Text: =Left(ThisItem.LyDo, 100) & If(Len(ThisItem.LyDo) > 100, "...", "")

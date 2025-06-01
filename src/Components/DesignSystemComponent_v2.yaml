@@ -191,14 +191,14 @@ ComponentDefinitions:
         DisplayName: IsMobile
         Description: "Có phải mobile không"
         DataType: Boolean
-        Default: =App.Width < 768
+        Default: =false
       
       IsTablet:
         PropertyKind: Input
         DisplayName: IsTablet
         Description: "Có phải tablet không"
         DataType: Boolean
-        Default: =And(App.Width >= 768, App.Width < 1024)
+        Default: =false
       
       IsDesktop:
         PropertyKind: Input

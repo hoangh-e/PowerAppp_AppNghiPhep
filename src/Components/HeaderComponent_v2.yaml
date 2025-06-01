@@ -199,7 +199,7 @@
                         BorderThickness: =0
                         Font: =Font.'Open Sans'
                         Size: ='Header.DesignSystem'.FontSizeBase
-                        OnChange: =HeaderComponent_v2.OnSearch()
+                        OnChange: =true
                         
             # Actions Section
             - 'Header.Actions.Container':

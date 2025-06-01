@@ -45,36 +45,45 @@ ComponentDefinitions:
               IsOptional: true
               Default: =""
     Properties:
-      Height: =App.Height
+      Height: =App.Height * 0.08
       Width: =App.Width
     Children:
-      - 'Header.Container':
+      # Header Background (Rectangle for visual only)
+      - 'Header.Background':
           Control: Rectangle
-          Variant: ManualLayout
           Properties:
-            X: =Parent.X
-            Y: =Parent.Y
+            X: =0
+            Y: =0
             Width: =Parent.Width
-            Height: =Parent.Height * 0.06
+            Height: =Parent.Height
             Fill: =RGBA(227, 242, 253, 1)
             BorderColor: =RGBA(187, 222, 251, 1)
-            BorderThickness: =Parent.Height * 0.0005
-            DropShadow: =DropShadow.Semilight
+            BorderThickness: =2
+            
+      # Header Container (GroupContainer for logic)
+      - 'Header.Container':
+          Control: GroupContainer
+          Variant: ManualLayout
+          Properties:
+            X: =0
+            Y: =0
+            Width: =Parent.Width
+            Height: =Parent.Height
           Children:
-            # Brand/Logo Section - Compact
+            # Brand Container (GroupContainer for logic)
             - 'Header.Brand.Container':
-                Control: Rectangle
+                Control: GroupContainer
                 Variant: ManualLayout
                 Properties:
-                  X: =Parent.X + Parent.Width * 0.015
+                  X: =Parent.Width * 0.02
                   Y: =(Parent.Height - Self.Height) / 2
                   Width: =Parent.Width * 0.2
-                  Height: =Parent.Height * 0.7
+                  Height: =Parent.Height * 0.8
                 Children:
                   - 'Header.Brand.Icon':
                       Control: Classic/Icon
                       Properties:
-                        X: =Parent.X
+                        X: =0
                         Y: =(Parent.Height - Self.Height) / 2
                         Width: =Parent.Height * 0.6
                         Height: =Parent.Height * 0.6
@@ -84,37 +93,46 @@ ComponentDefinitions:
                   - 'Header.Brand.Text':
                       Control: Label
                       Properties:
-                        X: ='Header.Brand.Icon'.X + 'Header.Brand.Icon'.Width + Parent.Width * 0.03
+                        X: ='Header.Brand.Icon'.X + 'Header.Brand.Icon'.Width + Parent.Width * 0.05
                         Y: =(Parent.Height - Self.Height) / 2
-                        Width: =Parent.Width * 0.75
+                        Width: =Parent.Width * 0.7
                         Height: =Parent.Height * 0.5
                         Text: ="Leave App"
                         Color: =RGBA(55, 65, 81, 1)
                         Font: =Font.'Open Sans'
                         FontWeight: =FontWeight.Semibold
-                        Size: =Parent.Height * 0.35
+                        Size: =Parent.Height * 0.4
                         
-            # Search Bar Section - Compact (Desktop only)
+            # Search Container (GroupContainer for logic)
             - 'Header.Search.Container':
-                Control: Rectangle
+                Control: GroupContainer
                 Variant: ManualLayout
                 Properties:
-                  X: ='Header.Brand.Container'.X + 'Header.Brand.Container'.Width + Parent.Width * 0.015
+                  X: ='Header.Brand.Container'.X + 'Header.Brand.Container'.Width + Parent.Width * 0.02
                   Y: =(Parent.Height - Self.Height) / 2
-                  Width: =Parent.Width * 0.25
-                  Height: =Parent.Height * 0.55
-                  Fill: =RGBA(255, 255, 255, 0.8)
-                  BorderColor: =RGBA(224, 224, 224, 1)
-                  BorderThickness: =Parent.Height * 0.001
-                  Visible: =And(HeaderComponent.ShowSearch, App.Width >= 768)
+                  Width: =Parent.Width * 0.3
+                  Height: =Parent.Height * 0.6
+                  Visible: =HeaderComponent.ShowSearch
                 Children:
+                  # Search Background
+                  - 'Header.Search.Background':
+                      Control: Rectangle
+                      Properties:
+                        X: =0
+                        Y: =0
+                        Width: =Parent.Width
+                        Height: =Parent.Height
+                        Fill: =RGBA(255, 255, 255, 0.9)
+                        BorderColor: =RGBA(224, 224, 224, 1)
+                        BorderThickness: =1
+                        
                   - 'Header.Search.Icon':
                       Control: Classic/Icon
                       Properties:
-                        X: =Parent.X + Parent.Width * 0.03
+                        X: =Parent.Width * 0.03
                         Y: =(Parent.Height - Self.Height) / 2
-                        Width: =Parent.Height * 0.4
-                        Height: =Parent.Height * 0.4
+                        Width: =Parent.Height * 0.5
+                        Height: =Parent.Height * 0.5
                         Icon: =Icon.Search
                         Color: =RGBA(158, 158, 158, 1)
                         
@@ -122,59 +140,69 @@ ComponentDefinitions:
                       Control: Classic/TextInput
                       Properties:
                         X: ='Header.Search.Icon'.X + 'Header.Search.Icon'.Width + Parent.Width * 0.02
-                        Y: =Parent.Y
+                        Y: =0
                         Width: =Parent.Width * 0.8
                         Height: =Parent.Height
                         HintText: ="Tìm kiếm..."
                         Color: =RGBA(55, 65, 81, 1)
                         Fill: =RGBA(0, 0, 0, 0)
-                        BorderThickness: =Parent.Height * 0.001
+                        BorderThickness: =0
                         BorderColor: =RGBA(0, 0, 0, 0)
                         Font: =Font.'Open Sans'
-                        Size: =Parent.Height * 0.3
-                        OnChange: =HeaderComponent.OnSearch()
+                        Size: =Parent.Height * 0.4
+                        OnChange: |
+                          =HeaderComponent.OnSearch()
                         
-            # User Info and Actions Section - Compact
+            # Actions Container (GroupContainer for logic)
             - 'Header.Actions.Container':
-                Control: Rectangle
+                Control: GroupContainer
                 Variant: ManualLayout
                 Properties:
-                  X: =Parent.Width - Self.Width - Parent.Width * 0.015
-                  Y: =Parent.Y
-                  Width: =Parent.Width * 0.3
+                  X: =Parent.Width - Self.Width - Parent.Width * 0.02
+                  Y: =0
+                  Width: =Parent.Width * 0.35
                   Height: =Parent.Height
                 Children:
-                  # Notification Bell - Smaller
+                  # Notification Container (GroupContainer for logic)
                   - 'Header.Notification.Container':
-                      Control: Rectangle
+                      Control: GroupContainer
                       Variant: ManualLayout
                       Properties:
-                        X: =Parent.X
+                        X: =0
                         Y: =(Parent.Height - Self.Height) / 2
-                        Width: =Parent.Height * 0.65
-                        Height: =Parent.Height * 0.65
-                        Fill: =RGBA(248, 250, 252, 1)
-                        BorderColor: =RGBA(229, 231, 235, 1)
-                        BorderThickness: =Parent.Height * 0.001
+                        Width: =Parent.Height * 0.8
+                        Height: =Parent.Height * 0.8
                         Visible: =HeaderComponent.ShowNotification
                       Children:
+                        # Notification Background
+                        - 'Header.Notification.Background':
+                            Control: Rectangle
+                            Properties:
+                              X: =0
+                              Y: =0
+                              Width: =Parent.Width
+                              Height: =Parent.Height
+                              Fill: =RGBA(248, 250, 252, 1)
+                              BorderColor: =RGBA(229, 231, 235, 1)
+                              BorderThickness: =1
+                              
                         - 'Header.Notification.Icon':
                             Control: Classic/Icon
                             Properties:
                               X: =(Parent.Width - Self.Width) / 2
                               Y: =(Parent.Height - Self.Height) / 2
-                              Width: =Parent.Height * 0.45
-                              Height: =Parent.Height * 0.45
+                              Width: =Parent.Height * 0.5
+                              Height: =Parent.Height * 0.5
                               Icon: =Icon.Bell
                               Color: =RGBA(107, 114, 128, 1)
                               
                         - 'Header.Notification.Badge':
                             Control: Circle
                             Properties:
-                              X: =Parent.Width * 0.6
+                              X: =Parent.Width * 0.65
                               Y: =Parent.Height * 0.1
-                              Width: =Parent.Height * 0.3
-                              Height: =Parent.Height * 0.3
+                              Width: =Parent.Height * 0.35
+                              Height: =Parent.Height * 0.35
                               Fill: =RGBA(255, 205, 210, 1)
                               Visible: =And(HeaderComponent.ShowNotification, HeaderComponent.NotificationCount > 0)
                               
@@ -189,31 +217,41 @@ ComponentDefinitions:
                               Color: =RGBA(183, 28, 28, 1)
                               Font: =Font.'Open Sans'
                               FontWeight: =FontWeight.Bold
-                              Size: =Parent.Height * 0.12
+                              Size: =Parent.Height * 0.15
                               Align: =Align.Center
                               Visible: =And(HeaderComponent.ShowNotification, HeaderComponent.NotificationCount > 0)
                               
-                  # User Profile Section - Compact
+                  # User Profile Container (GroupContainer for logic)
                   - 'Header.UserProfile.Container':
-                      Control: Rectangle
+                      Control: GroupContainer
                       Variant: ManualLayout
                       Properties:
-                        X: ='Header.Notification.Container'.X + 'Header.Notification.Container'.Width + Parent.Width * 0.02
+                        X: ='Header.Notification.Container'.X + 'Header.Notification.Container'.Width + Parent.Width * 0.05
                         Y: =(Parent.Height - Self.Height) / 2
                         Width: =Parent.Width * 0.75
-                        Height: =Parent.Height * 0.7
-                        Fill: =RGBA(248, 250, 252, 1)
-                        BorderColor: =RGBA(229, 231, 235, 1)
-                        BorderThickness: =Parent.Height * 0.001
+                        Height: =Parent.Height * 0.8
+                        Visible: =true
                       Children:
-                        # User Avatar - Smaller
+                        # User Profile Background
+                        - 'Header.UserProfile.Background':
+                            Control: Rectangle
+                            Properties:
+                              X: =0
+                              Y: =0
+                              Width: =Parent.Width
+                              Height: =Parent.Height
+                              Fill: =RGBA(248, 250, 252, 1)
+                              BorderColor: =RGBA(229, 231, 235, 1)
+                              BorderThickness: =1
+                              
+                        # User Avatar Background
                         - 'Header.User.Avatar.Background':
                             Control: Circle
                             Properties:
-                              X: =Parent.X + Parent.Width * 0.03
+                              X: =Parent.Width * 0.05
                               Y: =(Parent.Height - Self.Height) / 2
-                              Width: =Parent.Height * 0.6
-                              Height: =Parent.Height * 0.6
+                              Width: =Parent.Height * 0.7
+                              Height: =Parent.Height * 0.7
                               Fill: =RGBA(187, 222, 251, 1)
                               
                         - 'Header.User.Avatar.Initials':
@@ -227,39 +265,39 @@ ComponentDefinitions:
                               Color: =RGBA(33, 150, 243, 1)
                               Font: =Font.'Open Sans'
                               FontWeight: =FontWeight.Bold
-                              Size: =Parent.Height * 0.22
+                              Size: =Parent.Height * 0.25
                               Align: =Align.Center
                               
-                        # User Info Text - Compact
+                        # User Info Container
                         - 'Header.User.Info.Container':
-                            Control: Rectangle
+                            Control: GroupContainer
                             Variant: ManualLayout
                             Properties:
-                              X: ='Header.User.Avatar.Background'.X + 'Header.User.Avatar.Background'.Width + Parent.Width * 0.03
-                              Y: =Parent.Y
-                              Width: =Parent.Width * 0.7
+                              X: ='Header.User.Avatar.Background'.X + 'Header.User.Avatar.Background'.Width + Parent.Width * 0.05
+                              Y: =0
+                              Width: =Parent.Width * 0.65
                               Height: =Parent.Height
                             Children:
                               - 'Header.User.Name':
                                   Control: Label
                                   Properties:
-                                    X: =Parent.X
-                                    Y: =Parent.Y + Parent.Height * 0.1
-                                    Width: =Parent.Width * 0.9
-                                    Height: =Parent.Height * 0.45
+                                    X: =0
+                                    Y: =Parent.Height * 0.15
+                                    Width: =Parent.Width * 0.85
+                                    Height: =Parent.Height * 0.4
                                     Text: =HeaderComponent.UserName
                                     Color: =RGBA(55, 65, 81, 1)
                                     Font: =Font.'Open Sans'
                                     FontWeight: =FontWeight.Semibold
-                                    Size: =Parent.Height * 0.16
+                                    Size: =Parent.Height * 0.2
                                     
                               - 'Header.User.Role':
                                   Control: Label
                                   Properties:
-                                    X: =Parent.X
+                                    X: =0
                                     Y: ='Header.User.Name'.Y + 'Header.User.Name'.Height
-                                    Width: =Parent.Width * 0.9
-                                    Height: =Parent.Height * 0.35
+                                    Width: =Parent.Width * 0.85
+                                    Height: =Parent.Height * 0.3
                                     Text: =Switch(HeaderComponent.UserRole,
                                       "Admin", "Quản trị viên",
                                       "HR", "Nhân sự",
@@ -269,33 +307,34 @@ ComponentDefinitions:
                                       HeaderComponent.UserRole)
                                     Color: =RGBA(107, 114, 128, 1)
                                     Font: =Font.'Open Sans'
-                                    Size: =Parent.Height * 0.12
+                                    Size: =Parent.Height * 0.15
                                     
-                              # Status Indicator - Smaller
+                              # Status Indicator
                               - 'Header.User.Status':
                                   Control: Circle
                                   Properties:
                                     X: =Parent.Width * 0.85
-                                    Y: =Parent.Y + Parent.Height * 0.15
-                                    Width: =Parent.Height * 0.12
-                                    Height: =Parent.Height * 0.12
+                                    Y: =Parent.Height * 0.2
+                                    Width: =Parent.Height * 0.15
+                                    Height: =Parent.Height * 0.15
                                     Fill: =RGBA(200, 230, 201, 1)
-                                    
-            # Mobile Menu Button (Mobile only) - Compact
+              
+            # Mobile Menu Button (Mobile only)
             - 'Header.Mobile.MenuButton':
                 Control: Classic/Button
                 Properties:
-                  X: =Parent.Width - Self.Width - Parent.Width * 0.015
+                  X: =Parent.Width - Self.Width - Parent.Width * 0.02
                   Y: =(Parent.Height - Self.Height) / 2
-                  Width: =Parent.Height * 0.5
-                  Height: =Parent.Height * 0.5
+                  Width: =Parent.Height * 0.6
+                  Height: =Parent.Height * 0.6
                   Text: ="☰"
                   Fill: =RGBA(248, 250, 252, 1)
                   Color: =RGBA(107, 114, 128, 1)
                   BorderColor: =RGBA(229, 231, 235, 1)
-                  BorderThickness: =Parent.Height * 0.001
+                  BorderThickness: =1
                   Font: =Font.'Open Sans'
                   FontWeight: =FontWeight.Bold
-                  Size: =Parent.Height * 0.2
-                  Visible: =App.Width < 768
-                  OnSelect: =Set(varMobileMenuOpen, !varMobileMenuOpen) 
+                  Size: =Parent.Height * 0.25
+                  Visible: =false
+                  OnSelect: |
+                    =Set(varMobileMenuOpen, !varMobileMenuOpen) 

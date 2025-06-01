@@ -3,13 +3,9 @@ Screens:
     Properties:
       Fill: =RGBA(248, 250, 252, 1)
       OnVisible: |
-                    =Set(varCurrentUser, LookUp(NguoiDung, Email = User().Email));
-                    Set(varLoginError, "");
-                    Set(varIsLoading, false);
-                    If(Not(IsBlank(varCurrentUser)), 
-                      Navigate(DashboardScreen),
-                      Set(varShowLoginForm, true))
+        =Set(varLoginError, ""); Set(varIsLoading, false); Set(varIsTraditionalLoading, false); Set(varShowLoginForm, true); Set(varCurrentUser, Blank())
     Children:
+      # ===== BACKGROUND LAYER =====
       - 'Login.Background':
           Control: Rectangle
           Properties:
@@ -19,269 +15,337 @@ Screens:
             Height: =Parent.Height
             Fill: =RGBA(33, 150, 243, 1)
             
-      - 'Login.Container':
+      # ===== MAIN CONTAINER BACKGROUND =====
+      - 'Login.Container.Background':
           Control: Rectangle
+          Properties:
+            X: =(Parent.Width - Self.Width) / 2
+            Y: =(Parent.Height - Self.Height) / 2
+            Width: =Parent.Width
+            Height: =If(App.Height < 600, 
+              Parent.Height * 0.85, 
+              If(App.Height < 800, Parent.Height * 0.7, Parent.Height * 0.6))
+            Fill: =RGBA(255, 255, 255, 1)
+            BorderColor: =RGBA(224, 224, 224, 1)
+            BorderThickness: =Parent.Height * 0.001
+            
+      # ===== MAIN CONTAINER =====
+      - 'Login.Container':
+          Control: GroupContainer
           Variant: ManualLayout
           Properties:
             X: =(Parent.Width - Self.Width) / 2
             Y: =(Parent.Height - Self.Height) / 2
-            Width: =If(App.Width < 768, Parent.Width * 0.9, Parent.Width * 0.4)
-            Height: =If(App.Width < 768, Parent.Height * 0.8, Parent.Height * 0.7)
-            Fill: =RGBA(255, 255, 255, 1)
-            DropShadow: =DropShadow.Bold
+            Width: =Parent.Width
+            Height: =If(App.Height < 600, 
+              Parent.Height * 0.85, 
+              If(App.Height < 800, Parent.Height * 0.7, Parent.Height * 0.6))
           Children:
-            # Company Logo
-            - 'Login.Logo':
+            # ===== HEADER SECTION (0-18% height) =====
+            
+            # Logo Icon
+            - 'Login.Logo.Icon':
                 Control: Classic/Icon
                 Properties:
                   X: =(Parent.Width - Self.Width) / 2
-                  Y: =Parent.Y + Parent.Height * 0.08
-                  Width: =Parent.Width * 0.15
-                  Height: =Parent.Width * 0.15
+                  Y: =Parent.Height * 0.04
+                  Width: =Parent.Height * 0.08
+                  Height: =Parent.Height * 0.08
                   Icon: =Icon.Person
                   Color: =RGBA(33, 150, 243, 1)
                   
+            # Title
             - 'Login.Title':
                 Control: Label
                 Properties:
-                  X: =Parent.X + Parent.Width * 0.05
-                  Y: ='Login.Logo'.Y + 'Login.Logo'.Height + Parent.Height * 0.04
-                  Width: =Parent.Width * 0.9
-                  Height: =Parent.Height * 0.08
-                  Text: ="AsiaShine Leave Management"
-                  Color: =RGBA(32, 54, 71, 1)
+                  X: =0
+                  Y: ='Login.Logo.Icon'.Y + 'Login.Logo.Icon'.Height + Parent.Height * 0.01
+                  Width: =Parent.Width
+                  Height: =Parent.Height * 0.06
+                  Text: ="ASIASHME LEAVE"
+                  Color: =RGBA(33, 150, 243, 1)
                   Font: =Font.'Open Sans'
                   FontWeight: =FontWeight.Bold
-                  Size: =If(App.Width < 768, 18, 22)
+                  Size: =Parent.Height * 0.04
                   Align: =Align.Center
                   
+            # Subtitle
             - 'Login.Subtitle':
                 Control: Label
                 Properties:
-                  X: =Parent.X + Parent.Width * 0.05
+                  X: =0
                   Y: ='Login.Title'.Y + 'Login.Title'.Height
-                  Width: =Parent.Width * 0.9
+                  Width: =Parent.Width
                   Height: =Parent.Height * 0.05
                   Text: ="Hệ thống quản lý nghỉ phép doanh nghiệp"
-                  Color: =RGBA(108, 117, 125, 1)
+                  Color: =RGBA(107, 114, 128, 1)
                   Font: =Font.'Open Sans'
-                  Size: =If(App.Width < 768, 12, 14)
+                  Size: =Parent.Height * 0.025
                   Align: =Align.Center
                   
-            # Authentication Section
+            # ===== MAIN AUTH AREA (18-85% height) =====
+            
             - 'Login.Auth.Container':
-                Control: Rectangle
+                Control: GroupContainer
                 Variant: ManualLayout
                 Properties:
-                  X: =Parent.X + Parent.Width * 0.075
-                  Y: ='Login.Subtitle'.Y + 'Login.Subtitle'.Height + Parent.Height * 0.06
-                  Width: =Parent.Width * 0.85
-                  Height: =Parent.Height * 0.45
+                  X: =Parent.Width * 0.08
+                  Y: ='Login.Subtitle'.Y + 'Login.Subtitle'.Height + Parent.Height * 0.02
+                  Width: =Parent.Width * 0.84
+                  Height: =Parent.Height * 0.67
                   Visible: =varShowLoginForm
                 Children:
-                  # Current User Display (if already authenticated)
-                  - 'Login.UserInfo.Container':
-                      Control: Rectangle
+                  # Traditional Login Form
+                  - 'Login.Form.Container':
+                      Control: GroupContainer
                       Variant: ManualLayout
                       Properties:
-                        X: =Parent.X
-                        Y: =Parent.Y
+                        X: =0
+                        Y: =0
                         Width: =Parent.Width
-                        Height: =Parent.Height * 0.4
-                        Visible: =Not(IsBlank(varCurrentUser))
+                        Height: =Parent.Height * 0.8
+                        Visible: =IsBlank(varCurrentUser)
                       Children:
-                        - 'Login.UserInfo.Avatar':
-                            Control: Circle
+                        # Welcome Icon for Not Logged In Users
+                        - 'Login.Welcome.Icon':
+                            Control: Classic/Icon
                             Properties:
                               X: =(Parent.Width - Self.Width) / 2
-                              Y: =Parent.Y
-                              Width: =Parent.Height * 0.6
-                              Height: =Parent.Height * 0.6
-                              Fill: =RGBA(33, 150, 243, 0.1)
-                              BorderColor: =RGBA(33, 150, 243, 1)
-                              BorderThickness: =2
+                              Y: =Parent.Height * 0.05
+                              Width: =Parent.Height * 0.15
+                              Height: =Parent.Height * 0.15
+                              Icon: =Icon.Person
+                              Color: =RGBA(33, 150, 243, 0.6)
                               
-                        - 'Login.UserInfo.InitialLabel':
+                        # Email Input
+                        - 'Login.Email.Label':
                             Control: Label
                             Properties:
-                              X: ='Login.UserInfo.Avatar'.X + ('Login.UserInfo.Avatar'.Width - Self.Width) / 2
-                              Y: ='Login.UserInfo.Avatar'.Y + ('Login.UserInfo.Avatar'.Height - Self.Height) / 2
-                              Width: ='Login.UserInfo.Avatar'.Width * 0.6
-                              Height: ='Login.UserInfo.Avatar'.Height * 0.6
-                              Text: =If(Not(IsBlank(varCurrentUser)), 
-                                Upper(Left(varCurrentUser.HoTen, 1)), "")
-                              Color: =RGBA(33, 150, 243, 1)
-                              Font: =Font.'Open Sans'
-                              FontWeight: =FontWeight.Bold
-                              Size: =Parent.Height * 0.25
-                              Align: =Align.Center
-                              
-                        - 'Login.UserInfo.Name':
-                            Control: Label
-                            Properties:
-                              X: =Parent.X
-                              Y: ='Login.UserInfo.Avatar'.Y + 'Login.UserInfo.Avatar'.Height + Parent.Height * 0.05
+                              X: =0
+                              Y: ='Login.Welcome.Icon'.Y + 'Login.Welcome.Icon'.Height + Parent.Height * 0.05
                               Width: =Parent.Width
-                              Height: =Parent.Height * 0.2
-                              Text: =If(Not(IsBlank(varCurrentUser)), 
-                                "Xin chào, " & varCurrentUser.HoTen, "")
-                              Color: =RGBA(32, 54, 71, 1)
+                              Height: =Parent.Height * 0.08
+                              Text: ="Email:"
+                              Color: =RGBA(55, 65, 81, 1)
                               Font: =Font.'Open Sans'
                               FontWeight: =FontWeight.Semibold
-                              Size: =16
-                              Align: =Align.Center
+                              Size: =Parent.Height * 0.04
                               
-                        - 'Login.UserInfo.Role':
+                        - 'Login.Email.Input':
+                            Control: Classic/TextInput
+                            Properties:
+                              X: =0
+                              Y: ='Login.Email.Label'.Y + 'Login.Email.Label'.Height + Parent.Height * 0.01
+                              Width: =Parent.Width
+                              Height: =Parent.Height * 0.1
+                              HintText: ="Nhập email của bạn"
+                              Color: =RGBA(55, 65, 81, 1)
+                              Fill: =RGBA(255, 255, 255, 1)
+                              BorderColor: =RGBA(33, 150, 243, 1)
+                              BorderThickness: =Parent.Height * 0.001
+                              Font: =Font.'Open Sans'
+                              Size: =Parent.Height * 0.035
+                              
+                        # Password Input
+                        - 'Login.Password.Label':
                             Control: Label
                             Properties:
-                              X: =Parent.X
-                              Y: ='Login.UserInfo.Name'.Y + 'Login.UserInfo.Name'.Height
+                              X: =0
+                              Y: ='Login.Email.Input'.Y + 'Login.Email.Input'.Height + Parent.Height * 0.03
                               Width: =Parent.Width
-                              Height: =Parent.Height * 0.15
-                              Text: =If(Not(IsBlank(varCurrentUser)), 
-                                Switch(varCurrentUser.MaVaiTro,
-                                  "EMPLOYEE", "Nhân viên",
-                                  "MANAGER", "Quản lý",
-                                  "DIRECTOR", "Giám đốc", 
-                                  "HR", "Nhân sự",
-                                  "ADMIN", "Quản trị viên",
-                                  varCurrentUser.MaVaiTro), "")
-                              Color: =RGBA(108, 117, 125, 1)
+                              Height: =Parent.Height * 0.08
+                              Text: ="Mật khẩu:"
+                              Color: =RGBA(55, 65, 81, 1)
                               Font: =Font.'Open Sans'
-                              Size: =14
+                              FontWeight: =FontWeight.Semibold
+                              Size: =Parent.Height * 0.04
+                              
+                        - 'Login.Password.Input':
+                            Control: Classic/TextInput
+                            Properties:
+                              X: =0
+                              Y: ='Login.Password.Label'.Y + 'Login.Password.Label'.Height + Parent.Height * 0.01
+                              Width: =Parent.Width
+                              Height: =Parent.Height * 0.1
+                              Mode: =TextMode.Password
+                              HintText: ="Nhập mật khẩu"
+                              Color: =RGBA(55, 65, 81, 1)
+                              Fill: =RGBA(255, 255, 255, 1)
+                              BorderColor: =RGBA(33, 150, 243, 1)
+                              BorderThickness: =Parent.Height * 0.001
+                              Font: =Font.'Open Sans'
+                              Size: =Parent.Height * 0.035
+                              
+                        # Error Message
+                        - 'Login.Error.Message':
+                            Control: Label
+                            Properties:
+                              X: =0
+                              Y: ='Login.Password.Input'.Y + 'Login.Password.Input'.Height + Parent.Height * 0.02
+                              Width: =Parent.Width
+                              Height: =Parent.Height * 0.08
+                              Text: =varLoginError
+                              Color: =RGBA(244, 67, 54, 1)
+                              Font: =Font.'Open Sans'
+                              Size: =Parent.Height * 0.03
+                              Align: =Align.Center
+                              Visible: =Not(IsBlank(varLoginError))
+                              
+                        # Traditional Login Button
+                        - 'Login.Traditional.Button':
+                            Control: CanvasComponent
+                            ComponentName: ButtonComponent
+                            Properties:
+                              X: =0
+                              Y: ='Login.Password.Input'.Y + 'Login.Password.Input'.Height + Parent.Height * 0.08
+                              Width: =Parent.Width
+                              Height: =Parent.Height * 0.12
+                              Text: =If(varIsTraditionalLoading, "Đang đăng nhập...", "Đăng nhập")
+                              Variant: ="Primary"
+                              Size: ="Medium"
+                              FullWidth: =true
+                              IsLoading: =varIsTraditionalLoading
+                              IsDisabled: =Or(IsBlank('Login.Email.Input'.Text), IsBlank('Login.Password.Input'.Text))
+                              OnClick: |
+                                =Set(varIsTraditionalLoading, true); Set(varLoginError, ""); 
+                                With(LookUp(NguoiDung, And(Email = 'Login.Email.Input'.Text, MatKhau = 'Login.Password.Input'.Text)), 
+                                  If(IsBlank(ThisRecord), 
+                                    Set(varLoginError, "Email hoặc mật khẩu không đúng"); Set(varIsTraditionalLoading, false), 
+                                    If(ThisRecord.TrangThai.Value = "HoatDong", 
+                                      Set(varCurrentUser, ThisRecord); Set(varUserRole, LookUp(VaiTro, MaVaiTro = ThisRecord.MaVaiTro).TenVaiTro); Set(varIsTraditionalLoading, false); Navigate(DashboardScreen), 
+                                      Set(varLoginError, "Tài khoản đã bị khóa. Vui lòng liên hệ quản trị viên"); Set(varIsTraditionalLoading, false))))
+                                      
+                  # Current User Display (if already authenticated)
+                  - 'Login.UserInfo.Container':
+                      Control: GroupContainer
+                      Variant: ManualLayout
+                      Properties:
+                        X: =0
+                        Y: =0
+                        Width: =Parent.Width
+                        Height: =Parent.Height * 0.8
+                        Visible: =Not(IsBlank(varCurrentUser))
+                      Children:
+                        # Success Icon
+                        - 'Login.Success.Icon':
+                            Control: Classic/Icon
+                            Properties:
+                              X: =(Parent.Width - Self.Width) / 2
+                              Y: =Parent.Height * 0.1
+                              Width: =Parent.Height * 0.2
+                              Height: =Parent.Height * 0.2
+                              Icon: =Icon.CheckBadge
+                              Color: =RGBA(76, 175, 80, 1)
+                              
+                        # Welcome Message
+                        - 'Login.Welcome.Message':
+                            Control: Label
+                            Properties:
+                              X: =0
+                              Y: ='Login.Success.Icon'.Y + 'Login.Success.Icon'.Height + Parent.Height * 0.05
+                              Width: =Parent.Width
+                              Height: =Parent.Height * 0.12
+                              Text: ="Chào mừng trở lại!"
+                              Color: =RGBA(76, 175, 80, 1)
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Bold
+                              Size: =Parent.Height * 0.05
                               Align: =Align.Center
                               
-                  # Authentication Status
+                        # User Name Display
+                        - 'Login.User.Display':
+                            Control: Label
+                            Properties:
+                              X: =0
+                              Y: ='Login.Welcome.Message'.Y + 'Login.Welcome.Message'.Height + Parent.Height * 0.02
+                              Width: =Parent.Width
+                              Height: =Parent.Height * 0.1
+                              Text: =If(IsBlank(varCurrentUser), "", varCurrentUser.HoTen)
+                              Color: =RGBA(55, 65, 81, 1)
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Semibold
+                              Size: =Parent.Height * 0.04
+                              Align: =Align.Center
+                              
+                        # Continue Button
+                        - 'Login.Continue.Button':
+                            Control: CanvasComponent
+                            ComponentName: ButtonComponent
+                            Properties:
+                              X: =0
+                              Y: ='Login.User.Display'.Y + 'Login.User.Display'.Height + Parent.Height * 0.1
+                              Width: =Parent.Width
+                              Height: =Parent.Height * 0.12
+                              Text: ="Tiếp tục vào hệ thống"
+                              Variant: ="Primary"
+                              Size: ="Medium"
+                              FullWidth: =true
+                              OnClick: |
+                                =Navigate(DashboardScreen)
+                              
+                  # Authentication Status - ALWAYS VISIBLE
                   - 'Login.Auth.Status':
                       Control: Label
                       Properties:
-                        X: =Parent.X
-                        Y: =Parent.Y + Parent.Height * 0.45
+                        X: =0
+                        Y: =Parent.Height * 0.82
                         Width: =Parent.Width
-                        Height: =Parent.Height * 0.15
-                        Text: =If(IsBlank(varCurrentUser),
-                          "Vui lòng đăng nhập bằng tài khoản Microsoft 365",
-                          "Bạn đã đăng nhập thành công!")
+                        Height: =Parent.Height * 0.08
+                        Text: =If(IsBlank(varCurrentUser), "Hoặc đăng nhập bằng tài khoản Microsoft 365", "Bạn đã đăng nhập thành công!")
                         Color: =If(IsBlank(varCurrentUser), RGBA(108, 117, 125, 1), RGBA(76, 175, 80, 1))
                         Font: =Font.'Open Sans'
-                        Size: =14
+                        Size: =Parent.Height * 0.03
                         Align: =Align.Center
                         
-                  # Login/Continue Button
-                  - 'Login.Auth.Button':
+                  # Microsoft 365 Login Button - ALWAYS VISIBLE
+                  - 'Login.Microsoft.Button':
                       Control: CanvasComponent
                       ComponentName: ButtonComponent
                       Properties:
-                        X: =Parent.X
-                        Y: =Parent.Y + Parent.Height * 0.65
-                        Width: =Parent.Width
-                        Height: =Parent.Height * 0.2
-                        Text: =If(IsBlank(varCurrentUser), "Đăng nhập với Microsoft 365", "Tiếp tục")
-                        Variant: ="Primary"
-                        Size: ="Large"
-                        Icon: =If(IsBlank(varCurrentUser), "People", "ChevronRight")
-                        IsLoading: =varIsLoading
-                        LoadingText: ="Đang xử lý..."
-                        OnClick: |
-                                    =Set(varIsLoading, true);
-                                    Set(varLoginError, "");
-                                    If(IsBlank(varCurrentUser),
-                                      // Try to authenticate with current user
-                                      Set(varCurrentUser, LookUp(NguoiDung, Email = User().Email));
-                                      If(IsBlank(varCurrentUser),
-                                        Set(varLoginError, "Tài khoản của bạn chưa được cấp quyền truy cập hệ thống. Vui lòng liên hệ quản trị viên.");
-                                        Set(varIsLoading, false),
-                                        // Successfully authenticated
-                                        Set(varUserRole, varCurrentUser.MaVaiTro);
-                                        Set(varIsLoading, false);
-                                        Navigate(DashboardScreen)
-                                      ),
-                                      // User already authenticated, continue to dashboard
-                                      Set(varUserRole, varCurrentUser.MaVaiTro);
-                                      Set(varIsLoading, false);
-                                      Navigate(DashboardScreen)
-                                    )
-                                    
-                  # Alternative Login Methods
-                  - 'Login.Auth.Alternative':
-                      Control: Label
-                      Properties:
-                        X: =Parent.X
-                        Y: =Parent.Y + Parent.Height * 0.9
+                        X: =0
+                        Y: =Parent.Height * 0.9
                         Width: =Parent.Width
                         Height: =Parent.Height * 0.1
-                        Text: ="Hoặc liên hệ IT Support:" & " " & "support@asiashine.com"
-                        Color: =RGBA(108, 117, 125, 1)
-                        Font: =Font.'Open Sans'
-                        Size: =12
-                        Align: =Align.Center
-                        Visible: =Not(IsBlank(varLoginError))
-                        
-            # Error Message
-            - 'Login.Error.Container':
-                Control: Rectangle
-                Variant: ManualLayout
-                Properties:
-                  X: =Parent.X + Parent.Width * 0.075
-                  Y: ='Login.Auth.Container'.Y + 'Login.Auth.Container'.Height + Parent.Height * 0.02
-                  Width: =Parent.Width * 0.85
-                  Height: =Parent.Height * 0.12
-                  Visible: =Not(IsBlank(varLoginError))
-                Children:
-                  - 'Login.Error.Icon':
-                      Control: Classic/Icon
-                      Properties:
-                        X: =Parent.X + Parent.Width * 0.05
-                        Y: =Parent.Y + (Parent.Height - Self.Height) / 2
-                        Width: =Parent.Height * 0.4
-                        Height: =Parent.Height * 0.4
-                        Icon: =Icon.Warning
-                        Color: =RGBA(244, 67, 54, 1)
-                        
-                  - 'Login.Error.Message':
+                        Text: =If(varIsLoading, "Đang kiểm tra...", "Đăng nhập Microsoft 365")
+                        Variant: ="Secondary"
+                        Size: ="Medium"
+                        FullWidth: =true
+                        IsLoading: =varIsLoading
+                        OnClick: |
+                          =Set(varIsLoading, true); Set(varLoginError, ""); 
+                          With(LookUp(NguoiDung, Email = User().Email), 
+                            If(IsBlank(ThisRecord), 
+                              Set(varLoginError, "Tài khoản Microsoft 365 của bạn chưa được cấp quyền truy cập hệ thống. Vui lòng liên hệ quản trị viên."); Set(varIsLoading, false), 
+                              If(ThisRecord.TrangThai.Value = "HoatDong", 
+                                Set(varCurrentUser, ThisRecord); Set(varUserRole, LookUp(VaiTro, MaVaiTro = ThisRecord.MaVaiTro).TenVaiTro); Set(varIsLoading, false); Navigate(DashboardScreen), 
+                                Set(varLoginError, "Tài khoản đã bị khóa. Vui lòng liên hệ quản trị viên"); Set(varIsLoading, false))))
+                  
+            # ===== FOOTER SECTION (85-100% height) =====
+                  
+            # Registration Link
+            - 'Login.Register.Link':
                       Control: Label
-                      Properties:
-                        X: ='Login.Error.Icon'.X + 'Login.Error.Icon'.Width + Parent.Width * 0.03
-                        Y: =Parent.Y
-                        Width: =Parent.Width * 0.87
-                        Height: =Parent.Height
-                        Text: =varLoginError
-                        Color: =RGBA(244, 67, 54, 1)
-                        Font: =Font.'Open Sans'
-                        Size: =13
-                        
-            # System Information
-            - 'Login.System.Info':
-                Control: Rectangle
-                Variant: ManualLayout
                 Properties:
-                  X: =Parent.X + Parent.Width * 0.05
-                  Y: =Parent.Y + Parent.Height * 0.85
-                  Width: =Parent.Width * 0.9
-                  Height: =Parent.Height * 0.12
-                Children:
-                  - 'Login.System.Version':
-                      Control: Label
-                      Properties:
-                        X: =Parent.X
-                        Y: =Parent.Y
+                  X: =0
+                  Y: =Parent.Height * 0.9
                         Width: =Parent.Width
-                        Height: =Parent.Height * 0.5
-                        Text: ="Version 2.0.0 SharePoint | Powered by Microsoft Power Platform"
-                        Color: =RGBA(156, 163, 175, 1)
+                  Height: =Parent.Height * 0.04
+                  Text: ="Chưa có tài khoản? Liên hệ quản trị viên để được cấp quyền"
+                  Color: =RGBA(33, 150, 243, 1)
                         Font: =Font.'Open Sans'
-                        Size: =11
+                  Size: =Parent.Height * 0.025
                         Align: =Align.Center
                         
-                  - 'Login.System.Copyright':
+            # Footer Info
+            - 'Login.Footer.Info':
                       Control: Label
                       Properties:
-                        X: =Parent.X
-                        Y: =Parent.Y + Parent.Height * 0.5
+                  X: =0
+                  Y: =Parent.Height * 0.95
                         Width: =Parent.Width
-                        Height: =Parent.Height * 0.5
-                        Text: ="© 2024 AsiaShine Technology Solutions. All rights reserved."
-                        Color: =RGBA(156, 163, 175, 1)
+                  Height: =Parent.Height * 0.05
+                  Text: ="Version 2.0.0 SharePoint | Powered by Microsoft Power Platform" & Char(10) & "© 2024 AsiaShine Technology Solutions. All rights reserved."
+                  Color: =RGBA(158, 158, 158, 1)
                         Font: =Font.'Open Sans'
-                        Size: =10
+                  Size: =Parent.Height * 0.018
                         Align: =Align.Center 

@@ -233,8 +233,8 @@ ComponentDefinitions:
             Visible: =false
             Text: |
               =Concatenate(
-                "IsMobile:", Text(App.Width < 768), ";",
-                "IsTablet:", Text(And(App.Width >= 768, App.Width < 1024)), ";",
+                "IsMobile:", Text(false), ";",
+                "IsTablet:", Text(false), ";",
                 "IsDesktop:", Text(App.Width >= 1024), ";",
                 "IsLargeDesktop:", Text(App.Width >= 1440), ";",
                 "IsXLDesktop:", Text(App.Width >= 1920), ";",

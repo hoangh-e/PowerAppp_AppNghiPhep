@@ -3,15 +3,19 @@ Screens:
     Properties:
       Fill: =RGBA(248, 250, 252, 1)
       OnVisible: |
-                    =Set(varActiveScreen, "Reports");
-                    Set(varCurrentUser, LookUp(NguoiDung, Email = User().Email));
-                    Set(varReportType, "Department");
-                    Set(varReportPeriod, "ThisYear");
-                    Set(varSelectedDepartment, varCurrentUser.MaDonVi);
-                    Set(varSelectedYear, Year(Today()));
-                    Set(varReportData, []);
-                    Set(varIsGenerating, false);
-                    Set(varCanAccessReports, varCurrentUser.MaVaiTro in ["HR", "ADMIN", "DIRECTOR", "MANAGER"])
+        =Set(varActiveScreen, "Reports"); 
+        // Use session from Login or fallback to Microsoft 365 lookup
+        If(IsBlank(varCurrentUser), 
+          Set(varCurrentUser, LookUp(NguoiDung, Email = User().Email)));
+        // Validate current user session and permissions
+        If(Or(IsBlank(varCurrentUser), Not(varCurrentUser.MaVaiTro in ["HR", "ADMIN", "DIRECTOR", "MANAGER"])), 
+          Navigate(DashboardScreen), 
+          // Continue with reports screen initialization using session data
+          Set(varReportType, "Leave Summary"); 
+          Set(varReportPeriod, "This Month"); 
+          Set(varSelectedDepartment, varCurrentUser.MaDonVi); 
+          Set(varReportData, []); 
+          Set(varIsGenerating, false))
     Children:
       - 'Reports.Header':
           Control: CanvasComponent
@@ -32,16 +36,14 @@ Screens:
           Properties:
             X: =Parent.X
             Y: ='Reports.Header'.Y + 'Reports.Header'.Height
-            Width: =If(App.Width < 768, 
-              If(varMobileMenuOpen, Parent.Width * 0.75, Parent.Width * 0.001),
-              If(varNavCollapsed, Parent.Width * 0.06, Parent.Width * 0.2))
+            Width: =If(varNavCollapsed, Parent.Width * 0.06, Parent.Width * 0.2)
             Height: =Parent.Height - 'Reports.Header'.Height
             UserRole: =varCurrentUser.MaVaiTro
             ActiveScreen: =varActiveScreen
             OnNavigate: =Set(varNavigateAction, true)
             
       - 'Reports.Content.Container':
-          Control: Rectangle
+          Control: GroupContainer
           Variant: ManualLayout
           Properties:
             X: ='Reports.Navigation'.X + 'Reports.Navigation'.Width
@@ -56,8 +58,8 @@ Screens:
                 Control: Rectangle
                 Variant: ManualLayout
                 Properties:
-                  X: =Parent.X + Parent.Width * 0.03
-                  Y: =Parent.Y + Parent.Height * 0.02
+                  X: =Parent.Width * 0.03
+                  Y: =Parent.Height * 0.02
                   Width: =Parent.Width * 0.94
                   Height: =Parent.Height * 0.15
                   Fill: =RGBA(255, 255, 255, 1)
@@ -68,8 +70,8 @@ Screens:
                   - 'Reports.Controls.Title':
                       Control: Label
                       Properties:
-                        X: =Parent.X + Parent.Width * 0.03
-                        Y: =Parent.Y + Parent.Height * 0.1
+                        X: =Parent.Width * 0.03
+                        Y: =Parent.Height * 0.1
                         Width: =Parent.Width * 0.94
                         Height: =Parent.Height * 0.25
                         Text: ="Báo cáo thống kê nghỉ phép"
@@ -83,8 +85,8 @@ Screens:
                       Control: Rectangle
                       Variant: ManualLayout
                       Properties:
-                        X: =Parent.X + Parent.Width * 0.03
-                        Y: =Parent.Y + Parent.Height * 0.4
+                        X: =Parent.Width * 0.03
+                        Y: =Parent.Height * 0.4
                         Width: =Parent.Width * 0.2
                         Height: =Parent.Height * 0.5
                       Children:
@@ -104,7 +106,7 @@ Screens:
                             Control: Classic/DropDown
                             Properties:
                               X: =Parent.X
-                              Y: =Parent.Y + Parent.Height * 0.4
+                              Y: =Parent.Height * 0.4
                               Width: =Parent.Width
                               Height: =Parent.Height * 0.6
                               Items: =["Department", "Employee", "LeaveType", "Monthly"]
@@ -116,8 +118,8 @@ Screens:
                       Control: Rectangle
                       Variant: ManualLayout
                       Properties:
-                        X: =Parent.X + Parent.Width * 0.25
-                        Y: =Parent.Y + Parent.Height * 0.4
+                        X: =Parent.Width * 0.25
+                        Y: =Parent.Height * 0.4
                         Width: =Parent.Width * 0.2
                         Height: =Parent.Height * 0.5
                       Children:
@@ -137,7 +139,7 @@ Screens:
                             Control: Classic/DropDown
                             Properties:
                               X: =Parent.X
-                              Y: =Parent.Y + Parent.Height * 0.4
+                              Y: =Parent.Height * 0.4
                               Width: =Parent.Width
                               Height: =Parent.Height * 0.6
                               Items: =["ThisMonth", "LastMonth", "ThisQuarter", "ThisYear", "LastYear"]
@@ -149,8 +151,8 @@ Screens:
                       Control: CanvasComponent
                       ComponentName: ButtonComponent
                       Properties:
-                        X: =Parent.X + Parent.Width * 0.7
-                        Y: =Parent.Y + Parent.Height * 0.55
+                        X: =Parent.Width * 0.7
+                        Y: =Parent.Height * 0.55
                         Width: =Parent.Width * 0.25
                         Height: =Parent.Height * 0.35
                         Text: ="Tạo báo cáo"
@@ -219,7 +221,7 @@ Screens:
                 Control: Rectangle
                 Variant: ManualLayout
                 Properties:
-                  X: =Parent.X + Parent.Width * 0.03
+                  X: =Parent.Width * 0.03
                   Y: ='Reports.Controls.Container'.Y + 'Reports.Controls.Container'.Height + Parent.Height * 0.02
                   Width: =Parent.Width * 0.94
                   Height: =Parent.Height * 0.75
@@ -232,8 +234,8 @@ Screens:
                   - 'Reports.Results.Title':
                       Control: Label
                       Properties:
-                        X: =Parent.X + Parent.Width * 0.03
-                        Y: =Parent.Y + Parent.Height * 0.02
+                        X: =Parent.Width * 0.03
+                        Y: =Parent.Height * 0.02
                         Width: =Parent.Width * 0.94
                         Height: =Parent.Height * 0.06
                         Text: =Switch(varReportType,
@@ -251,7 +253,7 @@ Screens:
                       Control: Gallery
                       Variant: Vertical
                       Properties:
-                        X: =Parent.X + Parent.Width * 0.03
+                        X: =Parent.Width * 0.03
                         Y: ='Reports.Results.Title'.Y + 'Reports.Results.Title'.Height + Parent.Height * 0.02
                         Width: =Parent.Width * 0.94
                         Height: =Parent.Height * 0.85
@@ -277,8 +279,8 @@ Screens:
                               - 'Reports.Results.Gallery.Content':
                                   Control: Label
                                   Properties:
-                                    X: =Parent.X + Parent.Width * 0.02
-                                    Y: =Parent.Y + (Parent.Height - Self.Height) / 2
+                                    X: =Parent.Width * 0.02
+                                    Y: =(Parent.Height - Self.Height) / 2
                                     Width: =Parent.Width * 0.96
                                     Height: =Parent.Height * 0.8
                                     Text: =Switch(varReportType,
@@ -317,9 +319,25 @@ Screens:
                                     Font: =Font.'Open Sans'
                                     Size: =Parent.Height * 0.3
                                     
+            # Filter Section
+            - 'Reports.Filter.Container':
+                Control: GroupContainer
+                Variant: ManualLayout
+            # Report Sections
+            - 'Reports.Sections.Container':
+                Control: GroupContainer
+                Variant: ManualLayout
+                  # Leave Summary Section
+                  - 'Reports.LeaveSum.Container':
+                      Control: GroupContainer
+                      Variant: ManualLayout
+                  # Department Reports Section
+                  - 'Reports.Department.Container':
+                      Control: GroupContainer
+                      Variant: ManualLayout
       # Access Denied Message
       - 'Reports.AccessDenied.Container':
-          Control: Rectangle
+          Control: GroupContainer
           Variant: ManualLayout
           Properties:
             X: ='Reports.Navigation'.X + 'Reports.Navigation'.Width
@@ -333,7 +351,7 @@ Screens:
                 Control: Classic/Icon
                 Properties:
                   X: =(Parent.Width - Self.Width) / 2
-                  Y: =Parent.Y + Parent.Height * 0.3
+                  Y: =Parent.Height * 0.3
                   Width: =Parent.Height * 0.1
                   Height: =Parent.Height * 0.1
                   Icon: =Icon.Lock
@@ -342,7 +360,7 @@ Screens:
             - 'Reports.AccessDenied.Title':
                 Control: Label
                 Properties:
-                  X: =Parent.X + Parent.Width * 0.1
+                  X: =Parent.Width * 0.1
                   Y: ='Reports.AccessDenied.Icon'.Y + 'Reports.AccessDenied.Icon'.Height + Parent.Height * 0.05
                   Width: =Parent.Width * 0.8
                   Height: =Parent.Height * 0.08
@@ -353,10 +371,11 @@ Screens:
                   Size: =Parent.Height * 0.04
                   Align: =Align.Center
                   
-            - 'Reports.AccessDenied.Message':
-                Control: Label
+            - 'Reports.AccessDenied.Message.Container':
+                Control: GroupContainer
+                Variant: ManualLayout
                 Properties:
-                  X: =Parent.X + Parent.Width * 0.1
+                  X: =Parent.Width * 0.1
                   Y: ='Reports.AccessDenied.Title'.Y + 'Reports.AccessDenied.Title'.Height
                   Width: =Parent.Width * 0.8
                   Height: =Parent.Height * 0.12
@@ -364,4 +383,8 @@ Screens:
                   Color: =RGBA(107, 114, 128, 1)
                   Font: =Font.'Open Sans'
                   Size: =Parent.Height * 0.025
-                  Align: =Align.Center 
+                  Align: =Align.Center
+        # Chart Container
+        - 'Reports.Chart.Container':
+            Control: GroupContainer
+            Variant: ManualLayout 
