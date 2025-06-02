@@ -29,6 +29,12 @@ Screens:
             UserRole: =varCurrentUser.MaVaiTro
             ShowNotification: =true
             NotificationCount: =0
+            OnLogout: |
+              =//LOGOUT: Clear all session data and return to login
+              Set(varLoginSuccess, false); Set(varSessionValid, false);
+              Set(varLoggedInUserEmail, ""); Clear(UserSession);
+              UpdateContext({localLogout: true});
+              Navigate(LoginScreen)
             
       - 'Reports.Navigation':
           Control: CanvasComponent

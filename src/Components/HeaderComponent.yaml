@@ -44,6 +44,12 @@ ComponentDefinitions:
               DataType: Text
               IsOptional: true
               Default: =""
+      OnLogout:
+        PropertyKind: Event
+        DisplayName: OnLogout
+        Description: "Sự kiện khi đăng xuất"
+        ReturnType: None
+        Default: =false
     Properties:
       Height: =App.Height * 0.08
       Width: =App.Width
@@ -101,7 +107,7 @@ ComponentDefinitions:
                         Color: =RGBA(55, 65, 81, 1)
                         Font: =Font.'Open Sans'
                         FontWeight: =FontWeight.Semibold
-                        Size: =Parent.Height * 0.4
+                        Size: =16
                         
             # Search Container (GroupContainer for logic)
             - 'Header.Search.Container':
@@ -149,7 +155,7 @@ ComponentDefinitions:
                         BorderThickness: =0
                         BorderColor: =RGBA(0, 0, 0, 0)
                         Font: =Font.'Open Sans'
-                        Size: =Parent.Height * 0.4
+                        Size: =12
                         OnChange: |
                           =HeaderComponent.OnSearch()
                         
@@ -217,7 +223,7 @@ ComponentDefinitions:
                               Color: =RGBA(183, 28, 28, 1)
                               Font: =Font.'Open Sans'
                               FontWeight: =FontWeight.Bold
-                              Size: =Parent.Height * 0.15
+                              Size: =8
                               Align: =Align.Center
                               Visible: =And(HeaderComponent.ShowNotification, HeaderComponent.NotificationCount > 0)
                               
@@ -228,7 +234,7 @@ ComponentDefinitions:
                       Properties:
                         X: ='Header.Notification.Container'.X + 'Header.Notification.Container'.Width + Parent.Width * 0.05
                         Y: =(Parent.Height - Self.Height) / 2
-                        Width: =Parent.Width * 0.75
+                        Width: =Parent.Width * 0.55
                         Height: =Parent.Height * 0.8
                         Visible: =true
                       Children:
@@ -265,7 +271,7 @@ ComponentDefinitions:
                               Color: =RGBA(33, 150, 243, 1)
                               Font: =Font.'Open Sans'
                               FontWeight: =FontWeight.Bold
-                              Size: =Parent.Height * 0.25
+                              Size: =14
                               Align: =Align.Center
                               
                         # User Info Container
@@ -289,7 +295,7 @@ ComponentDefinitions:
                                     Color: =RGBA(55, 65, 81, 1)
                                     Font: =Font.'Open Sans'
                                     FontWeight: =FontWeight.Semibold
-                                    Size: =Parent.Height * 0.2
+                                    Size: =12
                                     
                               - 'Header.User.Role':
                                   Control: Label
@@ -307,7 +313,7 @@ ComponentDefinitions:
                                       HeaderComponent.UserRole)
                                     Color: =RGBA(107, 114, 128, 1)
                                     Font: =Font.'Open Sans'
-                                    Size: =Parent.Height * 0.15
+                                    Size: =10
                                     
                               # Status Indicator
                               - 'Header.User.Status':
@@ -318,7 +324,30 @@ ComponentDefinitions:
                                     Width: =Parent.Height * 0.15
                                     Height: =Parent.Height * 0.15
                                     Fill: =RGBA(200, 230, 201, 1)
-              
+
+                  # Enhanced Logout Button - wider and better text
+                  - 'Header.Logout.Button':
+                      Control: Classic/Button
+                      Properties:
+                        X: ='Header.UserProfile.Container'.X + 'Header.UserProfile.Container'.Width + Parent.Width * 0.015
+                        Y: =(Parent.Height - Self.Height) / 2
+                        Width: =Parent.Width * 0.08
+                        Height: =Parent.Height * 0.7
+                        Text: ="Đăng xuất"
+                        Fill: =RGBA(244, 67, 54, 0.1)
+                        Color: =RGBA(244, 67, 54, 1)
+                        HoverFill: =RGBA(244, 67, 54, 0.2)
+                        HoverColor: =RGBA(255, 255, 255, 1)
+                        PressedFill: =RGBA(244, 67, 54, 0.8)
+                        PressedColor: =RGBA(255, 255, 255, 1)
+                        BorderColor: =RGBA(244, 67, 54, 0.3)
+                        BorderThickness: =1
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Semibold
+                        Size: =11
+                        OnSelect: |
+                          =HeaderComponent.OnLogout()
+
             # Mobile Menu Button (Mobile only)
             - 'Header.Mobile.MenuButton':
                 Control: Classic/Button
@@ -334,7 +363,7 @@ ComponentDefinitions:
                   BorderThickness: =1
                   Font: =Font.'Open Sans'
                   FontWeight: =FontWeight.Bold
-                  Size: =Parent.Height * 0.25
+                  Size: =16
                   Visible: =false
                   OnSelect: |
                     =Set(varMobileMenuOpen, !varMobileMenuOpen) 

@@ -87,42 +87,42 @@ ComponentDefinitions:
               ButtonComponent.LoadingText, 
               ButtonComponent.Text)
             
-            # Fill Color - Consistent
+            # Fill Color - With Hover States
             Fill: =If(ButtonComponent.IsDisabled,
               RGBA(245, 245, 245, 1),
               Switch(ButtonComponent.Variant,
-                "Primary", RGBA(227, 242, 253, 1),
+                "Primary", RGBA(33, 150, 243, 1),
                 "Secondary", RGBA(255, 255, 255, 1),
-                "Danger", RGBA(255, 235, 238, 1),
+                "Danger", RGBA(244, 67, 54, 1),
                 "Ghost", RGBA(0, 0, 0, 0),
                 "Outline", RGBA(255, 255, 255, 1),
-                RGBA(227, 242, 253, 1)))
+                RGBA(33, 150, 243, 1)))
                 
-            # Text Color - Consistent
+            # Text Color - With Hover States
             Color: =If(ButtonComponent.IsDisabled,
               RGBA(158, 158, 158, 1),
               Switch(ButtonComponent.Variant,
-                "Primary", RGBA(33, 150, 243, 1),
+                "Primary", RGBA(255, 255, 255, 1),
                 "Secondary", RGBA(55, 65, 81, 1),
-                "Danger", RGBA(244, 67, 54, 1),
+                "Danger", RGBA(255, 255, 255, 1),
                 "Ghost", RGBA(55, 65, 81, 1),
                 "Outline", RGBA(33, 150, 243, 1),
-                RGBA(33, 150, 243, 1)))
+                RGBA(255, 255, 255, 1)))
                 
-            # Border Color - Consistent
+            # Border Color - With Hover States
             BorderColor: =If(ButtonComponent.IsDisabled,
               RGBA(224, 224, 224, 1),
               Switch(ButtonComponent.Variant,
-                "Primary", RGBA(187, 222, 251, 1),
+                "Primary", RGBA(33, 150, 243, 1),
                 "Secondary", RGBA(224, 224, 224, 1),
-                "Danger", RGBA(255, 205, 210, 1),
+                "Danger", RGBA(244, 67, 54, 1),
                 "Ghost", RGBA(0, 0, 0, 0),
-                "Outline", RGBA(187, 222, 251, 1),
-                RGBA(187, 222, 251, 1)))
+                "Outline", RGBA(33, 150, 243, 1),
+                RGBA(33, 150, 243, 1)))
                 
             BorderThickness: =Switch(ButtonComponent.Variant,
               "Ghost", 0,
-              2)
+              1)
               
             # Font Properties - Standardized
             Font: =Font.'Open Sans'
@@ -134,6 +134,61 @@ ComponentDefinitions:
               DisplayMode.Disabled,
               DisplayMode.Edit)
               
+            # Hover Fill Color
+            HoverFill: =If(ButtonComponent.IsDisabled,
+              RGBA(245, 245, 245, 1),
+              Switch(ButtonComponent.Variant,
+                "Primary", RGBA(25, 118, 210, 1),
+                "Secondary", RGBA(248, 250, 252, 1),
+                "Danger", RGBA(211, 47, 47, 1),
+                "Ghost", RGBA(248, 250, 252, 0.8),
+                "Outline", RGBA(227, 242, 253, 1),
+                RGBA(25, 118, 210, 1)))
+                
+            # Hover Text Color - Darker black for better contrast
+            HoverColor: =If(ButtonComponent.IsDisabled,
+              RGBA(158, 158, 158, 1),
+              Switch(ButtonComponent.Variant,
+                "Primary", RGBA(255, 255, 255, 1),
+                "Secondary", RGBA(17, 24, 39, 1),
+                "Danger", RGBA(255, 255, 255, 1),
+                "Ghost", RGBA(17, 24, 39, 1),
+                "Outline", RGBA(25, 118, 210, 1),
+                RGBA(255, 255, 255, 1)))
+                
+            # Hover Border Color
+            HoverBorderColor: =If(ButtonComponent.IsDisabled,
+              RGBA(224, 224, 224, 1),
+              Switch(ButtonComponent.Variant,
+                "Primary", RGBA(25, 118, 210, 1),
+                "Secondary", RGBA(187, 222, 251, 1),
+                "Danger", RGBA(211, 47, 47, 1),
+                "Ghost", RGBA(187, 222, 251, 1),
+                "Outline", RGBA(25, 118, 210, 1),
+                RGBA(25, 118, 210, 1)))
+                
+            # Pressed Fill Color
+            PressedFill: =If(ButtonComponent.IsDisabled,
+              RGBA(245, 245, 245, 1),
+              Switch(ButtonComponent.Variant,
+                "Primary", RGBA(21, 101, 192, 1),
+                "Secondary", RGBA(237, 242, 247, 1),
+                "Danger", RGBA(198, 40, 40, 1),
+                "Ghost", RGBA(237, 242, 247, 1),
+                "Outline", RGBA(187, 222, 251, 1),
+                RGBA(21, 101, 192, 1)))
+                
+            # Pressed Text Color - Even darker for pressed state
+            PressedColor: =If(ButtonComponent.IsDisabled,
+              RGBA(158, 158, 158, 1),
+              Switch(ButtonComponent.Variant,
+                "Primary", RGBA(255, 255, 255, 1),
+                "Secondary", RGBA(0, 0, 0, 1),
+                "Danger", RGBA(255, 255, 255, 1),
+                "Ghost", RGBA(0, 0, 0, 1),
+                "Outline", RGBA(21, 101, 192, 1),
+                RGBA(255, 255, 255, 1)))
+                
             # Click Handler
             OnSelect: |
               =If(Not(Or(ButtonComponent.IsDisabled, ButtonComponent.IsLoading)), ButtonComponent.OnClick(), false)
@@ -189,12 +244,12 @@ ComponentDefinitions:
                   Color: =If(ButtonComponent.IsDisabled,
                     RGBA(158, 158, 158, 1),
                     Switch(ButtonComponent.Variant,
-                      "Primary", RGBA(33, 150, 243, 1),
+                      "Primary", RGBA(255, 255, 255, 1),
                       "Secondary", RGBA(55, 65, 81, 1),
-                      "Danger", RGBA(244, 67, 54, 1),
+                      "Danger", RGBA(255, 255, 255, 1),
                       "Ghost", RGBA(55, 65, 81, 1),
                       "Outline", RGBA(33, 150, 243, 1),
-                      RGBA(33, 150, 243, 1)))
+                      RGBA(255, 255, 255, 1)))
                   
       # Loading Indicator
       - 'Button.Loading.Icon':
@@ -208,12 +263,12 @@ ComponentDefinitions:
             Color: =If(ButtonComponent.IsDisabled,
               RGBA(158, 158, 158, 1),
               Switch(ButtonComponent.Variant,
-                "Primary", RGBA(33, 150, 243, 1),
+                "Primary", RGBA(255, 255, 255, 1),
                 "Secondary", RGBA(55, 65, 81, 1),
-                "Danger", RGBA(244, 67, 54, 1),
+                "Danger", RGBA(255, 255, 255, 1),
                 "Ghost", RGBA(55, 65, 81, 1),
                 "Outline", RGBA(33, 150, 243, 1),
-                RGBA(33, 150, 243, 1)))
+                RGBA(255, 255, 255, 1)))
             Visible: =ButtonComponent.IsLoading
             
       # Hover Effect Overlay

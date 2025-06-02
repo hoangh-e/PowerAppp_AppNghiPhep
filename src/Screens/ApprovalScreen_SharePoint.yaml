@@ -30,6 +30,12 @@ Screens:
             UserRole: =varCurrentUser.MaVaiTro
             ShowNotification: =true
             NotificationCount: =CountRows(varPendingRequests)
+            OnLogout: |
+              =//LOGOUT: Clear all session data and return to login
+              Set(varLoginSuccess, false); Set(varSessionValid, false);
+              Set(varLoggedInUserEmail, ""); Clear(UserSession);
+              UpdateContext({localLogout: true});
+              Navigate(LoginScreen)
             
       - 'Approval.Navigation':
           Control: CanvasComponent

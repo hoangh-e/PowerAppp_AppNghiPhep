@@ -25,62 +25,57 @@ ComponentDefinitions:
         DisplayName: OnNavigate
         Description: "Sự kiện khi chuyển màn hình"
         ReturnType: None
-        Default: =false
+        Default: =
         Parameters:
           - ScreenName:
               Description: "Tên màn hình"
               DataType: Text
-              IsOptional: true
+              IsOptional: false
               Default: ="Dashboard"
       OnToggleCollapse:
         PropertyKind: Event
         DisplayName: OnToggleCollapse
         Description: "Sự kiện khi toggle collapse"
         ReturnType: None
-        Default: =false
+        Default: =
     Properties:
-      # Full height OK for navigation
       Height: =App.Height
-      # 20% width cho side navigation
-      Width: =App.Width * 0.2
+      Width: =If(NavigationComponent.IsCollapsed, App.Width * 0.05, App.Width * 0.16)
     Children:
-    # Navigation Background (Rectangle for visual only)
+    # Navigation Background with enhanced styling
     - 'Navigation.Background':
         Control: Rectangle
         Properties:
           X: =0
           Y: =0
-          Width: =If(NavigationComponent.IsCollapsed, Parent.Width * 0.15, Parent.Width * 0.2)
+          Width: =Parent.Width
           Height: =Parent.Height
-          Fill: =RGBA(248, 250, 252, 1)
-          BorderColor: =RGBA(224, 224, 224, 1)
-          BorderThickness: =Parent.Height * 0.0005
-          Visible: =true
+          Fill: =RGBA(249, 250, 251, 1)
+          BorderColor: =RGBA(229, 231, 235, 1)
+          BorderThickness: =1
           
-    # Navigation Container (GroupContainer for logic)
+    # Main Navigation Container
     - 'Navigation.Container':
         Control: GroupContainer
         Variant: ManualLayout
         Properties:
           X: =0
           Y: =0
-          Width: =If(NavigationComponent.IsCollapsed, Parent.Width * 0.15, Parent.Width)
+          Width: =Parent.Width
           Height: =Parent.Height
-          Visible: =true
         Children:
-          # Header Background (Rectangle for visual only)
+          # Enhanced Header Section
           - 'Navigation.Header.Background':
               Control: Rectangle
               Properties:
                 X: =0
                 Y: =0
                 Width: =Parent.Width
-                Height: =Parent.Height * 0.06
+                Height: =Parent.Height * 0.07
                 Fill: =RGBA(255, 255, 255, 1)
-                BorderColor: =RGBA(224, 224, 224, 1)
-                BorderThickness: =Parent.Height * 0.0005
+                BorderColor: =RGBA(229, 231, 235, 1)
+                BorderThickness: =1
                 
-          # Header Container (GroupContainer for logic)
           - 'Navigation.Header.Container':
               Control: GroupContainer
               Variant: ManualLayout
@@ -88,487 +83,421 @@ ComponentDefinitions:
                 X: =0
                 Y: =0
                 Width: =Parent.Width
-                Height: =Parent.Height * 0.06
+                Height: =Parent.Height * 0.07
               Children:
-                # Logo Container (GroupContainer for logic)
+                # Enhanced Logo Container
                 - 'Navigation.Logo.Container':
                     Control: GroupContainer
                     Variant: ManualLayout
                     Properties:
-                      X: =Parent.Width * 0.03
+                      X: =Parent.Width * 0.06
                       Y: =(Parent.Height - Self.Height) / 2
-                      Width: =If(NavigationComponent.IsCollapsed, Parent.Width * 0.8, Parent.Width * 0.7)
-                      Height: =Parent.Height * 0.6
+                      Width: =If(NavigationComponent.IsCollapsed, Parent.Width * 0.5, Parent.Width * 0.65)
+                      Height: =Parent.Height * 0.65
                     Children:
                       - 'Navigation.Logo.Icon':
                           Control: Classic/Icon
                           Properties:
                             X: =0
                             Y: =(Parent.Height - Self.Height) / 2
-                            Width: =Parent.Height * 0.7
-                            Height: =Parent.Height * 0.7
+                            Width: =Parent.Height * 0.75
+                            Height: =Parent.Height * 0.75
                             Icon: =Icon.CalendarBlank
-                            Color: =RGBA(33, 150, 243, 1)
+                            Color: =RGBA(59, 130, 246, 1)
                             
                       - 'Navigation.Logo.Text':
                           Control: Label
                           Properties:
-                            X: ='Navigation.Logo.Icon'.X + 'Navigation.Logo.Icon'.Width + Parent.Width * 0.08
+                            X: ='Navigation.Logo.Icon'.X + 'Navigation.Logo.Icon'.Width + Parent.Width * 0.06
                             Y: =(Parent.Height - Self.Height) / 2
-                            Width: =Parent.Width * 0.8
+                            Width: =Parent.Width * 0.65
                             Height: =Parent.Height * 0.5
-                            Text: ="Leave App"
-                            Color: =RGBA(55, 65, 81, 1)
+                            Text: ="Leave Management"
+                            Color: =RGBA(31, 41, 55, 1)
                             Font: =Font.'Open Sans'
-                            FontWeight: =FontWeight.Semibold
-                            Size: =Parent.Height * 0.28
+                            FontWeight: =FontWeight.Bold
+                            Size: =10
                             Visible: =Not(NavigationComponent.IsCollapsed)
                             
-                # Collapse Toggle Button
+                # Enhanced Toggle Button with modern design
                 - 'Navigation.Toggle.Button':
                     Control: Classic/Button
                     Properties:
-                      X: =Parent.Width - Self.Width - Parent.Width * 0.03
+                      X: =Parent.Width - Self.Width - Parent.Width * 0.06
                       Y: =(Parent.Height - Self.Height) / 2
                       Width: =Parent.Height * 0.5
                       Height: =Parent.Height * 0.5
-                      Text: =If(NavigationComponent.IsCollapsed, "→", "←")
-                      Fill: =RGBA(245, 245, 245, 1)
-                      Color: =RGBA(107, 114, 128, 1)
-                      BorderColor: =RGBA(224, 224, 224, 1)
-                      BorderThickness: =Parent.Height * 0.001
+                      Text: =If(NavigationComponent.IsCollapsed, "»", "«")
+                      Fill: =RGBA(249, 250, 251, 1)
+                      Color: =RGBA(75, 85, 99, 1)
+                      BorderColor: =RGBA(209, 213, 219, 1)
+                      BorderThickness: =1
                       Font: =Font.'Open Sans'
                       FontWeight: =FontWeight.Bold
-                      Size: =Parent.Height * 0.2
+                      Size: =8
+                      HoverFill: =RGBA(243, 244, 246, 1)
+                      HoverColor: =RGBA(31, 41, 55, 1)
+                      HoverBorderColor: =RGBA(156, 163, 175, 1)
+                      PressedFill: =RGBA(229, 231, 235, 1)
+                      PressedColor: =RGBA(17, 24, 39, 1)
                       OnSelect: |
                         =NavigationComponent.OnToggleCollapse()
                       
-                # Mobile Close Button
-                - 'Navigation.Mobile.CloseButton':
-                    Control: Classic/Button
-                    Properties:
-                      X: =Parent.Width - Self.Width - Parent.Width * 0.03
-                      Y: =(Parent.Height - Self.Height) / 2
-                      Width: =Parent.Height * 0.5
-                      Height: =Parent.Height * 0.5
-                      Text: ="✕"
-                      Fill: =RGBA(245, 245, 245, 1)
-                      Color: =RGBA(107, 114, 128, 1)
-                      BorderColor: =RGBA(224, 224, 224, 1)
-                      BorderThickness: =Parent.Height * 0.001
-                      Font: =Font.'Open Sans'
-                      FontWeight: =FontWeight.Bold
-                      Size: =Parent.Height * 0.2
-                      Visible: =false
-                      OnSelect: |
-                        =Set(varMobileMenuOpen, false)
-                      
-          # Menu Items Container (GroupContainer for logic)
+          # Enhanced Menu Items Container
           - 'Navigation.Menu.Container':
               Control: GroupContainer
               Variant: ManualLayout
               Properties:
                 X: =0
-                Y: ='Navigation.Header.Container'.Y + 'Navigation.Header.Container'.Height
+                Y: ='Navigation.Header.Container'.Y + 'Navigation.Header.Container'.Height + Parent.Height * 0.005
                 Width: =Parent.Width
-                Height: =Parent.Height - 'Navigation.Header.Container'.Height - Parent.Height * 0.05
+                Height: =Parent.Height - 'Navigation.Header.Container'.Height - Parent.Height * 0.01
               Children:
-                # Dashboard Menu Item Background
+                # Dashboard Menu Item with enhanced hover effects
                 - 'Navigation.Menu.Dashboard.Background':
                     Control: Rectangle
                     Properties:
-                      X: =Parent.Width * 0.015
-                      Y: =Parent.Height * 0.015
-                      Width: =Parent.Width * 0.97
+                      X: =Parent.Width * 0.04
+                      Y: =Parent.Height * 0.008
+                      Width: =Parent.Width * 0.92
                       Height: =Parent.Height * 0.06
                       Fill: =If(NavigationComponent.ActiveScreen = "Dashboard", 
-                        RGBA(227, 242, 253, 1), 
-                        RGBA(0, 0, 0, 0))
+                        RGBA(239, 246, 255, 1), 
+                        RGBA(255, 255, 255, 0))
                       BorderColor: =If(NavigationComponent.ActiveScreen = "Dashboard", 
-                        RGBA(187, 222, 251, 1), 
-                        RGBA(0, 0, 0, 0))
-                      BorderThickness: =If(NavigationComponent.ActiveScreen = "Dashboard", 
-                        Parent.Width * 0.002, 
-                        Parent.Width * 0.0005)
+                        RGBA(147, 197, 253, 1), 
+                        RGBA(255, 255, 255, 0))
+                      BorderThickness: =If(NavigationComponent.ActiveScreen = "Dashboard", 1, 0)
 
-                # Dashboard Menu Item Container
                 - 'Navigation.Menu.Dashboard':
-                    Control: GroupContainer
-                    Variant: ManualLayout
+                    Control: Classic/Button
                     Properties:
-                      X: =Parent.Width * 0.015
-                      Y: =Parent.Height * 0.015
-                      Width: =Parent.Width * 0.97
+                      X: =Parent.Width * 0.04
+                      Y: =Parent.Height * 0.008
+                      Width: =Parent.Width * 0.92
                       Height: =Parent.Height * 0.06
-                    Children:
-                      - 'Navigation.Menu.Dashboard.Icon':
-                          Control: Classic/Icon
-                          Properties:
-                            X: =Parent.Width * 0.06
-                            Y: =(Parent.Height - Self.Height) / 2
-                            Width: =Parent.Height * 0.4
-                            Height: =Parent.Height * 0.4
-                            Icon: =Icon.DetailList
-                            Color: =If(NavigationComponent.ActiveScreen = "Dashboard", 
-                              RGBA(33, 150, 243, 1), 
-                              RGBA(107, 114, 128, 1))
-                              
-                      - 'Navigation.Menu.Dashboard.Text':
-                          Control: Label
-                          Properties:
-                            X: ='Navigation.Menu.Dashboard.Icon'.X + 'Navigation.Menu.Dashboard.Icon'.Width + Parent.Width * 0.06
-                            Y: =(Parent.Height - Self.Height) / 2
-                            Width: =Parent.Width * 0.7
-                            Height: =Parent.Height * 0.5
-                            Text: ="Dashboard"
-                            Color: =If(NavigationComponent.ActiveScreen = "Dashboard", 
-                              RGBA(33, 150, 243, 1), 
-                              RGBA(55, 65, 81, 1))
-                            Font: =Font.'Open Sans'
-                            FontWeight: =If(NavigationComponent.ActiveScreen = "Dashboard", 
-                              FontWeight.Semibold, 
-                              FontWeight.Normal)
-                            Size: =Parent.Height * 0.22
-                            Visible: =Not(NavigationComponent.IsCollapsed)
-                            
-                      - 'Navigation.Menu.Dashboard.Button':
-                          Control: Classic/Button
-                          Properties:
-                            X: =0
-                            Y: =0
-                            Width: =Parent.Width
-                            Height: =Parent.Height
-                            Text: =""
-                            Fill: =RGBA(0, 0, 0, 0)
-                            BorderColor: =RGBA(0, 0, 0, 0)
-                            BorderThickness: =Parent.Height * 0.001
-                            OnSelect: |
-                              =Set(varActiveScreen, "Dashboard")
-                            
-                # Leave Request Menu Item Background
+                      Text: =If(NavigationComponent.IsCollapsed, "", "  Dashboard")
+                      Fill: =RGBA(255, 255, 255, 0)
+                      Color: =If(NavigationComponent.ActiveScreen = "Dashboard", 
+                        RGBA(59, 130, 246, 1), 
+                        RGBA(75, 85, 99, 1))
+                      BorderColor: =RGBA(255, 255, 255, 0)
+                      BorderThickness: =0
+                      Font: =Font.'Open Sans'
+                      FontWeight: =If(NavigationComponent.ActiveScreen = "Dashboard", 
+                        FontWeight.Semibold, 
+                        FontWeight.Normal)
+                      Size: =10
+                      HoverFill: =If(NavigationComponent.ActiveScreen = "Dashboard",
+                        RGBA(219, 234, 254, 1),
+                        RGBA(249, 250, 251, 1))
+                      HoverColor: =If(NavigationComponent.ActiveScreen = "Dashboard",
+                        RGBA(37, 99, 235, 1),
+                        RGBA(31, 41, 55, 1))
+                      PressedFill: =If(NavigationComponent.ActiveScreen = "Dashboard",
+                        RGBA(191, 219, 254, 1),
+                        RGBA(243, 244, 246, 1))
+                      PressedColor: =If(NavigationComponent.ActiveScreen = "Dashboard",
+                        RGBA(29, 78, 216, 1),
+                        RGBA(17, 24, 39, 1))
+                      OnSelect: |
+                        =NavigationComponent.OnNavigate("Dashboard")
+                        
+                # Dashboard Icon Overlay
+                - 'Navigation.Menu.Dashboard.Icon':
+                    Control: Classic/Icon
+                    Properties:
+                      X: =Parent.Width * 0.08
+                      Y: =Parent.Height * 0.03
+                      Width: =Parent.Height * 0.03
+                      Height: =Parent.Height * 0.03
+                      Icon: =Icon.DetailList
+                      Color: =If(NavigationComponent.ActiveScreen = "Dashboard", 
+                        RGBA(59, 130, 246, 1), 
+                        RGBA(75, 85, 99, 1))
+                      
+                # Leave Request Menu Item
                 - 'Navigation.Menu.LeaveRequest.Background':
                     Control: Rectangle
                     Properties:
-                      X: =Parent.Width * 0.015
-                      Y: ='Navigation.Menu.Dashboard'.Y + 'Navigation.Menu.Dashboard'.Height + Parent.Height * 0.008
-                      Width: =Parent.Width * 0.97
+                      X: =Parent.Width * 0.04
+                      Y: ='Navigation.Menu.Dashboard'.Y + 'Navigation.Menu.Dashboard'.Height + Parent.Height * 0.004
+                      Width: =Parent.Width * 0.92
                       Height: =Parent.Height * 0.06
                       Fill: =If(NavigationComponent.ActiveScreen = "LeaveRequest", 
-                        RGBA(252, 228, 236, 1), 
-                        RGBA(0, 0, 0, 0))
+                        RGBA(254, 242, 242, 1), 
+                        RGBA(255, 255, 255, 0))
                       BorderColor: =If(NavigationComponent.ActiveScreen = "LeaveRequest", 
-                        RGBA(248, 187, 208, 1), 
-                        RGBA(0, 0, 0, 0))
-                      BorderThickness: =If(NavigationComponent.ActiveScreen = "LeaveRequest", 
-                        Parent.Width * 0.002, 
-                        Parent.Width * 0.0005)
+                        RGBA(252, 165, 165, 1), 
+                        RGBA(255, 255, 255, 0))
+                      BorderThickness: =If(NavigationComponent.ActiveScreen = "LeaveRequest", 1, 0)
 
-                # Leave Request Menu Item Container
                 - 'Navigation.Menu.LeaveRequest':
-                    Control: GroupContainer
-                    Variant: ManualLayout
+                    Control: Classic/Button
                     Properties:
-                      X: =Parent.Width * 0.015
-                      Y: ='Navigation.Menu.Dashboard'.Y + 'Navigation.Menu.Dashboard'.Height + Parent.Height * 0.008
-                      Width: =Parent.Width * 0.97
+                      X: =Parent.Width * 0.04
+                      Y: ='Navigation.Menu.Dashboard'.Y + 'Navigation.Menu.Dashboard'.Height + Parent.Height * 0.004
+                      Width: =Parent.Width * 0.92
                       Height: =Parent.Height * 0.06
-                    Children:
-                      - 'Navigation.Menu.LeaveRequest.Icon':
-                          Control: Classic/Icon
-                          Properties:
-                            X: =Parent.Width * 0.06
-                            Y: =(Parent.Height - Self.Height) / 2
-                            Width: =Parent.Height * 0.4
-                            Height: =Parent.Height * 0.4
-                            Icon: =Icon.Edit
-                            Color: =If(NavigationComponent.ActiveScreen = "LeaveRequest", 
-                              RGBA(233, 30, 99, 1), 
-                              RGBA(107, 114, 128, 1))
-                              
-                      - 'Navigation.Menu.LeaveRequest.Text':
-                          Control: Label
-                          Properties:
-                            X: ='Navigation.Menu.LeaveRequest.Icon'.X + 'Navigation.Menu.LeaveRequest.Icon'.Width + Parent.Width * 0.06
-                            Y: =(Parent.Height - Self.Height) / 2
-                            Width: =Parent.Width * 0.7
-                            Height: =Parent.Height * 0.5
-                            Text: ="Tạo đơn nghỉ phép"
-                            Color: =If(NavigationComponent.ActiveScreen = "LeaveRequest", 
-                              RGBA(233, 30, 99, 1), 
-                              RGBA(55, 65, 81, 1))
-                            Font: =Font.'Open Sans'
-                            FontWeight: =If(NavigationComponent.ActiveScreen = "LeaveRequest", 
-                              FontWeight.Semibold, 
-                              FontWeight.Normal)
-                            Size: =Parent.Height * 0.22
-                            Visible: =Not(NavigationComponent.IsCollapsed)
-                            
-                      - 'Navigation.Menu.LeaveRequest.Button':
-                          Control: Classic/Button
-                          Properties:
-                            X: =0
-                            Y: =0
-                            Width: =Parent.Width
-                            Height: =Parent.Height
-                            Text: =""
-                            Fill: =RGBA(0, 0, 0, 0)
-                            BorderColor: =RGBA(0, 0, 0, 0)
-                            BorderThickness: =Parent.Height * 0.001
-                            OnSelect: |
-                              =Set(varActiveScreen, "LeaveRequest")
-                            
-                # My Leaves Menu Item Background
+                      Text: =If(NavigationComponent.IsCollapsed, "", "  Tạo đơn nghỉ phép")
+                      Fill: =RGBA(255, 255, 255, 0)
+                      Color: =If(NavigationComponent.ActiveScreen = "LeaveRequest", 
+                        RGBA(239, 68, 68, 1), 
+                        RGBA(75, 85, 99, 1))
+                      BorderColor: =RGBA(255, 255, 255, 0)
+                      BorderThickness: =0
+                      Font: =Font.'Open Sans'
+                      FontWeight: =If(NavigationComponent.ActiveScreen = "LeaveRequest", 
+                        FontWeight.Semibold, 
+                        FontWeight.Normal)
+                      Size: =10
+                      HoverFill: =If(NavigationComponent.ActiveScreen = "LeaveRequest",
+                        RGBA(254, 226, 226, 1),
+                        RGBA(249, 250, 251, 1))
+                      HoverColor: =If(NavigationComponent.ActiveScreen = "LeaveRequest",
+                        RGBA(220, 38, 38, 1),
+                        RGBA(31, 41, 55, 1))
+                      PressedFill: =If(NavigationComponent.ActiveScreen = "LeaveRequest",
+                        RGBA(252, 165, 165, 1),
+                        RGBA(243, 244, 246, 1))
+                      PressedColor: =If(NavigationComponent.ActiveScreen = "LeaveRequest",
+                        RGBA(185, 28, 28, 1),
+                        RGBA(17, 24, 39, 1))
+                      OnSelect: |
+                        =NavigationComponent.OnNavigate("LeaveRequest")
+                        
+                - 'Navigation.Menu.LeaveRequest.Icon':
+                    Control: Classic/Icon
+                    Properties:
+                      X: =Parent.Width * 0.08
+                      Y: ='Navigation.Menu.Dashboard'.Y + 'Navigation.Menu.Dashboard'.Height + Parent.Height * 0.02
+                      Width: =Parent.Height * 0.03
+                      Height: =Parent.Height * 0.03
+                      Icon: =Icon.Edit
+                      Color: =If(NavigationComponent.ActiveScreen = "LeaveRequest", 
+                        RGBA(239, 68, 68, 1), 
+                        RGBA(75, 85, 99, 1))
+                      
+                # My Leaves Menu Item
                 - 'Navigation.Menu.MyLeaves.Background':
                     Control: Rectangle
                     Properties:
-                      X: =Parent.Width * 0.015
-                      Y: ='Navigation.Menu.LeaveRequest'.Y + 'Navigation.Menu.LeaveRequest'.Height + Parent.Height * 0.008
-                      Width: =Parent.Width * 0.97
+                      X: =Parent.Width * 0.04
+                      Y: ='Navigation.Menu.LeaveRequest'.Y + 'Navigation.Menu.LeaveRequest'.Height + Parent.Height * 0.004
+                      Width: =Parent.Width * 0.92
                       Height: =Parent.Height * 0.06
                       Fill: =If(NavigationComponent.ActiveScreen = "MyLeaves", 
-                        RGBA(232, 245, 233, 1), 
-                        RGBA(0, 0, 0, 0))
+                        RGBA(240, 253, 244, 1), 
+                        RGBA(255, 255, 255, 0))
                       BorderColor: =If(NavigationComponent.ActiveScreen = "MyLeaves", 
-                        RGBA(200, 230, 201, 1), 
-                        RGBA(0, 0, 0, 0))
-                      BorderThickness: =If(NavigationComponent.ActiveScreen = "MyLeaves", 
-                        Parent.Width * 0.002, 
-                        Parent.Width * 0.0005)
+                        RGBA(134, 239, 172, 1), 
+                        RGBA(255, 255, 255, 0))
+                      BorderThickness: =If(NavigationComponent.ActiveScreen = "MyLeaves", 1, 0)
 
-                # My Leaves Menu Item Container
                 - 'Navigation.Menu.MyLeaves':
-                    Control: GroupContainer
-                    Variant: ManualLayout
+                    Control: Classic/Button
                     Properties:
-                      X: =Parent.Width * 0.015
-                      Y: ='Navigation.Menu.LeaveRequest'.Y + 'Navigation.Menu.LeaveRequest'.Height + Parent.Height * 0.008
-                      Width: =Parent.Width * 0.97
+                      X: =Parent.Width * 0.04
+                      Y: ='Navigation.Menu.LeaveRequest'.Y + 'Navigation.Menu.LeaveRequest'.Height + Parent.Height * 0.004
+                      Width: =Parent.Width * 0.92
                       Height: =Parent.Height * 0.06
-                    Children:
-                      - 'Navigation.Menu.MyLeaves.Icon':
-                          Control: Classic/Icon
-                          Properties:
-                            X: =Parent.Width * 0.06
-                            Y: =(Parent.Height - Self.Height) / 2
-                            Width: =Parent.Height * 0.4
-                            Height: =Parent.Height * 0.4
-                            Icon: =Icon.DocumentWithContent
-                            Color: =If(NavigationComponent.ActiveScreen = "MyLeaves", 
-                              RGBA(76, 175, 80, 1), 
-                              RGBA(107, 114, 128, 1))
-                              
-                      - 'Navigation.Menu.MyLeaves.Text':
-                          Control: Label
-                          Properties:
-                            X: ='Navigation.Menu.MyLeaves.Icon'.X + 'Navigation.Menu.MyLeaves.Icon'.Width + Parent.Width * 0.06
-                            Y: =(Parent.Height - Self.Height) / 2
-                            Width: =Parent.Width * 0.7
-                            Height: =Parent.Height * 0.5
-                            Text: ="Đơn nghỉ phép của tôi"
-                            Color: =If(NavigationComponent.ActiveScreen = "MyLeaves", 
-                              RGBA(76, 175, 80, 1), 
-                              RGBA(55, 65, 81, 1))
-                            Font: =Font.'Open Sans'
-                            FontWeight: =If(NavigationComponent.ActiveScreen = "MyLeaves", 
-                              FontWeight.Semibold, 
-                              FontWeight.Normal)
-                            Size: =Parent.Height * 0.22
-                            Visible: =Not(NavigationComponent.IsCollapsed)
-                            
-                      - 'Navigation.Menu.MyLeaves.Button':
-                          Control: Classic/Button
-                          Properties:
-                            X: =0
-                            Y: =0
-                            Width: =Parent.Width
-                            Height: =Parent.Height
-                            Text: =""
-                            Fill: =RGBA(0, 0, 0, 0)
-                            BorderColor: =RGBA(0, 0, 0, 0)
-                            BorderThickness: =Parent.Height * 0.001
-                            OnSelect: |
-                              =Set(varActiveScreen, "MyLeaves")
-                            
-                # Calendar Menu Item Background
+                      Text: =If(NavigationComponent.IsCollapsed, "", "  Đơn nghỉ phép của tôi")
+                      Fill: =RGBA(255, 255, 255, 0)
+                      Color: =If(NavigationComponent.ActiveScreen = "MyLeaves", 
+                        RGBA(34, 197, 94, 1), 
+                        RGBA(75, 85, 99, 1))
+                      BorderColor: =RGBA(255, 255, 255, 0)
+                      BorderThickness: =0
+                      Font: =Font.'Open Sans'
+                      FontWeight: =If(NavigationComponent.ActiveScreen = "MyLeaves", 
+                        FontWeight.Semibold, 
+                        FontWeight.Normal)
+                      Size: =10
+                      HoverFill: =If(NavigationComponent.ActiveScreen = "MyLeaves",
+                        RGBA(220, 252, 231, 1),
+                        RGBA(249, 250, 251, 1))
+                      HoverColor: =If(NavigationComponent.ActiveScreen = "MyLeaves",
+                        RGBA(21, 128, 61, 1),
+                        RGBA(31, 41, 55, 1))
+                      PressedFill: =If(NavigationComponent.ActiveScreen = "MyLeaves",
+                        RGBA(187, 247, 208, 1),
+                        RGBA(243, 244, 246, 1))
+                      PressedColor: =If(NavigationComponent.ActiveScreen = "MyLeaves",
+                        RGBA(20, 83, 45, 1),
+                        RGBA(17, 24, 39, 1))
+                      OnSelect: |
+                        =NavigationComponent.OnNavigate("MyLeaves")
+                        
+                - 'Navigation.Menu.MyLeaves.Icon':
+                    Control: Classic/Icon
+                    Properties:
+                      X: =Parent.Width * 0.08
+                      Y: ='Navigation.Menu.LeaveRequest'.Y + 'Navigation.Menu.LeaveRequest'.Height + Parent.Height * 0.02
+                      Width: =Parent.Height * 0.03
+                      Height: =Parent.Height * 0.03
+                      Icon: =Icon.DocumentWithContent
+                      Color: =If(NavigationComponent.ActiveScreen = "MyLeaves", 
+                        RGBA(34, 197, 94, 1), 
+                        RGBA(75, 85, 99, 1))
+                      
+                # Calendar Menu Item
                 - 'Navigation.Menu.Calendar.Background':
                     Control: Rectangle
                     Properties:
-                      X: =Parent.Width * 0.015
-                      Y: ='Navigation.Menu.MyLeaves'.Y + 'Navigation.Menu.MyLeaves'.Height + Parent.Height * 0.008
-                      Width: =Parent.Width * 0.97
+                      X: =Parent.Width * 0.04
+                      Y: ='Navigation.Menu.MyLeaves'.Y + 'Navigation.Menu.MyLeaves'.Height + Parent.Height * 0.004
+                      Width: =Parent.Width * 0.92
                       Height: =Parent.Height * 0.06
                       Fill: =If(NavigationComponent.ActiveScreen = "Calendar", 
-                        RGBA(255, 243, 224, 1), 
-                        RGBA(0, 0, 0, 0))
+                        RGBA(254, 249, 195, 1), 
+                        RGBA(255, 255, 255, 0))
                       BorderColor: =If(NavigationComponent.ActiveScreen = "Calendar", 
-                        RGBA(255, 224, 178, 1), 
-                        RGBA(0, 0, 0, 0))
-                      BorderThickness: =If(NavigationComponent.ActiveScreen = "Calendar", 
-                        Parent.Width * 0.002, 
-                        Parent.Width * 0.0005)
+                        RGBA(253, 224, 71, 1), 
+                        RGBA(255, 255, 255, 0))
+                      BorderThickness: =If(NavigationComponent.ActiveScreen = "Calendar", 1, 0)
 
-                # Calendar Menu Item Container
                 - 'Navigation.Menu.Calendar':
-                    Control: GroupContainer
-                    Variant: ManualLayout
+                    Control: Classic/Button
                     Properties:
-                      X: =Parent.Width * 0.015
-                      Y: ='Navigation.Menu.MyLeaves'.Y + 'Navigation.Menu.MyLeaves'.Height + Parent.Height * 0.008
-                      Width: =Parent.Width * 0.97
+                      X: =Parent.Width * 0.04
+                      Y: ='Navigation.Menu.MyLeaves'.Y + 'Navigation.Menu.MyLeaves'.Height + Parent.Height * 0.004
+                      Width: =Parent.Width * 0.92
                       Height: =Parent.Height * 0.06
-                    Children:
-                      - 'Navigation.Menu.Calendar.Icon':
-                          Control: Classic/Icon
-                          Properties:
-                            X: =Parent.Width * 0.06
-                            Y: =(Parent.Height - Self.Height) / 2
-                            Width: =Parent.Height * 0.4
-                            Height: =Parent.Height * 0.4
-                            Icon: =Icon.CalendarBlank
-                            Color: =If(NavigationComponent.ActiveScreen = "Calendar", 
-                              RGBA(255, 152, 0, 1), 
-                              RGBA(107, 114, 128, 1))
-                              
-                      - 'Navigation.Menu.Calendar.Text':
-                          Control: Label
-                          Properties:
-                            X: ='Navigation.Menu.Calendar.Icon'.X + 'Navigation.Menu.Calendar.Icon'.Width + Parent.Width * 0.06
-                            Y: =(Parent.Height - Self.Height) / 2
-                            Width: =Parent.Width * 0.7
-                            Height: =Parent.Height * 0.5
-                            Text: ="Lịch nghỉ phép"
-                            Color: =If(NavigationComponent.ActiveScreen = "Calendar", 
-                              RGBA(255, 152, 0, 1), 
-                              RGBA(55, 65, 81, 1))
-                            Font: =Font.'Open Sans'
-                            FontWeight: =If(NavigationComponent.ActiveScreen = "Calendar", 
-                              FontWeight.Semibold, 
-                              FontWeight.Normal)
-                            Size: =Parent.Height * 0.22
-                            Visible: =Not(NavigationComponent.IsCollapsed)
-                            
-                      - 'Navigation.Menu.Calendar.Button':
-                          Control: Classic/Button
-                          Properties:
-                            X: =0
-                            Y: =0
-                            Width: =Parent.Width
-                            Height: =Parent.Height
-                            Text: =""
-                            Fill: =RGBA(0, 0, 0, 0)
-                            BorderColor: =RGBA(0, 0, 0, 0)
-                            BorderThickness: =Parent.Height * 0.001
-                            OnSelect: |
-                              =Set(varActiveScreen, "Calendar")
-                            
-                # HR Management Menu Item (Only for HR/Admin)
+                      Text: =If(NavigationComponent.IsCollapsed, "", "  Lịch nghỉ phép")
+                      Fill: =RGBA(255, 255, 255, 0)
+                      Color: =If(NavigationComponent.ActiveScreen = "Calendar", 
+                        RGBA(217, 119, 6, 1), 
+                        RGBA(75, 85, 99, 1))
+                      BorderColor: =RGBA(255, 255, 255, 0)
+                      BorderThickness: =0
+                      Font: =Font.'Open Sans'
+                      FontWeight: =If(NavigationComponent.ActiveScreen = "Calendar", 
+                        FontWeight.Semibold, 
+                        FontWeight.Normal)
+                      Size: =10
+                      HoverFill: =If(NavigationComponent.ActiveScreen = "Calendar",
+                        RGBA(254, 240, 138, 1),
+                        RGBA(249, 250, 251, 1))
+                      HoverColor: =If(NavigationComponent.ActiveScreen = "Calendar",
+                        RGBA(180, 83, 9, 1),
+                        RGBA(31, 41, 55, 1))
+                      PressedFill: =If(NavigationComponent.ActiveScreen = "Calendar",
+                        RGBA(253, 224, 71, 1),
+                        RGBA(243, 244, 246, 1))
+                      PressedColor: =If(NavigationComponent.ActiveScreen = "Calendar",
+                        RGBA(146, 64, 14, 1),
+                        RGBA(17, 24, 39, 1))
+                      OnSelect: |
+                        =NavigationComponent.OnNavigate("Calendar")
+                        
+                - 'Navigation.Menu.Calendar.Icon':
+                    Control: Classic/Icon
+                    Properties:
+                      X: =Parent.Width * 0.08
+                      Y: ='Navigation.Menu.MyLeaves'.Y + 'Navigation.Menu.MyLeaves'.Height + Parent.Height * 0.02
+                      Width: =Parent.Height * 0.03
+                      Height: =Parent.Height * 0.03
+                      Icon: =Icon.CalendarBlank
+                      Color: =If(NavigationComponent.ActiveScreen = "Calendar", 
+                        RGBA(217, 119, 6, 1), 
+                        RGBA(75, 85, 99, 1))
+                      
+                # Management Menu Item (visible for managers)
                 - 'Navigation.Menu.Management.Background':
                     Control: Rectangle
                     Properties:
-                      X: =Parent.Width * 0.015
-                      Y: ='Navigation.Menu.Calendar'.Y + 'Navigation.Menu.Calendar'.Height + Parent.Height * 0.008
-                      Width: =Parent.Width * 0.97
+                      X: =Parent.Width * 0.04
+                      Y: ='Navigation.Menu.Calendar'.Y + 'Navigation.Menu.Calendar'.Height + Parent.Height * 0.004
+                      Width: =Parent.Width * 0.92
                       Height: =Parent.Height * 0.06
                       Fill: =If(NavigationComponent.ActiveScreen = "Management", 
-                        RGBA(243, 232, 255, 1), 
-                        RGBA(0, 0, 0, 0))
+                        RGBA(248, 243, 255, 1), 
+                        RGBA(255, 255, 255, 0))
                       BorderColor: =If(NavigationComponent.ActiveScreen = "Management", 
-                        RGBA(221, 214, 254, 1), 
-                        RGBA(0, 0, 0, 0))
-                      BorderThickness: =If(NavigationComponent.ActiveScreen = "Management", 
-                        Parent.Width * 0.002, 
-                        Parent.Width * 0.0005)
-                      Visible: =NavigationComponent.UserRole in ["HR", "ADMIN"]
+                        RGBA(196, 181, 253, 1), 
+                        RGBA(255, 255, 255, 0))
+                      BorderThickness: =If(NavigationComponent.ActiveScreen = "Management", 1, 0)
+                      Visible: =Or(NavigationComponent.UserRole = "Manager", NavigationComponent.UserRole = "Admin", NavigationComponent.UserRole = "ADMIN")
 
-                # HR Management Menu Item Container
                 - 'Navigation.Menu.Management':
-                    Control: GroupContainer
-                    Variant: ManualLayout
+                    Control: Classic/Button
                     Properties:
-                      X: =Parent.Width * 0.015
-                      Y: ='Navigation.Menu.Calendar'.Y + 'Navigation.Menu.Calendar'.Height + Parent.Height * 0.008
-                      Width: =Parent.Width * 0.97
+                      X: =Parent.Width * 0.04
+                      Y: ='Navigation.Menu.Calendar'.Y + 'Navigation.Menu.Calendar'.Height + Parent.Height * 0.004
+                      Width: =Parent.Width * 0.92
                       Height: =Parent.Height * 0.06
-                      Visible: =NavigationComponent.UserRole in ["HR", "ADMIN"]
-                    Children:
-                      - 'Navigation.Menu.Management.Icon':
-                          Control: Classic/Icon
-                          Properties:
-                            X: =Parent.Width * 0.06
-                            Y: =(Parent.Height - Self.Height) / 2
-                            Width: =Parent.Height * 0.4
-                            Height: =Parent.Height * 0.4
-                            Icon: =Icon.Settings
-                            Color: =If(NavigationComponent.ActiveScreen = "Management", 
-                              RGBA(139, 92, 246, 1), 
-                              RGBA(107, 114, 128, 1))
-                              
-                      - 'Navigation.Menu.Management.Text':
-                          Control: Label
-                          Properties:
-                            X: ='Navigation.Menu.Management.Icon'.X + 'Navigation.Menu.Management.Icon'.Width + Parent.Width * 0.06
-                            Y: =(Parent.Height - Self.Height) / 2
-                            Width: =Parent.Width * 0.7
-                            Height: =Parent.Height * 0.5
-                            Text: ="Quản lý HR"
-                            Color: =If(NavigationComponent.ActiveScreen = "Management", 
-                              RGBA(139, 92, 246, 1), 
-                              RGBA(55, 65, 81, 1))
-                            Font: =Font.'Open Sans'
-                            FontWeight: =If(NavigationComponent.ActiveScreen = "Management", 
-                              FontWeight.Semibold, 
-                              FontWeight.Normal)
-                            Size: =Parent.Height * 0.22
-                            Visible: =Not(NavigationComponent.IsCollapsed)
-                            
-                      - 'Navigation.Menu.Management.Button':
-                          Control: Classic/Button
-                          Properties:
-                            X: =0
-                            Y: =0
-                            Width: =Parent.Width
-                            Height: =Parent.Height
-                            Text: =""
-                            Fill: =RGBA(0, 0, 0, 0)
-                            BorderColor: =RGBA(0, 0, 0, 0)
-                            BorderThickness: =Parent.Height * 0.001
-                            OnSelect: |
-                              =Set(varActiveScreen, "Management")
-                            
-          # Bottom Logo/Footer Section
-          - 'Navigation.Footer':
+                      Text: =If(NavigationComponent.IsCollapsed, "", "  Quản lý")
+                      Fill: =RGBA(255, 255, 255, 0)
+                      Color: =If(NavigationComponent.ActiveScreen = "Management", 
+                        RGBA(147, 51, 234, 1), 
+                        RGBA(75, 85, 99, 1))
+                      BorderColor: =RGBA(255, 255, 255, 0)
+                      BorderThickness: =0
+                      Font: =Font.'Open Sans'
+                      FontWeight: =If(NavigationComponent.ActiveScreen = "Management", 
+                        FontWeight.Semibold, 
+                        FontWeight.Normal)
+                      Size: =10
+                      Visible: =Or(NavigationComponent.UserRole = "Manager", NavigationComponent.UserRole = "Admin", NavigationComponent.UserRole = "ADMIN")
+                      HoverFill: =If(NavigationComponent.ActiveScreen = "Management",
+                        RGBA(237, 233, 254, 1),
+                        RGBA(249, 250, 251, 1))
+                      HoverColor: =If(NavigationComponent.ActiveScreen = "Management",
+                        RGBA(124, 58, 237, 1),
+                        RGBA(31, 41, 55, 1))
+                      PressedFill: =If(NavigationComponent.ActiveScreen = "Management",
+                        RGBA(221, 214, 254, 1),
+                        RGBA(243, 244, 246, 1))
+                      PressedColor: =If(NavigationComponent.ActiveScreen = "Management",
+                        RGBA(109, 40, 217, 1),
+                        RGBA(17, 24, 39, 1))
+                      OnSelect: |
+                        =NavigationComponent.OnNavigate("Management")
+                        
+                - 'Navigation.Menu.Management.Icon':
+                    Control: Classic/Icon
+                    Properties:
+                      X: =Parent.Width * 0.08
+                      Y: ='Navigation.Menu.Calendar'.Y + 'Navigation.Menu.Calendar'.Height + Parent.Height * 0.02
+                      Width: =Parent.Height * 0.03
+                      Height: =Parent.Height * 0.03
+                      Icon: =Icon.Settings
+                      Color: =If(NavigationComponent.ActiveScreen = "Management", 
+                        RGBA(147, 51, 234, 1), 
+                        RGBA(75, 85, 99, 1))
+                      Visible: =Or(NavigationComponent.UserRole = "Manager", NavigationComponent.UserRole = "Admin", NavigationComponent.UserRole = "ADMIN")
+          
+          # Enhanced Footer Section for collapsed state
+          - 'Navigation.Footer.Container':
               Control: GroupContainer
               Variant: ManualLayout
               Properties:
                 X: =0
-                Y: =Parent.Height - Self.Height
-                # Fixed 75% width on mobile
-                Width: =If(NavigationComponent.IsCollapsed, Parent.Width * 0.15, Parent.Width)
+                Y: =Parent.Height * 0.92
+                Width: =Parent.Width
                 Height: =Parent.Height * 0.08
               Children:
-                # Company Logo/Brand
-                - 'Navigation.Footer.Brand':
-                    Control: GroupContainer
-                    Variant: ManualLayout
+                - 'Navigation.Footer.Divider':
+                    Control: Rectangle
                     Properties:
-                      X: =Parent.Width * 0.03
-                      Y: =(Parent.Height - Self.Height) / 2
-                      Width: =Parent.Width * 0.94
-                      Height: =Parent.Height * 0.6
-                    Children:
-                      - 'Navigation.Footer.Text':
-                          Control: Label
-                          Properties:
-                            X: =0
-                            Y: =0
-                            Width: =Parent.Width
-                            Height: =Parent.Height
-                            Text: ="© 2024 Leave App"
-                            Color: =RGBA(156, 163, 175, 1)
-                            Font: =Font.'Open Sans'
-                            Size: =Parent.Height * 0.3
-                            Align: =Align.Center
-                            Visible: =Not(NavigationComponent.IsCollapsed)
+                      X: =Parent.Width * 0.1
+                      Y: =0
+                      Width: =Parent.Width * 0.8
+                      Height: =1
+                      Fill: =RGBA(229, 231, 235, 1)
+                      
+                - 'Navigation.Footer.Version':
+                    Control: Label
+                    Properties:
+                      X: =0
+                      Y: =Parent.Height * 0.3
+                      Width: =Parent.Width
+                      Height: =Parent.Height * 0.4
+                      Text: =If(NavigationComponent.IsCollapsed, "v2.0", "Version 2.0")
+                      Color: =RGBA(156, 163, 175, 1)
+                      Font: =Font.'Open Sans'
+                      Size: =If(NavigationComponent.IsCollapsed, 8, 9)
+                      Align: =Align.Center
 
     # Mobile Overlay - Light
     - 'Navigation.Mobile.Overlay':

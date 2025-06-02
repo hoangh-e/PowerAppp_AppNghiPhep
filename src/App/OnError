@@ -1,0 +1,11 @@
+Switch(FirstError.Kind,
+  ErrorKind.Network, Notify("Loi ket noi mang. Vui long kiem tra ket noi.", NotificationType.Error),
+  ErrorKind.Sync, Notify("Loi dong bo du lieu. Vui long thu lai.", NotificationType.Warning),
+  ErrorKind.Validation, Notify("Du lieu khong hop le: " & FirstError.Message, NotificationType.Error),
+  Notify("Da xay ra loi: " & FirstError.Message, NotificationType.Error)
+);
+Set(varLastError, {
+  Message: FirstError.Message,
+  Kind: FirstError.Kind,
+  Timestamp: Now()
+})

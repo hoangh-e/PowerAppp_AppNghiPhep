@@ -94,38 +94,37 @@ ComponentDefinitions:
             Width: =Parent.Width
             Height: =Parent.Height
           Children:
-            # Label Section
+            # Label Section (Top 25% of component height)
             - 'Input.Label.Container':
                 Control: GroupContainer
                 Variant: ManualLayout
                 Properties:
-                  X: =Parent.Width * 0.015
-                  Y: =If(IsBlank(InputComponent.Label), 
-                    0,
-                    Parent.Height * 0.3)
-                  Width: =Parent.Width * 0.97
-                  Height: =If(IsBlank(InputComponent.Label), 0, Parent.Height * 0.22)
+                  X: =Parent.Width * 0.02
+                  Y: =Parent.Height * 0.05
+                  Width: =Parent.Width * 0.96
+                  Height: =If(IsBlank(InputComponent.Label), 0, Parent.Height * 0.25)
+                  Visible: =Not(IsBlank(InputComponent.Label))
                 Children:
                   - 'Input.Label':
                       Control: Label
                       Properties:
                         X: =0
-                        Y: =Parent.Height * 0.22
-                        Width: =Parent.Width * 0.85
-                        Height: =Parent.Height * 0.7
+                        Y: =0
+                        Width: =Parent.Width * 0.9
+                        Height: =Parent.Height
                         Text: =InputComponent.Label
                         Color: =RGBA(55, 65, 81, 1)
                         Font: =Font.'Open Sans'
                         FontWeight: =FontWeight.Semibold
-                        Size: =Parent.Height * 0.45
+                        Size: =Parent.Height * 0.6
                         Visible: =Not(IsBlank(InputComponent.Label))
                         
                   - 'Input.Required.Indicator':
                       Control: Label
                       Properties:
-                        X: ='Input.Label'.X + 'Input.Label'.Width + Parent.Width * 0.01
+                        X: ='Input.Label'.X + 'Input.Label'.Width
                         Y: ='Input.Label'.Y
-                        Width: =Parent.Width * 0.05
+                        Width: =Parent.Width * 0.1
                         Height: ='Input.Label'.Height
                         Text: ="*"
                         Color: =RGBA(244, 67, 54, 1)
@@ -134,26 +133,26 @@ ComponentDefinitions:
                         Size: ='Input.Label'.Size
                         Visible: =And(InputComponent.Required, Not(IsBlank(InputComponent.Label)))
                         
-            # Main Input Section
+            # Main Input Section (Middle 50% of component height)
             - 'Input.Field.Container':
                 Control: GroupContainer
                 Variant: ManualLayout
                 Properties:
                   X: =Parent.Width * 0.02
                   Y: =If(IsBlank(InputComponent.Label), 
-                    Parent.Height * 0.2, 
-                    0)
+                    Parent.Height * 0.15, 
+                    Parent.Height * 0.35)
                   Width: =Parent.Width * 0.96
-                  Height: =Parent.Height * 0.5
+                  Height: =Parent.Height * 0.45
                 Children:
                   # Icon (if provided)
                   - 'Input.Icon':
                       Control: Classic/Icon
                       Properties:
-                        X: =Parent.Width * 0.015
+                        X: =Parent.Width * 0.02
                         Y: =(Parent.Height - Self.Height) / 2
-                        Width: =Parent.Height * 0.5
-                        Height: =Parent.Height * 0.5
+                        Width: =Parent.Height * 0.6
+                        Height: =Parent.Height * 0.6
                         Icon: =Switch(InputComponent.Icon,
                           "Email", Icon.Mail,
                           "Person", Icon.Person,
@@ -169,57 +168,58 @@ ComponentDefinitions:
                       Control: Classic/TextInput
                       Properties:
                         X: =If(Not(IsBlank(InputComponent.Icon)), 
-                          'Input.Icon'.X + 'Input.Icon'.Width + Parent.Width * 0.02,
+                          'Input.Icon'.X + 'Input.Icon'.Width + Parent.Width * 0.03,
                           Parent.Width * 0.02)
                         Y: =0
                         Width: =If(Not(IsBlank(InputComponent.Icon)),
-                          Parent.Width * 0.85,
+                          Parent.Width * 0.8,
                           Parent.Width * 0.96)
                         Height: =Parent.Height
-                        Text: =InputComponent.Value
+                        Default: =InputComponent.Value
                         HintText: =InputComponent.Placeholder
                         Color: =RGBA(55, 65, 81, 1)
                         Fill: =RGBA(0, 0, 0, 0)
                         BorderThickness: =0
                         BorderColor: =RGBA(0, 0, 0, 0)
                         Font: =Font.'Open Sans'
-                        Size: =Parent.Height * 0.35
+                        Size: =Parent.Height * 0.4
                         Mode: =Switch(InputComponent.InputType,
                           "Password", TextMode.Password,
                           "MultiLine", TextMode.MultiLine,
                           TextMode.SingleLine)
                         DisplayMode: =If(InputComponent.Disabled, DisplayMode.Disabled, DisplayMode.Edit)
-                        OnChange: =true
+                        OnChange: |
+                          =InputComponent.OnChange(Self.Text)
                         
-            # Error Message Section
+            # Error Message Section (Bottom 25% of component height)
             - 'Input.Error.Container':
                 Control: GroupContainer
                 Variant: ManualLayout
                 Properties:
-                  X: =Parent.Width * 0.015
-                  Y: =0
-                  Width: =Parent.Width * 0.97
-                  Height: =Parent.Height * 0.25
+                  X: =Parent.Width * 0.02
+                  Y: =Parent.Height * 0.8
+                  Width: =Parent.Width * 0.96
+                  Height: =Parent.Height * 0.18
                   Visible: =And(InputComponent.ShowError, Not(IsBlank(InputComponent.ErrorMessage)))
                 Children:
                   - 'Input.Error.Icon':
                       Control: Classic/Icon
                       Properties:
                         X: =0
-                        Y: =0
-                        Width: =Parent.Height * 0.6
-                        Height: =Parent.Height * 0.6
+                        Y: =(Parent.Height - Self.Height) / 2
+                        Width: =Parent.Height * 0.8
+                        Height: =Parent.Height * 0.8
                         Icon: =Icon.Error
                         Color: =RGBA(244, 67, 54, 1)
                         
                   - 'Input.Error.Text':
                       Control: Label
                       Properties:
-                        X: ='Input.Error.Icon'.X + 'Input.Error.Icon'.Width + Parent.Width * 0.015
+                        X: ='Input.Error.Icon'.X + 'Input.Error.Icon'.Width + Parent.Width * 0.03
                         Y: =0
-                        Width: =Parent.Width * 0.9
+                        Width: =Parent.Width * 0.85
                         Height: =Parent.Height
                         Text: =InputComponent.ErrorMessage
                         Color: =RGBA(244, 67, 54, 1)
                         Font: =Font.'Open Sans'
-                        Size: =Parent.Height * 0.45 
+                        Size: =Parent.Height * 0.55 

@@ -31,6 +31,12 @@ Screens:
             UserRole: =varCurrentUser.MaVaiTro
             ShowNotification: =true
             NotificationCount: =CountRows(Filter(varMonthLeaves, TrangThai in ["ChoDuyetCap1", "ChoDuyetCap2", "ChoDuyetCap3"]))
+            OnLogout: |
+              =//LOGOUT: Clear all session data and return to login
+              Set(varLoginSuccess, false); Set(varSessionValid, false);
+              Set(varLoggedInUserEmail, ""); Clear(UserSession);
+              UpdateContext({localLogout: true});
+              Navigate(LoginScreen)
             
       - 'Calendar.Navigation':
           Control: CanvasComponent

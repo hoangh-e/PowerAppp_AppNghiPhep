@@ -1,0 +1,6 @@
+Table(
+  {Name: "Small", MinWidth: 0},
+  {Name: "Medium", MinWidth: 768},
+  {Name: "Large", MinWidth: 1024},
+  {Name: "ExtraLarge", MinWidth: 1440}
+)

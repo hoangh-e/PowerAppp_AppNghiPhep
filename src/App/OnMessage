@@ -1,0 +1,6 @@
+Switch(Message.MessageType,
+  "Notification", Notify(Message.Text, NotificationType.Information),
+  "Warning", Notify(Message.Text, NotificationType.Warning),
+  "Error", Notify(Message.Text, NotificationType.Error),
+  Notify(Message.Text, NotificationType.Information)
+)

@@ -4,17 +4,41 @@ Screens:
       Fill: =RGBA(248, 250, 252, 1)
       OnVisible: |
         =Set(varActiveScreen, "Profile"); 
-        // Use session from Login or fallback to Microsoft 365 lookup
-        If(IsBlank(varCurrentUser), 
-          Set(varCurrentUser, LookUp(NguoiDung, Email = User().Email)));
-        // Validate current user session
-        If(IsBlank(varCurrentUser), 
-          Navigate(LoginScreen), 
-          // Continue with profile screen initialization using session data
-          Set(varUserDepartment, LookUp(DonVi, MaDonVi = varCurrentUser.MaDonVi)); 
-          Set(varUserRole, LookUp(VaiTro, MaVaiTro = varCurrentUser.MaVaiTro)); 
-          Set(varUserLeaveBalance, LookUp(SoNgayPhep, And(MaNhanVien.Value = varCurrentUser.MaNhanVien.Value, Nam = Year(Today())))); 
-          Set(varUserLeaveHistory, Filter(DonNghiPhep, MaNhanVien.Value = varCurrentUser.MaNhanVien.Value)); 
+        If(Not(IsUserAuthenticated) Or IsBlank(User),
+          Navigate(LoginScreen_SharePoint),
+          Set(varCurrentUser, User);
+          Set(varUserDepartment, {
+            TenDonVi: "Phòng Công nghệ thông tin",
+            MaDonVi: "IT"
+          }); 
+          Set(varUserRole, {
+            TenVaiTro: If(User.MaVaiTro = "ADMIN", "Quản trị viên", If(User.MaVaiTro = "Manager", "Trưởng phòng", "Nhân viên")),
+            MaVaiTro: User.MaVaiTro
+          }); 
+          Set(varUserLeaveBalance, {
+            TongNgayDuocPhep: 12,
+            SoNgayDaNghi: 3,
+            SoNgayConLai: 9,
+            Nam: Year(Today())
+          }); 
+          Set(varUserLeaveHistory, Table(
+            {
+              ID: "REQ001",
+              NgayBatDau: DateAdd(Today(), -30),
+              NgayKetThuc: DateAdd(Today(), -28),
+              SoNgayNghi: 3,
+              TrangThai: "DaDuyet",
+              MaLoai: "Annual"
+            },
+            {
+              ID: "REQ002", 
+              NgayBatDau: DateAdd(Today(), -15),
+              NgayKetThuc: DateAdd(Today(), -13),
+              SoNgayNghi: 3,
+              TrangThai: "ChoDuyetCap1",
+              MaLoai: "Sick"
+            }
+          )); 
           Set(varEditMode, false); 
           Set(varProfileErrors, {}))
     Children:
@@ -22,218 +46,327 @@ Screens:
           Control: CanvasComponent
           ComponentName: HeaderComponent
           Properties:
-            X: =Parent.X
-            Y: =Parent.Y
+            X: =0
+            Y: =0
             Width: =Parent.Width
-            Height: =Parent.Height * 0.06
-            UserName: =varCurrentUser.HoTen
-            UserRole: =varCurrentUser.MaVaiTro
+            Height: =Parent.Height * 0.065
+            UserName: =If(IsBlank(User.HoTen), "Đang tải...", User.HoTen)
+            UserRole: =If(IsBlank(User.MaVaiTro), "User", User.MaVaiTro)
             ShowNotification: =true
             NotificationCount: =CountRows(Filter(varUserLeaveHistory, TrangThai in ["ChoDuyetCap1", "ChoDuyetCap2", "ChoDuyetCap3"]))
+            OnLogout: |
+              =//Clear all session variables first
+              Set(varLoginSuccess, false);
+              Set(varSessionValid, false);
+              Set(varLoggedInUserEmail, "");
+              Set(IsUserAuthenticated, false);
+              //Clear user session object
+              Set(UserSession, {
+                Id: "", Name: "", Email: "", Role: "", Permission: 0,
+                NguoiQuanLyId: "", HoTen: "", MaVaiTro: "", 
+                ChucDanh: "", MaDonVi: "", TrangThai: ""
+              });
+              //Clear current user and profile data
+              Set(varCurrentUser, Blank());
+              Set(User, Blank());
+              Set(varUserLeaveBalance, {});
+              Set(varUserLeaveHistory, Table());
+              //Set logout flags
+              Set(varLocalLoggedOut, true);
+              Set(varLocalSessionCleared, true);
+              //Navigate to login screen
+              Navigate(LoginScreen_SharePoint)
             
       - 'Profile.Navigation':
           Control: CanvasComponent
           ComponentName: NavigationComponent
           Properties:
-            X: =Parent.X
-            Y: ='Profile.Header'.Y + 'Profile.Header'.Height
-            Width: =If(varNavCollapsed, Parent.Width * 0.06, Parent.Width * 0.2)
+            X: =0
+            Y: ='Profile.Header'.Height
+            Width: =If(varNavCollapsed, App.Width * 0.06, App.Width * 0.2)
             Height: =Parent.Height - 'Profile.Header'.Height
-            UserRole: =varCurrentUser.MaVaiTro
+            UserRole: =If(IsBlank(User.MaVaiTro), "Employee", User.MaVaiTro)
             ActiveScreen: =varActiveScreen
-            OnNavigate: =Set(varNavigateAction, true)
+            IsCollapsed: =varNavCollapsed
+            OnNavigate: |
+              =Set(varActiveScreen, ScreenName);
+              Switch(ScreenName,
+                "Dashboard", Navigate(DashboardScreen_SharePoint),
+                "Profile", Navigate(ProfileScreen_SharePoint),
+                "LeaveRequest", Navigate(LeaveRequestScreen_SharePoint),
+                "MyLeaves", Navigate(MyLeavesScreen_SharePoint),
+                "Calendar", Navigate(CalendarScreen_SharePoint),
+                "Management", Navigate(ManagementScreen_SharePoint)
+              )
+            OnToggleCollapse: |
+              =Set(varNavCollapsed, !varNavCollapsed)
             
       - 'Profile.Content.Container':
           Control: GroupContainer
           Variant: ManualLayout
           Properties:
-            X: ='Profile.Navigation'.X + 'Profile.Navigation'.Width
-            Y: ='Profile.Header'.Y + 'Profile.Header'.Height
+            X: ='Profile.Navigation'.Width
+            Y: ='Profile.Header'.Height
             Width: =Parent.Width - 'Profile.Navigation'.Width
             Height: =Parent.Height - 'Profile.Header'.Height
-            Fill: =RGBA(248, 250, 252, 1)
           Children:
-            # Profile Header
-            - 'Profile.Info.Header':
+            # Content Padding Container
+            - 'Profile.Content.Padded':
                 Control: GroupContainer
                 Variant: ManualLayout
                 Properties:
-                  X: =Parent.Width * 0.03
+                  X: =Parent.Width * 0.02
                   Y: =Parent.Height * 0.02
-                  Width: =Parent.Width * 0.94
-                  Height: =Parent.Height * 0.25
-                  Fill: =RGBA(255, 255, 255, 1)
-                  BorderColor: =RGBA(230, 230, 230, 1)
-                  BorderThickness: =Parent.Width * 0.001
-                  DropShadow: =DropShadow.Light
+                  Width: =Parent.Width * 0.96
+                  Height: =Parent.Height * 0.96
                 Children:
-                  # Avatar Section
-                  - 'Profile.Avatar.Container':
+                  # Profile Header Card
+                  - 'Profile.Info.Header':
                       Control: GroupContainer
                       Variant: ManualLayout
                       Properties:
-                        X: =Parent.Width * 0.04
-                        Y: =Parent.Height * 0.1
-                        Width: =Parent.Width * 0.25
-                        Height: =Parent.Height * 0.8
+                        X: =0
+                        Y: =0
+                        Width: =Parent.Width
+                        Height: =Parent.Height * 0.25
                       Children:
-                        - 'Profile.Avatar.Circle':
-                            Control: Circle
+                        - 'Profile.Info.Background':
+                            Control: Rectangle
                             Properties:
-                              X: =(Parent.Width - Self.Width) / 2
-                              Y: =Parent.Y
-                              Width: =Parent.Height * 0.7
-                              Height: =Parent.Height * 0.7
-                              Fill: =RGBA(33, 150, 243, 0.1)
-                              BorderColor: =RGBA(33, 150, 243, 1)
-                              BorderThickness: =3
-                              
-                        - 'Profile.Avatar.Initial':
-                            Control: Label
-                            Properties:
-                              X: ='Profile.Avatar.Circle'.X + ('Profile.Avatar.Circle'.Width - Self.Width) / 2
-                              Y: ='Profile.Avatar.Circle'.Y + ('Profile.Avatar.Circle'.Height - Self.Height) / 2
-                              Width: ='Profile.Avatar.Circle'.Width * 0.6
-                              Height: ='Profile.Avatar.Circle'.Height * 0.6
-                              Text: =Upper(Left(varCurrentUser.HoTen, 1))
-                              Color: =RGBA(33, 150, 243, 1)
-                              Font: =Font.'Open Sans'
-                              FontWeight: =FontWeight.Bold
-                              Size: =Parent.Height * 0.25
-                              Align: =Align.Center
-                              
-                        - 'Profile.Avatar.Status':
-                            Control: Label
-                            Properties:
-                              X: =Parent.X
-                              Y: ='Profile.Avatar.Circle'.Y + 'Profile.Avatar.Circle'.Height + Parent.Height * 0.05
+                              X: =0
+                              Y: =0
                               Width: =Parent.Width
-                              Height: =Parent.Height * 0.2
-                              Text: =Switch(varCurrentUser.TrangThai,
-                                "HoatDong", "🟢 Hoạt động",
-                                "KhongHoatDong", "🔴 Không hoạt động",
-                                "TamNghi", "🟡 Tạm nghỉ",
-                                varCurrentUser.TrangThai)
-                              Color: =Switch(varCurrentUser.TrangThai,
-                                "HoatDong", RGBA(76, 175, 80, 1),
-                                "KhongHoatDong", RGBA(244, 67, 54, 1),
-                                RGBA(255, 152, 0, 1))
-                              Font: =Font.'Open Sans'
-                              Size: =12
-                              Align: =Align.Center
+                              Height: =Parent.Height
+                              Fill: =RGBA(255, 255, 255, 1)
+                              BorderColor: =RGBA(224, 224, 224, 1)
+                              BorderThickness: =1
                               
-                  # Basic Info Section
-                  - 'Profile.BasicInfo.Container':
-                      Control: GroupContainer
-                      Variant: ManualLayout
-                      Properties:
-                        X: =Parent.Width * 0.3
-                        Y: =Parent.Height * 0.1
-                        Width: =Parent.Width * 0.45
-                        Height: =Parent.Height * 0.8
-                      Children:
-                        - 'Profile.BasicInfo.Name':
-                            Control: Label
+                        # Avatar Section
+                        - 'Profile.Avatar.Container':
+                            Control: GroupContainer
+                            Variant: ManualLayout
                             Properties:
-                              X: =Parent.X
-                              Y: =Parent.Y
-                              Width: =Parent.Width
-                              Height: =Parent.Height * 0.25
-                              Text: =varCurrentUser.HoTen
-                              Color: =RGBA(32, 54, 71, 1)
-                              Font: =Font.'Open Sans'
-                              FontWeight: =FontWeight.Bold
-                              Size: =24
-                              
-                        - 'Profile.BasicInfo.ID':
-                            Control: Label
+                              X: =Parent.Width * 0.04
+                              Y: =Parent.Height * 0.1
+                              Width: =Parent.Width * 0.25
+                              Height: =Parent.Height * 0.8
+                            Children:
+                              - 'Profile.Avatar.Circle':
+                                  Control: Circle
+                                  Properties:
+                                    X: =(Parent.Width - Self.Width) / 2
+                                    Y: =0
+                                    Width: =Parent.Height * 0.7
+                                    Height: =Parent.Height * 0.7
+                                    Fill: =RGBA(33, 150, 243, 0.1)
+                                    BorderColor: =RGBA(33, 150, 243, 1)
+                                    BorderThickness: =2
+                                    
+                              - 'Profile.Avatar.Initial':
+                                  Control: Label
+                                  Properties:
+                                    X: ='Profile.Avatar.Circle'.X + ('Profile.Avatar.Circle'.Width - Self.Width) / 2
+                                    Y: ='Profile.Avatar.Circle'.Y + ('Profile.Avatar.Circle'.Height - Self.Height) / 2
+                                    Width: ='Profile.Avatar.Circle'.Width * 0.6
+                                    Height: ='Profile.Avatar.Circle'.Height * 0.6
+                                    Text: =If(IsBlank(User.HoTen), "U", Upper(Left(User.HoTen, 1)))
+                                    Color: =RGBA(33, 150, 243, 1)
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Bold
+                                    Size: =Parent.Height * 0.25
+                                    Align: =Align.Center
+                                    
+                              - 'Profile.Avatar.Status':
+                                  Control: Label
+                                  Properties:
+                                    X: =0
+                                    Y: ='Profile.Avatar.Circle'.Y + 'Profile.Avatar.Circle'.Height + Parent.Height * 0.05
+                                    Width: =Parent.Width
+                                    Height: =Parent.Height * 0.2
+                                    Text: =Switch(If(IsBlank(User.TrangThai), "HoatDong", User.TrangThai),
+                                      "HoatDong", "Hoạt động",
+                                      "KhongHoatDong", "Không hoạt động",
+                                      "TamNghi", "Tạm nghỉ",
+                                      "Hoạt động")
+                                    Color: =Switch(If(IsBlank(User.TrangThai), "HoatDong", User.TrangThai),
+                                      "HoatDong", RGBA(76, 175, 80, 1),
+                                      "KhongHoatDong", RGBA(244, 67, 54, 1),
+                                      RGBA(255, 152, 0, 1))
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Size: =12
+                                    Align: =Align.Center
+                                    
+                        # Basic Info Section
+                        - 'Profile.BasicInfo.Container':
+                            Control: GroupContainer
+                            Variant: ManualLayout
                             Properties:
-                              X: =Parent.X
-                              Y: =Parent.Height * 0.25
-                              Width: =Parent.Width
-                              Height: =Parent.Height * 0.2
-                              Text: ="Mã NV:" & " " & varCurrentUser.MaNhanVien
-                              Color: =RGBA(107, 114, 128, 1)
-                              Font: =Font.'Open Sans'
-                              Size: =14
-                              
-                        - 'Profile.BasicInfo.Role':
-                            Control: Label
+                              X: =Parent.Width * 0.3
+                              Y: =Parent.Height * 0.1
+                              Width: =Parent.Width * 0.45
+                              Height: =Parent.Height * 0.8
+                            Children:
+                              - 'Profile.BasicInfo.Name':
+                                  Control: Label
+                                  Properties:
+                                    X: =0
+                                    Y: =0
+                                    Width: =Parent.Width
+                                    Height: =Parent.Height * 0.25
+                                    Text: =If(IsBlank(User.HoTen), "Đang tải...", User.HoTen)
+                                    Color: =RGBA(55, 65, 81, 1)
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Bold
+                                    Size: =22
+                                    
+                              - 'Profile.BasicInfo.ID':
+                                  Control: Label
+                                  Properties:
+                                    X: =0
+                                    Y: =Parent.Height * 0.25
+                                    Width: =Parent.Width
+                                    Height: =Parent.Height * 0.2
+                                    Text: ="Mã NV:" & " " & If(IsBlank(User.Id), "Đang tải...", User.Id)
+                                    Color: =RGBA(107, 114, 128, 1)
+                                    Font: =Font.'Open Sans'
+                                    Size: =14
+                                    
+                              - 'Profile.BasicInfo.Role':
+                                  Control: Label
+                                  Properties:
+                                    X: =0
+                                    Y: =Parent.Height * 0.45
+                                    Width: =Parent.Width
+                                    Height: =Parent.Height * 0.2
+                                    Text: =Switch(If(IsBlank(User.MaVaiTro), "Employee", User.MaVaiTro),
+                                      "Employee", "Nhân viên",
+                                      "Manager", "Trưởng phòng", 
+                                      "ADMIN", "Quản trị viên",
+                                      "HR", "Nhân sự",
+                                      "Employee")
+                                    Color: =RGBA(33, 150, 243, 1)
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Size: =16
+                                    
+                              - 'Profile.BasicInfo.Department':
+                                  Control: Label
+                                  Properties:
+                                    X: =0
+                                    Y: =Parent.Height * 0.65
+                                    Width: =Parent.Width
+                                    Height: =Parent.Height * 0.35
+                                    Text: =Concatenate(
+                                      If(IsBlank(varUserDepartment.TenDonVi), "Phòng Công nghệ thông tin", varUserDepartment.TenDonVi),
+                                      Char(10),
+                                      "Email:" & " " & If(IsBlank(User.Email), "user@company.com", User.Email)
+                                    )
+                                    Color: =RGBA(107, 114, 128, 1)
+                                    Font: =Font.'Open Sans'
+                                    Size: =13
+                                    
+                        # Edit Profile Button
+                        - 'Profile.EditButton':
+                            Control: Classic/Button
                             Properties:
-                              X: =Parent.X
-                              Y: =Parent.Height * 0.45
-                              Width: =Parent.Width
-                              Height: =Parent.Height * 0.2
-                              Text: =Switch(varCurrentUser.MaVaiTro,
-                                "EMPLOYEE", "Nhân viên",
-                                "MANAGER", "Quản lý",
-                                "DIRECTOR", "Giám đốc",
-                                "HR", "Nhân sự",
-                                "ADMIN", "Quản trị viên",
-                                varCurrentUser.MaVaiTro)
-                              Color: =RGBA(33, 150, 243, 1)
+                              X: =Parent.Width * 0.77
+                              Y: =Parent.Height * 0.15
+                              Width: =Parent.Width * 0.18
+                              Height: =Parent.Height * 0.15
+                              Text: =If(varEditMode, "Lưu", "Chỉnh sửa")
+                              Fill: =If(varEditMode, RGBA(76, 175, 80, 1), RGBA(33, 150, 243, 1))
+                              Color: =RGBA(255, 255, 255, 1)
+                              BorderColor: =If(varEditMode, RGBA(76, 175, 80, 1), RGBA(33, 150, 243, 1))
+                              BorderThickness: =1
                               Font: =Font.'Open Sans'
                               FontWeight: =FontWeight.Semibold
-                              Size: =16
-                              
-                        - 'Profile.BasicInfo.Department':
-                            Control: Label
-                            Properties:
-                              X: =Parent.X
-                              Y: =Parent.Height * 0.65
-                              Width: =Parent.Width
-                              Height: =Parent.Height * 0.35
-                              Text: =If(Not(IsBlank(varUserDepartment)), 
-                                varUserDepartment.TenDonVi & Char(10) & 
-                                If(Not(IsBlank(varUserRole)), "Quản lý:" & " " & varUserRole.HoTen, ""), "")
-                              Color: =RGBA(55, 65, 81, 1)
-                              Font: =Font.'Open Sans'
-                              Size: =14
-                              
-                  # Action Buttons
-                  - 'Profile.Actions.Container':
+                              Size: =13
+                              OnSelect: |
+                                =Set(varEditMode, !varEditMode)
+                                
+                  # Leave Balance Section
+                  - 'Profile.LeaveBalance.Container':
                       Control: GroupContainer
                       Variant: ManualLayout
                       Properties:
-                        X: =Parent.Width * 0.77
-                        Y: =Parent.Height * 0.1
-                        Width: =Parent.Width * 0.2
-                        Height: =Parent.Height * 0.8
+                        X: =0
+                        Y: ='Profile.Info.Header'.Y + 'Profile.Info.Header'.Height + Parent.Height * 0.02
+                        Width: =Parent.Width
+                        Height: =Parent.Height * 0.18
                       Children:
-                        - 'Profile.EditButton':
-                            Control: CanvasComponent
-                            ComponentName: ButtonComponent
+                        - 'Profile.LeaveBalance.Background':
+                            Control: Rectangle
                             Properties:
-                              X: =Parent.X
-                              Y: =Parent.Y
+                              X: =0
+                              Y: =0
                               Width: =Parent.Width
-                              Height: =Parent.Height * 0.4
-                              Text: =If(varEditMode, "Hủy", "Chỉnh sửa")
-                              Variant: =If(varEditMode, "Outline", "Primary")
-                              Icon: =If(varEditMode, "Cancel", "Edit")
-                              Size: ="Medium"
-                              OnClick: |
-                                          =Set(varEditMode, Not(varEditMode));
-                                          Set(varProfileErrors, {});
-                                          Set(varUpdateSuccess, false)
+                              Height: =Parent.Height
+                              Fill: =RGBA(255, 255, 255, 1)
+                              BorderColor: =RGBA(224, 224, 224, 1)
+                              BorderThickness: =1
                               
-                        - 'Profile.SaveButton':
-                            Control: CanvasComponent
-                            ComponentName: ButtonComponent
+                        - 'Profile.LeaveBalance.Title':
+                            Control: Label
                             Properties:
-                              X: =Parent.X
-                              Y: =Parent.Height * 0.5
-                              Width: =Parent.Width
-                              Height: =Parent.Height * 0.4
-                              Text: ="Lưu"
-                              Variant: ="Success"
-                              Icon: ="Save"
-                              Size: ="Medium"
-                              Visible: =varEditMode
-                              IsLoading: =varIsUpdating
-                              LoadingText: ="Đang lưu..."
-                              OnClick: =Set(varIsUpdating, true); Set(varProfileErrors, {}); Set(varUpdateSuccess, false)
+                              X: =Parent.Width * 0.03
+                              Y: =Parent.Height * 0.1
+                              Width: =Parent.Width * 0.94
+                              Height: =Parent.Height * 0.25
+                              Text: ="Thông tin ngày phép " & Year(Today())
+                              Color: =RGBA(55, 65, 81, 1)
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Bold
+                              Size: =16
                               
+                        - 'Profile.LeaveBalance.Stats':
+                            Control: GroupContainer
+                            Variant: ManualLayout
+                            Properties:
+                              X: =Parent.Width * 0.03
+                              Y: =Parent.Height * 0.4
+                              Width: =Parent.Width * 0.94
+                              Height: =Parent.Height * 0.5
+                            Children:
+                              - 'Profile.LeaveBalance.Total':
+                                  Control: Label
+                                  Properties:
+                                    X: =0
+                                    Y: =0
+                                    Width: =Parent.Width * 0.3
+                                    Height: =Parent.Height
+                                    Text: ="Tổng phép:" & " " & varUserLeaveBalance.TongNgayDuocPhep & " ngày"
+                                    Color: =RGBA(33, 150, 243, 1)
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Size: =14
+                                    
+                              - 'Profile.LeaveBalance.Used':
+                                  Control: Label
+                                  Properties:
+                                    X: =Parent.Width * 0.35
+                                    Y: =0
+                                    Width: =Parent.Width * 0.3
+                                    Height: =Parent.Height
+                                    Text: ="Đã dùng:" & " " & varUserLeaveBalance.SoNgayDaNghi & " ngày"
+                                    Color: =RGBA(76, 175, 80, 1)
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Size: =14
+                                    
+                              - 'Profile.LeaveBalance.Remaining':
+                                  Control: Label
+                                  Properties:
+                                    X: =Parent.Width * 0.7
+                                    Y: =0
+                                    Width: =Parent.Width * 0.3
+                                    Height: =Parent.Height
+                                    Text: ="Còn lại:" & " " & varUserLeaveBalance.SoNgayConLai & " ngày"
+                                    Color: =RGBA(255, 152, 0, 1)
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Size: =14
+
             # Detailed Info Tabs
             - 'Profile.Tabs.Container':
                 Control: GroupContainer
@@ -470,4 +603,195 @@ Screens:
                         FontWeight: =FontWeight.Semibold
                         Size: =14
                         Align: =Align.Center
-                        Visible: =Not(IsBlank(varProfileErrors)) 
+                        Visible: =Not(IsBlank(varProfileErrors))
+
+                  # Recent Leave History Section
+                  - 'Profile.RecentHistory.Container':
+                      Control: GroupContainer
+                      Variant: ManualLayout
+                      Properties:
+                        X: =0
+                        Y: ='Profile.LeaveBalance.Container'.Y + 'Profile.LeaveBalance.Container'.Height + Parent.Height * 0.02
+                        Width: =Parent.Width
+                        Height: =Parent.Height * 0.53
+                      Children:
+                        - 'Profile.RecentHistory.Background':
+                            Control: Rectangle
+                            Properties:
+                              X: =0
+                              Y: =0
+                              Width: =Parent.Width
+                              Height: =Parent.Height
+                              Fill: =RGBA(255, 255, 255, 1)
+                              BorderColor: =RGBA(224, 224, 224, 1)
+                              BorderThickness: =1
+                              
+                        - 'Profile.RecentHistory.Title':
+                            Control: Label
+                            Properties:
+                              X: =Parent.Width * 0.03
+                              Y: =Parent.Height * 0.05
+                              Width: =Parent.Width * 0.94
+                              Height: =Parent.Height * 0.1
+                              Text: ="Lịch sử nghỉ phép gần đây"
+                              Color: =RGBA(55, 65, 81, 1)
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Bold
+                              Size: =16
+                              
+                        - 'Profile.RecentHistory.Gallery':
+                            Control: Gallery
+                            Variant: Vertical
+                            Properties:
+                              X: =Parent.Width * 0.03
+                              Y: =Parent.Height * 0.18
+                              Width: =Parent.Width * 0.94
+                              Height: =Parent.Height * 0.77
+                              Items: =varUserLeaveHistory
+                              TemplateSize: =Self.Height / 4
+                              TemplatePadding: =4
+                            Children:
+                              - 'HistoryItem.Container':
+                                  Control: Rectangle
+                                  Properties:
+                                    X: =0
+                                    Y: =0
+                                    Width: =Parent.TemplateWidth
+                                    Height: =Parent.TemplateHeight - 8
+                                    Fill: =Switch(ThisItem.TrangThai, 
+                                      "DaDuyet", RGBA(76, 175, 80, 0.1), 
+                                      "TuChoi", RGBA(244, 67, 54, 0.1), 
+                                      "ChoDuyetCap1", RGBA(255, 193, 7, 0.1),
+                                      "ChoDuyetCap2", RGBA(255, 193, 7, 0.1),
+                                      "ChoDuyetCap3", RGBA(255, 193, 7, 0.1),
+                                      RGBA(248, 250, 252, 1))
+                                    BorderColor: =RGBA(224, 224, 224, 1)
+                                    BorderThickness: =1
+                                    
+                              - 'HistoryItem.Date':
+                                  Control: Label
+                                  Properties:
+                                    X: =Parent.TemplateWidth * 0.02
+                                    Y: =Parent.TemplateHeight * 0.1
+                                    Width: =Parent.TemplateWidth * 0.25
+                                    Height: =Parent.TemplateHeight * 0.4
+                                    Text: =Text(ThisItem.NgayBatDau, "dd/mm/yyyy")
+                                    Color: =RGBA(55, 65, 81, 1)
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Size: =11
+                                    
+                              - 'HistoryItem.Type':
+                                  Control: Label
+                                  Properties:
+                                    X: =Parent.TemplateWidth * 0.3
+                                    Y: =Parent.TemplateHeight * 0.1
+                                    Width: =Parent.TemplateWidth * 0.25
+                                    Height: =Parent.TemplateHeight * 0.4
+                                    Text: =Switch(ThisItem.MaLoai, "Annual", "Phép năm", "Sick", "Ốm đau", "Personal", "Cá nhân", "Phép năm")
+                                    Color: =RGBA(55, 65, 81, 1)
+                                    Font: =Font.'Open Sans'
+                                    Size: =11
+                                    
+                              - 'HistoryItem.Status':
+                                  Control: Label
+                                  Properties:
+                                    X: =Parent.TemplateWidth * 0.58
+                                    Y: =Parent.TemplateHeight * 0.1
+                                    Width: =Parent.TemplateWidth * 0.2
+                                    Height: =Parent.TemplateHeight * 0.4
+                                    Text: =Switch(ThisItem.TrangThai, 
+                                      "DaDuyet", "Đã duyệt", 
+                                      "TuChoi", "Từ chối", 
+                                      "ChoDuyetCap1", "Chờ duyệt",
+                                      "ChoDuyetCap2", "Chờ duyệt", 
+                                      "ChoDuyetCap3", "Chờ duyệt",
+                                      "Huy", "Đã hủy", 
+                                      "Đang xử lý")
+                                    Color: =Switch(ThisItem.TrangThai, 
+                                      "DaDuyet", RGBA(76, 175, 80, 1), 
+                                      "TuChoi", RGBA(244, 67, 54, 1), 
+                                      "ChoDuyetCap1", RGBA(255, 152, 0, 1),
+                                      "ChoDuyetCap2", RGBA(255, 152, 0, 1),
+                                      "ChoDuyetCap3", RGBA(255, 152, 0, 1),
+                                      RGBA(107, 114, 128, 1))
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Size: =11
+                                    
+                              - 'HistoryItem.Days':
+                                  Control: Label
+                                  Properties:
+                                    X: =Parent.TemplateWidth * 0.8
+                                    Y: =Parent.TemplateHeight * 0.1
+                                    Width: =Parent.TemplateWidth * 0.18
+                                    Height: =Parent.TemplateHeight * 0.4
+                                    Text: =ThisItem.SoNgayNghi & " ngày"
+                                    Color: =RGBA(107, 114, 128, 1)
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Size: =11
+                                    Align: =Align.Center
+                                    
+                              - 'HistoryItem.Period':
+                                  Control: Label
+                                  Properties:
+                                    X: =Parent.TemplateWidth * 0.02
+                                    Y: =Parent.TemplateHeight * 0.55
+                                    Width: =Parent.TemplateWidth * 0.96
+                                    Height: =Parent.TemplateHeight * 0.35
+                                    Text: ="Từ " & Text(ThisItem.NgayBatDau, "dd/mm") & " đến " & Text(ThisItem.NgayKetThuc, "dd/mm")
+                                    Color: =RGBA(107, 114, 128, 1)
+                                    Font: =Font.'Open Sans'
+                                    Size: =10
+                                    
+                        # Quick Actions
+                        - 'Profile.QuickActions.Container':
+                            Control: GroupContainer
+                            Variant: ManualLayout
+                            Properties:
+                              X: =Parent.Width * 0.03
+                              Y: =Parent.Height * 0.96
+                              Width: =Parent.Width * 0.94
+                              Height: =Parent.Height * 0.02
+                              Visible: =false
+                            Children:
+                              - 'Profile.QuickActions.NewRequest':
+                                  Control: CanvasComponent
+                                  ComponentName: ButtonComponent
+                                  Properties:
+                                    X: =0
+                                    Y: =0
+                                    Width: =Parent.Width * 0.3
+                                    Height: =Parent.Height
+                                    Text: ="Tạo đơn mới"
+                                    Variant: ="Primary"
+                                    Size: ="Small"
+                                    Icon: ="Add"
+                                    IconPosition: ="Left"
+                                    IsDisabled: =false
+                                    IsLoading: =false
+                                    LoadingText: ="Đang xử lý..."
+                                    FullWidth: =false
+                                    OnClick: |
+                                      =Navigate(LeaveRequestScreen_SharePoint)
+                                      
+                              - 'Profile.QuickActions.ViewAll':
+                                  Control: CanvasComponent
+                                  ComponentName: ButtonComponent
+                                  Properties:
+                                    X: =Parent.Width * 0.35
+                                    Y: =0
+                                    Width: =Parent.Width * 0.3
+                                    Height: =Parent.Height
+                                    Text: ="Xem tất cả"
+                                    Variant: ="Outline"
+                                    Size: ="Small"
+                                    Icon: ="View"
+                                    IconPosition: ="Left"
+                                    IsDisabled: =false
+                                    IsLoading: =false
+                                    LoadingText: ="Đang xử lý..."
+                                    FullWidth: =false
+                                    OnClick: |
+                                      =Navigate(MyLeavesScreen_SharePoint) 

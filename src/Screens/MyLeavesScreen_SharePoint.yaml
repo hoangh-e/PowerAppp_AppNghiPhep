@@ -30,6 +30,8 @@ Screens:
             UserRole: =varCurrentUser.MaVaiTro
             ShowNotification: =true
             NotificationCount: =CountRows(Filter(varMyLeaveRequests, TrangThai in ["ChoDuyetCap1", "ChoDuyetCap2", "ChoDuyetCap3"]))
+            OnLogout: |
+              =LogoutUser()
             
       - 'MyLeaves.Navigation':
           Control: CanvasComponent
@@ -39,9 +41,20 @@ Screens:
             Y: ='MyLeaves.Header'.Y + 'MyLeaves.Header'.Height
             Width: =If(varNavCollapsed, Parent.Width * 0.06, Parent.Width * 0.2)
             Height: =Parent.Height - 'MyLeaves.Header'.Height
-            UserRole: =varCurrentUser.MaVaiTro
+            UserRole: =If(IsBlank(User.MaVaiTro), "Employee", User.MaVaiTro)
             ActiveScreen: =varActiveScreen
-            OnNavigate: =Set(varNavigateAction, true)
+            IsCollapsed: =varNavCollapsed
+            OnNavigate: |
+              =Set(varActiveScreen, ScreenName);
+              Switch(ScreenName,
+                "Dashboard", Navigate(DashboardScreen_SharePoint),
+                "LeaveRequest", Navigate(LeaveRequestScreen_SharePoint),
+                "MyLeaves", Navigate(MyLeavesScreen_SharePoint),
+                "Calendar", Navigate(CalendarScreen_SharePoint),
+                "Management", Navigate(ManagementScreen_SharePoint)
+              )
+            OnToggleCollapse: |
+              =Set(varNavCollapsed, !varNavCollapsed)
             
       - 'MyLeaves.Content.Container':
           Control: GroupContainer

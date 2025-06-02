@@ -1,0 +1,29 @@
+//Lightweight app initialization with COMPLETE session clearing
+Set(varAppVersion, "1.0.0");
+Set(varAppInitialized, true);
+
+//FORCE CLEAR ALL authentication state - NO EXCEPTIONS
+Set(varLoginSuccess, false);
+Set(varSessionValid, false);  
+Set(varLoggedInUserEmail, "");
+
+//Initialize empty UserSession (Record initialization with ALL fields)
+Set(UserSession, {
+  Id: "",
+  Name: "", 
+  Email: "",
+  Role: "",
+  Permission: 0,
+  NguoiQuanLyId: "",
+  HoTen: "",
+  MaVaiTro: "",
+  ChucDanh: "",
+  MaDonVi: "",
+  TrangThai: ""
+});
+
+//Initialize session state tracking
+Set(varSessionState, "CLEAN_START");
+
+//Security flag to ensure fresh login required
+Set(varRequiresAuthentication, true);

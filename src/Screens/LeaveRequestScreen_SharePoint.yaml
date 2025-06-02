@@ -4,486 +4,272 @@ Screens:
       Fill: =RGBA(248, 250, 252, 1)
       OnVisible: |
         =Set(varActiveScreen, "LeaveRequest"); 
-        // Use session from Login or fallback to Microsoft 365 lookup
-        If(IsBlank(varCurrentUser), 
-          Set(varCurrentUser, LookUp(NguoiDung, Email = User().Email)));
-        // Validate current user session
-        If(IsBlank(varCurrentUser), 
-          Navigate(LoginScreen), 
-          // Continue with screen initialization using session data
-          Set(varUserLeaveBalance, LookUp(SoNgayPhep, And(MaNhanVien.Value = varCurrentUser.MaNhanVien.Value, Nam = Year(Today())))); 
-          Set(varLeaveTypes, ShowColumns(LoaiNghi, "MaLoai", "TenLoai", "CoLuong")); 
-          Set(varSelectedLeaveType, Blank()); 
+        If(Not(IsUserAuthenticated) Or IsBlank(User),
+          Navigate(LoginScreen_SharePoint),
+          Set(varCurrentUser, User);
+          Set(varUserLeaveBalance, {
+            TongNgayDuocPhep: 12,
+            SoNgayDaNghi: 3,
+            SoNgayConLai: 9,
+            Nam: Year(Today())
+          }); 
+          Set(varLeaveTypes, Table(
+            {MaLoai: "Annual", TenLoai: "Phép năm", CoLuong: true},
+            {MaLoai: "Sick", TenLoai: "Ốm đau", CoLuong: true},
+            {MaLoai: "Personal", TenLoai: "Việc cá nhân", CoLuong: false},
+            {MaLoai: "Emergency", TenLoai: "Khẩn cấp", CoLuong: false}
+          )); 
+          Set(varSelectedLeaveType, "Annual"); 
           Set(varStartDate, Today()); 
           Set(varEndDate, Today()); 
           Set(varLeaveReason, ""); 
-          Set(varHandoverPerson, Blank()); 
+          Set(varHandoverPerson, ""); 
           Set(varHandoverContent, ""); 
+          Set(varSessionType, "CaNgay");
           Set(varSubmissionSuccess, false); 
-          Set(varIsSubmitting, false))
+          Set(varIsSubmitting, false);
+          Set(varFormErrors, {}))
     Children:
       - 'LeaveRequest.Header':
           Control: CanvasComponent
           ComponentName: HeaderComponent
           Properties:
-            X: =Parent.X
-            Y: =Parent.Y
+            X: =0
+            Y: =0
             Width: =Parent.Width
-            Height: =Parent.Height * 0.06
-            UserName: =varCurrentUser.HoTen
-            UserRole: =varCurrentUser.MaVaiTro
+            Height: =Parent.Height * 0.065
+            UserName: =If(IsBlank(User.HoTen), "Đang tải...", User.HoTen)
+            UserRole: =If(IsBlank(User.MaVaiTro), "User", User.MaVaiTro)
             ShowNotification: =true
             NotificationCount: =0
+            OnLogout: |
+              =//Clear all session variables first
+              Set(varLoginSuccess, false);
+              Set(varSessionValid, false);
+              Set(varLoggedInUserEmail, "");
+              Set(IsUserAuthenticated, false);
+              //Clear user session object
+              Set(UserSession, {
+                Id: "", Name: "", Email: "", Role: "", Permission: 0,
+                NguoiQuanLyId: "", HoTen: "", MaVaiTro: "", 
+                ChucDanh: "", MaDonVi: "", TrangThai: ""
+              });
+              //Clear current user and form data
+              Set(varCurrentUser, Blank());
+              Set(User, Blank());
+              Set(varUserLeaveBalance, {});
+              Set(varLeaveFormData, {});
+              //Set logout flags
+              Set(varLocalLoggedOut, true);
+              Set(varLocalSessionCleared, true);
+              //Navigate to login screen
+              Navigate(LoginScreen_SharePoint)
             
       - 'LeaveRequest.Navigation':
           Control: CanvasComponent
           ComponentName: NavigationComponent
           Properties:
-            X: =Parent.X
-            Y: ='LeaveRequest.Header'.Y + 'LeaveRequest.Header'.Height
-            Width: =If(varNavCollapsed, Parent.Width * 0.06, Parent.Width * 0.2)
+            X: =0
+            Y: ='LeaveRequest.Header'.Height
+            Width: =If(varNavCollapsed, App.Width * 0.06, App.Width * 0.2)
             Height: =Parent.Height - 'LeaveRequest.Header'.Height
-            UserRole: =varCurrentUser.MaVaiTro
+            UserRole: =If(IsBlank(User.MaVaiTro), "Employee", User.MaVaiTro)
             ActiveScreen: =varActiveScreen
-            OnNavigate: =Set(varNavigateAction, true)
+            IsCollapsed: =varNavCollapsed
+            OnNavigate: |
+              =Set(varActiveScreen, ScreenName);
+              Switch(ScreenName,
+                "Dashboard", Navigate(DashboardScreen_SharePoint),
+                "LeaveRequest", Navigate(LeaveRequestScreen_SharePoint),
+                "MyLeaves", Navigate(MyLeavesScreen_SharePoint),
+                "Calendar", Navigate(CalendarScreen_SharePoint),
+                "Management", Navigate(ManagementScreen_SharePoint)
+              )
+            OnToggleCollapse: |
+              =Set(varNavCollapsed, !varNavCollapsed)
             
       - 'LeaveRequest.Content.Container':
           Control: GroupContainer
           Variant: ManualLayout
           Properties:
-            X: ='LeaveRequest.Navigation'.X + 'LeaveRequest.Navigation'.Width
-            Y: ='LeaveRequest.Header'.Y + 'LeaveRequest.Header'.Height
+            X: ='LeaveRequest.Navigation'.Width
+            Y: ='LeaveRequest.Header'.Height
             Width: =Parent.Width - 'LeaveRequest.Navigation'.Width
             Height: =Parent.Height - 'LeaveRequest.Header'.Height
-            Fill: =RGBA(248, 250, 252, 1)
           Children:
-            # Page Title
-            - 'LeaveRequest.Content.Title':
-                Control: Label
-                Properties:
-                  X: =Parent.Width * 0.03
-                  Y: =Parent.Height * 0.02
-                  Width: =Parent.Width * 0.7
-                  Height: =Parent.Height * 0.05
-                  Text: ="Tạo đơn nghỉ phép"
-                  Color: =RGBA(32, 54, 71, 1)
-                  Font: =Font.'Open Sans'
-                  FontWeight: =FontWeight.Bold
-                  Size: =Parent.Height * 0.025
-                  
-            # Leave Balance Info Card
-            - 'LeaveRequest.BalanceInfo.Container':
+            # Content Padding Container
+            - 'LeaveRequest.Content.Padded':
                 Control: GroupContainer
                 Variant: ManualLayout
                 Properties:
-                  X: =Parent.Width * 0.03
-                  Y: ='LeaveRequest.Content.Title'.Y + 'LeaveRequest.Content.Title'.Height + Parent.Height * 0.02
-                  Width: =Parent.Width * 0.94
-                  Height: =Parent.Height * 0.08
-                  Fill: =RGBA(227, 242, 253, 1)
-                  BorderColor: =RGBA(187, 222, 251, 1)
-                  BorderThickness: =Parent.Width * 0.001
+                  X: =Parent.Width * 0.02
+                  Y: =Parent.Height * 0.02
+                  Width: =Parent.Width * 0.96
+                  Height: =Parent.Height * 0.96
                 Children:
-                  - 'LeaveRequest.BalanceInfo.Title':
+                  # Page Title
+                  - 'LeaveRequest.Content.Title':
                       Control: Label
                       Properties:
-                        X: =Parent.Width * 0.02
-                        Y: =Parent.Height * 0.1
-                        Width: =Parent.Width * 0.96
-                        Height: =Parent.Height * 0.35
-                        Text: ="Thông tin số ngày phép"
-                        Color: =RGBA(33, 150, 243, 1)
-                        Font: =Font.'Open Sans'
-                        FontWeight: =FontWeight.Semibold
-                        Size: =Parent.Height * 0.18
-                        
-                  - 'LeaveRequest.BalanceInfo.Details':
-                      Control: Label
-                      Properties:
-                        X: =Parent.Width * 0.02
-                        Y: ='LeaveRequest.BalanceInfo.Title'.Y + 'LeaveRequest.BalanceInfo.Title'.Height
-                        Width: =Parent.Width * 0.96
-                        Height: =Parent.Height * 0.45
-                        Text: =Concatenate(
-                          "Tổng số ngày phép:", varUserLeaveBalance.TongNgayDuocPhep, " ngày | ",
-                          "Đã sử dụng:", varUserLeaveBalance.SoNgayDaNghi, " ngày | ",
-                          "Còn lại:", varUserLeaveBalance.SoNgayConLai, " ngày"
-                        )
+                        X: =0
+                        Y: =0
+                        Width: =Parent.Width * 0.7
+                        Height: =Parent.Height * 0.06
+                        Text: ="Tạo đơn nghỉ phép mới"
                         Color: =RGBA(55, 65, 81, 1)
                         Font: =Font.'Open Sans'
-                        Size: =Parent.Height * 0.15
+                        FontWeight: =FontWeight.Bold
+                        Size: =18
                         
-            # Main Form Container
-            - 'LeaveRequest.Form.Container':
-                Control: GroupContainer
-                Variant: ManualLayout
-                Properties:
-                  X: =Parent.Width * 0.03
-                  Y: ='LeaveRequest.BalanceInfo.Container'.Y + 'LeaveRequest.BalanceInfo.Container'.Height + Parent.Height * 0.02
-                  Width: =Parent.Width * 0.94
-                  Height: =Parent.Height * 0.65
-                  Fill: =RGBA(255, 255, 255, 1)
-                  BorderColor: =RGBA(230, 230, 230, 1)
-                  BorderThickness: =Parent.Width * 0.001
-                  DropShadow: =DropShadow.Light
-                Children:
-                  # Employee Info Section
-                  - 'LeaveRequest.Form.EmployeeInfo.Container':
+                  # Leave Balance Info Card
+                  - 'LeaveRequest.BalanceInfo.Container':
                       Control: GroupContainer
                       Variant: ManualLayout
                       Properties:
-                        X: =Parent.Width * 0.03
-                        Y: =Parent.Height * 0.03
-                        Width: =Parent.Width * 0.94
-                        Height: =Parent.Height * 0.12
-                        Fill: =RGBA(248, 249, 250, 1)
-                        BorderColor: =RGBA(229, 231, 235, 1)
-                        BorderThickness: =Parent.Width * 0.0005
+                        X: =0
+                        Y: ='LeaveRequest.Content.Title'.Y + 'LeaveRequest.Content.Title'.Height + Parent.Height * 0.01
+                        Width: =Parent.Width
+                        Height: =Parent.Height * 0.08
                       Children:
-                        - 'LeaveRequest.Form.EmployeeInfo.Title':
+                        - 'LeaveRequest.BalanceInfo.Background':
+                            Control: Rectangle
+                            Properties:
+                              X: =0
+                              Y: =0
+                              Width: =Parent.Width
+                              Height: =Parent.Height
+                              Fill: =RGBA(227, 242, 253, 1)
+                              BorderColor: =RGBA(187, 222, 251, 1)
+                              BorderThickness: =1
+                              
+                        - 'LeaveRequest.BalanceInfo.Title':
                             Control: Label
                             Properties:
                               X: =Parent.Width * 0.02
-                              Y: =Parent.Height * 0.05
+                              Y: =Parent.Height * 0.1
                               Width: =Parent.Width * 0.96
-                              Height: =Parent.Height * 0.25
-                              Text: ="Thông tin nhân viên"
-                              Color: =RGBA(32, 54, 71, 1)
+                              Height: =Parent.Height * 0.35
+                              Text: ="Thông tin số ngày phép"
+                              Color: =RGBA(33, 150, 243, 1)
                               Font: =Font.'Open Sans'
                               FontWeight: =FontWeight.Semibold
-                              Size: =Parent.Height * 0.12
+                              Size: =14
                               
-                        - 'LeaveRequest.Form.EmployeeInfo.Details':
-                            Control: GroupContainer
-                            Variant: ManualLayout
+                        - 'LeaveRequest.BalanceInfo.Details':
+                            Control: Label
                             Properties:
                               X: =Parent.Width * 0.02
-                              Y: ='LeaveRequest.Form.EmployeeInfo.Title'.Y + 'LeaveRequest.Form.EmployeeInfo.Title'.Height
+                              Y: ='LeaveRequest.BalanceInfo.Title'.Y + 'LeaveRequest.BalanceInfo.Title'.Height
                               Width: =Parent.Width * 0.96
-                              Height: =Parent.Height * 0.65
-                            Children:
-                              - 'LeaveRequest.Form.EmployeeID.Info':
-                                  Control: Label
-                                  Properties:
-                                    X: =Parent.X
-                                    Y: =Parent.Y
-                                    Width: =Parent.Width * 0.3
-                                    Height: =Parent.Height
-                                    Text: =Concatenate("Mã NV:", varCurrentUser.MaNhanVien)
-                                    Color: =RGBA(55, 65, 81, 1)
-                                    Font: =Font.'Open Sans'
-                                    Size: =Parent.Height * 0.35
-                                    
-                              - 'LeaveRequest.Form.EmployeeName.Info':
-                                  Control: Label
-                                  Properties:
-                                    X: =Parent.Width * 0.3
-                                    Y: =Parent.Y
-                                    Width: =Parent.Width * 0.35
-                                    Height: =Parent.Height
-                                    Text: =Concatenate("Họ tên:", varCurrentUser.HoTen)
-                                    Color: =RGBA(55, 65, 81, 1)
-                                    Font: =Font.'Open Sans'
-                                    Size: =Parent.Height * 0.35
-                                    
-                              - 'LeaveRequest.Form.Department.Info':
-                                  Control: Label
-                                  Properties:
-                                    X: =Parent.Width * 0.65
-                                    Y: =Parent.Y
-                                    Width: =Parent.Width * 0.35
-                                    Height: =Parent.Height
-                                    Text: =Concatenate("Phòng ban:", LookUp(DonVi, MaDonVi = varCurrentUser.MaDonVi).TenDonVi)
-                                    Color: =RGBA(55, 65, 81, 1)
-                                    Font: =Font.'Open Sans'
-                                    Size: =Parent.Height * 0.35
-                                    
-                  # Leave Request Form Fields
-                  - 'LeaveRequest.Form.Fields.Container':
+                              Height: =Parent.Height * 0.45
+                              Text: =Concatenate(
+                                "Tổng số ngày phép:" & " " & varUserLeaveBalance.TongNgayDuocPhep & " ngày | ",
+                                "Đã sử dụng:" & " " & varUserLeaveBalance.SoNgayDaNghi & " ngày | ",
+                                "Còn lại:" & " " & varUserLeaveBalance.SoNgayConLai & " ngày")
+                              Color: =RGBA(55, 65, 81, 1)
+                              Font: =Font.'Open Sans'
+                              Size: =12
+                              
+                  # Main Form Container
+                  - 'LeaveRequest.Form.Container':
                       Control: GroupContainer
                       Variant: ManualLayout
                       Properties:
-                        X: =Parent.Width * 0.03
-                        Y: ='LeaveRequest.Form.EmployeeInfo.Container'.Y + 'LeaveRequest.Form.EmployeeInfo.Container'.Height + Parent.Height * 0.03
-                        Width: =Parent.Width * 0.94
-                        Height: =Parent.Height * 0.75
+                        X: =0
+                        Y: ='LeaveRequest.BalanceInfo.Container'.Y + 'LeaveRequest.BalanceInfo.Container'.Height + Parent.Height * 0.02
+                        Width: =Parent.Width
+                        Height: =Parent.Height * 0.81
                       Children:
-                        # Leave Type Selection
-                        - 'LeaveRequest.Form.LeaveType.Container':
-                            Control: GroupContainer
-                            Variant: ManualLayout
+                        - 'LeaveRequest.Form.Background':
+                            Control: Rectangle
                             Properties:
-                              X: =Parent.X
-                              Y: =Parent.Y
-                              Width: =Parent.Width * 0.48
-                              Height: =Parent.Height * 0.2
-                            Children:
-                              - 'LeaveRequest.Form.LeaveType.Input':
-                                  Control: CanvasComponent
-                                  ComponentName: InputComponent
-                                  Properties:
-                                    X: =Parent.X
-                                    Y: =Parent.Y
-                                    Width: =Parent.Width
-                                    Height: =Parent.Height
-                                    Label: ="Loại nghỉ phép"
-                                    IsRequired: =true
-                                    InputType: ="Dropdown"
-                                    Value: =varSelectedLeaveType
-                                    
-                              - 'LeaveRequest.Form.LeaveType.Dropdown':
-                                  Control: Classic/DropDown
-                                  Properties:
-                                    X: =Parent.X
-                                    Y: =Parent.Height * 0.6
-                                    Width: =Parent.Width
-                                    Height: =Parent.Height * 0.4
-                                    Items: =varLeaveTypes
-                                    DefaultSelectedItems: =Filter(varLeaveTypes, MaLoai = varSelectedLeaveType)
-                                    OnChange: =Set(varSelectedLeaveType, Self.Selected.MaLoai)
-                                    
-                        # Session Selection
-                        - 'LeaveRequest.Form.Session.Container':
-                            Control: GroupContainer
-                            Variant: ManualLayout
-                            Properties:
-                              X: =Parent.Width * 0.52
-                              Y: =Parent.Y
-                              Width: =Parent.Width * 0.48
-                              Height: =Parent.Height * 0.2
-                            Children:
-                              - 'LeaveRequest.Form.Session.Input':
-                                  Control: CanvasComponent
-                                  ComponentName: InputComponent
-                                  Properties:
-                                    X: =Parent.X
-                                    Y: =Parent.Y
-                                    Width: =Parent.Width
-                                    Height: =Parent.Height
-                                    Label: ="Buổi nghỉ"
-                                    IsRequired: =true
-                                    InputType: ="Dropdown"
-                                    Value: =varStartDate
-                                    
-                              - 'LeaveRequest.Form.Session.Dropdown':
-                                  Control: Classic/DropDown
-                                  Properties:
-                                    X: =Parent.X
-                                    Y: =Parent.Height * 0.6
-                                    Width: =Parent.Width
-                                    Height: =Parent.Height * 0.4
-                                    Items: =["CaNgay", "BuoiSang", "BuoiChieu"]
-                                    Default: =varStartDate
-                                    OnChange: =Set(varStartDate, Self.Selected.Value); Set(varEndDate, If(Self.Selected.Value = "CaNgay", varStartDate, DateAdd(varStartDate, 0.5)))
-                                    
-                        # Date Range Selection
-                        - 'LeaveRequest.Form.DateRange.Container':
-                            Control: GroupContainer
-                            Variant: ManualLayout
-                            Properties:
-                              X: =Parent.X
-                              Y: ='LeaveRequest.Form.LeaveType.Container'.Y + 'LeaveRequest.Form.LeaveType.Container'.Height + Parent.Height * 0.03
+                              X: =0
+                              Y: =0
                               Width: =Parent.Width
-                              Height: =Parent.Height * 0.2
-                            Children:
-                              # Start Date
-                              - 'LeaveRequest.Form.StartDate.Container':
-                                  Control: GroupContainer
-                                  Variant: ManualLayout
-                                  Properties:
-                                    X: =Parent.X
-                                    Y: =Parent.Y
-                                    Width: =Parent.Width * 0.48
-                                    Height: =Parent.Height
-                                  Children:
-                                    - 'LeaveRequest.Form.StartDate.Input':
-                                        Control: CanvasComponent
-                                        ComponentName: InputComponent
-                                        Properties:
-                                          X: =Parent.X
-                                          Y: =Parent.Y
-                                          Width: =Parent.Width
-                                          Height: =Parent.Height * 0.6
-                                          Label: ="Ngày bắt đầu"
-                                          IsRequired: =true
-                                          InputType: ="Date"
-                                          
-                                    - 'LeaveRequest.Form.StartDate.Picker':
-                                        Control: Classic/DatePicker
-                                        Properties:
-                                          X: =Parent.X
-                                          Y: =Parent.Height * 0.6
-                                          Width: =Parent.Width
-                                          Height: =Parent.Height * 0.4
-                                          DefaultDate: =varStartDate
-                                          StartOfWeek: =StartOfWeek.Monday
-                                          OnChange: |
-                                                      =Set(varStartDate, Self.SelectedDate);
-                                                      Set(varEndDate, If(Self.SelectedDate > varEndDate, Self.SelectedDate, varEndDate));
-                                                      Set(varCalculatedDays, 
-                                                        If(varSelectedLeaveType = "CaNgay",
-                                                          DateDiff(varStartDate, varEndDate) + 1,
-                                                          0.5))
-                                          
-                              # End Date
-                              - 'LeaveRequest.Form.EndDate.Container':
-                                  Control: GroupContainer
-                                  Variant: ManualLayout
-                                  Properties:
-                                    X: =Parent.Width * 0.52
-                                    Y: =Parent.Y
-                                    Width: =Parent.Width * 0.48
-                                    Height: =Parent.Height
-                                  Children:
-                                    - 'LeaveRequest.Form.EndDate.Input':
-                                        Control: CanvasComponent
-                                        ComponentName: InputComponent
-                                        Properties:
-                                          X: =Parent.X
-                                          Y: =Parent.Y
-                                          Width: =Parent.Width
-                                          Height: =Parent.Height * 0.6
-                                          Label: ="Ngày kết thúc"
-                                          IsRequired: =true
-                                          InputType: ="Date"
-                                          
-                                    - 'LeaveRequest.Form.EndDate.Picker':
-                                        Control: Classic/DatePicker
-                                        Properties:
-                                          X: =Parent.X
-                                          Y: =Parent.Height * 0.6
-                                          Width: =Parent.Width
-                                          Height: =Parent.Height * 0.4
-                                          DefaultDate: =varEndDate
-                                          StartOfWeek: =StartOfWeek.Monday
-                                          OnChange: |
-                                                      =Set(varEndDate, Self.SelectedDate);
-                                                      Set(varCalculatedDays, 
-                                                        If(varSelectedLeaveType = "CaNgay",
-                                                          DateDiff(varStartDate, varEndDate) + 1,
-                                                          0.5))
-                                          
-                        # Calculated Days Display
-                        - 'LeaveRequest.Form.CalculatedDays.Container':
+                              Height: =Parent.Height
+                              Fill: =RGBA(255, 255, 255, 1)
+                              BorderColor: =RGBA(224, 224, 224, 1)
+                              BorderThickness: =1
+                              
+                        # Employee Info Section
+                        - 'LeaveRequest.Form.EmployeeInfo.Container':
                             Control: GroupContainer
                             Variant: ManualLayout
                             Properties:
-                              X: =Parent.X
-                              Y: ='LeaveRequest.Form.DateRange.Container'.Y + 'LeaveRequest.Form.DateRange.Container'.Height + Parent.Height * 0.02
-                              Width: =Parent.Width
-                              Height: =Parent.Height * 0.08
-                              Fill: =RGBA(227, 242, 253, 1)
-                              BorderColor: =RGBA(187, 222, 251, 1)
-                              BorderThickness: =Parent.Width * 0.0005
+                              X: =Parent.Width * 0.03
+                              Y: =Parent.Height * 0.03
+                              Width: =Parent.Width * 0.94
+                              Height: =Parent.Height * 0.12
                             Children:
-                              - 'LeaveRequest.Form.CalculatedDays.Label':
+                              - 'LeaveRequest.Form.EmployeeInfo.Background':
+                                  Control: Rectangle
+                                  Properties:
+                                    X: =0
+                                    Y: =0
+                                    Width: =Parent.Width
+                                    Height: =Parent.Height
+                                    Fill: =RGBA(248, 250, 252, 1)
+                                    BorderColor: =RGBA(224, 224, 224, 1)
+                                    BorderThickness: =1
+                                    
+                              - 'LeaveRequest.Form.EmployeeInfo.Title':
                                   Control: Label
                                   Properties:
                                     X: =Parent.Width * 0.02
-                                    Y: =(Parent.Height - Self.Height) / 2
+                                    Y: =Parent.Height * 0.05
                                     Width: =Parent.Width * 0.96
-                                    Height: =Parent.Height * 0.6
-                                    Text: =Concatenate("Tổng số ngày nghỉ:", varCalculatedDays, " ngày")
-                                    Color: =RGBA(33, 150, 243, 1)
+                                    Height: =Parent.Height * 0.3
+                                    Text: ="Thông tin nhân viên"
+                                    Color: =RGBA(55, 65, 81, 1)
                                     Font: =Font.'Open Sans'
                                     FontWeight: =FontWeight.Semibold
-                                    Size: =Parent.Height * 0.3
+                                    Size: =14
                                     
-                        # Reason Input
-                        - 'LeaveRequest.Form.Reason.Container':
-                            Control: GroupContainer
-                            Variant: ManualLayout
-                            Properties:
-                              X: =Parent.X
-                              Y: ='LeaveRequest.Form.CalculatedDays.Container'.Y + 'LeaveRequest.Form.CalculatedDays.Container'.Height + Parent.Height * 0.03
-                              Width: =Parent.Width
-                              Height: =Parent.Height * 0.25
-                            Children:
-                              - 'LeaveRequest.Form.Reason.Input':
-                                  Control: CanvasComponent
-                                  ComponentName: InputComponent
-                                  Properties:
-                                    X: =Parent.X
-                                    Y: =Parent.Y
-                                    Width: =Parent.Width
-                                    Height: =Parent.Height
-                                    Label: ="Lý do nghỉ phép"
-                                    Placeholder: ="Nhập lý do nghỉ phép..."
-                                    IsRequired: =true
-                                    InputType: ="Multiline"
-                                    Value: =varLeaveReason
-                                    MaxLength: =1000
-                                    ShowCharacterCount: =true
-                                    OnChange: =Set(varLeaveReason, Self.Text)
-                                    
-                        # Handover Section
-                        - 'LeaveRequest.Form.Handover.Container':
-                            Control: GroupContainer
-                            Variant: ManualLayout
-                            Properties:
-                              X: =Parent.X
-                              Y: ='LeaveRequest.Form.Reason.Container'.Y + 'LeaveRequest.Form.Reason.Container'.Height + Parent.Height * 0.03
-                              Width: =Parent.Width
-                              Height: =Parent.Height * 0.2
-                            Children:
-                              # Handover Person
-                              - 'LeaveRequest.Form.HandoverPerson.Container':
+                              - 'LeaveRequest.Form.EmployeeInfo.Details':
                                   Control: GroupContainer
                                   Variant: ManualLayout
                                   Properties:
-                                    X: =Parent.X
-                                    Y: =Parent.Y
-                                    Width: =Parent.Width * 0.48
-                                    Height: =Parent.Height
+                                    X: =Parent.Width * 0.02
+                                    Y: =Parent.Height * 0.4
+                                    Width: =Parent.Width * 0.96
+                                    Height: =Parent.Height * 0.55
                                   Children:
-                                    - 'LeaveRequest.Form.HandoverPerson.Input':
-                                        Control: CanvasComponent
-                                        ComponentName: InputComponent
+                                    - 'LeaveRequest.Form.EmployeeID.Info':
+                                        Control: Label
                                         Properties:
-                                          X: =Parent.X
-                                          Y: =Parent.Y
-                                          Width: =Parent.Width
-                                          Height: =Parent.Height * 0.6
-                                          Label: ="Người bàn giao"
-                                          IsRequired: =false
-                                          InputType: ="Dropdown"
-                                          
-                                    - 'LeaveRequest.Form.HandoverPerson.Dropdown':
-                                        Control: Classic/DropDown
-                                        Properties:
-                                          X: =Parent.X
-                                          Y: =Parent.Height * 0.6
-                                          Width: =Parent.Width
-                                          Height: =Parent.Height * 0.4
-                                          Items: =varEmployeesForHandover
-                                          OnChange: =Set(varHandoverPerson, Self.Selected.MaNhanVien)
-                                          
-                              # Handover Content
-                              - 'LeaveRequest.Form.HandoverContent.Container':
-                                  Control: GroupContainer
-                                  Variant: ManualLayout
-                                  Properties:
-                                    X: =Parent.Width * 0.52
-                                    Y: =Parent.Y
-                                    Width: =Parent.Width * 0.48
-                                    Height: =Parent.Height
-                                  Children:
-                                    - 'LeaveRequest.Form.HandoverContent.Input':
-                                        Control: CanvasComponent
-                                        ComponentName: InputComponent
-                                        Properties:
-                                          X: =Parent.X
-                                          Y: =Parent.Y
-                                          Width: =Parent.Width
+                                          X: =0
+                                          Y: =0
+                                          Width: =Parent.Width * 0.3
                                           Height: =Parent.Height
-                                          Label: ="Nội dung bàn giao"
-                                          Placeholder: ="Mô tả công việc cần bàn giao..."
-                                          IsRequired: =false
-                                          InputType: ="Multiline"
-                                          Value: =varHandoverContent
-                                          MaxLength: =2000
-                                          OnChange: =Set(varHandoverContent, Self.Text)
+                                          Text: ="Mã NV:" & " " & If(IsBlank(User.Id), "EMP001", User.Id)
+                                          Color: =RGBA(55, 65, 81, 1)
+                                          Font: =Font.'Open Sans'
+                                          Size: =12
                                           
+                                    - 'LeaveRequest.Form.EmployeeName.Info':
+                                        Control: Label
+                                        Properties:
+                                          X: =Parent.Width * 0.33
+                                          Y: =0
+                                          Width: =Parent.Width * 0.34
+                                          Height: =Parent.Height
+                                          Text: ="Họ tên:" & " " & If(IsBlank(User.HoTen), "Nguyễn Văn An", User.HoTen)
+                                          Color: =RGBA(55, 65, 81, 1)
+                                          Font: =Font.'Open Sans'
+                                          Size: =12
+                                          
+                                    - 'LeaveRequest.Form.Department.Info':
+                                        Control: Label
+                                        Properties:
+                                          X: =Parent.Width * 0.67
+                                          Y: =0
+                                          Width: =Parent.Width * 0.33
+                                          Height: =Parent.Height
+                                          Text: ="Phòng ban:" & " " & "IT"
+                                          Color: =RGBA(55, 65, 81, 1)
+                                          Font: =Font.'Open Sans'
+                                          Size: =12
+
             # Form Actions
             - 'LeaveRequest.Actions.Container':
                 Control: GroupContainer
@@ -557,8 +343,8 @@ Screens:
       - 'LeaveRequest.Confirmation.Overlay':
           Control: Rectangle
           Properties:
-            X: =Parent.X
-            Y: =Parent.Y
+            X: =0
+            Y: =0
             Width: =Parent.Width
             Height: =Parent.Height
             Fill: =RGBA(0, 0, 0, 0.5)

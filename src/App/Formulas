@@ -1,0 +1,188 @@
+//Navigation menu items for Leave Management
+MenuItems = Table(
+  {Id:1, Name: "Dashboard", DisplayName: "Bảng điều khiển", Screen: "DashboardScreen", Icon: Icon.DetailList, Color: RGBA(33, 150, 243, 1)},
+  {Id:2, Name: "LeaveRequest", DisplayName: "Tạo đơn nghỉ phép", Screen: "LeaveRequestScreen", Icon: Icon.Edit, Color: RGBA(233, 30, 99, 1)},
+  {Id:3, Name: "MyLeaves", DisplayName: "Đơn nghỉ phép của tôi", Screen: "MyLeavesScreen", Icon: Icon.DocumentWithContent, Color: RGBA(76, 175, 80, 1)},
+  {Id:4, Name: "Calendar", DisplayName: "Lịch nghỉ phép", Screen: "CalendarScreen", Icon: Icon.CalendarBlank, Color: RGBA(255, 152, 0, 1)},
+  {Id:5, Name: "Management", DisplayName: "Quản lý HR", Screen: "ManagementScreen", Icon: Icon.Settings, Color: RGBA(139, 92, 246, 1)}
+);
+
+//Global styles for Leave Management UI
+Styles = {
+  Title: {
+    Font: Font.'Open Sans',
+    Size: 24,
+    Weight: FontWeight.Bold,
+    Color: RGBA(32, 54, 71, 1),
+    Alignment: Align.Center
+  },
+  Button: {
+    Font: Font.'Open Sans',
+    Size: 14,
+    Weight: FontWeight.Semibold,
+    Color: RGBA(255, 255, 255, 1),
+    Fill: RGBA(33, 150, 243, 1)
+  },
+  Card: {
+    Font: Font.'Open Sans',
+    Size: 12,
+    Weight: FontWeight.Normal,
+    Color: RGBA(55, 65, 81, 1),
+    Fill: RGBA(255, 255, 255, 1),
+    BorderColor: RGBA(230, 230, 230, 1)
+  },
+  Input: {
+    Font: Font.'Open Sans',
+    Size: 14,
+    Weight: FontWeight.Normal,
+    Color: RGBA(55, 65, 81, 1),
+    Fill: RGBA(255, 255, 255, 1),
+    BorderColor: RGBA(224, 224, 224, 1)
+  }
+};
+
+//Permission checking function
+CheckPermission(UserPerm:Number, RequiredPerm:Number):Boolean = (
+  Mod(Int(UserPerm / RequiredPerm), 2) = 1
+);
+
+//Leave Request Status value conversion functions
+LeaveStatusValue(LeaveStatus:Text): Number = (
+  Switch(LeaveStatus,
+    "ChoDuyetCap1", 0,
+    "ChoDuyetCap2", 1,
+    "ChoDuyetCap3", 2,
+    "DaDuyet", 3,
+    "TuChoi", 4,
+    "Huy", 5,
+    "HetHan", 6,
+    -1
+  )
+);
+
+//Leave Status Display Text
+LeaveStatusText(LeaveStatus:Text): Text = (
+  Switch(LeaveStatus,
+    "ChoDuyetCap1", "Chờ phê duyệt cấp 1",
+    "ChoDuyetCap2", "Chờ phê duyệt cấp 2", 
+    "ChoDuyetCap3", "Chờ phê duyệt cấp 3",
+    "DaDuyet", "Đã phê duyệt",
+    "TuChoi", "Bị từ chối",
+    "Huy", "Đã hủy",
+    "HetHan", "Hết hạn",
+    "Không xác định"
+  )
+);
+
+//Leave Type Display Text
+LeaveTypeText(LeaveType:Text): Text = (
+  Switch(LeaveType,
+    "AnnualLeave", "Phép năm",
+    "SickLeave", "Nghỉ ốm",
+    "PersonalLeave", "Nghỉ việc riêng",
+    "MaternityLeave", "Nghỉ thai sản",
+    "PaternityLeave", "Nghỉ chăm con",
+    "CompensatoryLeave", "Nghỉ bù",
+    "UnpaidLeave", "Nghỉ không lương",
+    LeaveType
+  )
+);
+
+//User roles for Leave Management
+UserRoles = {
+  NhanVien: "Employee",
+  QuanLy: "Manager", 
+  GiamDoc: "Director",
+  NhanSu: "HR",
+  TruongPhong: "DepartmentHead"
+};
+
+//Permissions for Leave Management
+UserPermissions = {
+  XemDon: 1,
+  TaoDon: 2,
+  DuyetCap1: 4,
+  DuyetCap2: 8,
+  DuyetCap3: 16,
+  QuanLyNS: 32,
+  XemTatCa: 64,
+  BaoCao: 128
+};
+
+//Session validation expression
+IsUserAuthenticated = And(
+  varLoginSuccess = true, 
+  varSessionValid = true, 
+  Not(IsBlank(UserSession)),
+  Not(IsBlank(UserSession.Email)),
+  Not(IsBlank(UserSession.Id))
+);
+
+//Session state check expression
+GetSessionState = If(IsUserAuthenticated, 
+  "AUTHENTICATED", 
+  If(And(IsBlank(UserSession), varLoginSuccess = false, varSessionValid = false),
+    "CLEAN_START",  
+    "PARTIAL_DATA"
+  )
+);
+
+//Current user object with strict validation
+User = If(
+  IsUserAuthenticated,
+  {
+    Name: UserSession.Name,
+    Id: UserSession.Id,
+    Role: UserSession.Role,
+    Permission: UserSession.Permission,
+    NguoiQuanLyId: UserSession.NguoiQuanLyId,
+    HoTen: UserSession.HoTen,
+    MaVaiTro: UserSession.MaVaiTro,
+    ChucDanh: UserSession.ChucDanh,
+    MaDonVi: UserSession.MaDonVi,
+    TrangThai: UserSession.TrangThai,
+    Email: UserSession.Email
+  },
+  Blank()
+);
+
+//Permission checks using inline expressions instead of function calls
+UserCanViewLeaves = If(IsUserAuthenticated, Mod(Int(UserSession.Permission / UserPermissions.XemDon), 2) = 1, false);
+UserCanCreateLeaves = If(IsUserAuthenticated, Mod(Int(UserSession.Permission / UserPermissions.TaoDon), 2) = 1, false);
+UserCanApproveLevel1 = If(IsUserAuthenticated, Mod(Int(UserSession.Permission / UserPermissions.DuyetCap1), 2) = 1, false);
+UserCanApproveLevel2 = If(IsUserAuthenticated, Mod(Int(UserSession.Permission / UserPermissions.DuyetCap2), 2) = 1, false);
+UserCanApproveLevel3 = If(IsUserAuthenticated, Mod(Int(UserSession.Permission / UserPermissions.DuyetCap3), 2) = 1, false);
+UserCanManageHR = If(IsUserAuthenticated, Mod(Int(UserSession.Permission / UserPermissions.QuanLyNS), 2) = 1, false);
+UserCanViewAll = If(IsUserAuthenticated, Mod(Int(UserSession.Permission / UserPermissions.XemTatCa), 2) = 1, false);
+UserCanGenerateReports = If(IsUserAuthenticated, Mod(Int(UserSession.Permission / UserPermissions.BaoCao), 2) = 1, false);
+
+//Simple logout function
+LogoutUser():Boolean = true;
+
+//Demo Users for Testing
+DemoUsers = Table(
+  {
+    Name: "Admin Demo", 
+    Email: "admin@company.com", 
+    Permission: 255,  
+    Role: "HR",
+    HoTen: "Quản trị viên",
+    MaVaiTro: "Admin"
+  },
+  {
+    Name: "Employee Demo", 
+    Email: "employee@company.com", 
+    Permission: 3,    
+    Role: "Employee",
+    HoTen: "Nguyễn Văn An",
+    MaVaiTro: "Employee"
+  },
+  {
+    Name: "Manager Demo", 
+    Email: "manager@company.com", 
+    Permission: 15,   
+    Role: "Manager",
+    HoTen: "Trần Thị Bình",
+    MaVaiTro: "Manager"
+  }
+);

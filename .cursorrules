@@ -6,16 +6,17 @@
 
 ## 📋 TABLE OF CONTENTS
 1. [File Structure](mdc:#1-file-structure)
-2. [Control Rules](mdc:#2-control-rules)
-3. [Position & Size Rules](mdc:#3-position--size-rules)
-4. [Control Z-Index & Rendering Order](mdc:#4-control-z-index--rendering-order)
-5. [Allowed Controls](mdc:#5-allowed-controls)
-6. [Properties Guidelines](mdc:#6-properties-guidelines)
-7. [Icon Guidelines](mdc:#7-icon-guidelines)
-8. [Naming Conventions](mdc:#8-naming-conventions)
-9. [Common Mistakes](mdc:#9-common-mistakes)
-10. [Best Practices](mdc:#10-best-practices)
-11. [SharePoint Integration Rules](mdc:#11-sharepoint-integration-rules)
+2. [App Object Structure](mdc:#2-app-object-structure)
+3. [Control Rules](mdc:#3-control-rules)
+4. [Position & Size Rules](mdc:#4-position--size-rules)
+5. [Control Z-Index & Rendering Order](mdc:#5-control-z-index--rendering-order)
+6. [Allowed Controls](mdc:#6-allowed-controls)
+7. [Properties Guidelines](mdc:#7-properties-guidelines)
+8. [Icon Guidelines](mdc:#8-icon-guidelines)
+9. [Naming Conventions](mdc:#9-naming-conventions)
+10. [Common Mistakes](mdc:#10-common-mistakes)
+11. [Best Practices](mdc:#11-best-practices)
+12. [SharePoint Integration Rules](mdc:#12-sharepoint-integration-rules)
 
 ---
 
@@ -118,9 +119,596 @@ OnNavigate:
 
 ---
 
-## 2. CONTROL RULES
+## 2. APP OBJECT STRUCTURE
 
-### 2.1 Version Restriction
+### 2.1 App Object Overview
+**CRITICAL**: The App object is the main application object in Power Apps with specific properties that control overall app behavior and appearance. Since App source code cannot be viewed directly, we organize App properties in separate files within an `App` folder structure.
+
+### 2.2 App Folder Structure
+**REQUIRED**: Create App folder with individual files for each App property:
+
+```
+src/App/
+├── BackEnabled
+├── ConfirmExit
+├── ConfirmExitMessage
+├── Formulas
+├── MinScreenHeight
+├── MinScreenWidth
+├── OnError
+├── OnMessage
+├── OnStart
+├── SizeBreakpoints
+├── StartScreen
+└── Theme
+```
+
+### 2.3 App Properties - Allowed Properties
+**CRITICAL**: Only these App properties are allowed and supported:
+
+#### 2.3.1 Navigation Properties
+```yaml
+# BackEnabled - Controls back button behavior
+BackEnabled: =true
+
+# StartScreen - Initial screen when app starts
+StartScreen: ="LoginPage"
+```
+
+#### 2.3.2 Exit Confirmation Properties
+```yaml
+# ConfirmExit - Whether to show exit confirmation
+ConfirmExit: =true
+
+# ConfirmExitMessage - Custom exit confirmation message
+ConfirmExitMessage: ="Bạn có chắc chắn muốn thoát ứng dụng?"
+```
+
+#### 2.3.3 App Lifecycle Properties
+```yaml
+# OnStart - Code executed when app starts
+OnStart: |
+  =Set(varCurrentUser, LookUp(Users, Email = User().Email));
+  Set(varAppInitialized, true)
+
+# OnError - Error handling code
+OnError: |
+  =Notify("Đã xảy ra lỗi: " & FirstError.Message, NotificationType.Error)
+
+# OnMessage - Message handling code
+OnMessage: |
+  =Switch(Message.MessageType, "Notification", Notify(Message.Text))
+```
+
+#### 2.3.4 Screen Size Properties
+```yaml
+# MinScreenHeight - Minimum screen height
+MinScreenHeight: =600
+
+# MinScreenWidth - Minimum screen width  
+MinScreenWidth: =800
+
+# SizeBreakpoints - Responsive breakpoints
+SizeBreakpoints: =Table(
+  {Name: "Small", MinWidth: 0},
+  {Name: "Medium", MinWidth: 768},
+  {Name: "Large", MinWidth: 1024}
+)
+```
+
+#### 2.3.5 Global Formulas and Variables
+```yaml
+# Formulas - Global formulas, variables, and functions
+Formulas: |
+  =//Navigation menu items
+  MenuItems = Table(
+    {Id:1, Name: "Trang chủ", Screen: HomePage, Image: Icon.Home},
+    {Id:2, Name: "Tạm ứng", Screen: AdvancePage, Image: Icon.Money},
+    {Id:3, Name: "Thanh toán", Screen: PaymentPage, Image: Icon.Currency},
+    {Id:4, Name: "Báo cáo", Screen: AnalysisPage, Image: Icon.BarChart}
+  );
+  
+  //Global styles
+  Styles = {
+    Title: {
+      Font: Font.'Segoe UI',
+      Size: 24,
+      Weight: FontWeight.Semibold,
+      Color: ColorValue("#0078D4"),
+      Alignment: Align.Center
+    },
+    Button: {
+      Font: Font.'Segoe UI',
+      Size: 14,
+      Weight: FontWeight.Normal,
+      Color: ColorValue("#FFFFFF"),
+      Fill: ColorValue("#0078D4")
+    }
+  };
+  
+  //Permission checking function
+  CheckPermission(UserPerm:Number, RequiredPerm:Number):Boolean = (
+    Mod(Int(UserPerm / RequiredPerm), 2) = 1
+  );
+  
+  //Status value conversion functions
+  DeNghiTamUngStatusValue(TamUngStatus:Text): Number = (
+    Switch(TamUngStatus, 
+      "Chờ QLTT duyệt", 0,
+      "Chờ Giám đốc duyệt", 1,
+      "Chờ Trưởng kế toán duyệt", 2,
+      "Chờ thực hiện tạm ứng", 3,
+      "Đã hoàn thành tạm ứng", 4,
+      "QLTT từ chối", 5,
+      "Giám đốc từ chối", 6,
+      "Đợi bổ sung", 7,
+      -1 
+    )
+  );
+  
+  //User roles
+  Vai_Trò = {
+    NV: "1",
+    QL: "2", 
+    GD: "3",
+    KTT: "4",
+    KT: "5"
+  };
+  
+  //Permissions
+  Quyền = {
+    Xem: 1,
+    Tao: 1,
+    QL: 2,
+    GĐ: 4,
+    YeuCauBoSung: 8,
+    TamUng: 16
+  };
+  
+  //Current user object
+  User = {
+    Name: UserSession.Name,
+    Id: UserSession.Id,
+    Role: UserSession.Role,
+    Permission: UserSession.Permission,
+    NguoiQuanLyId: UserSession.NguoiQuanLyId
+  };
+  
+  //Permission checks
+  UserHasGDPerm = CheckPermission(UserSession.Permission, Quyền.GĐ);
+  UserHasQLPerm = CheckPermission(UserSession.Permission, Quyền.QL);
+  UserHasKTTPerm = CheckPermission(UserSession.Permission, Quyền.YeuCauBoSung);
+  UserHasKTPerm = CheckPermission(UserSession.Permission, Quyền.TamUng)
+
+# Theme - App theme settings
+Theme: =Theme.Default
+```
+
+### 2.4 App Property File Format
+**CRITICAL**: Each App property file contains ONLY the formula/value for that property:
+
+#### File: `src/App/Formulas`
+```
+//Navigation menu items
+MenuItems = Table(
+  {Id:1, Name: "Trang chủ", Screen: HomePage, Image: Icon.Home},
+  {Id:2, Name: "Tạm ứng", Screen: AdvancePage, Image: Icon.Money},
+  {Id:3, Name: "Thanh toán", Screen: PaymentPage, Image: Icon.Currency},
+  {Id:4, Name: "Báo cáo", Screen: AnalysisPage, Image: Icon.BarChart}
+);
+
+//Global styles
+Styles = {
+  Title: {
+    Font: Font.'Segoe UI',
+    Size: 24,
+    Weight: FontWeight.Semibold,
+    Color: ColorValue("#0078D4"),
+    Alignment: Align.Center
+  }
+};
+
+//Permission checking function
+CheckPermission(UserPerm:Number, RequiredPerm:Number):Boolean = (
+  Mod(Int(UserPerm / RequiredPerm), 2) = 1
+);
+
+//Current user object
+User = {
+  Name: UserSession.Name,
+  Id: UserSession.Id,
+  Role: UserSession.Role,
+  Permission: UserSession.Permission,
+  NguoiQuanLyId: UserSession.NguoiQuanLyId
+};
+```
+
+#### File: `src/App/OnStart`
+```
+Set(GetTamUngStatus, 
+  With(
+    { statuses: Choices(DeNghiTamUngs.'Trạng thái') },
+    {
+      GD: LookUp(statuses, Text(Value)="Chờ Giám đốc duyệt").Value,
+      QL: LookUp(statuses, Text(Value)="Chờ QLTT duyệt").Value,
+      KTT: LookUp(statuses, Text(Value)="Chờ Trưởng kế toán duyệt").Value,
+      KT: LookUp(statuses, Text(Value)="Chờ thực hiện tạm ứng").Value,
+      BoSung: LookUp(statuses, Text(Value)="Đợi bổ sung").Value
+    }
+  )
+);
+Set(GetThanhToanStatus, 
+  With(
+    { statuses: Choices(DeNghiThanhToans.TrangThai) },
+    {
+      GD: LookUp(statuses, Text(Value)="Chờ Giám đốc duyệt").Value,
+      QL: LookUp(statuses, Text(Value)="Chờ QLTT duyệt").Value,
+      KTT: LookUp(statuses, Text(Value)="Chờ Trưởng kế toán duyệt").Value,
+      KT: LookUp(statuses, Text(Value)="Chờ thực hiện tạm ứng").Value,
+      BoSung: LookUp(statuses, Text(Value)="Đợi bổ sung").Value,
+      DaThanhToan: LookUp(statuses, Text(Value)="Đã thanh toán").Value
+    }
+  )
+);
+```
+
+#### File: `src/App/StartScreen`
+```
+LoginPage
+```
+
+### 2.5 App Property Rules
+**CRITICAL**: Follow these rules when working with App properties:
+
+#### 2.5.1 Global Variables and Functions in Formulas
+- **ALWAYS** define global variables in `Formulas` property
+- **ALWAYS** define reusable functions in `Formulas` property
+- **ALWAYS** define global styles and constants in `Formulas` property
+- **NEVER** define variables in individual screen OnVisible events if they're used globally
+
+#### 2.5.2 OnStart Property Rules
+- **ALWAYS** use `OnStart` for app initialization logic
+- **ALWAYS** use `OnStart` for SharePoint data initialization
+- **ALWAYS** use `OnStart` for user authentication setup
+- **NEVER** put heavy data loading in `OnStart` - use lazy loading instead
+
+#### 2.5.3 StartScreen Property Rules
+- **ALWAYS** specify the initial screen name as plain text
+- **NEVER** use formulas in `StartScreen` property
+- **ALWAYS** ensure the specified screen exists in the app
+
+#### 2.5.4 Global Function Naming Conventions
+```yaml
+# ✅ CORRECT - Descriptive function names
+CheckPermission(UserPerm:Number, RequiredPerm:Number):Boolean
+GetStatusValue(Status:Text):Number
+FormatCurrency(Amount:Number):Text
+ValidateEmail(Email:Text):Boolean
+
+# ❌ WRONG - Generic or unclear names
+Check(a:Number, b:Number):Boolean
+GetValue(x:Text):Number
+Format(y:Number):Text
+Validate(z:Text):Boolean
+```
+
+#### 2.5.5 Global Variable Naming Conventions
+```yaml
+# ✅ CORRECT - Clear, descriptive names
+MenuItems = Table(...)
+Styles = {...}
+User = {...}
+Quyền = {...}
+Vai_Trò = {...}
+
+# ❌ WRONG - Unclear or generic names
+Items = Table(...)
+Config = {...}
+Data = {...}
+Settings = {...}
+```
+
+### 2.6 App Property Best Practices
+
+#### 2.6.1 Formulas Organization
+**ORGANIZE** global formulas in logical groups:
+
+```
+//=== NAVIGATION ===
+MenuItems = Table(...);
+
+//=== STYLING ===
+Styles = {...};
+Colors = {...};
+
+//=== BUSINESS LOGIC ===
+CheckPermission(...);
+GetStatusValue(...);
+
+//=== USER DATA ===
+User = {...};
+Quyền = {...};
+Vai_Trò = {...};
+
+//=== COMPUTED VALUES ===
+UserHasGDPerm = CheckPermission(...);
+UserHasQLPerm = CheckPermission(...);
+```
+
+#### 2.6.2 OnStart Optimization
+**OPTIMIZE** OnStart for fast app loading:
+
+```yaml
+# ✅ CORRECT - Lightweight initialization
+OnStart: |
+  =Set(varAppVersion, "1.0.0");
+  Set(varCurrentUser, LookUp(Users, Email = User().Email));
+  Set(varAppInitialized, true)
+
+# ❌ WRONG - Heavy data loading in OnStart
+OnStart: |
+  =Set(varAllUsers, Users);
+  Set(varAllDepartments, Departments);
+  Set(varAllProjects, Projects);
+  Set(varAllReports, Reports)
+```
+
+#### 2.6.3 Error Handling
+**IMPLEMENT** comprehensive error handling:
+
+```yaml
+OnError: |
+  =Switch(FirstError.Kind,
+    ErrorKind.Network, Notify("Lỗi kết nối mạng. Vui lòng kiểm tra kết nối.", NotificationType.Error),
+    ErrorKind.Sync, Notify("Lỗi đồng bộ dữ liệu. Vui lòng thử lại.", NotificationType.Warning),
+    ErrorKind.Validation, Notify("Dữ liệu không hợp lệ: " & FirstError.Message, NotificationType.Error),
+    Notify("Đã xảy ra lỗi: " & FirstError.Message, NotificationType.Error)
+  );
+  Set(varLastError, {
+    Message: FirstError.Message,
+    Kind: FirstError.Kind,
+    Timestamp: Now()
+  })
+```
+
+### 2.7 App Property Integration with Screens and Components
+
+#### 2.7.1 Screen Development Workflow - MANDATORY App Check
+**CRITICAL**: Before modifying any screen, ALWAYS check `src/App/` folder first to coordinate with existing global variables and functions.
+
+**WORKFLOW for Screen Development:**
+1. **FIRST**: Check `src/App/Formulas` for available global variables and functions
+2. **SECOND**: Check `src/App/OnStart` for initialization context
+3. **THIRD**: Use existing App resources before creating new local variables
+4. **FOURTH**: Implement screen logic using App globals where appropriate
+
+```yaml
+# ✅ CORRECT - Check App first, use existing globals
+# Check src/App/Formulas first for: MenuItems, Styles, User, CheckPermission(), etc.
+
+# In screen OnVisible - use existing App globals
+OnVisible: |
+  =Set(varScreenTitle, LookUp(MenuItems, Screen = Self).Name);
+  Set(varUserCanEdit, CheckPermission(User.Permission, Quyền.Tao));
+  Set(varCurrentUserRole, User.Role)
+
+# In control properties - reference App styles and variables  
+Text: =Styles.Title.Color
+Fill: =Styles.Button.Fill
+Visible: =UserHasGDPerm
+Color: =If(User.Role = "Admin", RGBA(0, 120, 212, 1), RGBA(100, 100, 100, 1))
+
+# ❌ WRONG - Creating duplicate variables without checking App
+OnVisible: |
+  =Set(varUserInfo, {Name: "John", Role: "Admin"});  # User already exists in App
+  Set(varMenuData, Table({Name: "Home", Screen: HomeScreen}));  # MenuItems already exists in App
+  Set(varCheckPerm, If(userRole = "Admin", true, false))  # CheckPermission() already exists in App
+```
+
+#### 2.7.2 App-Component Isolation Rules - CRITICAL RESTRICTION
+**CRITICAL**: App global variables and functions are ONLY accessible within App and Screens. Custom Components CANNOT access App globals directly.
+
+**ISOLATION RULES:**
+- **App Variables**: `User`, `MenuItems`, `Styles`, `Quyền`, `Vai_Trò` → NOT accessible in Components
+- **App Functions**: `CheckPermission()`, `GetStatusValue()`, etc. → NOT accessible in Components  
+- **App Constants**: `UserHasGDPerm`, `UserHasQLPerm`, etc. → NOT accessible in Components
+
+```yaml
+# ❌ WRONG - Component trying to access App globals directly
+ComponentDefinitions:
+  MyComponent:
+    CustomProperties:
+      UserRole:
+        PropertyKind: Input
+        DataType: Text
+        Default: =User.Role  # ❌ ERROR - Cannot access App.User in Component
+    Children:
+      - MyButton:
+          Control: Classic/Button
+          Properties:
+            Visible: =UserHasGDPerm  # ❌ ERROR - Cannot access App variable in Component
+            OnSelect: |
+              =CheckPermission(User.Permission, Quyền.Xem)  # ❌ ERROR - Cannot access App function in Component
+
+# ✅ CORRECT - Pass App data to Component via custom properties
+# In Screen:
+- MyComponentInstance:
+    Control: CanvasComponent
+    ComponentName: MyComponent
+    Properties:
+      UserRole: =User.Role              # Pass App data as property
+      HasPermission: =UserHasGDPerm     # Pass App computed value as property
+      ButtonStyle: =Styles.Button       # Pass App style object as property
+
+# In Component Definition:
+ComponentDefinitions:
+  MyComponent:
+    CustomProperties:
+      UserRole:
+        PropertyKind: Input
+        DataType: Text
+        Default: ="Employee"
+      HasPermission:
+        PropertyKind: Input
+        DataType: Boolean
+        Default: =false
+      ButtonStyle:
+        PropertyKind: Input
+        DataType: Record
+        Default: ={Fill: RGBA(0, 120, 212, 1), Color: RGBA(255, 255, 255, 1)}
+    Children:
+      - MyButton:
+          Control: Classic/Button
+          Properties:
+            Visible: =MyComponent.HasPermission      # Use component property
+            Fill: =MyComponent.ButtonStyle.Fill      # Use passed style
+            Text: =Concatenate("Role: ", MyComponent.UserRole)  # Use passed data
+```
+
+#### 2.7.3 Data Flow Architecture
+**MANDATORY** data flow between App, Screens, and Components:
+
+```
+┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│     APP     │───▶│   SCREENS   │───▶│ COMPONENTS  │
+│             │    │             │    │             │
+│ • Variables │    │ • Use App   │    │ • Receive   │
+│ • Functions │    │   globals   │    │   data via  │
+│ • Constants │    │ • Pass data │    │   properties│
+│ • Styles    │    │   to comps  │    │ • Cannot    │
+│             │    │             │    │   access    │
+└─────────────┘    └─────────────┘    │   App       │
+       ▲                   ▲          │   directly  │
+       │                   │          └─────────────┘
+       │                   │
+    Isolated           Can Access
+   from Components     App Globals
+```
+
+#### 2.7.4 Component Data Requirements
+**ALWAYS** pass required App data to Components explicitly:
+
+```yaml
+# ✅ CORRECT - Explicit data passing pattern
+# Screen passes all needed App data to Component
+- NavigationComponent:
+    Control: CanvasComponent
+    ComponentName: NavigationComponent
+    Properties:
+      MenuItems: =MenuItems                    # Pass App menu data
+      CurrentUser: =User                       # Pass App user data
+      UserPermissions: ={                      # Pass App permission checks
+        CanCreate: UserHasGDPerm,
+        CanEdit: UserHasQLPerm,
+        CanApprove: UserHasKTTPerm
+      }
+      AppStyles: =Styles                       # Pass App styling
+      
+# Component receives and uses the passed data
+ComponentDefinitions:
+  NavigationComponent:
+    CustomProperties:
+      MenuItems:
+        PropertyKind: Input
+        DataType: Table
+      CurrentUser:
+        PropertyKind: Input
+        DataType: Record
+      UserPermissions:
+        PropertyKind: Input
+        DataType: Record
+      AppStyles:
+        PropertyKind: Input
+        DataType: Record
+    Children:
+      - MenuGallery:
+          Control: Gallery
+          Properties:
+            Items: =NavigationComponent.MenuItems  # Use passed menu data
+            Visible: =NavigationComponent.UserPermissions.CanCreate  # Use passed permissions
+```
+
+#### 2.7.5 Component Self-Sufficiency Rules
+**COMPONENTS MUST BE SELF-SUFFICIENT**:
+- Define their own internal variables using `UpdateContext()`
+- Implement their own helper functions if needed
+- Use only passed properties and internal logic
+- Never assume App globals exist
+
+```yaml
+# ✅ CORRECT - Self-sufficient component
+ComponentDefinitions:
+  StatsCard:
+    CustomProperties:
+      Data:
+        PropertyKind: Input
+        DataType: Record
+        Default: ={Value: 0, Label: "N/A"}
+    Children:
+      - CardContainer:
+          Control: Rectangle
+          Properties:
+            OnSelect: |
+              =UpdateContext({localSelected: !localSelected});  # Internal variable
+              StatsCard.OnCardClick()                           # Internal event
+            Fill: =If(localSelected, RGBA(0, 120, 212, 0.1), RGBA(255, 255, 255, 1))
+      - ValueLabel:
+          Control: Label  
+          Properties:
+            Text: =Text(StatsCard.Data.Value)  # Use passed property only
+            Color: =If(StatsCard.Data.Value > 0, RGBA(0, 128, 0, 1), RGBA(128, 128, 128, 1))
+```
+
+#### 2.7.6 Using Global Variables in Screens
+```yaml
+# In screen OnVisible
+OnVisible: |
+  =Set(varScreenTitle, LookUp(MenuItems, Screen = Self).Name);
+  Set(varUserCanEdit, CheckPermission(User.Permission, Quyền.Tao))
+
+# In control properties
+Text: =Styles.Title.Color
+Fill: =Styles.Button.Fill
+Visible: =UserHasGDPerm
+```
+
+#### 2.7.7 Using Global Functions in Components
+**IMPORTANT**: Components cannot use App functions directly. Pass computed results instead:
+
+```yaml
+# ❌ WRONG - Component trying to use App function
+ComponentDefinitions:
+  MyComponent:
+    Children:
+      - MyControl:
+          Properties:
+            Visible: =CheckPermission(User.Permission, Quyền.Xem)  # ERROR
+
+# ✅ CORRECT - Screen computes and passes result
+# In Screen:
+- MyComponentInstance:
+    Properties:
+      CanView: =CheckPermission(User.Permission, Quyền.Xem)  # Compute in screen
+
+# In Component:
+ComponentDefinitions:
+  MyComponent:
+    CustomProperties:
+      CanView:
+        PropertyKind: Input
+        DataType: Boolean
+        Default: =false
+    Children:
+      - MyControl:
+          Properties:
+            Visible: =MyComponent.CanView  # Use passed result
+```
+
+---
+
+## 3. CONTROL RULES
+
+### 3.1 Version Restriction
 **FORBIDDEN**: Never include version numbers in Control declarations
 
 ```yaml
@@ -131,7 +719,7 @@ Control: GroupContainer
 Control: GroupContainer@1.3.0
 ```
 
-### 2.2 Component Control Declarations
+### 3.2 Component Control Declarations
 **CRITICAL**: Use correct syntax for component references
 
 ```yaml
@@ -143,7 +731,7 @@ ComponentName: HeaderComponent
 Control: HeaderComponent
 ```
 
-### 2.3 Forbidden Properties
+### 3.3 Forbidden Properties
 **NEVER USE** these properties:
 - `ZIndex` - Not supported
 - `DropShadow` - Use only when certain the control supports it
@@ -228,9 +816,9 @@ Every control MUST have these properties when applicable:
 
 ---
 
-## 3. POSITION & SIZE RULES
+## 4. POSITION & SIZE RULES
 
-### 3.1 Width and Height - MANDATORY RELATIVE POSITIONING
+### 4.1 Width and Height - MANDATORY RELATIVE POSITIONING
 **NEVER** use absolute values. Always reference parent or other controls.
 
 ```yaml
@@ -246,7 +834,7 @@ Height: 200
 Width: =400
 ```
 
-### 3.2 X and Y Positioning - MANDATORY RELATIVE POSITIONING
+### 4.2 X and Y Positioning - MANDATORY RELATIVE POSITIONING
 **ALWAYS** position relative to parent or other controls.
 
 ```yaml
@@ -261,7 +849,7 @@ X: 100
 Y: 50
 ```
 
-### 3.3 Parent-Child Coordinate System - CRITICAL UNDERSTANDING
+### 4.3 Parent-Child Coordinate System - CRITICAL UNDERSTANDING
 **MANDATORY**: When a control is inside a parent container, its coordinates are RELATIVE to the parent's boundaries.
 
 ```yaml
@@ -420,7 +1008,7 @@ Y: =Parent.Height - Self.Height  # Bottom edge
             Height: =50                          # Fixed height
 ```
 
-### 3.4 Arithmetic Operations - AVOID FIXED NUMBERS
+### 4.4 Arithmetic Operations - AVOID FIXED NUMBERS
 **CRITICAL**: Minimize use of fixed numbers in positioning/sizing calculations. Prefer relative calculations.
 
 ```yaml
@@ -467,7 +1055,7 @@ X: =Parent.X + Self.Height / 4      # Quarter of own height
 Y: =PrevControl.Y + PrevControl.Height / 2  # Half of previous control height
 ```
 
-### 3.5 Screen-Level Properties
+### 4.5 Screen-Level Properties
 For screens, use these specific properties:
 
 ```yaml
@@ -478,9 +1066,9 @@ Properties:
 
 ---
 
-## 4. CONTROL Z-INDEX & RENDERING ORDER
+## 5. CONTROL Z-INDEX & RENDERING ORDER
 
-### 4.1 Critical Z-Index Rules
+### 5.1 Critical Z-Index Rules
 **MANDATORY**: Controls are rendered in the order they appear in YAML. Later controls appear **ON TOP** of earlier controls.
 
 ```yaml
@@ -523,7 +1111,7 @@ Children:
       Control: Rectangle
 ```
 
-### 4.2 Mandatory Layer Hierarchy
+### 5.2 Mandatory Layer Hierarchy
 **CRITICAL**: Always follow this exact order for control declarations:
 
 #### Level 1: Background & Foundation (First)
@@ -588,7 +1176,7 @@ Children:
     Control: Rectangle
 ```
 
-### 4.3 Component Internal Layering
+### 5.3 Component Internal Layering
 **CRITICAL**: Within components, follow the same hierarchy:
 
 ```yaml
@@ -615,7 +1203,7 @@ ComponentDefinitions:
           Control: Rectangle
 ```
 
-### 4.4 Gallery Template Layering
+### 5.4 Gallery Template Layering
 **CRITICAL**: In Gallery templates, maintain proper layering:
 
 ```yaml
@@ -642,7 +1230,7 @@ TemplateBody:
       Control: Rectangle
 ```
 
-### 4.5 Modal and Popup Layering
+### 5.5 Modal and Popup Layering
 **CRITICAL**: For modals, overlays must be declared last:
 
 ```yaml
@@ -665,7 +1253,7 @@ Children:
         Fill: =RGBA(255, 255, 255, 1)
 ```
 
-### 4.6 Z-Index Debugging
+### 5.6 Z-Index Debugging
 **DEBUGGING TIPS** when controls are hidden:
 
 1. **Check Declaration Order**: Later = Higher Z-Index
@@ -682,7 +1270,7 @@ Children:
       Fill: =RGBA(255, 0, 0, 0.3)  # Make visible with red tint
 ```
 
-### 4.7 Interactive Control Protection
+### 5.7 Interactive Control Protection
 **MANDATORY**: Ensure interactive controls are not covered:
 
 ```yaml
@@ -707,7 +1295,7 @@ Children:
         Fill: =RGBA(255, 255, 255, 0.8)  # Semi-solid, blocks interaction
 ```
 
-### 4.8 Layer Priority by Control Type
+### 5.8 Layer Priority by Control Type
 **REFERENCE**: Default z-index priority by control type:
 
 #### **Lowest Priority (Declare First)**:
@@ -732,9 +1320,9 @@ Children:
 
 ---
 
-## 5. ALLOWED CONTROLS
+## 6. ALLOWED CONTROLS
 
-### 5.1 Input Controls
+### 6.1 Input Controls
 ```yaml
 # Text Input
 Control: Classic/TextInput
@@ -758,7 +1346,7 @@ Control: Rating
 Control: PenInput
 ```
 
-### 5.2 Display Controls
+### 6.2 Display Controls
 ```yaml
 # Text Display
 Control: Label
@@ -773,7 +1361,7 @@ Control: PDFViewer
 Control: Classic/Icon
 ```
 
-### 5.3 Layout Controls
+### 6.3 Layout Controls
 ```yaml
 # Containers
 Control: GroupContainer
@@ -786,14 +1374,14 @@ Control: FormViewer
 Control: DataTable
 ```
 
-### 5.4 Component Controls
+### 6.4 Component Controls
 ```yaml
 # Canvas Components
 Control: CanvasComponent
 ComponentName: ComponentName
 ```
 
-### 5.5 Shape Controls
+### 6.5 Shape Controls
 ```yaml
 Control: Circle
 Control: Triangle
@@ -804,7 +1392,7 @@ Control: Arrow
 Control: PartialCircle
 ```
 
-### 5.6 Chart Controls
+### 6.6 Chart Controls
 ```yaml
 Control: BarChart
 Control: LineChart
@@ -812,7 +1400,7 @@ Control: PieChart
 Control: Legend
 ```
 
-### 5.7 Media & Data Controls
+### 6.7 Media & Data Controls
 ```yaml
 # Media
 Control: AddMedia
@@ -827,9 +1415,9 @@ Control: PowerBI
 
 ---
 
-## 6. PROPERTIES GUIDELINES
+## 7. PROPERTIES GUIDELINES
 
-### 6.1 Color Properties
+### 7.1 Color Properties
 **ALWAYS** use RGBA format:
 
 ```yaml
@@ -838,7 +1426,7 @@ Color: =RGBA(32, 54, 71, 1)
 BorderColor: =RGBA(230, 230, 230, 1)
 ```
 
-### 6.2 DropShadow Properties
+### 7.2 DropShadow Properties
 **ONLY** use these values:
 ```yaml
 DropShadow: =DropShadow.Light
@@ -849,7 +1437,7 @@ DropShadow: =DropShadow.Semilight
 DropShadow: =DropShadow.None
 ```
 
-### 6.3 Font Properties
+### 7.3 Font Properties
 ```yaml
 FontWeight: =FontWeight.Bold
 FontWeight: =FontWeight.Semibold
@@ -857,7 +1445,7 @@ FontWeight: =FontWeight.Normal
 Font: =Font.'Open Sans'
 ```
 
-### 6.4 Formula Properties
+### 7.4 Formula Properties
 **ALL** dynamic properties MUST start with `=`:
 
 ```yaml
@@ -871,7 +1459,7 @@ Visible: varShowControl
 Text: "Static text" # Use this only for truly static text
 ```
 
-### 6.5 Icon Properties
+### 7.5 Icon Properties
 **ONLY** use valid icon references:
 
 ```yaml
@@ -885,7 +1473,7 @@ Icon: =Icon.Cancel
 Icon: =Icon.Calendar  # Does not exist
 ```
 
-### 6.6 Text Formatting
+### 7.6 Text Formatting
 **PROPER** text concatenation formatting:
 
 ```yaml
@@ -898,7 +1486,7 @@ Text: ="Email: " & ThisItem.Email
 Text: ="Status: " & ThisItem.Status
 ```
 
-### 6.7 Variants for Controls
+### 7.7 Variants for Controls
 ```yaml
 # GroupContainer
 Variant: ManualLayout
@@ -920,74 +1508,6 @@ Variant: 5Points
 Variant: 6Points
 Variant: 8Points
 Variant: 12Points
-```
-
----
-
-## 7. ICON GUIDELINES
-
-### 7.1 Allowed Icons
-**CRITICAL**: Icons can ONLY be used from this approved list. Using any icon not in this list will cause errors.
-
-**ALLOWED ICONS:**
-```yaml
-Add, AddDocument, AddLibrary, AddToCalendar, AddUser, Airplane, Alarm, ArrowDown, ArrowLeft, ArrowRight, ArrowUp, BackArrow, Bell, Blocked, Bookmark, BookmarkFilled, Bug, Bus, Calculator, CalendarBlank, Camera, CameraAperture, Cancel, CancelBadge, Cars, Check, CheckBadge, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, ClearDrawing, Clock, CollapseView, ColorPicker, Compose, ComputerDesktop, Controller, Copy, Crop, Currency, Cut, Database, DetailList, Devices, Diamond, DockCheckProperties, DockLeft, DockRight, Document, DocumentPDF, DocumentWithContent, Download, Draw, Edit, EmojiFrown, EmojiHappy, EmojiNeutral, EmojiSad, EmojiSmile, Enhance, Erase, Error, ExpandView, Export, Filter, FilterFlat, FilterFlatFilled, Flag, Folder, ForkKnife, Globe, GlobeChangesPending, GlobeError, GlobeNotConnected, GlobeRefresh, GlobeWarning, HalfFilledCircle, Hamburger, Health, Heart, Help, Hide, History, Home, HorizontalLine, Hospital, Import, Information, Items, Journal, Key, Laptop, Leave, LevelsLayersItems, Lightbulb, LightningBolt, LikeDislike, LineWeight, Link, ListScrollEmpty, ListScrollWatchlist, ListWatchlistRemind, Location, Lock, LogJournal, Mail, Manufacture, Medical, Message, Microphone, Mobile, Money, More, Newspaper, NextArrow, Note, Notebook, OpenInNewWindow, OptionsList, PaperClip, Paste, People, Person, Phone, Phonebook, Pictures, Pin, Post, Print, Printing3D, Publish, QuestionMark, RadarActivityMonitor, Redo, Reload, Save, Scan, Search, Send, Settings, Share, Shirt, Shop, ShoppingCart, Show, ShowDrawing, SignOut, Site, SkipBack, SkipForward, SkipNext, SkipPrevious, Slider, Sort, Speed, Split, SplitHorizontal, SplitVertical, Star, StarFilled, Stop, Strikethrough, Subtract, Support, Sync, Tablet, Tag, Text, ThumbsDown, ThumbsDownFilled, ThumbsUp, ThumbsUpFilled, Tools, Train, Transportation, Trash, Tray, Trending, TrendingHashtag, TrendingUpwards, Undo, Unlock, VerticalLine, Video, View, Waffle, Warning, Waypoint, Weather, ZoomIn, ZoomOut
-```
-
-### 7.2 Icon Usage Examples
-```yaml
-# ✅ CORRECT - Using allowed icons
-Icon: =Icon.CalendarBlank
-Icon: =Icon.Person
-Icon: =Icon.Settings
-Icon: =Icon.Search
-Icon: =Icon.Add
-
-# ❌ WRONG - Using non-allowed icons
-Icon: =Icon.CustomIcon      # Not in allowed list
-Icon: =Icon.MyIcon         # Not in allowed list
-Icon: =Icon.SpecialIcon    # Not in allowed list
-```
-
-**IMPORTANT**: Even if an icon is in the approved list, always test it in Power Apps Studio as some icons may not be recognized in certain contexts. If you get "Name isn't valid" errors, replace with a similar functional icon from the approved list.
-
-### 7.3 Icon Mapping for Common Use Cases
-```yaml
-# User/Profile related
-"User" → Icon.Person
-"Profile" → Icon.Person
-"Account" → Icon.Person
-
-# Calendar/Date related
-"Calendar" → Icon.CalendarBlank
-"Date" → Icon.CalendarBlank
-"Schedule" → Icon.CalendarBlank
-
-# Communication
-"Email" → Icon.Mail
-"Message" → Icon.Message
-"Call" → Icon.Phone
-
-# Actions
-"Add" → Icon.Add
-"Edit" → Icon.Edit
-"Delete" → Icon.Cancel
-"Save" → Icon.Save
-"Search" → Icon.Search
-
-# Navigation
-"Back" → Icon.BackArrow
-"Next" → Icon.NextArrow
-"Up" → Icon.ChevronUp
-"Down" → Icon.ChevronDown
-"Left" → Icon.ChevronLeft
-"Right" → Icon.ChevronRight
-
-# Status
-"Success" → Icon.CheckBadge
-"Error" → Icon.Error
-"Warning" → Icon.Warning
-"Info" → Icon.Information
 ```
 
 ---
@@ -1725,6 +2245,10 @@ ComponentDefinitions:
     Properties:
       Height: =App.Height  # Takes full height - wrong for navigation
       Width: =App.Width   # Takes full width - wrong for side navigation
+    Children:
+      - Button.Container:
+          Width: =Self.Width          # Fixed to component size
+          Height: =Self.Height        # No flexibility
 
 # ✅ CORRECT - Proportional sizing phù hợp với component purpose
 ComponentDefinitions:
@@ -2256,6 +2780,21 @@ Fill: =If(ThisItem.GioiTinh.Value = "Male", ...) # Should be "Nam"
 39. **COMPONENT PROPERTY BINDING** - CRITICAL: When using components in screens, ALL custom properties must be properly bound. Never leave component custom properties unset - this causes display and behavior issues. Check component definition for all custom properties and bind them appropriately
 40. **COMPONENT EVENT BINDING** - CRITICAL: Component events must be bound to actions in screens, not called directly. Use proper event binding syntax: `OnEventName: |` followed by action formulas. Never call component events like `ComponentName.EventName()` from screens - this causes "Component behavior can only be invoked from within a component" errors
 41. **YAML COMMENT SYNTAX** - CRITICAL: Never use inline comments in YAML property values. Comments must be on separate lines above the property. WRONG: `Width: =100 # comment`. CORRECT: `# comment` then `Width: =100` on next line
+42. **APP OBJECT STRUCTURE** - CRITICAL: App properties must be organized in separate files within `src/App/` folder. Each file contains only the formula/value for that specific App property
+43. **APP FORMULAS ORGANIZATION** - CRITICAL: All global variables, functions, and constants must be defined in `src/App/Formulas` file. Never define global variables in individual screen OnVisible events
+44. **APP ONSTART OPTIMIZATION** - CRITICAL: Use `src/App/OnStart` only for lightweight initialization. Never put heavy data loading in OnStart - use lazy loading instead
+45. **APP STARTSCREEN PROPERTY** - CRITICAL: `src/App/StartScreen` must contain only the screen name as plain text. Never use formulas in StartScreen property
+46. **APP GLOBAL FUNCTIONS** - CRITICAL: Global functions in `src/App/Formulas` must use descriptive names and proper parameter typing (e.g., `CheckPermission(UserPerm:Number, RequiredPerm:Number):Boolean`)
+47. **APP PROPERTY INTEGRATION** - CRITICAL: Use global variables and functions from App.Formulas in screens and components (e.g., `Visible: =UserHasGDPerm`, `Fill: =Styles.Button.Fill`)
+48. **SCREEN DEVELOPMENT WORKFLOW** - CRITICAL: Before modifying any screen, ALWAYS check `src/App/` folder first to coordinate with existing global variables and functions. Follow workflow: 1) Check App/Formulas, 2) Check App/OnStart, 3) Use existing App resources, 4) Implement screen logic
+49. **APP-COMPONENT ISOLATION** - CRITICAL: App global variables and functions are ONLY accessible within App and Screens. Custom Components CANNOT access App globals directly (User, MenuItems, Styles, CheckPermission(), etc.). Must pass App data to Components via custom properties
+50. **COMPONENT SELF-SUFFICIENCY** - CRITICAL: Components must be self-sufficient using only passed properties and internal logic. Never assume App globals exist. Use UpdateContext() for internal variables, implement own helper functions if needed
+51. **APP FORMULAS FUNCTION DEFINITIONS** - CRITICAL: App/Formulas does NOT support complex function definitions with multiple statements. Use simple expressions only: `FunctionName():Boolean = true`. Move complex logic to screen level, use inline expressions for calculations
+52. **SHAREPOINT TABLE NAME CONFLICTS** - CRITICAL: Avoid naming global variables same as SharePoint list names. Use prefixes like UserRoles instead of VaiTro, UserPermissions instead of Quyen to prevent "ConnectedDataSource already contains a definition" errors
+53. **SHAREPOINT FIELD VERIFICATION** - CRITICAL: Always verify actual SharePoint column names. Use MaNguoiDung.Value (not MaNhanVien), check which columns require .Value suffix for Choice/Lookup types
+54. **UNICODE CHARACTER RESTRICTIONS** - CRITICAL: Never use emoji characters (👤, 📊, ⚠️) or special Unicode symbols in YAML text values. Use standard ASCII text and Vietnamese characters only to prevent "invalid mapping" YAML parsing errors
+55. **CLASSIC/TEXTINPUT PROPERTIES** - CRITICAL: Use `Default:` for initial value (NOT `Text:`), use `HintText:` for placeholder (NOT `Placeholder:`), use `Mode:` for input type (NOT `TextMode:`)
+56. **YAML COMMENT PLACEMENT** - CRITICAL: Never use inline comments in YAML property values. Place comments on separate lines above properties using `# Comment` format. Inline comments break YAML parsing
 
 **Agent must follow these rules ABSOLUTELY when generating Power App YAML code.**
 
@@ -2570,3 +3109,247 @@ Children:
 2. **Component Internal**: Call `ComponentName.EventName()` on button clicks
 3. **Screen Usage**: Bind actions to event properties with `OnEventName: | =Action()`
 4. **Execution**: Component triggers event → Screen bound action executes
+
+### 9.26 App/Formulas Function Definition Errors
+**CRITICAL ERROR**: "Function definition statements are not supported in this context"
+
+```yaml
+# ❌ WRONG - Complex function definitions not supported in App/Formulas
+NavigateToScreen(screenName:Text, param:Text):Boolean = (
+  If(screenName = "Dashboard", Set(varScreen, "Dashboard"); true, false)
+);
+
+CheckPermission(userPerm:Number, requiredPerm:Number):Boolean = (
+  Mod(Int(userPerm / requiredPerm), 2) = 1
+);
+
+LogoutUser():Boolean = (
+  Clear(UserSession); Set(varLoginSuccess, false); true
+);
+
+# ✅ CORRECT - Use simple expressions instead of function definitions
+NavigateToScreen = true;  // Simple boolean for navigation state
+
+//Permission checks using inline expressions
+UserCanViewLeaves = If(IsUserAuthenticated, Mod(Int(UserSession.Permission / UserPermissions.XemDon), 2) = 1, false);
+
+//Simple logout expression
+LogoutUser():Boolean = true;  // Return true to indicate logout should happen
+```
+
+**APP/FORMULAS FUNCTION RULES:**
+- **CANNOT**: Define multi-statement functions with complex logic
+- **CANNOT**: Use function definitions with statements inside parentheses
+- **CAN**: Define simple expressions that return single values
+- **CAN**: Use simple function syntax that returns boolean: `FunctionName():Boolean = true`
+- **SOLUTION**: Move complex logic to screen level, use inline expressions for calculations
+
+### 9.27 SharePoint Table Name Conflicts
+**CRITICAL ERROR**: "ConnectedDataSource already contains a definition"
+
+```yaml
+# ❌ WRONG - Using names that conflict with SharePoint table names
+VaiTro = {
+  Admin: "Administrator",
+  Employee: "Employee"
+}; // Conflicts with SharePoint "VaiTro" table
+
+Quyen = {
+  View: 1,
+  Create: 2
+}; // Conflicts with SharePoint "Quyen" table
+
+# ✅ CORRECT - Use different names to avoid conflicts
+UserRoles = {
+  Admin: "Administrator", 
+  Employee: "Employee"
+};
+
+UserPermissions = {
+  View: 1,
+  Create: 2
+};
+```
+
+**SHAREPOINT INTEGRATION RULES:**
+- **AVOID**: Using same names as SharePoint lists/tables in App/Formulas
+- **RENAME**: Global variables to avoid conflicts (VaiTro → UserRoles, Quyen → UserPermissions)
+- **CHECK**: Existing SharePoint ConnectedDataSources before naming global variables
+- **USE**: Descriptive prefixes like "User", "System", "Global" to avoid conflicts
+
+### 9.28 SharePoint Field Reference Errors
+**CRITICAL ERROR**: "Invalid field name" when accessing SharePoint columns
+
+```yaml
+# ❌ WRONG - Using incorrect field names for SharePoint
+Text: =ThisItem.MaNhanVien & " - " & ThisItem.Email
+
+# ✅ CORRECT - Use actual SharePoint column names
+Text: =ThisItem.MaNguoiDung.Value & " - " & ThisItem.Email
+
+# ❌ WRONG - Missing .Value for Choice/Lookup columns  
+Fill: =If(ThisItem.TrangThai = "Active", RGBA(0, 255, 0, 1), RGBA(255, 0, 0, 1))
+
+# ✅ CORRECT - Use .Value for Choice/Lookup columns
+Fill: =If(ThisItem.TrangThai.Value = "HoatDong", RGBA(0, 255, 0, 1), RGBA(255, 0, 0, 1))
+```
+
+**SHAREPOINT FIELD RULES:**
+- **VERIFY**: Actual column names in SharePoint lists
+- **USE**: `.Value` for Choice and Lookup columns
+- **NO .Value**: For Text, Number, Date, Boolean columns
+- **TEST**: Field access patterns before implementing
+
+### 9.29 Unicode Character and YAML Parsing Errors  
+**CRITICAL ERROR**: "invalid mapping" due to Unicode characters in YAML
+
+```yaml
+# ❌ WRONG - Unicode emoji and special characters causing YAML parsing errors
+Text: ="👤 Người dùng" # Emoji causes parsing error
+Text: ="📊 Thống kê"   # Emoji causes parsing error  
+Text: ="⚠️ Cảnh báo"   # Emoji causes parsing error
+
+# ✅ CORRECT - Use text-only characters, avoid emojis
+Text: ="Người dùng"    # Text only, no emoji
+Text: ="Thống kê"      # Text only, no emoji
+Text: ="Cảnh báo"      # Text only, no emoji
+
+# ❌ WRONG - Special formatting characters
+Text: ="User•Profile"  # Special bullet character
+Text: ="Data→Analysis" # Arrow character
+
+# ✅ CORRECT - Use standard punctuation
+Text: ="User - Profile"   # Standard dash
+Text: ="Data Analysis"    # Standard space
+```
+
+**UNICODE AND YAML RULES:**
+- **NEVER**: Use emoji characters (👤, 📊, ⚠️, etc.) in YAML text values
+- **NEVER**: Use special Unicode symbols (•, →, ★, etc.) 
+- **ALWAYS**: Use standard ASCII text and Vietnamese characters only
+- **SAFE**: Letters, numbers, spaces, standard punctuation (.-,;:!?)
+- **TEST**: YAML parsing with special characters before deployment
+
+### 9.30 Classic/TextInput Property Errors
+**CRITICAL ERROR**: "Unknown property 'Text' for control type 'Classic/TextInput'"
+
+```yaml
+# ❌ WRONG - Using 'Text' property for Classic/TextInput
+- 'Input.Field':
+    Control: Classic/TextInput
+    Properties:
+      Text: ="Default value"  # ERROR - TextInput doesn't have Text property
+
+# ✅ CORRECT - Use 'Default' property for Classic/TextInput
+- 'Input.Field':
+    Control: Classic/TextInput
+    Properties:
+      Default: ="Default value"  # Use Default for initial value
+
+# ❌ WRONG - Using 'Placeholder' property for Classic/TextInput  
+Properties:
+  Placeholder: ="Enter text here"  # ERROR - Use HintText instead
+
+# ✅ CORRECT - Use 'HintText' property for Classic/TextInput
+Properties:
+  HintText: ="Enter text here"     # Use HintText for placeholder text
+```
+
+**CLASSIC/TEXTINPUT PROPERTY RULES:**
+- **USE**: `Default:` for initial/current value (NOT `Text:`)
+- **USE**: `HintText:` for placeholder text (NOT `Placeholder:`)
+- **USE**: `Mode:` for input type (NOT `TextMode:`)
+- **VALID MODES**: `TextMode.SingleLine`, `TextMode.MultiLine`, `TextMode.Password`
+
+### 9.31 Comment Syntax in YAML
+**CRITICAL ERROR**: YAML syntax errors with inline comments
+
+```yaml
+# ❌ WRONG - Inline comments in YAML property values
+Properties:
+  Width: =100 # This is width    # ERROR - Inline comment breaks YAML
+  Height: =50 // Height value    # ERROR - Wrong comment syntax
+
+# ✅ CORRECT - Comments on separate lines
+Properties:
+  # This sets the width
+  Width: =100
+  # This sets the height  
+  Height: =50
+
+# ❌ WRONG - Comments inside property values
+Text: ="Hello " & varUser # & " World"  # ERROR - Comment breaks formula
+
+# ✅ CORRECT - Full property without inline comments
+Text: ="Hello " & varUser & " World"
+```
+
+**YAML COMMENT RULES:**
+- **NEVER**: Use inline comments within property values
+- **NEVER**: Use `//` comment syntax (JavaScript style)
+- **ALWAYS**: Use `#` for comments on separate lines
+- **PLACE**: Comments above the property they describe
+- **FORMAT**: `# Comment text` with space after #
+
+---
+
+## 🚨 CRITICAL REMINDERS
+
+1. **CORRECT COMPONENT STRUCTURE** - Use `ComponentDefinitions` with proper custom property syntax
+2. **NO ABSOLUTE VALUES** - Everything must be relative
+3. **WRAP SPECIAL NAMES** - Use single quotes for names with special characters
+4. **FORMULA PREFIX** - All dynamic properties start with `=`
+5. **RGBA COLORS** - Always use RGBA format for colors
+6. **RELATIVE POSITIONING** - Position everything relative to parent or other controls
+7. **EVENT SYNTAX** - Call events with parentheses: `ComponentName.EventName()`
+8. **CUSTOM PROPERTIES** - Use `PropertyKind`, `DataType`, `Default` (not old syntax)
+9. **SINGLE LINE FORMULAS** - Never use multi-line formulas in YAML
+10. **CONTROL REFERENCES** - Wrap control names with dots in single quotes
+11. **VALID SELF PROPERTIES** - Never use `Self.Focused` or `Self.IsHovered`
+12. **BUTTON PROPERTIES** - Never use `BorderRadius`, `Disabled`, or `Align` for Classic/Button
+13. **RECTANGLE RADIUS** - Use `BorderRadius` only, not individual corner properties
+14. **APPROVED ICONS ONLY** - Only use icons from the approved list in section 6.1
+15. **VALID ICON NAMES** - Verify all icon references exist in Power Apps
+16. **TEXT FUNCTION WITH RGBA** - Never use Text() function with RGBA values
+17. **TEXTINPUT FOCUS PROPERTY** - Classic/TextInput does NOT support .Focused property. Use solid colors instead
+18. **ACTION PROPERTIES PIPE** - ALWAYS use pipe operator (|) for ALL action properties (OnVisible, OnSelect, OnChange, etc.)
+19. **TEXTINPUT MODE PROPERTY** - Use `Mode:` not `TextMode:` for Classic/TextInput
+20. **RECTANGLE DROPSHADOW** - Rectangle controls do NOT support DropShadow property
+21. **RECTANGLE BORDERRADIUS** - Rectangle controls do NOT support BorderRadius property
+22. **SHAREPOINT COLUMN TESTING** - CRITICAL: Test column behavior first. If "The '.' operator cannot be used on Text values" error occurs, it's a TEXT column
+23. **SHAREPOINT CHOICE COLUMNS** - TrangThai is Choice column (REQUIRES .Value), e.g., TrangThai.Value = "HoatDong"
+24. **SHAREPOINT TEXT COLUMNS** - MaVaiTro, MaDonVi are TEXT columns (NO .Value needed), e.g., MaVaiTro = "Admin"
+25. **SHAREPOINT CHOICE VALUES** - Use EXACT values from database schema (e.g., "HoatDong", "Nam", "ChoDuyetCap1")
+26. **COMPONENT PROPORTIONAL SIZING** - Components must use proportional App sizing (e.g., Width: =App.Width * 0.2)
+27. **COMPONENT PARENT-FITTING** - Components must adapt to parent context with responsive constraints (Min/Max sizing)
+28. **CONTROL Z-INDEX ORDER** - CRITICAL: Later controls appear ON TOP. Order: Background→Content→Interactive→Overlays
+29. **LAYERING HIERARCHY** - MANDATORY: Follow exact order: Background(1st)→Containers(2nd)→Content(3rd)→Actions(4th)→Effects(5th)→Overlays(Last)
+30. **PARENT-CHILD COORDINATES** - CRITICAL: Child control X=0/Y=0 equals Parent's left/top edge. Always use parent-relative positioning for child controls
+31. **GEOMETRIC CONTROLS CONTAINERS** - CRITICAL: Rectangle, Circle, Triangle cannot have Children. Use GroupContainer for containers, DataTable for data tables
+32. **RECTANGLE VARIANT PROPERTY** - CRITICAL: Rectangle controls do NOT support Variant property. Never use Variant with Rectangle controls
+33. **GALLERY TEMPLATEBODY SYNTAX** - CRITICAL: Gallery controls use Children property, NOT TemplateBody property in Power Apps YAML. Never use TemplateBody: array syntax - use Children: array instead
+34. **YAML SYNTAX COMPLIANCE** - CRITICAL: Never use TemplateBody property for Gallery controls. Power Apps YAML requires Children property for Gallery template controls
+35. **YAML INDENTATION COMPLIANCE** - CRITICAL: Always maintain proper YAML indentation and hierarchy. Child controls must be properly nested with consistent spacing (2 or 4 spaces). Incorrect indentation causes "did not find expected key" parsing errors
+36. **COMPONENT EVENT CALL SYNTAX** - CRITICAL: When calling component events in screen properties, use proper syntax: ComponentName.EventName(); followed by additional actions. Never call events without parentheses or proper component reference
+37. **PREVIEW DEMO DATA** - CRITICAL: Always provide fallback demo data in OnVisible for better preview experience when SharePoint/external data sources are not available. Use simple object structures for user data and sample collections for galleries
+38. **DEMO DATA TYPE COMPATIBILITY** - CRITICAL: When creating demo data in context variables, use simple text/number values instead of nested objects like {Value: "text"}. This avoids "Incompatible type" errors while still allowing SharePoint .Value access patterns in real data scenarios. Demo data should use flat structure: `MaVaiTro: "Employee"` not `MaVaiTro: {Value: "Employee"}`
+39. **COMPONENT PROPERTY BINDING** - CRITICAL: When using components in screens, ALL custom properties must be properly bound. Never leave component custom properties unset - this causes display and behavior issues. Check component definition for all custom properties and bind them appropriately
+40. **COMPONENT EVENT BINDING** - CRITICAL: Component events must be bound to actions in screens, not called directly. Use proper event binding syntax: `OnEventName: |` followed by action formulas. Never call component events like `ComponentName.EventName()` from screens - this causes "Component behavior can only be invoked from within a component" errors
+41. **YAML COMMENT SYNTAX** - CRITICAL: Never use inline comments in YAML property values. Comments must be on separate lines above the property. WRONG: `Width: =100 # comment`. CORRECT: `# comment` then `Width: =100` on next line
+42. **APP OBJECT STRUCTURE** - CRITICAL: App properties must be organized in separate files within `src/App/` folder. Each file contains only the formula/value for that specific App property
+43. **APP FORMULAS ORGANIZATION** - CRITICAL: All global variables, functions, and constants must be defined in `src/App/Formulas` file. Never define global variables in individual screen OnVisible events
+44. **APP ONSTART OPTIMIZATION** - CRITICAL: Use `src/App/OnStart` only for lightweight initialization. Never put heavy data loading in OnStart - use lazy loading instead
+45. **APP STARTSCREEN PROPERTY** - CRITICAL: `src/App/StartScreen` must contain only the screen name as plain text. Never use formulas in StartScreen property
+46. **APP GLOBAL FUNCTIONS** - CRITICAL: Global functions in `src/App/Formulas` must use descriptive names and proper parameter typing (e.g., `CheckPermission(UserPerm:Number, RequiredPerm:Number):Boolean`)
+47. **APP PROPERTY INTEGRATION** - CRITICAL: Use global variables and functions from App.Formulas in screens and components (e.g., `Visible: =UserHasGDPerm`, `Fill: =Styles.Button.Fill`)
+48. **SCREEN DEVELOPMENT WORKFLOW** - CRITICAL: Before modifying any screen, ALWAYS check `src/App/` folder first to coordinate with existing global variables and functions. Follow workflow: 1) Check App/Formulas, 2) Check App/OnStart, 3) Use existing App resources, 4) Implement screen logic
+49. **APP-COMPONENT ISOLATION** - CRITICAL: App global variables and functions are ONLY accessible within App and Screens. Custom Components CANNOT access App globals directly (User, MenuItems, Styles, CheckPermission(), etc.). Must pass App data to Components via custom properties
+50. **COMPONENT SELF-SUFFICIENCY** - CRITICAL: Components must be self-sufficient using only passed properties and internal logic. Never assume App globals exist. Use UpdateContext() for internal variables, implement own helper functions if needed
+51. **APP FORMULAS FUNCTION DEFINITIONS** - CRITICAL: App/Formulas does NOT support complex function definitions with multiple statements. Use simple expressions only: `FunctionName():Boolean = true`. Move complex logic to screen level, use inline expressions for calculations
+52. **SHAREPOINT TABLE NAME CONFLICTS** - CRITICAL: Avoid naming global variables same as SharePoint list names. Use prefixes like UserRoles instead of VaiTro, UserPermissions instead of Quyen to prevent "ConnectedDataSource already contains a definition" errors
+53. **SHAREPOINT FIELD VERIFICATION** - CRITICAL: Always verify actual SharePoint column names. Use MaNguoiDung.Value (not MaNhanVien), check which columns require .Value suffix for Choice/Lookup types
+54. **UNICODE CHARACTER RESTRICTIONS** - CRITICAL: Never use emoji characters (👤, 📊, ⚠️) or special Unicode symbols in YAML text values. Use standard ASCII text and Vietnamese characters only to prevent "invalid mapping" YAML parsing errors
+55. **CLASSIC/TEXTINPUT PROPERTIES** - CRITICAL: Use `Default:` for initial value (NOT `Text:`), use `HintText:` for placeholder (NOT `Placeholder:`), use `Mode:` for input type (NOT `TextMode:`)
+56. **YAML COMMENT PLACEMENT** - CRITICAL: Never use inline comments in YAML property values. Place comments on separate lines above properties using `# Comment` format. Inline comments break YAML parsing
+
+**Agent must follow these rules ABSOLUTELY when generating Power App YAML code.**

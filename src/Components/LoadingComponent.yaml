@@ -54,7 +54,7 @@ ComponentDefinitions:
             Visible: =LoadingComponent.IsVisible
             
       - 'Loading.Container':
-          Control: Rectangle
+          Control: GroupContainer
           Variant: ManualLayout
           Properties:
             X: =(Parent.Width - Self.Width) / 2
@@ -64,18 +64,26 @@ ComponentDefinitions:
               "Large", 280,
               200)
             Height: =If(LoadingComponent.ShowProgress, 80, 60)
-            Fill: =RGBA(255, 255, 255, 1)
-            BorderColor: =RGBA(229, 231, 235, 1)
-            BorderThickness: =1
-            DropShadow: =DropShadow.Light
             Visible: =LoadingComponent.IsVisible
           Children:
+            # Loading Container Background
+            - 'Loading.Container.Background':
+                Control: Rectangle
+                Properties:
+                  X: =0
+                  Y: =0
+                  Width: =Parent.Width
+                  Height: =Parent.Height
+                  Fill: =RGBA(255, 255, 255, 1)
+                  BorderColor: =RGBA(229, 231, 235, 1)
+                  BorderThickness: =1
+                  
             # Loading Spinner
             - 'Loading.Spinner':
                 Control: Classic/Icon
                 Properties:
-                  X: =Parent.X + Parent.Width * 0.1
-                  Y: =Parent.Y + Parent.Height * 0.25
+                  X: =Parent.Width * 0.1
+                  Y: =Parent.Height * 0.25
                   Width: =Switch(LoadingComponent.Size,
                     "Small", 20,
                     "Large", 32,
@@ -89,7 +97,7 @@ ComponentDefinitions:
                 Control: Label
                 Properties:
                   X: ='Loading.Spinner'.X + 'Loading.Spinner'.Width + Parent.Width * 0.05
-                  Y: =Parent.Y + Parent.Height * 0.2
+                  Y: =Parent.Height * 0.2
                   Width: =Parent.Width * 0.7
                   Height: =Parent.Height * 0.4
                   Text: =LoadingComponent.LoadingText
@@ -103,11 +111,11 @@ ComponentDefinitions:
                   
             # Progress Bar (optional)
             - 'Loading.Progress.Container':
-                Control: Rectangle
+                Control: GroupContainer
                 Variant: ManualLayout
                 Properties:
-                  X: =Parent.X + Parent.Width * 0.1
-                  Y: =Parent.Y + Parent.Height * 0.65
+                  X: =Parent.Width * 0.1
+                  Y: =Parent.Height * 0.65
                   Width: =Parent.Width * 0.8
                   Height: =Parent.Height * 0.25
                   Visible: =LoadingComponent.ShowProgress
