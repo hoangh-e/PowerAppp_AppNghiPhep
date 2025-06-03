@@ -1,4 +1,4 @@
-Screens:
+﻿Screens:
   CalendarScreen:
     Properties:
       Fill: =RGBA(248, 250, 252, 1)
@@ -14,14 +14,14 @@ Screens:
         Set(varAllLeaves, DonNghiPhep);
         Set(varDepartmentLeaves, Filter(DonNghiPhep, LookUp(NguoiDung, Title = MaNguoiDung.Value).MaDonVi.Value = LookUp(NguoiDung, Title = UserSession.Id).MaDonVi.Value));
         Set(varHolidays, NgayLe);
-        Set(varMonthStart, DateAdd(Date(varSelectedYear, varSelectedMonth, 1), -(Weekday(Date(varSelectedYear, varSelectedMonth, 1), StartOfWeek.Sunday) - 1), Days));
+        Set(varMonthStart, DateAdd(Date(varSelectedYear, varSelectedMonth, 1), -(Weekday(Date(varSelectedYear, varSelectedMonth, 1), StartOfWeek.Sunday) - 1), TimeUnit.Days));
         Set(varCalendarDays, Table());
         ForAll(Sequence(42), 
           Collect(varCalendarDays, {
-            Date: DateAdd(varMonthStart, Value - 1, Days),
-            IsCurrentMonth: Month(DateAdd(varMonthStart, Value - 1, Days)) = varSelectedMonth,
-            IsToday: DateAdd(varMonthStart, Value - 1, Days) = Today(),
-            IsWeekend: Weekday(DateAdd(varMonthStart, Value - 1, Days), StartOfWeek.Sunday) in [1, 7]
+            Date: DateAdd(varMonthStart, Value - 1, TimeUnit.Days),
+            IsCurrentMonth: Month(DateAdd(varMonthStart, Value - 1, TimeUnit.Days)) = varSelectedMonth,
+            IsToday: DateAdd(varMonthStart, Value - 1, TimeUnit.Days) = Today(),
+            IsWeekend: Weekday(DateAdd(varMonthStart, Value - 1, TimeUnit.Days), StartOfWeek.Sunday) in [1, 7]
           })
         )
     Children:
@@ -154,14 +154,14 @@ Screens:
                                         Set(varSelectedMonth, 12); Set(varSelectedYear, varSelectedYear - 1),
                                         Set(varSelectedMonth, varSelectedMonth - 1)
                                       );
-                                      Set(varMonthStart, DateAdd(Date(varSelectedYear, varSelectedMonth, 1), -(Weekday(Date(varSelectedYear, varSelectedMonth, 1), StartOfWeek.Sunday) - 1), Days));
+                                      Set(varMonthStart, DateAdd(Date(varSelectedYear, varSelectedMonth, 1), -(Weekday(Date(varSelectedYear, varSelectedMonth, 1), StartOfWeek.Sunday) - 1), TimeUnit.Days));
                                       Clear(varCalendarDays);
                                       ForAll(Sequence(42), 
                                         Collect(varCalendarDays, {
-                                          Date: DateAdd(varMonthStart, Value - 1, Days),
-                                          IsCurrentMonth: Month(DateAdd(varMonthStart, Value - 1, Days)) = varSelectedMonth,
-                                          IsToday: DateAdd(varMonthStart, Value - 1, Days) = Today(),
-                                          IsWeekend: Weekday(DateAdd(varMonthStart, Value - 1, Days), StartOfWeek.Sunday) in [1, 7]
+                                          Date: DateAdd(varMonthStart, Value - 1, TimeUnit.Days),
+                                          IsCurrentMonth: Month(DateAdd(varMonthStart, Value - 1, TimeUnit.Days)) = varSelectedMonth,
+                                          IsToday: DateAdd(varMonthStart, Value - 1, TimeUnit.Days) = Today(),
+                                          IsWeekend: Weekday(DateAdd(varMonthStart, Value - 1, TimeUnit.Days), StartOfWeek.Sunday) in [1, 7]
                                         })
                                       )
                                       
@@ -195,14 +195,14 @@ Screens:
                                         Set(varSelectedMonth, 1); Set(varSelectedYear, varSelectedYear + 1),
                                         Set(varSelectedMonth, varSelectedMonth + 1)
                                       );
-                                      Set(varMonthStart, DateAdd(Date(varSelectedYear, varSelectedMonth, 1), -(Weekday(Date(varSelectedYear, varSelectedMonth, 1), StartOfWeek.Sunday) - 1), Days));
+                                      Set(varMonthStart, DateAdd(Date(varSelectedYear, varSelectedMonth, 1), -(Weekday(Date(varSelectedYear, varSelectedMonth, 1), StartOfWeek.Sunday) - 1), TimeUnit.Days));
                                       Clear(varCalendarDays);
                                       ForAll(Sequence(42), 
                                         Collect(varCalendarDays, {
-                                          Date: DateAdd(varMonthStart, Value - 1, Days),
-                                          IsCurrentMonth: Month(DateAdd(varMonthStart, Value - 1, Days)) = varSelectedMonth,
-                                          IsToday: DateAdd(varMonthStart, Value - 1, Days) = Today(),
-                                          IsWeekend: Weekday(DateAdd(varMonthStart, Value - 1, Days), StartOfWeek.Sunday) in [1, 7]
+                                          Date: DateAdd(varMonthStart, Value - 1, TimeUnit.Days),
+                                          IsCurrentMonth: Month(DateAdd(varMonthStart, Value - 1, TimeUnit.Days)) = varSelectedMonth,
+                                          IsToday: DateAdd(varMonthStart, Value - 1, TimeUnit.Days) = Today(),
+                                          IsWeekend: Weekday(DateAdd(varMonthStart, Value - 1, TimeUnit.Days), StartOfWeek.Sunday) in [1, 7]
                                         })
                                       )
 
@@ -240,8 +240,7 @@ Screens:
                                     Text: ="Cá nhân"
                                     Variant: =If(varCalendarView = "Personal", "Primary", "Outline")
                                     Size: ="Small"
-                                    OnClick: |
-                                      =Set(varCalendarView, "Personal")
+                                    OnClick: =Set(varCalendarView, "Personal")
                                       
                               - 'Calendar.ViewSelector.Department':
                                   Control: CanvasComponent
@@ -254,8 +253,7 @@ Screens:
                                     Text: ="Phòng ban"
                                     Variant: =If(varCalendarView = "Department", "Primary", "Outline")
                                     Size: ="Small"
-                                    OnClick: |
-                                      =Set(varCalendarView, "Department")
+                                    OnClick: =Set(varCalendarView, "Department")
                                       
                               - 'Calendar.ViewSelector.All':
                                   Control: CanvasComponent
@@ -268,8 +266,7 @@ Screens:
                                     Text: ="Toàn công ty"
                                     Variant: =If(varCalendarView = "All", "Primary", "Outline")
                                     Size: ="Small"
-                                    OnClick: |
-                                      =Set(varCalendarView, "All")
+                                    OnClick: =Set(varCalendarView, "All")
 
                   # Calendar Grid
                   - 'Calendar.Grid.Container':
@@ -436,10 +433,9 @@ Screens:
                               Fill: =RGBA(0, 0, 0, 0)
                             Children:
                               - 'Calendar.Day.Cell':
-                                  Control: GroupContainer
-                                  Variant: ManualLayout
+                                  Control: Rectangle
                                   Properties:
-                                    X: =(ThisItem.Date - varMonthStart) Mod 7 * (Parent.TemplateWidth / 7)
+                                    X: =((ThisItem.Date - varMonthStart) Mod 7) * (Parent.TemplateWidth / 7)
                                     Y: =Int((ThisItem.Date - varMonthStart) / 7) * Parent.TemplateSize
                                     Width: =Parent.TemplateWidth / 7
                                     Height: =Parent.TemplateSize
@@ -447,8 +443,7 @@ Screens:
                                       ThisItem.IsToday, RGBA(59, 130, 246, 0.1),
                                       If(ThisItem.IsWeekend, RGBA(254, 242, 242, 1),
                                         If(ThisItem.IsCurrentMonth, RGBA(255, 255, 255, 1), RGBA(249, 250, 251, 1))
-                                      )
-                                    )
+                                      ))
                                     BorderColor: =RGBA(226, 232, 240, 1)
                                     BorderThickness: =1
                                     OnSelect: |
@@ -457,8 +452,7 @@ Screens:
                                           "Personal", Filter(varPersonalLeaves, And(NgayBatDau <= ThisItem.Date, NgayKetThuc >= ThisItem.Date)),
                                           "Department", Filter(varDepartmentLeaves, And(NgayBatDau <= ThisItem.Date, NgayKetThuc >= ThisItem.Date)),
                                           "All", Filter(varAllLeaves, And(NgayBatDau <= ThisItem.Date, NgayKetThuc >= ThisItem.Date))
-                                        )
-                                      );
+                                        ));
                                       Set(varShowCalendarDetails, true)
                                   Children:
                                     # Day Number
@@ -474,8 +468,7 @@ Screens:
                                             ThisItem.IsToday, RGBA(59, 130, 246, 1),
                                             If(Not(ThisItem.IsCurrentMonth), RGBA(156, 163, 175, 1),
                                               If(ThisItem.IsWeekend, RGBA(239, 68, 68, 1), RGBA(17, 24, 39, 1))
-                                            )
-                                          )
+                                            ))
                                           Font: =Font.'Open Sans'
                                           FontWeight: =If(ThisItem.IsToday, FontWeight.Bold, FontWeight.Normal)
                                           Size: =10
@@ -516,7 +509,7 @@ Screens:
                                                 Visible: =And(
                                                   varCalendarView = "Personal",
                                                   CountRows(Filter(varPersonalLeaves, And(NgayBatDau <= ThisItem.Date, NgayKetThuc >= ThisItem.Date))) > 0
-                                                )
+                                                  )
                                                 
                                           # Department Leave Count
                                           - 'Calendar.Day.DepartmentCount':
@@ -537,7 +530,7 @@ Screens:
                                                 Visible: =And(
                                                   varCalendarView = "Department",
                                                   CountRows(Filter(varDepartmentLeaves, And(NgayBatDau <= ThisItem.Date, NgayKetThuc >= ThisItem.Date))) > 0
-                                                )
+                                                  )
                                                 
                                           # All Company Leave Count
                                           - 'Calendar.Day.AllCount':
@@ -558,7 +551,7 @@ Screens:
                                                 Visible: =And(
                                                   varCalendarView = "All",
                                                   CountRows(Filter(varAllLeaves, And(NgayBatDau <= ThisItem.Date, NgayKetThuc >= ThisItem.Date))) > 0
-                                                )
+                                                  )
 
       # Calendar Details Modal
       - 'Calendar.Details.Modal':
@@ -610,8 +603,7 @@ Screens:
                         Text: ="Đóng"
                         Variant: ="Outline"
                         Size: ="Small"
-                        OnClick: |
-                          =Set(varShowCalendarDetails, false)
+                        OnClick: =Set(varShowCalendarDetails, false)
                         
             - 'Calendar.Details.Content':
                 Control: GroupContainer
@@ -647,7 +639,7 @@ Screens:
                               Y: =0
                               Width: =Parent.TemplateWidth
                               Height: =Parent.TemplateHeight
-                              Fill: =If(Mod(ThisItem.Id, 2) = 0, RGBA(249, 250, 251, 1), RGBA(255, 255, 255, 1))
+                              Fill: =RGBA(255, 255, 255, 1)
                               BorderColor: =RGBA(226, 232, 240, 1)
                               BorderThickness: =1
                             Children:
@@ -659,7 +651,7 @@ Screens:
                                     Y: =Parent.Height * 0.1
                                     Width: =Parent.Width * 0.25
                                     Height: =Parent.Height * 0.4
-                                    Text: =LookUp(NguoiDung, Title = ThisItem.MaNguoiDung.Value).HoTen
+                                    Text: =LookUp(NguoiDung, Title = ThisItem.MaNguoiDung).HoTen
                                     Color: =RGBA(17, 24, 39, 1)
                                     Font: =Font.'Open Sans'
                                     FontWeight: =FontWeight.Semibold

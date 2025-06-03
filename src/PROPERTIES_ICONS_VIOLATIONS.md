@@ -1,0 +1,2728 @@
+﻿# PROPERTIES & ICONS VALIDATION REPORT
+
+**Rules Reference:** Section 5 - Properties Guidelines, Section 6 - Icon Guidelines  
+**Generated:** 2025-06-03 18:16:08  
+**Script Version:** 2.0.0 (Clean Slate)  
+
+## SUMMARY
+
+- **Files checked:** 32
+- **Files with violations:** 31
+- **Total violations:** 1300
+- **Compliance rate:** 3.12%
+
+## RULES IMPLEMENTED
+
+1. **Section 5.1:** Color properties (RGBA format)
+2. **Section 5.2:** DropShadow properties validation
+3. **Section 5.4:** Formula properties (= prefix)
+4. **Section 5.6:** Text formatting validation
+5. **Section 6.1:** Icon references validation
+6. **Section 8.11:** Formula length and pipe operator usage
+
+## VIOLATION TYPES
+
+- **INVALID_COLOR_FORMAT:** Colors not in RGBA format
+- **INVALID_DROPSHADOW_VALUE:** Invalid DropShadow values
+- **MISSING_FORMULA_PREFIX:** Dynamic properties without = prefix
+- **INVALID_ICON_REFERENCE:** Icons not in approved list
+- **IMPROPER_TEXT_FORMATTING:** Wrong text concatenation format
+- **LONG_FORMULA_NO_PIPE:** Long formulas without pipe operator
+
+
+## VIOLATIONS BY FILE
+
+### StatsCardComponent.yaml
+
+- **Line 130:** INVALID_COLOR_FORMAT (Section 5.1) - Fill must use RGBA format
+  - **Suggestion:** Fill = RGBA(255, 255, 255, 1)
+- **Line 131:** INVALID_COLOR_FORMAT (Section 5.1) - BorderColor must use RGBA format
+  - **Suggestion:** BorderColor = RGBA(255, 255, 255, 1)
+- **Line 153:** INVALID_COLOR_FORMAT (Section 5.1) - Color must use RGBA format
+  - **Suggestion:** Color = RGBA(255, 255, 255, 1)
+- **Line 277:** INVALID_COLOR_FORMAT (Section 5.1) - Fill must use RGBA format
+  - **Suggestion:** Fill = RGBA(255, 255, 255, 1)
+- **Line 10:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = ="TiÃªu Ä‘á»"
+- **Line 16:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =0
+- **Line 22:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =100
+- **Line 28:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =0
+- **Line 34:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =""
+- **Line 40:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = ="Calendar"
+- **Line 46:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =RGBA(33, 150, 243, 1)
+- **Line 52:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =""
+- **Line 58:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =false
+- **Line 64:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =false
+- **Line 70:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =false
+- **Line 76:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =
+- **Line 89:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 130:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =ColorFade(StatsCardComponent.Color, 0.9)
+- **Line 173:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =Text(StatsCardComponent.Value)
+- **Line 188:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =StatsCardComponent.Title
+- **Line 203:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =StatsCardComponent.Subtitle
+- **Line 208:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =Not(IsBlank(StatsCardComponent.Subtitle))
+- **Line 219:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =StatsCardComponent.ShowTrend
+- **Line 240:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =StatsCardComponent.TrendText
+- **Line 256:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =And(StatsCardComponent.ShowProgress, Not(StatsCardComponent.ShowTrend))
+- **Line 266:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(243, 244, 246, 1)
+- **Line 277:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =StatsCardComponent.Color
+- **Line 288:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =""
+- **Line 289:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(0, 0, 0, 0)
+- **Line 292:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =StatsCardComponent.IsClickable
+- **Line 293:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnSelect must start with =
+  - **Suggestion:** OnSelect = |
+- **Line 229:** LONG_FORMULA_NO_PIPE (Section 8.11) - Formula longer than 120 characters should use pipe operator
+  - **Suggestion:** Use multi-line format with pipe operator
+- **Line 230:** LONG_FORMULA_NO_PIPE (Section 8.11) - Formula longer than 120 characters should use pipe operator
+  - **Suggestion:** Use multi-line format with pipe operator
+- **Line 241:** LONG_FORMULA_NO_PIPE (Section 8.11) - Formula longer than 120 characters should use pipe operator
+  - **Suggestion:** Use multi-line format with pipe operator
+- **Line 293:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+
+### NavigationComponent.yaml
+
+- **Line 200:** INVALID_COLOR_FORMAT (Section 5.1) - Fill must use RGBA format
+  - **Suggestion:** Fill = RGBA(255, 255, 255, 1)
+- **Line 203:** INVALID_COLOR_FORMAT (Section 5.1) - BorderColor must use RGBA format
+  - **Suggestion:** BorderColor = RGBA(255, 255, 255, 1)
+- **Line 217:** INVALID_COLOR_FORMAT (Section 5.1) - Color must use RGBA format
+  - **Suggestion:** Color = RGBA(255, 255, 255, 1)
+- **Line 255:** INVALID_COLOR_FORMAT (Section 5.1) - Color must use RGBA format
+  - **Suggestion:** Color = RGBA(255, 255, 255, 1)
+- **Line 267:** INVALID_COLOR_FORMAT (Section 5.1) - Fill must use RGBA format
+  - **Suggestion:** Fill = RGBA(255, 255, 255, 1)
+- **Line 270:** INVALID_COLOR_FORMAT (Section 5.1) - BorderColor must use RGBA format
+  - **Suggestion:** BorderColor = RGBA(255, 255, 255, 1)
+- **Line 284:** INVALID_COLOR_FORMAT (Section 5.1) - Color must use RGBA format
+  - **Suggestion:** Color = RGBA(255, 255, 255, 1)
+- **Line 321:** INVALID_COLOR_FORMAT (Section 5.1) - Color must use RGBA format
+  - **Suggestion:** Color = RGBA(255, 255, 255, 1)
+- **Line 333:** INVALID_COLOR_FORMAT (Section 5.1) - Fill must use RGBA format
+  - **Suggestion:** Fill = RGBA(255, 255, 255, 1)
+- **Line 336:** INVALID_COLOR_FORMAT (Section 5.1) - BorderColor must use RGBA format
+  - **Suggestion:** BorderColor = RGBA(255, 255, 255, 1)
+- **Line 350:** INVALID_COLOR_FORMAT (Section 5.1) - Color must use RGBA format
+  - **Suggestion:** Color = RGBA(255, 255, 255, 1)
+- **Line 387:** INVALID_COLOR_FORMAT (Section 5.1) - Color must use RGBA format
+  - **Suggestion:** Color = RGBA(255, 255, 255, 1)
+- **Line 399:** INVALID_COLOR_FORMAT (Section 5.1) - Fill must use RGBA format
+  - **Suggestion:** Fill = RGBA(255, 255, 255, 1)
+- **Line 402:** INVALID_COLOR_FORMAT (Section 5.1) - BorderColor must use RGBA format
+  - **Suggestion:** BorderColor = RGBA(255, 255, 255, 1)
+- **Line 416:** INVALID_COLOR_FORMAT (Section 5.1) - Color must use RGBA format
+  - **Suggestion:** Color = RGBA(255, 255, 255, 1)
+- **Line 453:** INVALID_COLOR_FORMAT (Section 5.1) - Color must use RGBA format
+  - **Suggestion:** Color = RGBA(255, 255, 255, 1)
+- **Line 465:** INVALID_COLOR_FORMAT (Section 5.1) - Fill must use RGBA format
+  - **Suggestion:** Fill = RGBA(255, 255, 255, 1)
+- **Line 468:** INVALID_COLOR_FORMAT (Section 5.1) - BorderColor must use RGBA format
+  - **Suggestion:** BorderColor = RGBA(255, 255, 255, 1)
+- **Line 483:** INVALID_COLOR_FORMAT (Section 5.1) - Color must use RGBA format
+  - **Suggestion:** Color = RGBA(255, 255, 255, 1)
+- **Line 521:** INVALID_COLOR_FORMAT (Section 5.1) - Color must use RGBA format
+  - **Suggestion:** Color = RGBA(255, 255, 255, 1)
+- **Line 10:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = ="Employee"
+- **Line 16:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =""
+- **Line 22:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =false
+- **Line 28:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =
+- **Line 34:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =
+- **Line 40:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =
+- **Line 46:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =
+- **Line 52:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =
+- **Line 58:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =
+- **Line 64:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =
+- **Line 70:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = ="Dashboard"
+- **Line 76:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =
+- **Line 89:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(249, 250, 251, 1)
+- **Line 111:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 151:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Leave Management"
+- **Line 156:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =Not(NavigationComponent.IsCollapsed)
+- **Line 166:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =If(NavigationComponent.IsCollapsed, "Â»", "Â«")
+- **Line 167:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(249, 250, 251, 1)
+- **Line 179:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnSelect must start with =
+  - **Suggestion:** OnSelect = |
+- **Line 200:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =If(NavigationComponent.ActiveScreen = "Dashboard",
+- **Line 215:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =If(NavigationComponent.IsCollapsed, "", "  Dashboard")
+- **Line 216:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 0)
+- **Line 239:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnSelect must start with =
+  - **Suggestion:** OnSelect = |
+- **Line 267:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =If(NavigationComponent.ActiveScreen = "LeaveRequest",
+- **Line 282:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =If(NavigationComponent.IsCollapsed, "", "  Táº¡o Ä‘Æ¡n nghá»‰ phÃ©p")
+- **Line 283:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 0)
+- **Line 306:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnSelect must start with =
+  - **Suggestion:** OnSelect = |
+- **Line 333:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =If(NavigationComponent.ActiveScreen = "MyLeaves",
+- **Line 348:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =If(NavigationComponent.IsCollapsed, "", "  ÄÆ¡n nghá»‰ phÃ©p cá»§a tÃ´i")
+- **Line 349:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 0)
+- **Line 372:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnSelect must start with =
+  - **Suggestion:** OnSelect = |
+- **Line 399:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =If(NavigationComponent.ActiveScreen = "Calendar",
+- **Line 414:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =If(NavigationComponent.IsCollapsed, "", "  Lá»‹ch nghá»‰ phÃ©p")
+- **Line 415:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 0)
+- **Line 438:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnSelect must start with =
+  - **Suggestion:** OnSelect = |
+- **Line 465:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =If(NavigationComponent.ActiveScreen = "Management",
+- **Line 472:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =Or(NavigationComponent.UserRole = "Manager", NavigationComponent.UserRole = "Admin", NavigationComponent.UserRole = "ADMIN")
+- **Line 481:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =If(NavigationComponent.IsCollapsed, "", "  Quáº£n lÃ½")
+- **Line 482:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 0)
+- **Line 493:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =Or(NavigationComponent.UserRole = "Manager", NavigationComponent.UserRole = "Admin", NavigationComponent.UserRole = "ADMIN")
+- **Line 506:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnSelect must start with =
+  - **Suggestion:** OnSelect = |
+- **Line 524:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =Or(NavigationComponent.UserRole = "Manager", NavigationComponent.UserRole = "Admin", NavigationComponent.UserRole = "ADMIN")
+- **Line 543:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(229, 231, 235, 1)
+- **Line 552:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =If(NavigationComponent.IsCollapsed, "v2.0", "Version 2.0")
+- **Line 566:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(0, 0, 0, 0.3)
+- **Line 567:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =false
+- **Line 568:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnSelect must start with =
+  - **Suggestion:** OnSelect = |
+- **Line 179:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 239:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 306:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 372:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 438:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 472:** LONG_FORMULA_NO_PIPE (Section 8.11) - Formula longer than 120 characters should use pipe operator
+  - **Suggestion:** Use multi-line format with pipe operator
+- **Line 493:** LONG_FORMULA_NO_PIPE (Section 8.11) - Formula longer than 120 characters should use pipe operator
+  - **Suggestion:** Use multi-line format with pipe operator
+- **Line 506:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 524:** LONG_FORMULA_NO_PIPE (Section 8.11) - Formula longer than 120 characters should use pipe operator
+  - **Suggestion:** Use multi-line format with pipe operator
+- **Line 568:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+
+### LoadingComponent.yaml
+
+- **Line 10:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =false
+- **Line 17:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = ="Äang táº£i..."
+- **Line 24:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =false
+- **Line 31:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =0
+- **Line 38:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = ="Medium"
+- **Line 52:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 0.95)
+- **Line 54:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =LoadingComponent.IsVisible
+- **Line 67:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =LoadingComponent.IsVisible
+- **Line 77:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 103:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =LoadingComponent.LoadingText
+- **Line 121:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =LoadingComponent.ShowProgress
+- **Line 131:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(229, 231, 235, 1)
+- **Line 142:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(33, 150, 243, 1)
+- **Line 153:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =LoadingComponent.ProgressValue & "%"
+
+### InputComponent.yaml
+
+- **Line 10:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = ="NhÃ£n"
+- **Line 16:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = ="Nháº­p vÃ o Ä‘Ã¢y..."
+- **Line 22:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =""
+- **Line 28:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =false
+- **Line 34:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =false
+- **Line 40:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = ="Text"
+- **Line 46:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =""
+- **Line 52:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =false
+- **Line 58:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =""
+- **Line 64:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =false
+- **Line 70:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =""
+- **Line 83:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 106:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =Not(IsBlank(InputComponent.Label))
+- **Line 115:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =InputComponent.Label
+- **Line 120:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =Not(IsBlank(InputComponent.Label))
+- **Line 129:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="*"
+- **Line 134:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =And(InputComponent.Required, Not(IsBlank(InputComponent.Label)))
+- **Line 164:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =Not(IsBlank(InputComponent.Icon))
+- **Line 178:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =InputComponent.Value
+- **Line 181:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(0, 0, 0, 0)
+- **Line 191:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnChange must start with =
+  - **Suggestion:** OnChange = |
+- **Line 203:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =And(InputComponent.ShowError, Not(IsBlank(InputComponent.ErrorMessage)))
+- **Line 222:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =InputComponent.ErrorMessage
+- **Line 191:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+
+### HeaderComponent_v2.yaml
+
+- **Line 117:** INVALID_COLOR_FORMAT (Section 5.1) - BorderColor must use RGBA format
+  - **Suggestion:** BorderColor = RGBA(255, 255, 255, 1)
+- **Line 129:** INVALID_COLOR_FORMAT (Section 5.1) - Fill must use RGBA format
+  - **Suggestion:** Fill = RGBA(255, 255, 255, 1)
+- **Line 187:** INVALID_COLOR_FORMAT (Section 5.1) - Color must use RGBA format
+  - **Suggestion:** Color = RGBA(255, 255, 255, 1)
+- **Line 197:** INVALID_COLOR_FORMAT (Section 5.1) - Color must use RGBA format
+  - **Suggestion:** Color = RGBA(255, 255, 255, 1)
+- **Line 246:** INVALID_COLOR_FORMAT (Section 5.1) - Fill must use RGBA format
+  - **Suggestion:** Fill = RGBA(255, 255, 255, 1)
+- **Line 119:** INVALID_DROPSHADOW_VALUE (Section 5.2) - DropShadow must use valid values: Light, Regular, Bold, ExtraBold, Semilight, None
+  - **Suggestion:** DropShadow = DropShadow.Regular
+- **Line 10:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = ="Nguyễn Văn An"
+- **Line 17:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = ="Employee"
+- **Line 24:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =""
+- **Line 31:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = ="Leave Management System"
+- **Line 38:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =true
+- **Line 45:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =true
+- **Line 52:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =0
+- **Line 60:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =true
+- **Line 68:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =false
+- **Line 74:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =""
+- **Line 81:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =false
+- **Line 88:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =false
+- **Line 116:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =If(HeaderComponent_v2.UseGradient, 'Header.DesignSystem'.PrimaryColor, RGBA(255, 255, 255, 1))
+- **Line 129:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = ='Header.DesignSystem'.SecondaryColor
+- **Line 130:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =HeaderComponent_v2.UseGradient
+- **Line 159:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =If('Header.DesignSystem'.IsMobile, "Leave App", HeaderComponent_v2.Title)
+- **Line 174:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 0.9)
+- **Line 177:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =And(HeaderComponent_v2.ShowSearch, 'Header.DesignSystem'.IsDesktop)
+- **Line 198:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(0, 0, 0, 0)
+- **Line 202:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnChange must start with =
+  - **Suggestion:** OnChange = =true
+- **Line 223:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =If(HeaderComponent_v2.UseGradient, RGBA(255, 255, 255, 0.1), 'Header.DesignSystem'.Gray100)
+- **Line 226:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =HeaderComponent_v2.ShowNotification
+- **Line 237:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnSelect must start with =
+  - **Suggestion:** OnSelect = =HeaderComponent_v2.OnNotificationClick()
+- **Line 246:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = ='Header.DesignSystem'.DangerColor
+- **Line 247:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =And(HeaderComponent_v2.ShowNotification, HeaderComponent_v2.NotificationCount > 0)
+- **Line 256:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =If(HeaderComponent_v2.NotificationCount > 99, "99+", Text(HeaderComponent_v2.NotificationCount))
+- **Line 262:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =And(HeaderComponent_v2.ShowNotification, HeaderComponent_v2.NotificationCount > 0)
+- **Line 273:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =If(HeaderComponent_v2.UseGradient, RGBA(255, 255, 255, 0.1), 'Header.DesignSystem'.Gray100)
+- **Line 285:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =If(IsBlank(HeaderComponent_v2.UserAvatar), 'Header.DesignSystem'.SecondaryColor, RGBA(0, 0, 0, 0))
+- **Line 288:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnSelect must start with =
+  - **Suggestion:** OnSelect = =HeaderComponent_v2.OnProfileClick()
+- **Line 298:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =Upper(Left(HeaderComponent_v2.UserName, 1) & If(Find(" ", HeaderComponent_v2.UserName) > 0, Mid(HeaderComponent_v2.UserName, Find(" ", HeaderComponent_v2.UserName) + 1, 1), ""))
+- **Line 304:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =IsBlank(HeaderComponent_v2.UserAvatar)
+- **Line 315:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = ='Header.DesignSystem'.IsDesktop
+- **Line 324:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =HeaderComponent_v2.UserName
+- **Line 337:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =HeaderComponent_v2.UserRole
+- **Line 352:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = ='Header.DesignSystem'.IsDesktop
+- **Line 363:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =If(HeaderComponent_v2.UseGradient, RGBA(255, 255, 255, 0.1), 'Header.DesignSystem'.Gray100)
+- **Line 366:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = ='Header.DesignSystem'.IsMobile
+- **Line 271:** LONG_FORMULA_NO_PIPE (Section 8.11) - Formula longer than 120 characters should use pipe operator
+  - **Suggestion:** Use multi-line format with pipe operator
+- **Line 298:** LONG_FORMULA_NO_PIPE (Section 8.11) - Formula longer than 120 characters should use pipe operator
+  - **Suggestion:** Use multi-line format with pipe operator
+
+### HeaderComponent.yaml
+
+- **Line 10:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = ="Nguyá»…n VÄƒn An"
+- **Line 16:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = ="Employee"
+- **Line 22:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =true
+- **Line 28:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =true
+- **Line 34:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =0
+- **Line 40:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =false
+- **Line 46:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =""
+- **Line 52:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =false
+- **Line 65:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(227, 242, 253, 1)
+- **Line 106:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Leave App"
+- **Line 121:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =HeaderComponent.ShowSearch
+- **Line 131:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 0.9)
+- **Line 154:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(0, 0, 0, 0)
+- **Line 159:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnChange must start with =
+  - **Suggestion:** OnChange = |
+- **Line 181:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =HeaderComponent.ShowNotification
+- **Line 191:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(248, 250, 252, 1)
+- **Line 212:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 205, 210, 1)
+- **Line 213:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =And(HeaderComponent.ShowNotification, HeaderComponent.NotificationCount > 0)
+- **Line 222:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =If(HeaderComponent.NotificationCount > 9, "9+", Text(HeaderComponent.NotificationCount))
+- **Line 228:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =And(HeaderComponent.ShowNotification, HeaderComponent.NotificationCount > 0)
+- **Line 239:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =true
+- **Line 249:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(248, 250, 252, 1)
+- **Line 261:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(187, 222, 251, 1)
+- **Line 270:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =Upper(Left(HeaderComponent.UserName, 1) & If(Find(" ", HeaderComponent.UserName) > 0, Mid(HeaderComponent.UserName, Find(" ", HeaderComponent.UserName) + 1, 1), ""))
+- **Line 294:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =HeaderComponent.UserName
+- **Line 307:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =Switch(HeaderComponent.UserRole,
+- **Line 326:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(200, 230, 201, 1)
+- **Line 336:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="ÄÄƒng xuáº¥t"
+- **Line 337:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(244, 67, 54, 0.1)
+- **Line 348:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnSelect must start with =
+  - **Suggestion:** OnSelect = |
+- **Line 359:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="â˜°"
+- **Line 360:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(248, 250, 252, 1)
+- **Line 367:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =false
+- **Line 368:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnSelect must start with =
+  - **Suggestion:** OnSelect = |
+- **Line 159:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 270:** LONG_FORMULA_NO_PIPE (Section 8.11) - Formula longer than 120 characters should use pipe operator
+  - **Suggestion:** Use multi-line format with pipe operator
+- **Line 348:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 368:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+
+### EnhancedInputComponent.yaml
+
+- **Line 165:** INVALID_COLOR_FORMAT (Section 5.1) - Color must use RGBA format
+  - **Suggestion:** Color = RGBA(255, 255, 255, 1)
+- **Line 207:** INVALID_COLOR_FORMAT (Section 5.1) - Fill must use RGBA format
+  - **Suggestion:** Fill = RGBA(255, 255, 255, 1)
+- **Line 212:** INVALID_COLOR_FORMAT (Section 5.1) - BorderColor must use RGBA format
+  - **Suggestion:** BorderColor = RGBA(255, 255, 255, 1)
+- **Line 246:** INVALID_COLOR_FORMAT (Section 5.1) - Color must use RGBA format
+  - **Suggestion:** Color = RGBA(255, 255, 255, 1)
+- **Line 271:** INVALID_COLOR_FORMAT (Section 5.1) - Color must use RGBA format
+  - **Suggestion:** Color = RGBA(255, 255, 255, 1)
+- **Line 305:** INVALID_COLOR_FORMAT (Section 5.1) - Color must use RGBA format
+  - **Suggestion:** Color = RGBA(255, 255, 255, 1)
+- **Line 351:** INVALID_COLOR_FORMAT (Section 5.1) - Color must use RGBA format
+  - **Suggestion:** Color = RGBA(255, 255, 255, 1)
+- **Line 10:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = ="Input Label"
+- **Line 17:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = ="Nháº­p thÃ´ng tin..."
+- **Line 24:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =""
+- **Line 31:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = ="text"
+- **Line 38:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = ="md"
+- **Line 45:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = ="outlined"
+- **Line 52:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =false
+- **Line 59:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =false
+- **Line 66:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =false
+- **Line 73:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =""
+- **Line 80:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =""
+- **Line 87:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =false
+- **Line 94:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = ="search"
+- **Line 101:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = ="left"
+- **Line 108:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =false
+- **Line 114:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =""
+- **Line 143:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(0, 0, 0, 0)
+- **Line 154:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(0, 0, 0, 0)
+- **Line 155:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =Not(IsBlank(EnhancedInputComponent.Label))
+- **Line 164:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =EnhancedInputComponent.Label
+- **Line 183:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =" *"
+- **Line 192:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =EnhancedInputComponent.IsRequired
+- **Line 207:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =Switch(EnhancedInputComponent.Variant,
+- **Line 251:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =And(EnhancedInputComponent.ShowIcon, EnhancedInputComponent.IconPosition = "left")
+- **Line 266:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =EnhancedInputComponent.Value
+- **Line 274:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(0, 0, 0, 0)
+- **Line 283:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnChange must start with =
+  - **Suggestion:** OnChange = =EnhancedInputComponent.OnChange(Self.Text)
+- **Line 310:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =And(EnhancedInputComponent.ShowIcon, EnhancedInputComponent.IconPosition = "right")
+- **Line 321:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(0, 0, 0, 0)
+- **Line 322:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = |
+- **Line 335:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =And(EnhancedInputComponent.HasError, Not(IsBlank(EnhancedInputComponent.ErrorMessage)))
+- **Line 349:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = |
+- **Line 200:** LONG_FORMULA_NO_PIPE (Section 8.11) - Formula longer than 120 characters should use pipe operator
+  - **Suggestion:** Use multi-line format with pipe operator
+
+### EnhancedDesignSystemComponent.yaml
+
+- **Line 10:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = ="light"
+- **Line 17:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = ="blue"
+- **Line 31:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =false
+- **Line 33:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = |
+- **Line 53:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =false
+- **Line 54:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = |
+- **Line 77:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =false
+- **Line 78:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = |
+- **Line 101:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =false
+- **Line 102:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = |
+- **Line 121:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =false
+- **Line 122:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = |
+- **Line 143:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =false
+- **Line 144:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = |
+- **Line 168:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =false
+- **Line 169:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = |
+- **Line 190:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =false
+- **Line 191:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = |
+- **Line 212:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =false
+- **Line 213:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = |
+- **Line 233:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =false
+- **Line 234:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = |
+- **Line 254:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =false
+- **Line 255:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = |
+- **Line 33:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 54:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 78:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 102:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 122:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 144:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 169:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 191:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 213:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 234:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 255:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+
+### EnhancedCardComponent.yaml
+
+- **Line 60:** INVALID_COLOR_FORMAT (Section 5.1) - BorderColor must use RGBA format
+  - **Suggestion:** BorderColor = RGBA(255, 255, 255, 1)
+- **Line 108:** INVALID_COLOR_FORMAT (Section 5.1) - Color must use RGBA format
+  - **Suggestion:** Color = RGBA(255, 255, 255, 1)
+- **Line 179:** INVALID_COLOR_FORMAT (Section 5.1) - Fill must use RGBA format
+  - **Suggestion:** Fill = RGBA(255, 255, 255, 1)
+- **Line 10:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = ="TiÃªu Ä‘á» Card"
+- **Line 16:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = ="Ná»™i dung card..."
+- **Line 22:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =""
+- **Line 28:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =""
+- **Line 34:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =false
+- **Line 40:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = ="Default"
+- **Line 46:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =false
+- **Line 59:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 116:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =Not(IsBlank(EnhancedCardComponent.Icon))
+- **Line 130:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =EnhancedCardComponent.Title
+- **Line 155:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =EnhancedCardComponent.Content
+- **Line 169:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =EnhancedCardComponent.ShowAction
+- **Line 178:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =EnhancedCardComponent.ActionText
+- **Line 179:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =Switch(EnhancedCardComponent.Variant,
+- **Line 193:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnSelect must start with =
+  - **Suggestion:** OnSelect = |
+- **Line 193:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+
+### EnhancedButtonComponent.yaml
+
+- **Line 65:** INVALID_COLOR_FORMAT (Section 5.1) - Fill must use RGBA format
+  - **Suggestion:** Fill = RGBA(255, 255, 255, 1)
+- **Line 71:** INVALID_COLOR_FORMAT (Section 5.1) - BorderColor must use RGBA format
+  - **Suggestion:** BorderColor = RGBA(255, 255, 255, 1)
+- **Line 108:** INVALID_COLOR_FORMAT (Section 5.1) - Color must use RGBA format
+  - **Suggestion:** Color = RGBA(255, 255, 255, 1)
+- **Line 160:** INVALID_COLOR_FORMAT (Section 5.1) - Color must use RGBA format
+  - **Suggestion:** Color = RGBA(255, 255, 255, 1)
+- **Line 183:** INVALID_COLOR_FORMAT (Section 5.1) - Color must use RGBA format
+  - **Suggestion:** Color = RGBA(255, 255, 255, 1)
+- **Line 10:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = ="Button"
+- **Line 16:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = ="Primary"
+- **Line 22:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = ="Medium"
+- **Line 28:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =""
+- **Line 34:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = ="Left"
+- **Line 40:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =false
+- **Line 46:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =false
+- **Line 52:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =false
+- **Line 65:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =Switch(EnhancedButtonComponent.Variant,
+- **Line 98:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =EnhancedButtonComponent.Loading
+- **Line 124:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =Not(EnhancedButtonComponent.Loading)
+- **Line 166:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =Not(IsBlank(EnhancedButtonComponent.Icon))
+- **Line 182:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =EnhancedButtonComponent.Text
+- **Line 197:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =Not(IsBlank(EnhancedButtonComponent.Text))
+- **Line 207:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =""
+- **Line 208:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(0, 0, 0, 0)
+- **Line 214:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnSelect must start with =
+  - **Suggestion:** OnSelect = |
+- **Line 214:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+
+### DesignSystemComponent_v2.yaml
+
+- **Line 347:** INVALID_COLOR_FORMAT (Section 5.1) - Fill must use RGBA format
+  - **Suggestion:** Fill = RGBA(255, 255, 255, 1)
+- **Line 359:** INVALID_COLOR_FORMAT (Section 5.1) - Color must use RGBA format
+  - **Suggestion:** Color = RGBA(255, 255, 255, 1)
+- **Line 380:** INVALID_COLOR_FORMAT (Section 5.1) - Fill must use RGBA format
+  - **Suggestion:** Fill = RGBA(255, 255, 255, 1)
+- **Line 389:** INVALID_COLOR_FORMAT (Section 5.1) - Fill must use RGBA format
+  - **Suggestion:** Fill = RGBA(255, 255, 255, 1)
+- **Line 398:** INVALID_COLOR_FORMAT (Section 5.1) - Fill must use RGBA format
+  - **Suggestion:** Fill = RGBA(255, 255, 255, 1)
+- **Line 407:** INVALID_COLOR_FORMAT (Section 5.1) - Fill must use RGBA format
+  - **Suggestion:** Fill = RGBA(255, 255, 255, 1)
+- **Line 416:** INVALID_COLOR_FORMAT (Section 5.1) - Fill must use RGBA format
+  - **Suggestion:** Fill = RGBA(255, 255, 255, 1)
+- **Line 427:** INVALID_COLOR_FORMAT (Section 5.1) - Color must use RGBA format
+  - **Suggestion:** Color = RGBA(255, 255, 255, 1)
+- **Line 449:** INVALID_COLOR_FORMAT (Section 5.1) - Color must use RGBA format
+  - **Suggestion:** Color = RGBA(255, 255, 255, 1)
+- **Line 462:** INVALID_COLOR_FORMAT (Section 5.1) - Color must use RGBA format
+  - **Suggestion:** Color = RGBA(255, 255, 255, 1)
+- **Line 475:** INVALID_COLOR_FORMAT (Section 5.1) - Color must use RGBA format
+  - **Suggestion:** Color = RGBA(255, 255, 255, 1)
+- **Line 488:** INVALID_COLOR_FORMAT (Section 5.1) - Color must use RGBA format
+  - **Suggestion:** Color = RGBA(255, 255, 255, 1)
+- **Line 500:** INVALID_COLOR_FORMAT (Section 5.1) - Color must use RGBA format
+  - **Suggestion:** Color = RGBA(255, 255, 255, 1)
+- **Line 512:** INVALID_COLOR_FORMAT (Section 5.1) - Color must use RGBA format
+  - **Suggestion:** Color = RGBA(255, 255, 255, 1)
+- **Line 524:** INVALID_COLOR_FORMAT (Section 5.1) - Color must use RGBA format
+  - **Suggestion:** Color = RGBA(255, 255, 255, 1)
+- **Line 11:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = ="Light"
+- **Line 19:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =1.0
+- **Line 27:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =1.0
+- **Line 35:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =true
+- **Line 43:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = ="Desktop"
+- **Line 51:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =RGBA(59, 130, 246, 1)
+- **Line 58:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =RGBA(99, 102, 241, 1)
+- **Line 65:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =RGBA(34, 197, 94, 1)
+- **Line 72:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =RGBA(251, 191, 36, 1)
+- **Line 79:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =RGBA(239, 68, 68, 1)
+- **Line 87:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =12
+- **Line 94:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =14
+- **Line 101:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =16
+- **Line 108:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =18
+- **Line 115:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =20
+- **Line 122:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =24
+- **Line 129:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =30
+- **Line 137:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =4
+- **Line 144:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =8
+- **Line 151:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =12
+- **Line 158:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =16
+- **Line 165:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =24
+- **Line 172:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =32
+- **Line 179:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =48
+- **Line 186:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =64
+- **Line 194:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =false
+- **Line 201:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =false
+- **Line 208:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =App.Width >= 1024
+- **Line 215:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =App.Width >= 1280
+- **Line 223:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =If(DesignSystemComponent_v2.ColorTheme = "Dark", RGBA(17, 24, 39, 1), RGBA(249, 250, 251, 1))
+- **Line 230:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =If(DesignSystemComponent_v2.ColorTheme = "Dark", RGBA(31, 41, 55, 1), RGBA(243, 244, 246, 1))
+- **Line 237:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =If(DesignSystemComponent_v2.ColorTheme = "Dark", RGBA(55, 65, 81, 1), RGBA(229, 231, 235, 1))
+- **Line 244:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =If(DesignSystemComponent_v2.ColorTheme = "Dark", RGBA(75, 85, 99, 1), RGBA(209, 213, 219, 1))
+- **Line 251:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =RGBA(107, 114, 128, 1)
+- **Line 258:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =If(DesignSystemComponent_v2.ColorTheme = "Dark", RGBA(209, 213, 219, 1), RGBA(55, 65, 81, 1))
+- **Line 265:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =If(DesignSystemComponent_v2.ColorTheme = "Dark", RGBA(249, 250, 251, 1), RGBA(17, 24, 39, 1))
+- **Line 273:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = ="Light"
+- **Line 280:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = ="Regular"
+- **Line 287:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = ="Bold"
+- **Line 295:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =4
+- **Line 302:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =8
+- **Line 309:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =12
+- **Line 316:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =16
+- **Line 324:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =If(DesignSystemComponent_v2.IsMobile, 44, 32)
+- **Line 331:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =If(DesignSystemComponent_v2.IsMobile, 56, 40)
+- **Line 336:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(0, 0, 0, 0)
+- **Line 347:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =DesignSystemComponent_v2.Gray50
+- **Line 348:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =false
+- **Line 358:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Color Palette"
+- **Line 380:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =DesignSystemComponent_v2.PrimaryColor
+- **Line 389:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =DesignSystemComponent_v2.SecondaryColor
+- **Line 398:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =DesignSystemComponent_v2.SuccessColor
+- **Line 407:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =DesignSystemComponent_v2.WarningColor
+- **Line 416:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =DesignSystemComponent_v2.DangerColor
+- **Line 426:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Typography Scale"
+- **Line 448:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Heading 3XL - " & DesignSystemComponent_v2.FontSize3XL & "px"
+- **Line 461:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Heading 2XL - " & DesignSystemComponent_v2.FontSize2XL & "px"
+- **Line 474:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Heading XL - " & DesignSystemComponent_v2.FontSizeXL & "px"
+- **Line 487:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Text Large - " & DesignSystemComponent_v2.FontSizeLG & "px"
+- **Line 499:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Text Base - " & DesignSystemComponent_v2.FontSizeBase & "px"
+- **Line 511:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Text Small - " & DesignSystemComponent_v2.FontSizeSM & "px"
+- **Line 523:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Text Extra Small - " & DesignSystemComponent_v2.FontSizeXS & "px"
+
+### DesignSystemComponent.yaml
+
+- **Line 10:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = ="light"
+- **Line 22:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =false
+- **Line 24:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = |
+- **Line 48:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =false
+- **Line 50:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = |
+- **Line 61:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =false
+- **Line 63:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = |
+- **Line 74:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =false
+- **Line 76:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = |
+- **Line 87:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =false
+- **Line 89:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =Concatenate("ShadowSM:DropShadow.Light;", "ShadowMD:DropShadow.Regular;", "ShadowLG:DropShadow.Bold;", "ShadowXL:DropShadow.ExtraBold")
+- **Line 99:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =false
+- **Line 101:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = |
+- **Line 24:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 89:** LONG_FORMULA_NO_PIPE (Section 8.11) - Formula longer than 120 characters should use pipe operator
+  - **Suggestion:** Use multi-line format with pipe operator
+
+### ButtonComponent.yaml
+
+- **Line 91:** INVALID_COLOR_FORMAT (Section 5.1) - Fill must use RGBA format
+  - **Suggestion:** Fill = RGBA(255, 255, 255, 1)
+- **Line 102:** INVALID_COLOR_FORMAT (Section 5.1) - Color must use RGBA format
+  - **Suggestion:** Color = RGBA(255, 255, 255, 1)
+- **Line 113:** INVALID_COLOR_FORMAT (Section 5.1) - BorderColor must use RGBA format
+  - **Suggestion:** BorderColor = RGBA(255, 255, 255, 1)
+- **Line 244:** INVALID_COLOR_FORMAT (Section 5.1) - Color must use RGBA format
+  - **Suggestion:** Color = RGBA(255, 255, 255, 1)
+- **Line 263:** INVALID_COLOR_FORMAT (Section 5.1) - Color must use RGBA format
+  - **Suggestion:** Color = RGBA(255, 255, 255, 1)
+- **Line 282:** INVALID_COLOR_FORMAT (Section 5.1) - Fill must use RGBA format
+  - **Suggestion:** Fill = RGBA(255, 255, 255, 1)
+- **Line 289:** INVALID_COLOR_FORMAT (Section 5.1) - BorderColor must use RGBA format
+  - **Suggestion:** BorderColor = RGBA(255, 255, 255, 1)
+- **Line 10:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = ="Button"
+- **Line 16:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = ="Primary"
+- **Line 22:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = ="Medium"
+- **Line 28:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =""
+- **Line 34:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = ="Left"
+- **Line 40:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =false
+- **Line 46:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =false
+- **Line 52:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = ="Äang xá»­ lÃ½..."
+- **Line 58:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =false
+- **Line 64:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =false
+- **Line 86:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =If(ButtonComponent.IsLoading,
+- **Line 91:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =If(ButtonComponent.IsDisabled,
+- **Line 193:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnSelect must start with =
+  - **Suggestion:** OnSelect = |
+- **Line 207:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =Not(IsBlank(ButtonComponent.Icon))
+- **Line 272:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =ButtonComponent.IsLoading
+- **Line 282:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =Switch(ButtonComponent.Variant,
+- **Line 291:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =false
+- **Line 301:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(0, 0, 0, 0)
+- **Line 304:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =false
+- **Line 193:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+
+### LoginScreen.yaml
+
+- **Line 4:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(248, 250, 252, 1)
+- **Line 5:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnVisible must start with =
+  - **Suggestion:** OnVisible = |
+- **Line 41:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 65:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="ASIASHME LEAVE"
+- **Line 80:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Há»‡ thá»‘ng quáº£n lÃ½ nghá»‰ phÃ©p doanh nghiá»‡p"
+- **Line 95:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Email"
+- **Line 111:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 125:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Máº­t kháº©u"
+- **Line 142:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 156:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =varLoginError
+- **Line 161:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =Not(IsBlank(varLoginError))
+- **Line 171:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =If(varIsTraditionalLoading, "Äang Ä‘Äƒng nháº­p...", "ÄÄƒng nháº­p")
+- **Line 172:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =If(varIsTraditionalLoading, RGBA(158, 158, 158, 1), RGBA(33, 150, 243, 1))
+- **Line 185:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnSelect must start with =
+  - **Suggestion:** OnSelect = |
+- **Line 218:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(224, 224, 224, 1)
+- **Line 228:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="DEMO LOGIN"
+- **Line 253:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Demo Admin - ToÃ n quyá»n"
+- **Line 254:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(248, 250, 252, 1)
+- **Line 266:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnSelect must start with =
+  - **Suggestion:** OnSelect = |
+- **Line 292:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Demo NhÃ¢n viÃªn - Quyá»n cÆ¡ báº£n"
+- **Line 293:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(248, 250, 252, 1)
+- **Line 305:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnSelect must start with =
+  - **Suggestion:** OnSelect = |
+- **Line 331:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Demo Quáº£n lÃ½ - Quyá»n duyá»‡t Ä‘Æ¡n"
+- **Line 332:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(248, 250, 252, 1)
+- **Line 344:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnSelect must start with =
+  - **Suggestion:** OnSelect = |
+- **Line 370:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Version 2.0.0 SharePoint | Powered by Microsoft Power Platform"
+- **Line 5:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 184:** LONG_FORMULA_NO_PIPE (Section 8.11) - Formula longer than 120 characters should use pipe operator
+  - **Suggestion:** Use multi-line format with pipe operator
+- **Line 185:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 266:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 305:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 344:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+
+### ManagementScreen.yaml
+
+- **Line 4:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(248, 250, 252, 1)
+- **Line 5:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnVisible must start with =
+  - **Suggestion:** OnVisible = |
+- **Line 125:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 146:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Quáº£n lÃ½ há»‡ thá»‘ng"
+- **Line 159:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Quáº£n lÃ½ ngÆ°á»i dÃ¹ng, ngÃ y phÃ©p, lá»‹ch nghá»‰ lá»… vÃ  quy trÃ¬nh"
+- **Line 181:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(249, 250, 251, 1)
+- **Line 193:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="NgÆ°á»i dÃ¹ng"
+- **Line 207:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Sá»‘ ngÃ y phÃ©p"
+- **Line 221:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="NgÃ y nghá»‰ lá»…"
+- **Line 235:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Quy trÃ¬nh"
+- **Line 5:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 39:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 74:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 86:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 196:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 210:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 224:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 238:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+
+### ApprovalScreen.yaml
+
+- **Line 4:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(248, 250, 252, 1)
+- **Line 5:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnVisible must start with =
+  - **Suggestion:** OnVisible = |
+- **Line 119:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 140:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="PhÃª duyá»‡t Ä‘Æ¡n nghá»‰ phÃ©p"
+- **Line 153:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =Concatenate("Äang chá» duyá»‡t", ":", " ", CountRows(varMyLevelApprovals), " ", "Ä‘Æ¡n")
+- **Line 175:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 186:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Thá»‘ng kÃª phÃª duyá»‡t"
+- **Line 282:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =LookUp(NguoiDung, Title = Parent.Selected.MaNguoiDung.Value).HoTen
+- **Line 292:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =Text(Parent.Selected.NgayBatDau, "dd/mm/yyyy") & " - " & Text(Parent.Selected.NgayKetThuc, "dd/mm/yyyy")
+- **Line 302:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =Text(Parent.Selected.SoNgayNghi) & " ngÃ y"
+- **Line 312:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =LookUp(LoaiNghi, MaLoai = Parent.Selected.MaLoai.Value).TenLoai
+- **Line 322:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =If(Len(Parent.Selected.LyDo) > 30, Left(Parent.Selected.LyDo, 27) & "...", Parent.Selected.LyDo)
+- **Line 332:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =Switch(Parent.Selected.TrangThai.Value,
+- **Line 346:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Xem chi tiáº¿t"
+- **Line 347:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnSelect must start with =
+  - **Suggestion:** OnSelect = |
+- **Line 361:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 364:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =varShowApprovalDetails
+- **Line 374:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(59, 130, 246, 1)
+- **Line 385:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Chi tiáº¿t Ä‘Æ¡n nghá»‰ phÃ©p"
+- **Line 399:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="ÄÃ³ng"
+- **Line 416:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 429:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(249, 250, 251, 1)
+- **Line 438:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="ThÃ´ng tin nhÃ¢n viÃªn"
+- **Line 451:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =Concatenate("Há» tÃªn", ":", " ", If(Not(IsBlank(varSelectedApprovalLeave)), LookUp(NguoiDung, Title = varSelectedApprovalLeave.MaNguoiDung.Value).HoTen, ""))
+- **Line 463:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =Concatenate("PhÃ²ng ban", ":", " ", If(Not(IsBlank(varSelectedApprovalLeave)), LookUp(DonVi, MaDonVi = LookUp(NguoiDung, Title = varSelectedApprovalLeave.MaNguoiDung.Value).MaDonVi.Value).TenDonVi, ""))
+- **Line 475:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =Concatenate("Chá»©c danh", ":", " ", If(Not(IsBlank(varSelectedApprovalLeave)), LookUp(NguoiDung, Title = varSelectedApprovalLeave.MaNguoiDung.Value).ChucDanh.Value, ""))
+- **Line 491:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 500:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="ThÃ´ng tin nghá»‰ phÃ©p"
+- **Line 513:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =Concatenate("Thá»i gian", ":", " ", If(Not(IsBlank(varSelectedApprovalLeave)), Text(varSelectedApprovalLeave.NgayBatDau, "dd/mm/yyyy") & " - " & Text(varSelectedApprovalLeave.NgayKetThuc, "dd/mm/yyyy"), ""))
+- **Line 525:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =Concatenate("Sá»‘ ngÃ y", ":", " ", If(Not(IsBlank(varSelectedApprovalLeave)), Text(varSelectedApprovalLeave.SoNgayNghi) & " ngÃ y", ""))
+- **Line 537:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =Concatenate("Loáº¡i nghá»‰", ":", " ", If(Not(IsBlank(varSelectedApprovalLeave)), LookUp(LoaiNghi, MaLoai = varSelectedApprovalLeave.MaLoai.Value).TenLoai, ""))
+- **Line 549:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =Concatenate("Tráº¡ng thÃ¡i", ":", " ", If(Not(IsBlank(varSelectedApprovalLeave)), Switch(varSelectedApprovalLeave.TrangThai.Value, "ChoDuyetCap1", "Chá» duyá»‡t cáº¥p 1", "ChoDuyetCap2", "Chá» duyá»‡t cáº¥p 2", "ChoDuyetCap3", "Chá» duyá»‡t cáº¥p 3", varSelectedApprovalLeave.TrangThai.Value), ""))
+- **Line 561:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =Concatenate("LÃ½ do", ":", " ", If(Not(IsBlank(varSelectedApprovalLeave)), varSelectedApprovalLeave.LyDo, ""))
+- **Line 578:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(249, 250, 251, 1)
+- **Line 587:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="PhÃª duyá»‡t Ä‘Æ¡n nghá»‰ phÃ©p"
+- **Line 601:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =Concatenate("Ghi chÃº", ":")
+- **Line 616:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 621:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnChange must start with =
+  - **Suggestion:** OnChange = |
+- **Line 633:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="PhÃª duyá»‡t"
+- **Line 648:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Tá»« chá»‘i"
+- **Line 664:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 667:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =varShowApprovalConfirm
+- **Line 677:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =If(varApprovalAction = "Approve", RGBA(34, 197, 94, 1), RGBA(239, 68, 68, 1))
+- **Line 688:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =If(varApprovalAction = "Approve", "XÃ¡c nháº­n phÃª duyá»‡t", "XÃ¡c nháº­n tá»« chá»‘i")
+- **Line 711:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =If(varApprovalAction = "Approve",
+- **Line 737:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Há»§y"
+- **Line 752:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =If(varApprovalAction = "Approve", "PhÃª duyá»‡t", "Tá»« chá»‘i")
+- **Line 5:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 33:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 68:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 80:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 347:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 402:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 451:** LONG_FORMULA_NO_PIPE (Section 8.11) - Formula longer than 120 characters should use pipe operator
+  - **Suggestion:** Use multi-line format with pipe operator
+- **Line 463:** LONG_FORMULA_NO_PIPE (Section 8.11) - Formula longer than 120 characters should use pipe operator
+  - **Suggestion:** Use multi-line format with pipe operator
+- **Line 475:** LONG_FORMULA_NO_PIPE (Section 8.11) - Formula longer than 120 characters should use pipe operator
+  - **Suggestion:** Use multi-line format with pipe operator
+- **Line 513:** LONG_FORMULA_NO_PIPE (Section 8.11) - Formula longer than 120 characters should use pipe operator
+  - **Suggestion:** Use multi-line format with pipe operator
+- **Line 525:** LONG_FORMULA_NO_PIPE (Section 8.11) - Formula longer than 120 characters should use pipe operator
+  - **Suggestion:** Use multi-line format with pipe operator
+- **Line 537:** LONG_FORMULA_NO_PIPE (Section 8.11) - Formula longer than 120 characters should use pipe operator
+  - **Suggestion:** Use multi-line format with pipe operator
+- **Line 549:** LONG_FORMULA_NO_PIPE (Section 8.11) - Formula longer than 120 characters should use pipe operator
+  - **Suggestion:** Use multi-line format with pipe operator
+- **Line 621:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 636:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 651:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 740:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 755:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+
+### ReportsScreen.yaml
+
+- **Line 4:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(248, 250, 252, 1)
+- **Line 5:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnVisible must start with =
+  - **Suggestion:** OnVisible = |
+- **Line 56:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =varCanAccessReports
+- **Line 84:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 96:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Báo cáo và thống kê"
+- **Line 109:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =Concatenate("Tổng", ":" & " ", varReportStats.TotalRequests, " " & "đơn nghỉ phép")
+- **Line 122:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Xuất báo cáo"
+- **Line 147:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(249, 250, 251, 1)
+- **Line 158:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Thống kê tổng quan"
+- **Line 234:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(249, 250, 251, 1)
+- **Line 245:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Bộ lọc báo cáo"
+- **Line 268:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Loại báo cáo" & ":"
+- **Line 281:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =varReportType
+- **Line 282:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 285:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnChange must start with =
+  - **Suggestion:** OnChange = |
+- **Line 305:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =Concatenate("Thời kỳ", ":")
+- **Line 318:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =varReportPeriod
+- **Line 319:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 322:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnChange must start with =
+  - **Suggestion:** OnChange = =Set(varReportPeriod, Self.Selected.Value)
+- **Line 341:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =Concatenate("Năm", ":")
+- **Line 353:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =varSelectedYear
+- **Line 355:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 358:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnChange must start with =
+  - **Suggestion:** OnChange = =Set(varSelectedYear, Value(Self.Text))
+- **Line 369:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =If(varIsGenerating, "Đang tạo...", "Tạo báo cáo")
+- **Line 384:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =Concatenate("Hiển thị ", CountRows(varReportData), " " & "kết quả cho loại", ":" & " ", varReportType)
+- **Line 399:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =And(CountRows(varReportData) > 0, Or(varReportType = "Monthly", varReportType = "Department"))
+- **Line 408:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 419:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =Switch(varReportType, "Monthly", "Biểu đồ thống kê nghỉ phép theo tháng", "Department", "Biểu đồ thống kê nghỉ phép theo phòng ban", "Biểu đồ thống kê")
+- **Line 455:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = |
+- **Line 465:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =Switch(varReportType, "Department", ThisItem.TenDonVi, "Employee", ThisItem.HoTen, "LeaveType", ThisItem.TenLoai, "Monthly", ThisItem.TenThang, "N/A")
+- **Line 475:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =Switch(varReportType, "Department", Text(ThisItem.TongNhanVien), "Employee", Text(ThisItem.TongDonNghi), "LeaveType", Text(ThisItem.SoLanSuDung), "Monthly", Text(ThisItem.SoDon), "0")
+- **Line 485:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =Switch(varReportType, "Department", Text(ThisItem.DonDaDuyet), "Employee", Text(ThisItem.DonDaDuyet), "LeaveType", Text(ThisItem.TongNgayNghi), "Monthly", Text(ThisItem.SoDonDuyet), "0")
+- **Line 495:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =Switch(varReportType, "Department", Text(ThisItem.TongNgayNghi), "Employee", Text(ThisItem.TongNgayNghi), "LeaveType", If(ThisItem.CoLuong, "Có", "Không"), "Monthly", Text(ThisItem.TongNgayNghi), "0")
+- **Line 506:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(0, 0, 0, 0.5)
+- **Line 507:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =varShowExportOptions
+- **Line 508:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnSelect must start with =
+  - **Suggestion:** OnSelect = =Set(varShowExportOptions, false)
+- **Line 517:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 520:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =varShowExportOptions
+- **Line 529:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(59, 130, 246, 1)
+- **Line 538:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Xuất báo cáo"
+- **Line 560:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =Concatenate("Xuất ", CountRows(varReportData), " bản ghi dữ liệu thành file CSV?", Char(10), Char(10), "File sẽ được tải về thiết bị của bạn.")
+- **Line 583:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Hủy"
+- **Line 596:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Xuất CSV"
+- **Line 610:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =Not(varCanAccessReports)
+- **Line 619:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 649:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Không có quyền truy cập"
+- **Line 663:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Bạn không có quyền truy cập vào chức năng báo cáo và thống kê. Vui lòng liên hệ quản trị viên để được cấp quyền."
+- **Line 678:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Quay lại Dashboard"
+- **Line 44:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 125:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 127:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 419:** LONG_FORMULA_NO_PIPE (Section 8.11) - Formula longer than 120 characters should use pipe operator
+  - **Suggestion:** Use multi-line format with pipe operator
+- **Line 455:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 462:** LONG_FORMULA_NO_PIPE (Section 8.11) - Formula longer than 120 characters should use pipe operator
+  - **Suggestion:** Use multi-line format with pipe operator
+- **Line 465:** LONG_FORMULA_NO_PIPE (Section 8.11) - Formula longer than 120 characters should use pipe operator
+  - **Suggestion:** Use multi-line format with pipe operator
+- **Line 472:** LONG_FORMULA_NO_PIPE (Section 8.11) - Formula longer than 120 characters should use pipe operator
+  - **Suggestion:** Use multi-line format with pipe operator
+- **Line 475:** LONG_FORMULA_NO_PIPE (Section 8.11) - Formula longer than 120 characters should use pipe operator
+  - **Suggestion:** Use multi-line format with pipe operator
+- **Line 482:** LONG_FORMULA_NO_PIPE (Section 8.11) - Formula longer than 120 characters should use pipe operator
+  - **Suggestion:** Use multi-line format with pipe operator
+- **Line 485:** LONG_FORMULA_NO_PIPE (Section 8.11) - Formula longer than 120 characters should use pipe operator
+  - **Suggestion:** Use multi-line format with pipe operator
+- **Line 492:** LONG_FORMULA_NO_PIPE (Section 8.11) - Formula longer than 120 characters should use pipe operator
+  - **Suggestion:** Use multi-line format with pipe operator
+- **Line 495:** LONG_FORMULA_NO_PIPE (Section 8.11) - Formula longer than 120 characters should use pipe operator
+  - **Suggestion:** Use multi-line format with pipe operator
+- **Line 560:** LONG_FORMULA_NO_PIPE (Section 8.11) - Formula longer than 120 characters should use pipe operator
+  - **Suggestion:** Use multi-line format with pipe operator
+
+### ProfileScreen.yaml
+
+- **Line 783:** INVALID_COLOR_FORMAT (Section 5.1) - Color must use RGBA format
+  - **Suggestion:** Color = RGBA(255, 255, 255, 1)
+- **Line 788:** INVALID_COLOR_FORMAT (Section 5.1) - Fill must use RGBA format
+  - **Suggestion:** Fill = RGBA(255, 255, 255, 1)
+- **Line 793:** INVALID_COLOR_FORMAT (Section 5.1) - BorderColor must use RGBA format
+  - **Suggestion:** BorderColor = RGBA(255, 255, 255, 1)
+- **Line 4:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(248, 250, 252, 1)
+- **Line 5:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnVisible must start with =
+  - **Suggestion:** OnVisible = |
+- **Line 116:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 137:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="ThÃ´ng tin cÃ¡ nhÃ¢n"
+- **Line 150:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =Concatenate("NhÃ¢n viÃªn" & ":" & " ", UserSession.HoTen, " | ", UserSession.MaVaiTro)
+- **Line 172:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(249, 250, 251, 1)
+- **Line 184:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="ThÃ´ng tin"
+- **Line 198:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Sá»‘ ngÃ y phÃ©p"
+- **Line 212:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Lá»‹ch sá»­ nghá»‰ phÃ©p"
+- **Line 237:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =varSelectedTab = "Info"
+- **Line 246:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 269:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(219, 234, 254, 1)
+- **Line 280:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =If(Not(IsBlank(varCurrentUser)), varCurrentUser.HoTen, UserSession.HoTen)
+- **Line 293:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =If(Not(IsBlank(varCurrentUser)), varCurrentUser.ChucDanh.Value & " - " & LookUp(DonVi, MaDonVi = varCurrentUser.MaDonVi.Value).TenDonVi, UserSession.ChucDanh)
+- **Line 306:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =If(varIsEditing, "Há»§y", "Chá»‰nh sá»­a")
+- **Line 335:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="MÃ£ nhÃ¢n viÃªn:"
+- **Line 348:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =UserSession.Id
+- **Line 361:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Há» vÃ  tÃªn:"
+- **Line 374:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =varEditedName
+- **Line 377:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =If(varIsEditing, RGBA(255, 255, 255, 1), RGBA(249, 250, 251, 1))
+- **Line 382:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnChange must start with =
+  - **Suggestion:** OnChange = |
+- **Line 393:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Email:"
+- **Line 406:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =varEditedEmail
+- **Line 409:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =If(varIsEditing, RGBA(255, 255, 255, 1), RGBA(249, 250, 251, 1))
+- **Line 414:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnChange must start with =
+  - **Suggestion:** OnChange = |
+- **Line 425:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Sá»‘ Ä‘iá»‡n thoáº¡i:"
+- **Line 438:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =If(Not(IsBlank(varCurrentUser.SoDienThoai)), varCurrentUser.SoDienThoai, "")
+- **Line 441:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =If(varIsEditing, RGBA(255, 255, 255, 1), RGBA(249, 250, 251, 1))
+- **Line 446:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnChange must start with =
+  - **Suggestion:** OnChange = |
+- **Line 457:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="PhÃ²ng ban:"
+- **Line 470:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =If(Not(IsBlank(varCurrentUser)), LookUp(DonVi, MaDonVi = varCurrentUser.MaDonVi.Value).TenDonVi, "")
+- **Line 483:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Chá»©c danh:"
+- **Line 496:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =If(Not(IsBlank(varCurrentUser)), varCurrentUser.ChucDanh.Value, UserSession.ChucDanh)
+- **Line 510:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =If(varIsSaving, "Äang lÆ°u...", "LÆ°u thay Ä‘á»•i")
+- **Line 513:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =varIsEditing
+- **Line 548:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =varSelectedTab = "LeaveBalance"
+- **Line 557:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 638:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Chi tiáº¿t ngÃ y phÃ©p nÄƒm hiá»‡n táº¡i"
+- **Line 651:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =If(Not(IsBlank(varUserLeaveBalance)),
+- **Line 674:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =varSelectedTab = "History"
+- **Line 683:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 695:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Lá»‹ch sá»­ Ä‘Æ¡n nghá»‰ phÃ©p"
+- **Line 713:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(0, 0, 0, 0)
+- **Line 723:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =If(Mod(ThisItem.Id, 2) = 0, RGBA(249, 250, 251, 1), RGBA(255, 255, 255, 1))
+- **Line 735:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =Text(ThisItem.NgayBatDau, "dd/mm/yyyy") & " - " & Text(ThisItem.NgayKetThuc, "dd/mm/yyyy")
+- **Line 749:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =ThisItem.SoNgayNghi & " ngÃ y"
+- **Line 762:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =LookUp(LoaiNghi, MaLoai = ThisItem.MaLoai.Value).TenLoai
+- **Line 775:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =Switch(ThisItem.TrangThai.Value,
+- **Line 788:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =Switch(ThisItem.TrangThai.Value,
+- **Line 812:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =If(Len(ThisItem.LyDo) > 30, Left(ThisItem.LyDo, 27) & "...", ThisItem.LyDo)
+- **Line 5:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 30:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 65:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 77:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 187:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 201:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 215:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 293:** LONG_FORMULA_NO_PIPE (Section 8.11) - Formula longer than 120 characters should use pipe operator
+  - **Suggestion:** Use multi-line format with pipe operator
+- **Line 309:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 382:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 414:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 446:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 515:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+
+### MyLeavesScreen.yaml
+
+- **Line 4:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(248, 250, 252, 1)
+- **Line 5:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnVisible must start with =
+  - **Suggestion:** OnVisible = |
+- **Line 116:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 137:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="ÄÆ¡n nghá»‰ phÃ©p cá»§a tÃ´i"
+- **Line 150:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =Concatenate("Tá»•ng", ":" & " ", CountRows(varCurrentUserLeaves), " " & "Ä‘Æ¡n nghá»‰ phÃ©p")
+- **Line 163:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Táº¡o Ä‘Æ¡n má»›i"
+- **Line 186:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 197:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Thá»‘ng kÃª nhanh"
+- **Line 285:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(249, 250, 251, 1)
+- **Line 296:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Bá»™ lá»c"
+- **Line 319:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Tráº¡ng thÃ¡i" & ":"
+- **Line 334:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = ="Táº¥t cáº£"
+- **Line 337:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 341:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnChange must start with =
+  - **Suggestion:** OnChange = |
+- **Line 352:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =Concatenate("Tá»« ngÃ y", ":")
+- **Line 368:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 372:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnChange must start with =
+  - **Suggestion:** OnChange = |
+- **Line 383:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =Concatenate("Äáº¿n ngÃ y", ":")
+- **Line 399:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 403:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnChange must start with =
+  - **Suggestion:** OnChange = |
+- **Line 415:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="XÃ³a bá»™ lá»c"
+- **Line 429:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =Concatenate("Hiá»ƒn thá»‹ ", CountRows(Filter(varCurrentUserLeaves, And(Or(IsBlank(varSelectedStatus), TrangThai.Value = varSelectedStatus), Or(IsBlank(varFilterDateFrom), NgayBatDau >= varFilterDateFrom), Or(IsBlank(varFilterDateTo), NgayKetThuc <= varFilterDateTo)))), " " & "káº¿t quáº£")
+- **Line 444:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(249, 250, 251, 1)
+- **Line 447:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =varRecordSelected
+- **Line 456:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =If(varRecordSelected, RGBA(219, 234, 254, 0.3), RGBA(255, 255, 255, 1))
+- **Line 468:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Xem chi tiáº¿t"
+- **Line 483:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Há»§y Ä‘Æ¡n"
+- **Line 498:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Bá» chá»n"
+- **Line 512:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =If(varRecordSelected, "âœ“", "")
+- **Line 549:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =Text(ThisItem.NgayBatDau, "dd/mm/yyyy")
+- **Line 550:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnSelect must start with =
+  - **Suggestion:** OnSelect = |
+- **Line 561:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =Text(ThisItem.NgayKetThuc, "dd/mm/yyyy")
+- **Line 562:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnSelect must start with =
+  - **Suggestion:** OnSelect = |
+- **Line 573:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =Text(ThisItem.SoNgayNghi) & " ngÃ y"
+- **Line 574:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnSelect must start with =
+  - **Suggestion:** OnSelect = |
+- **Line 585:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =LookUp(LoaiNghi, MaLoai = ThisItem.MaLoai.Value).TenLoai
+- **Line 586:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnSelect must start with =
+  - **Suggestion:** OnSelect = |
+- **Line 597:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =If(Len(ThisItem.LyDo) > 30, Left(ThisItem.LyDo, 27) & "...", ThisItem.LyDo)
+- **Line 598:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnSelect must start with =
+  - **Suggestion:** OnSelect = |
+- **Line 609:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =Switch(ThisItem.TrangThai.Value, "ChoDuyetCap1", "Chá» duyá»‡t cáº¥p 1", "ChoDuyetCap2", "Chá» duyá»‡t cáº¥p 2", "ChoDuyetCap3", "Chá» duyá»‡t cáº¥p 3", "DaDuyet", "ÄÃ£ duyá»‡t", "TuChoi", "Tá»« chá»‘i", "Huy", "ÄÃ£ há»§y", "KhÃ´ng xÃ¡c Ä‘á»‹nh")
+- **Line 610:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnSelect must start with =
+  - **Suggestion:** OnSelect = |
+- **Line 623:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 626:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =varShowDetails
+- **Line 636:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(59, 130, 246, 1)
+- **Line 647:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Chi tiáº¿t Ä‘Æ¡n nghá»‰ phÃ©p"
+- **Line 661:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="ÄÃ³ng"
+- **Line 677:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 687:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="MÃ£ Ä‘Æ¡n:"
+- **Line 700:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =If(Not(IsBlank(varSelectedLeave)), varSelectedLeave.MaDon, "")
+- **Line 713:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Loáº¡i nghá»‰:"
+- **Line 726:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =If(Not(IsBlank(varSelectedLeave)), LookUp(LoaiNghi, MaLoai = varSelectedLeave.MaLoai.Value).TenLoai, "")
+- **Line 739:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Thá»i gian nghá»‰:"
+- **Line 752:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =If(Not(IsBlank(varSelectedLeave)), Text(varSelectedLeave.NgayBatDau, "dd/mm/yyyy") & " - " & Text(varSelectedLeave.NgayKetThuc, "dd/mm/yyyy"), "")
+- **Line 765:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Sá»‘ ngÃ y nghá»‰:"
+- **Line 778:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =If(Not(IsBlank(varSelectedLeave)), varSelectedLeave.SoNgayNghi & " ngÃ y", "")
+- **Line 791:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Tráº¡ng thÃ¡i:"
+- **Line 804:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =If(Not(IsBlank(varSelectedLeave)), Switch(varSelectedLeave.TrangThai.Value, "ChoDuyetCap1", "Chá» phÃª duyá»‡t cáº¥p 1", "ChoDuyetCap2", "Chá» phÃª duyá»‡t cáº¥p 2", "ChoDuyetCap3", "Chá» phÃª duyá»‡t cáº¥p 3", "DaDuyet", "ÄÃ£ phÃª duyá»‡t", "TuChoi", "Bá»‹ tá»« chá»‘i", "Huy", "ÄÃ£ há»§y", varSelectedLeave.TrangThai.Value), "")
+- **Line 818:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Buá»•i nghá»‰:"
+- **Line 831:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =If(Not(IsBlank(varSelectedLeave)), Switch(varSelectedLeave.BuoiNghi.Value, "CaNgay", "Cáº£ ngÃ y", "Sang", "Buá»•i sÃ¡ng", "Chieu", "Buá»•i chiá»u", varSelectedLeave.BuoiNghi.Value), "")
+- **Line 844:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="LÃ½ do nghá»‰:"
+- **Line 857:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =If(Not(IsBlank(varSelectedLeave)), varSelectedLeave.LyDo, "")
+- **Line 871:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(0, 0, 0, 0.5)
+- **Line 872:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =varShowCancelConfirm
+- **Line 873:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnSelect must start with =
+  - **Suggestion:** OnSelect = |
+- **Line 885:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 888:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =varShowCancelConfirm
+- **Line 898:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(239, 68, 68, 1)
+- **Line 909:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="XÃ¡c nháº­n há»§y Ä‘Æ¡n"
+- **Line 932:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =Concatenate("Báº¡n cÃ³ cháº¯c cháº¯n muá»‘n há»§y Ä‘Æ¡n nghá»‰ phÃ©p tá»« ngÃ y ", If(Not(IsBlank(varSelectedLeave)), Text(varSelectedLeave.NgayBatDau, "dd/mm/yyyy"), ""), " Ä‘áº¿n ", If(Not(IsBlank(varSelectedLeave)), Text(varSelectedLeave.NgayKetThuc, "dd/mm/yyyy"), ""), "?", Char(10), Char(10), "HÃ nh Ä‘á»™ng nÃ y khÃ´ng thá»ƒ hoÃ n tÃ¡c.")
+- **Line 956:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="KhÃ´ng"
+- **Line 970:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Há»§y Ä‘Æ¡n"
+- **Line 5:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 30:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 65:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 77:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 166:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 221:** LONG_FORMULA_NO_PIPE (Section 8.11) - Formula longer than 120 characters should use pipe operator
+  - **Suggestion:** Use multi-line format with pipe operator
+- **Line 341:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 372:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 403:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 429:** LONG_FORMULA_NO_PIPE (Section 8.11) - Formula longer than 120 characters should use pipe operator
+  - **Suggestion:** Use multi-line format with pipe operator
+- **Line 472:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 486:** LONG_FORMULA_NO_PIPE (Section 8.11) - Formula longer than 120 characters should use pipe operator
+  - **Suggestion:** Use multi-line format with pipe operator
+- **Line 487:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 501:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 528:** LONG_FORMULA_NO_PIPE (Section 8.11) - Formula longer than 120 characters should use pipe operator
+  - **Suggestion:** Use multi-line format with pipe operator
+- **Line 550:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 562:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 574:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 586:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 598:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 609:** LONG_FORMULA_NO_PIPE (Section 8.11) - Formula longer than 120 characters should use pipe operator
+  - **Suggestion:** Use multi-line format with pipe operator
+- **Line 610:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 664:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 752:** LONG_FORMULA_NO_PIPE (Section 8.11) - Formula longer than 120 characters should use pipe operator
+  - **Suggestion:** Use multi-line format with pipe operator
+- **Line 804:** LONG_FORMULA_NO_PIPE (Section 8.11) - Formula longer than 120 characters should use pipe operator
+  - **Suggestion:** Use multi-line format with pipe operator
+- **Line 805:** LONG_FORMULA_NO_PIPE (Section 8.11) - Formula longer than 120 characters should use pipe operator
+  - **Suggestion:** Use multi-line format with pipe operator
+- **Line 831:** LONG_FORMULA_NO_PIPE (Section 8.11) - Formula longer than 120 characters should use pipe operator
+  - **Suggestion:** Use multi-line format with pipe operator
+- **Line 873:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 932:** LONG_FORMULA_NO_PIPE (Section 8.11) - Formula longer than 120 characters should use pipe operator
+  - **Suggestion:** Use multi-line format with pipe operator
+- **Line 959:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 973:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+
+### LeaveRequestScreen.yaml
+
+- **Line 4:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(248, 250, 252, 1)
+- **Line 5:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnVisible must start with =
+  - **Suggestion:** OnVisible = |
+- **Line 122:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 143:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Táº¡o Ä‘Æ¡n nghá»‰ phÃ©p"
+- **Line 156:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =If(Not(IsBlank(varUserLeaveBalance)), Concatenate("Sá»‘ ngÃ y phÃ©p cÃ²n láº¡i" & ":" & " ", varUserLeaveBalance.SoNgayConLai, " ngÃ y"), "Äang táº£i thÃ´ng tin nghá»‰ phÃ©p...")
+- **Line 169:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Xem Ä‘Æ¡n cá»§a tÃ´i"
+- **Line 192:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 214:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Loáº¡i nghá»‰ phÃ©p"
+- **Line 230:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 234:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnChange must start with =
+  - **Suggestion:** OnChange = |
+- **Line 245:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="NgÃ y báº¯t Ä‘áº§u"
+- **Line 260:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 265:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnChange must start with =
+  - **Suggestion:** OnChange = |
+- **Line 280:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="NgÃ y káº¿t thÃºc"
+- **Line 295:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 300:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnChange must start with =
+  - **Suggestion:** OnChange = |
+- **Line 314:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Sá»‘ ngÃ y nghá»‰"
+- **Line 327:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =varCalculatedDays & " ngÃ y"
+- **Line 329:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =If(varCalculatedDays > 0, RGBA(240, 253, 244, 1), RGBA(254, 242, 242, 1))
+- **Line 345:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="NgÆ°á»i nháº­n bÃ n giao"
+- **Line 362:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 366:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnChange must start with =
+  - **Suggestion:** OnChange = |
+- **Line 387:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="LÃ½ do nghá»‰ phÃ©p"
+- **Line 403:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 408:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnChange must start with =
+  - **Suggestion:** OnChange = |
+- **Line 419:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Ná»™i dung bÃ n giao cÃ´ng viá»‡c"
+- **Line 435:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 440:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnChange must start with =
+  - **Suggestion:** OnChange = |
+- **Line 460:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Kiá»ƒm tra Ä‘iá»u kiá»‡n"
+- **Line 473:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =If(
+- **Line 505:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =If(
+- **Line 537:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =If(varIsSubmitting, "Äang gá»­i...", "Gá»­i Ä‘Æ¡n")
+- **Line 583:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="LÃ m má»›i"
+- **Line 610:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 613:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =varShowSuccessModal
+- **Line 623:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(34, 197, 94, 1)
+- **Line 644:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Gá»­i Ä‘Æ¡n thÃ nh cÃ´ng!"
+- **Line 666:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =Concatenate("ÄÆ¡n nghá»‰ phÃ©p tá»« ngÃ y ", Text(varSelectedFromDate, "dd/mm/yyyy"), " Ä‘áº¿n ", Text(varSelectedToDate, "dd/mm/yyyy"), " Ä‘Ã£ Ä‘Æ°á»£c gá»­i thÃ nh cÃ´ng.", Char(10), Char(10), "ÄÆ¡n sáº½ Ä‘Æ°á»£c chuyá»ƒn Ä‘áº¿n ngÆ°á»i phÃª duyá»‡t trong vÃ²ng 24 giá».")
+- **Line 690:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Táº¡o Ä‘Æ¡n má»›i"
+- **Line 717:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Xem Ä‘Æ¡n cá»§a tÃ´i"
+- **Line 5:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 36:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 71:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 83:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 156:** LONG_FORMULA_NO_PIPE (Section 8.11) - Formula longer than 120 characters should use pipe operator
+  - **Suggestion:** Use multi-line format with pipe operator
+- **Line 172:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 234:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 265:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 300:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 366:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 408:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 440:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 548:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 586:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 666:** LONG_FORMULA_NO_PIPE (Section 8.11) - Formula longer than 120 characters should use pipe operator
+  - **Suggestion:** Use multi-line format with pipe operator
+- **Line 693:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 720:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+
+### DashboardScreen.yaml
+
+- **Line 449:** INVALID_COLOR_FORMAT (Section 5.1) - Fill must use RGBA format
+  - **Suggestion:** Fill = RGBA(255, 255, 255, 1)
+- **Line 515:** INVALID_COLOR_FORMAT (Section 5.1) - Color must use RGBA format
+  - **Suggestion:** Color = RGBA(255, 255, 255, 1)
+- **Line 4:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(248, 250, 252, 1)
+- **Line 5:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnVisible must start with =
+  - **Suggestion:** OnVisible = |
+- **Line 65:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =false
+- **Line 174:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 195:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="ChÃ o má»«ng quay trá»Ÿ láº¡i, " & UserSession.HoTen
+- **Line 208:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="PhÃ²ng ban:" & " " & UserSession.MaDonVi & " â€¢ " & "Chá»©c danh:" & " " & UserSession.ChucDanh
+- **Line 229:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 240:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Tá»•ng quan nghá»‰ phÃ©p"
+- **Line 364:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 384:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Hoáº¡t Ä‘á»™ng gáº§n Ä‘Ã¢y"
+- **Line 398:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Xem táº¥t cáº£"
+- **Line 413:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Test Nav"
+- **Line 438:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(249, 250, 251, 1)
+- **Line 449:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =Switch(ThisItem.TrangThai,
+- **Line 483:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =Text(ThisItem.NgayBatDau, "dd/mm/yyyy") & " - " & Text(ThisItem.NgayKetThuc, "dd/mm/yyyy")
+- **Line 496:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =Text(ThisItem.SoNgayNghi) & " ngÃ y"
+- **Line 510:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =Switch(ThisItem.TrangThai,
+- **Line 5:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 66:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 88:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 125:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 137:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 401:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 416:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+
+### CalendarScreen.yaml
+
+- **Line 442:** INVALID_COLOR_FORMAT (Section 5.1) - Fill must use RGBA format
+  - **Suggestion:** Fill = RGBA(255, 255, 255, 1)
+- **Line 467:** INVALID_COLOR_FORMAT (Section 5.1) - Color must use RGBA format
+  - **Suggestion:** Color = RGBA(255, 255, 255, 1)
+- **Line 715:** INVALID_COLOR_FORMAT (Section 5.1) - Color must use RGBA format
+  - **Suggestion:** Color = RGBA(255, 255, 255, 1)
+- **Line 720:** INVALID_COLOR_FORMAT (Section 5.1) - Fill must use RGBA format
+  - **Suggestion:** Fill = RGBA(255, 255, 255, 1)
+- **Line 725:** INVALID_COLOR_FORMAT (Section 5.1) - BorderColor must use RGBA format
+  - **Suggestion:** BorderColor = RGBA(255, 255, 255, 1)
+- **Line 4:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(248, 250, 252, 1)
+- **Line 5:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnVisible must start with =
+  - **Suggestion:** OnVisible = |
+- **Line 127:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 149:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="‹"
+- **Line 175:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =Concatenate("Tháng ", varSelectedMonth, " năm ", varSelectedYear)
+- **Line 190:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="›"
+- **Line 226:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Hiển thị:"
+- **Line 240:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Cá nhân"
+- **Line 253:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Phòng ban"
+- **Line 266:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Toàn công ty"
+- **Line 288:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 309:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="CN"
+- **Line 311:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(254, 242, 242, 1)
+- **Line 326:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="T2"
+- **Line 328:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(249, 250, 251, 1)
+- **Line 343:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="T3"
+- **Line 345:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(249, 250, 251, 1)
+- **Line 360:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="T4"
+- **Line 362:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(249, 250, 251, 1)
+- **Line 377:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="T5"
+- **Line 379:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(249, 250, 251, 1)
+- **Line 394:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="T6"
+- **Line 396:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(249, 250, 251, 1)
+- **Line 411:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="T7"
+- **Line 413:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(254, 242, 242, 1)
+- **Line 433:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(0, 0, 0, 0)
+- **Line 442:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =If(
+- **Line 449:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnSelect must start with =
+  - **Suggestion:** OnSelect = |
+- **Line 466:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =Day(ThisItem.Date)
+- **Line 486:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =CountRows(Filter(varHolidays, Ngay = Text(ThisItem.Date, "yyyy-mm-dd"))) > 0
+- **Line 506:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(34, 197, 94, 0.7)
+- **Line 509:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =And(
+- **Line 522:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =CountRows(Filter(varDepartmentLeaves, And(NgayBatDau <= ThisItem.Date, NgayKetThuc >= ThisItem.Date))) & " người"
+- **Line 524:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(219, 234, 254, 0.8)
+- **Line 530:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =And(
+- **Line 543:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =CountRows(Filter(varAllLeaves, And(NgayBatDau <= ThisItem.Date, NgayKetThuc >= ThisItem.Date))) & " người"
+- **Line 545:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(254, 243, 199, 0.8)
+- **Line 551:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =And(
+- **Line 565:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 568:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =varShowCalendarDetails
+- **Line 578:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(59, 130, 246, 1)
+- **Line 589:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Chi tiết lịch nghỉ phép"
+- **Line 603:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Đóng"
+- **Line 618:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 632:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(0, 0, 0, 0)
+- **Line 642:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =If(Mod(Value, 2) = 0, RGBA(249, 250, 251, 1), RGBA(255, 255, 255, 1))
+- **Line 654:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =LookUp(NguoiDung, Title = ThisItem.MaNguoiDung.Value).HoTen
+- **Line 668:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =Text(ThisItem.NgayBatDau, "dd/mm") & " - " & Text(ThisItem.NgayKetThuc, "dd/mm")
+- **Line 681:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =LookUp(LoaiNghi, MaLoai = ThisItem.MaLoai.Value).TenLoai
+- **Line 694:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =ThisItem.SoNgayNghi & " ngày"
+- **Line 707:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =Switch(ThisItem.TrangThai.Value,
+- **Line 720:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =Switch(ThisItem.TrangThai.Value,
+- **Line 744:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =If(Len(ThisItem.LyDo) > 20, Left(ThisItem.LyDo, 17) & "...", ThisItem.LyDo)
+- **Line 5:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 41:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 76:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 88:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 152:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 193:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 449:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+
+### ReportsScreen.yaml
+
+- **Line 4:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(248, 250, 252, 1)
+- **Line 5:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnVisible must start with =
+  - **Suggestion:** OnVisible = |
+- **Line 118:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = ="All"
+- **Line 122:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnChange must start with =
+  - **Suggestion:** OnChange = =Set(varSelectedDepartment, Self.Selected.Value)
+- **Line 131:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =If(varIsExporting, "膼ang xu岷...", "馃搳 Xu岷 b谩o c谩o")
+- **Line 132:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(40, 167, 69, 1)
+- **Line 138:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnSelect must start with =
+  - **Suggestion:** OnSelect = |
+- **Line 223:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 235:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Th峄憂g k锚 theo th谩ng"
+- **Line 264:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="馃數 T峄昻g 膽啤n  馃煝 膼茫 duy峄噒  馃敶 T峄?ch峄慽"
+- **Line 278:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 290:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Th峄憂g k锚 theo ph貌ng ban"
+- **Line 314:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="T峄昻g ng脿y ngh峄?theo ph貌ng ban"
+- **Line 337:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 349:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Chi ti岷縯 theo ph貌ng ban"
+- **Line 375:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(248, 249, 250, 1)
+- **Line 384:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =ThisItem.Department
+- **Line 397:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =ThisItem.TotalRequests & " 膽啤n 鈥?" & ThisItem.TotalDays & " ng脿y 鈥?" & ThisItem.Employees & " ng瓢峄漣"
+- **Line 410:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 422:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Top nh芒n vi锚n ngh峄?nhi峄乽"
+- **Line 448:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(248, 249, 250, 1)
+- **Line 457:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =ThisItem.Employee
+- **Line 470:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =Text(ThisItem.UsageRate, "0.0") & "%"
+- **Line 484:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =ThisItem.TotalDays & " ng脿y ngh峄?鈥?" & ThisItem.RemainingDays & " ng脿y c貌n l岷"
+- **Line 471:** LONG_FORMULA_NO_PIPE (Section 8.11) - Formula longer than 120 characters should use pipe operator
+  - **Suggestion:** Use multi-line format with pipe operator
+
+### ProfileScreen.yaml
+
+- **Line 567:** INVALID_COLOR_FORMAT (Section 5.1) - Fill must use RGBA format
+  - **Suggestion:** Fill = RGBA(255, 255, 255, 1)
+- **Line 4:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(248, 250, 252, 1)
+- **Line 5:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnVisible must start with =
+  - **Suggestion:** OnVisible = |
+- **Line 42:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(248, 250, 252, 1)
+- **Line 51:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Thông tin cá nhân"
+- **Line 74:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 95:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Thông tin nhân viên"
+- **Line 108:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =If(varIsEditing, "💾 Lưu", "✏️ Chỉnh sửa")
+- **Line 109:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =If(varIsEditing, RGBA(40, 167, 69, 1), RGBA(0, 120, 212, 1))
+- **Line 114:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnSelect must start with =
+  - **Suggestion:** OnSelect = |
+- **Line 125:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(240, 248, 255, 1)
+- **Line 134:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(0, 120, 212, 1)
+- **Line 153:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =varUserProfile.FullName
+- **Line 166:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =varUserProfile.Position & " - " & varUserProfile.Department
+- **Line 178:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =varUserProfile.Status
+- **Line 180:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(40, 167, 69, 1)
+- **Line 211:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Mã nhân viên:"
+- **Line 224:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =varUserProfile.ID
+- **Line 245:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Email:"
+- **Line 258:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =varUserProfile.Email
+- **Line 262:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =Not(varIsEditing)
+- **Line 271:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =varUserProfile.Email
+- **Line 276:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =varIsEditing
+- **Line 294:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Số điện thoại:"
+- **Line 307:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =varUserProfile.Phone
+- **Line 311:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =Not(varIsEditing)
+- **Line 320:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = =varUserProfile.Phone
+- **Line 325:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =varIsEditing
+- **Line 343:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Quản lý trực tiếp:"
+- **Line 356:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =varUserProfile.Manager
+- **Line 377:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Ngày vào làm:"
+- **Line 390:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =varUserProfile.JoinDate
+- **Line 412:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 424:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Số ngày phép năm " & varLeaveBalance.Year
+- **Line 499:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 511:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Lịch sử nghỉ phép"
+- **Line 537:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(248, 249, 250, 1)
+- **Line 548:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =ThisItem.ID
+- **Line 561:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =Switch(ThisItem.Status,
+- **Line 567:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =Switch(ThisItem.Status,
+- **Line 584:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =ThisItem.Date & " - " & ThisItem.EndDate & " (" & ThisItem.Days & " ngày)"
+- **Line 597:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =ThisItem.Type
+- **Line 609:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =ThisItem.Reason
+
+### MyLeavesScreen.yaml
+
+- **Line 372:** INVALID_COLOR_FORMAT (Section 5.1) - Fill must use RGBA format
+  - **Suggestion:** Fill = RGBA(255, 255, 255, 1)
+- **Line 4:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(248, 250, 252, 1)
+- **Line 5:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnVisible must start with =
+  - **Suggestion:** OnVisible = |
+- **Line 42:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(248, 250, 252, 1)
+- **Line 51:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Danh sách đơn nghỉ phép"
+- **Line 65:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 77:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Tìm kiếm:"
+- **Line 95:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnChange must start with =
+  - **Suggestion:** OnChange = =Set(varSearchText, Self.Text)
+- **Line 104:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Trạng thái:"
+- **Line 118:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = ="All"
+- **Line 122:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnChange must start with =
+  - **Suggestion:** OnChange = =Set(varFilterStatus, Self.Selected.Value)
+- **Line 131:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="📝 Tạo đơn mới"
+- **Line 132:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(0, 120, 212, 1)
+- **Line 137:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnSelect must start with =
+  - **Suggestion:** OnSelect = =Navigate(LeaveRequestScreen)
+- **Line 147:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 160:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(248, 249, 250, 1)
+- **Line 169:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Mã đơn"
+- **Line 182:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Loại nghỉ"
+- **Line 195:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Thời gian nghỉ"
+- **Line 208:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Số ngày"
+- **Line 221:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Lý do"
+- **Line 234:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Trạng thái"
+- **Line 265:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =If(Mod(ThisItem.Value, 2) = 0, RGBA(255, 255, 255, 1), RGBA(248, 249, 250, 1))
+- **Line 276:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =ThisItem.ID
+- **Line 289:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =ThisItem.CreatedDate
+- **Line 301:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =ThisItem.Type
+- **Line 314:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =ThisItem.StartDate & " - " & ThisItem.EndDate
+- **Line 327:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="(" & ThisItem.Days & " ngày)"
+- **Line 339:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =Text(ThisItem.Days)
+- **Line 341:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(240, 248, 255, 1)
+- **Line 354:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =ThisItem.Reason
+- **Line 366:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =Switch(ThisItem.Status,
+- **Line 372:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =ThisItem.StatusColor
+- **Line 385:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="👁️"
+- **Line 386:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(248, 249, 250, 1)
+- **Line 392:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnSelect must start with =
+  - **Suggestion:** OnSelect = =Notify("Xem chi tiết đơn nghỉ phép " & ThisItem.ID, NotificationType.Information)
+
+### ManagementScreen.yaml
+
+- **Line 221:** INVALID_COLOR_FORMAT (Section 5.1) - Fill must use RGBA format
+  - **Suggestion:** Fill = RGBA(255, 255, 255, 1)
+- **Line 4:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(248, 250, 252, 1)
+- **Line 5:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnVisible must start with =
+  - **Suggestion:** OnVisible = |
+- **Line 42:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(248, 250, 252, 1)
+- **Line 51:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Quản lý hệ thống"
+- **Line 65:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 77:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="👤 Quản lý người dùng"
+- **Line 78:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =If(varManagementTab = "Users", RGBA(0, 120, 212, 1), RGBA(248, 249, 250, 1))
+- **Line 84:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnSelect must start with =
+  - **Suggestion:** OnSelect = =Set(varManagementTab, "Users")
+- **Line 93:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="📊 Số ngày phép"
+- **Line 94:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =If(varManagementTab = "LeaveQuota", RGBA(0, 120, 212, 1), RGBA(248, 249, 250, 1))
+- **Line 100:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnSelect must start with =
+  - **Suggestion:** OnSelect = =Set(varManagementTab, "LeaveQuota")
+- **Line 109:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="📅 Ngày lễ"
+- **Line 110:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =If(varManagementTab = "Holidays", RGBA(0, 120, 212, 1), RGBA(248, 249, 250, 1))
+- **Line 116:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnSelect must start with =
+  - **Suggestion:** OnSelect = =Set(varManagementTab, "Holidays")
+- **Line 125:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="⚙️ Quy trình"
+- **Line 126:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =If(varManagementTab = "Workflow", RGBA(0, 120, 212, 1), RGBA(248, 249, 250, 1))
+- **Line 132:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnSelect must start with =
+  - **Suggestion:** OnSelect = =Set(varManagementTab, "Workflow")
+- **Line 142:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 146:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =varManagementTab = "Users"
+- **Line 155:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Quản lý người dùng"
+- **Line 168:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="➕Thêm người dùng"
+- **Line 169:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(40, 167, 69, 1)
+- **Line 174:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnSelect must start with =
+  - **Suggestion:** OnSelect = =Notify("Chức năng thêm người dùng", NotificationType.Information)
+- **Line 196:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(248, 249, 250, 1)
+- **Line 207:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =ThisItem.ID & " - " & ThisItem.FullName & Char(10) & ThisItem.Department & " - " & ThisItem.Position & Char(10) & "Email:" & ThisItem.Email
+- **Line 219:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =ThisItem.Role
+- **Line 221:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =Switch(ThisItem.Role,
+- **Line 240:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =ThisItem.Status
+- **Line 253:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="✏️"
+- **Line 254:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(248, 249, 250, 1)
+- **Line 259:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnSelect must start with =
+  - **Suggestion:** OnSelect = =Set(varSelectedUser, ThisItem); Notify("Chỉnh sửa " & ThisItem.FullName, NotificationType.Information)
+- **Line 269:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 273:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =varManagementTab = "LeaveQuota"
+- **Line 282:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Quản lý số ngày phép"
+- **Line 295:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="📊 Import Excel"
+- **Line 296:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(40, 167, 69, 1)
+- **Line 301:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnSelect must start with =
+  - **Suggestion:** OnSelect = =Notify("Chức năng import file Excel", NotificationType.Information)
+- **Line 323:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(248, 249, 250, 1)
+- **Line 334:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =ThisItem.EmployeeID & " - " & ThisItem.EmployeeName
+- **Line 347:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Năm " & ThisItem.Year & ":" & ThisItem.TotalDays & " ngày tổng → " & ThisItem.UsedDays & " đã dùng → " & ThisItem.RemainingDays & " còn lại"
+- **Line 359:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(230, 230, 230, 1)
+- **Line 368:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =If(ThisItem.UsedDays / ThisItem.TotalDays > 0.8, RGBA(220, 53, 69, 1), If(ThisItem.UsedDays / ThisItem.TotalDays > 0.6, RGBA(255, 193, 7, 1), RGBA(40, 167, 69, 1)))
+- **Line 377:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =Text(ThisItem.UsedDays / ThisItem.TotalDays, "0%")
+- **Line 391:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 395:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =varManagementTab = "Holidays"
+- **Line 404:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Quản lý ngày lễ"
+- **Line 417:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="➕Thêm ngày lễ"
+- **Line 418:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(40, 167, 69, 1)
+- **Line 423:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnSelect must start with =
+  - **Suggestion:** OnSelect = =Notify("Chức năng thêm ngày lễ", NotificationType.Information)
+- **Line 445:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(248, 249, 250, 1)
+- **Line 456:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =Text(ThisItem.Date, "dd/mm/yyyy")
+- **Line 469:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =ThisItem.Name
+- **Line 482:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =ThisItem.Type
+- **Line 494:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =ThisItem.Status
+- **Line 509:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 513:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =varManagementTab = "Workflow"
+- **Line 522:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Thiết lập quy trình phê duyệt"
+- **Line 535:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="💾 Lưu cấu hình"
+- **Line 536:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(40, 167, 69, 1)
+- **Line 541:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnSelect must start with =
+  - **Suggestion:** OnSelect = =Notify("Đã lưu cấu hình quy trình phê duyệt", NotificationType.Success)
+- **Line 550:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Quy trình phê duyệt đơn nghỉ phép được thiết lập theo 3 cấp độ. Tùy thuộc vào số ngày nghỉ và vai trò của người tạo đơn, hệ thống sẽ tự động định tuyến đến các cấp phê duyệt phù hợp."
+- **Line 575:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(240, 248, 255, 1)
+- **Line 586:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Cấp " & ThisItem.Level
+- **Line 599:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =ThisItem.RoleName & " - " & ThisItem.Description
+- **Line 612:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Áp dụng cho:" & ThisItem.RequiredFor
+- **Line 624:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="✏️"
+- **Line 625:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(248, 249, 250, 1)
+- **Line 631:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnSelect must start with =
+  - **Suggestion:** OnSelect = =Notify("Chỉnh sửa cấp " & ThisItem.Level, NotificationType.Information)
+- **Line 207:** LONG_FORMULA_NO_PIPE (Section 8.11) - Formula longer than 120 characters should use pipe operator
+  - **Suggestion:** Use multi-line format with pipe operator
+- **Line 347:** LONG_FORMULA_NO_PIPE (Section 8.11) - Formula longer than 120 characters should use pipe operator
+  - **Suggestion:** Use multi-line format with pipe operator
+- **Line 368:** LONG_FORMULA_NO_PIPE (Section 8.11) - Formula longer than 120 characters should use pipe operator
+  - **Suggestion:** Use multi-line format with pipe operator
+- **Line 550:** LONG_FORMULA_NO_PIPE (Section 8.11) - Formula longer than 120 characters should use pipe operator
+  - **Suggestion:** Use multi-line format with pipe operator
+
+### LoginScreen.yaml
+
+- **Line 4:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(248, 250, 252, 1)
+- **Line 5:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnVisible must start with =
+  - **Suggestion:** OnVisible = =Set(varCurrentUser, Blank()); Set(varLoginError, ""); Set(varIsLoading, false)
+- **Line 14:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(0, 120, 212, 1)
+- **Line 24:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 44:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="峄╪g d峄g Qu岷 l媒 Ngh峄?ph茅p"
+- **Line 58:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="膼膬ng nh岷璸 膽峄?ti岷縫 t峄"
+- **Line 71:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Email"
+- **Line 84:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = ="an.nguyen@asiashine.com"
+- **Line 98:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="M岷璽 kh岷﹗"
+- **Line 111:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = ="123456"
+- **Line 126:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =varLoginError
+- **Line 131:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =Not(IsBlank(varLoginError))
+- **Line 140:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =If(varIsLoading, "膼ang 膽膬ng nh岷璸...", "膼膬ng nh岷璸")
+- **Line 141:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(0, 120, 212, 1)
+- **Line 147:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnSelect must start with =
+  - **Suggestion:** OnSelect = =Set(varIsLoading, true); Set(varLoginError, ""); If(And(Not(IsBlank('Login.Email.Input'.Text)), Not(IsBlank('Login.Password.Input'.Text))), Set(varCurrentUser, {ID: "EMP001", FullName: "Nguyễn Văn An", Email: 'Login.Email.Input'.Text, Role: "Employee", Department: "Phòng Công nghệ thông tin"}); Set(varIsLoading, false); Navigate(DashboardScreen), Set(varLoginError, "Email hoặc mật khẩu không đúng"); Set(varIsLoading, false))
+- **Line 156:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Demo:S峄?d峄g email b岷 k峄?v脿 m岷璽 kh岷﹗ 膽峄?膽膬ng nh岷璸"
+- **Line 137:** LONG_FORMULA_NO_PIPE (Section 8.11) - Formula longer than 120 characters should use pipe operator
+  - **Suggestion:** Use multi-line format with pipe operator
+- **Line 147:** LONG_FORMULA_NO_PIPE (Section 8.11) - Formula longer than 120 characters should use pipe operator
+  - **Suggestion:** Use multi-line format with pipe operator
+
+### LeaveRequestScreen.yaml
+
+- **Line 4:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(248, 250, 252, 1)
+- **Line 5:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnVisible must start with =
+  - **Suggestion:** OnVisible = =Set(varActiveScreen, "LeaveRequest"); Set(varLeaveTypes, ["Nghỉ phép năm", "Nghỉ ốm", "Nghỉ thai sản", "Nghỉ không lương", "Nghỉ đặc biệt"]); Set(varEmployees, Table({ID: "EMP001", Name: "Nguyễn Văn An"}, {ID: "EMP002", Name: "Trần Thị Bình"}, {ID: "EMP003", Name: "Lê Văn Cường"})); Set(varFormData, {StartDate: Today(), EndDate: Today(), LeaveType: "Nghỉ phép năm", Reason: "", HandoverPerson: "", HandoverContent: ""}); Set(varFormErrors, {}); Set(varIsSubmitting, false)
+- **Line 41:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(248, 250, 252, 1)
+- **Line 50:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Tổng quan xin nghỉ phép"
+- **Line 64:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 76:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Thông tin nhận viên"
+- **Line 90:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(248, 249, 250, 1)
+- **Line 99:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Mã nhận viên:"
+- **Line 112:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =varCurrentUser.ID
+- **Line 124:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Họ và tên:"
+- **Line 137:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =varCurrentUser.FullName
+- **Line 149:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Phòng ban:"
+- **Line 162:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =varCurrentUser.Department
+- **Line 174:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Thông tin nghỉ phép"
+- **Line 187:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Loại nghỉ phép *"
+- **Line 201:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
+  - **Suggestion:** Default = ="Nghỉ phép năm"
+- **Line 213:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Ngày bắt đầu Ứng viên *"
+- **Line 238:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Ngày kết thúc phép *"
+- **Line 263:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Tổng số ngày:"
+- **Line 276:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =Text(DateDiff('LeaveRequest.Form.StartDate.Picker'.SelectedDate, 'LeaveRequest.Form.EndDate.Picker'.SelectedDate) + 1) & " ngày"
+- **Line 278:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(240, 248, 255, 1)
+- **Line 291:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Lý do nghỉ phép *"
+- **Line 319:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Người nhận việc *"
+- **Line 347:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Nội dung giao việc *"
+- **Line 375:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="File đính kèm (tệp đã chọn):"
+- **Line 389:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(248, 249, 250, 1)
+- **Line 400:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Thông tin đính kèm tệp đã chọn (giời hạn xác định người nhận, giời hạn mở rộng, v.v.)" & Char(10) & "Hướng dẫn định dạng:PDF, Word, Excel, Image. Tệp đính kèm tối đa:10MB"
+- **Line 412:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Chọn tệp đính kèm"
+- **Line 413:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(108, 117, 125, 1)
+- **Line 417:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnSelect must start with =
+  - **Suggestion:** OnSelect = =Set(varAttachmentFile, "demo_file.pdf"); Notify("Thông báo chọn tệp đính kèm:demo_file.pdf", NotificationType.Information)
+- **Line 435:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Trường hợp đặc biệt Ứng viên:"
+- **Line 448:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Ứng viên nghỉ phép với lý do đặc biệt quy định thời gian từ Ứng viên (có lý do buộc phải nghỉ phép)"
+- **Line 466:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =varIsSpecialCase
+- **Line 467:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnChange must start with =
+  - **Suggestion:** OnChange = =Set(varSpecialReason, Self.Text)
+- **Line 476:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =If(
+- **Line 493:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =Not(IsBlank(Self.Text))
+- **Line 502:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Gửi đơn xin nghỉ phép"
+- **Line 503:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(0, 120, 212, 1)
+- **Line 508:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnSelect must start with =
+  - **Suggestion:** OnSelect = =If(IsBlank(varStartDate) || IsBlank(varEndDate) || IsBlank(varLeaveReason) || IsBlank(varHandoverPerson) || IsBlank(varHandoverContent), Notify("Vui lòng điền đầy đủ thông tin!", NotificationType.Error), If(varEndDate < varStartDate, Notify("Ngày kết thúc phép sau ngày bắt đầu Ứng viên!", NotificationType.Error), If(varIsSpecialCase && IsBlank(varSpecialReason), Notify("Vui lòng nhập lý do đặc biệt Ứng viên!", NotificationType.Error), If(Not(varIsSpecialCase) && ((varLeaveDays <= 2 && DateDiff(varStartDate, Today(), Days) < 1) || (varLeaveDays >= 3 && varLeaveDays <= 4 && DateDiff(varStartDate, Today(), Days) < 7) || (varLeaveDays >= 5 && DateDiff(varStartDate, Today(), Days) < 14)), Notify("Ứng viên nghỉ phép không được phép Ứng viên. Vui lòng chọn 'Trường hợp đặc biệt' nếu có lý do đặc biệt!", NotificationType.Error), Notify("Thông báo gửi đơn xin nghỉ phép thành công! Ứng viên sẽ được xử lý bằng cách chuyển đổi Ứng viên. Vui lòng chọn 'Trường hợp đặc biệt' nếu có lý do đặc biệt!", NotificationType.Success); Set(varStartDate, Blank()); Set(varEndDate, Blank()); Set(varLeaveType, "Nghỉ phép năm"); Set(varLeaveReason, ""); Set(varHandoverPerson, ""); Set(varHandoverContent, ""); Set(varIsSpecialCase, false); Set(varSpecialReason, ""); Set(varLeaveDays, 0)))))
+- **Line 517:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Hủy bỏ"
+- **Line 518:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(248, 249, 250, 1)
+- **Line 524:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnSelect must start with =
+  - **Suggestion:** OnSelect = =Navigate(DashboardScreen)
+- **Line 5:** LONG_FORMULA_NO_PIPE (Section 8.11) - Formula longer than 120 characters should use pipe operator
+  - **Suggestion:** Use multi-line format with pipe operator
+- **Line 276:** LONG_FORMULA_NO_PIPE (Section 8.11) - Formula longer than 120 characters should use pipe operator
+  - **Suggestion:** Use multi-line format with pipe operator
+- **Line 400:** LONG_FORMULA_NO_PIPE (Section 8.11) - Formula longer than 120 characters should use pipe operator
+  - **Suggestion:** Use multi-line format with pipe operator
+- **Line 417:** LONG_FORMULA_NO_PIPE (Section 8.11) - Formula longer than 120 characters should use pipe operator
+  - **Suggestion:** Use multi-line format with pipe operator
+- **Line 499:** LONG_FORMULA_NO_PIPE (Section 8.11) - Formula longer than 120 characters should use pipe operator
+  - **Suggestion:** Use multi-line format with pipe operator
+- **Line 508:** LONG_FORMULA_NO_PIPE (Section 8.11) - Formula longer than 120 characters should use pipe operator
+  - **Suggestion:** Use multi-line format with pipe operator
+
+### LeaveConfirmationScreen.yaml
+
+- **Line 4:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(248, 250, 252, 1)
+- **Line 5:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnVisible must start with =
+  - **Suggestion:** OnVisible = |
+- **Line 42:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(248, 250, 252, 1)
+- **Line 51:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Ghi nh岷璶 k岷縯 qu岷?ngh峄?ph茅p 膽茫 ph锚 duy峄噒"
+- **Line 125:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 137:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Danh s谩ch 膽啤n ngh峄?ph茅p 膽茫 ph锚 duy峄噒"
+- **Line 159:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Tr岷g th谩i:"
+- **Line 200:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =If(varSelectedLeave.ID = ThisItem.ID, RGBA(240, 248, 255, 1), RGBA(248, 249, 250, 1))
+- **Line 203:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnSelect must start with =
+  - **Suggestion:** OnSelect = =Set(varSelectedLeave, ThisItem)
+- **Line 221:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =ThisItem.ID
+- **Line 234:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =If(ThisItem.ConfirmationStatus = "Pending", "鈴?Ch峄?ghi nh岷璶", "鉁?膼茫 ghi nh岷璶")
+- **Line 248:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =ThisItem.EmployeeName & " - " & ThisItem.Department
+- **Line 261:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =ThisItem.StartDate & " - " & ThisItem.EndDate & " (" & ThisItem.Days & " ng脿y)"
+- **Line 273:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =ThisItem.Type & " 鈥?Duy峄噒:" & ThisItem.ApprovedDate
+- **Line 286:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 290:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =Not(IsBlank(varSelectedLeave))
+- **Line 299:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Ghi nh岷璶 k岷縯 qu岷?ngh峄?ph茅p"
+- **Line 313:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(248, 249, 250, 1)
+- **Line 322:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="馃搵 M茫 膽啤n:" & " " & "" & varSelectedLeave.ID & Char(10) & "馃懁 Nh芒n vi锚n:" & varSelectedLeave.EmployeeName & Char(10) & "馃彚 Ph貌ng ban:" & varSelectedLeave.Department & Char(10) & "馃搮 Th峄漣 gian:" & varSelectedLeave.StartDate & " - " & varSelectedLeave.EndDate
+- **Line 334:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="鈴?S峄?ng脿y:" & " " & "" & varSelectedLeave.Days & " ng脿y" & Char(10) & "馃摑 Lo岷:" & varSelectedLeave.Type & Char(10) & "鉁?Ng脿y ph锚 duy峄噒:" & varSelectedLeave.ApprovedDate
+- **Line 346:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="馃攧 Tr岷g th谩i:" & " " & "" & If(varSelectedLeave.ConfirmationStatus = "Pending", "Ch峄?ghi nh岷璶", "膼茫 ghi nh岷璶")
+- **Line 359:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Ghi ch煤 x谩c nh岷璶:"
+- **Line 379:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnChange must start with =
+  - **Suggestion:** OnChange = =Set(varConfirmationNote, Self.Text)
+- **Line 390:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =varSelectedLeave.ConfirmationStatus = "Pending"
+- **Line 399:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =If(varIsProcessing, "膼ang x峄?l媒...", "鉁?X谩c nh岷璶 ngh峄?ph茅p")
+- **Line 400:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(40, 167, 69, 1)
+- **Line 406:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnSelect must start with =
+  - **Suggestion:** OnSelect = |
+- **Line 417:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 421:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =IsBlank(varSelectedLeave)
+- **Line 430:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="馃搵 Ch峄峮 膽啤n ngh峄?ph茅p" & Char(10) & Char(10) & "Vui l貌ng ch峄峮 m峄檛 膽啤n ngh峄?ph茅p 膽茫 膽瓢峄 ph锚 duy峄噒 t峄?danh s谩ch b锚n tr谩i 膽峄?th峄眂 hi峄噉 ghi nh岷璶 k岷縯 qu岷?"
+- **Line 322:** LONG_FORMULA_NO_PIPE (Section 8.11) - Formula longer than 120 characters should use pipe operator
+  - **Suggestion:** Use multi-line format with pipe operator
+- **Line 334:** LONG_FORMULA_NO_PIPE (Section 8.11) - Formula longer than 120 characters should use pipe operator
+  - **Suggestion:** Use multi-line format with pipe operator
+- **Line 430:** LONG_FORMULA_NO_PIPE (Section 8.11) - Formula longer than 120 characters should use pipe operator
+  - **Suggestion:** Use multi-line format with pipe operator
+
+### EnhancedDashboardScreen.yaml
+
+- **Line 357:** INVALID_COLOR_FORMAT (Section 5.1) - Fill must use RGBA format
+  - **Suggestion:** Fill = RGBA(255, 255, 255, 1)
+- **Line 423:** INVALID_COLOR_FORMAT (Section 5.1) - Color must use RGBA format
+  - **Suggestion:** Color = RGBA(255, 255, 255, 1)
+- **Line 4:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(248, 250, 252, 1)
+- **Line 5:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnVisible must start with =
+  - **Suggestion:** OnVisible = |
+- **Line 71:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(248, 250, 252, 1)
+- **Line 82:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 104:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="ChÃ o má»«ng, " & varCurrentUser.FullName
+- **Line 117:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Tá»•ng quan tÃ¬nh hÃ¬nh nghá»‰ phÃ©p vÃ  hoáº¡t Ä‘á»™ng gáº§n Ä‘Ã¢y"
+- **Line 131:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(0, 0, 0, 0)
+- **Line 142:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(0, 0, 0, 0)
+- **Line 207:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(0, 0, 0, 0)
+- **Line 272:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 286:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(0, 0, 0, 0)
+- **Line 305:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="ÄÆ¡n nghá»‰ phÃ©p gáº§n Ä‘Ã¢y"
+- **Line 319:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Xem táº¥t cáº£"
+- **Line 346:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(248, 250, 252, 1)
+- **Line 357:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =Switch(ThisItem.Status,
+- **Line 372:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(0, 0, 0, 0)
+- **Line 381:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =ThisItem.ID
+- **Line 394:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =ThisItem.Type
+- **Line 406:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =ThisItem.Date
+- **Line 418:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =Switch(ThisItem.Status,
+- **Line 439:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =ThisItem.Reason
+- **Line 451:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =ThisItem.Days & " ngÃ y"
+- **Line 5:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+
+### AttachmentScreen.yaml
+
+- **Line 4:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(248, 250, 252, 1)
+- **Line 5:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnVisible must start with =
+  - **Suggestion:** OnVisible = |
+- **Line 41:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(248, 250, 252, 1)
+- **Line 50:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Quản lý file đính kèm đơn nghỉ phép"
+- **Line 63:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 74:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="📤 Tải lên file đính kèm"
+- **Line 87:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Chọn file để đính kèm vào đơn nghỉ phép. Hỗ trợ PDF, Word, Excel, Image" & Char(10) & "Kích thước tối đa:10MB"
+- **Line 99:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="📁 Chọn file"
+- **Line 100:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(0, 120, 212, 1)
+- **Line 105:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnSelect must start with =
+  - **Suggestion:** OnSelect = |
+- **Line 115:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =If(IsBlank(varUploadFile), "", "✅ Đã chọn file :" & varUploadFile)
+- **Line 120:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =Not(IsBlank(varUploadFile))
+- **Line 129:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
+- **Line 140:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="📄 Danh sách file đính kèm"
+- **Line 165:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =If(varSelectedAttachment.ID = ThisItem.ID, RGBA(240, 248, 255, 1), RGBA(248, 249, 250, 1))
+- **Line 168:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnSelect must start with =
+  - **Suggestion:** OnSelect = |
+- **Line 178:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =If(ThisItem.FileType = "PDF", "📕", If(ThisItem.FileType = "Word", "📄", If(ThisItem.FileType = "Image", "🖼️", "📁")))
+- **Line 199:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =ThisItem.FileName
+- **Line 212:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = =ThisItem.FileSize & " • " & ThisItem.UploadDate & " • " & ThisItem.UploadBy
+- **Line 224:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="Đơn:" & " " & ThisItem.LeaveRequestID
+- **Line 245:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="⬇️"
+- **Line 246:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(40, 167, 69, 1)
+- **Line 250:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnSelect must start with =
+  - **Suggestion:** OnSelect = |
+- **Line 260:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="🗑️"
+- **Line 261:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(220, 53, 69, 1)
+- **Line 265:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
+  - **Suggestion:** Visible = =Or(varCurrentUser.Role = "Admin", varCurrentUser.Role = "HR")
+- **Line 266:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnSelect must start with =
+  - **Suggestion:** OnSelect = |
+- **Line 276:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
+  - **Suggestion:** Text = ="👁️ Xem"
+- **Line 277:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
+  - **Suggestion:** Fill = =RGBA(0, 120, 212, 1)
+- **Line 281:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property OnSelect must start with =
+  - **Suggestion:** OnSelect = |
+- **Line 31:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 105:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 168:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 179:** LONG_FORMULA_NO_PIPE (Section 8.11) - Formula longer than 120 characters should use pipe operator
+  - **Suggestion:** Use multi-line format with pipe operator
+- **Line 250:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+- **Line 281:** PIPE_FOR_SHORT_FORMULA (Section 8.11) - Pipe operator used for short formula - use single line format
+  - **Suggestion:** Use single line format for formulas â‰¤120 characters
+
+

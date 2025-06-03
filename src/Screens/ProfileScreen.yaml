@@ -128,7 +128,7 @@ Screens:
                               Color: =RGBA(59, 130, 246, 1)
                               
                         - 'Profile.PageHeader.Title':
-                                  Control: Label
+                            Control: Label
                             Properties:
                               X: =Parent.Width * 0.015 + 'Profile.PageHeader.Icon'.Width + Parent.Width * 0.01
                               Y: =Parent.Height * 0.2
@@ -136,12 +136,12 @@ Screens:
                               Height: =Parent.Height * 0.35
                               Text: ="Thông tin cá nhân"
                               Color: =RGBA(17, 24, 39, 1)
-                                    Font: =Font.'Open Sans'
-                                    FontWeight: =FontWeight.Bold
-                                    Size: =14
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Bold
+                              Size: =14
                                     
                         - 'Profile.PageHeader.Stats':
-                                  Control: Label
+                            Control: Label
                             Properties:
                               X: =Parent.Width * 0.015 + 'Profile.PageHeader.Icon'.Width + Parent.Width * 0.01
                               Y: =Parent.Height * 0.6
@@ -298,7 +298,7 @@ Screens:
                                     - 'Profile.Info.EditButton':
                                         Control: CanvasComponent
                                         ComponentName: ButtonComponent
-                                  Properties:
+                                        Properties:
                                           X: =Parent.Width * 0.8
                                           Y: =(Parent.Height - Self.Height) / 2
                                           Width: =Parent.Width * 0.17
@@ -316,14 +316,14 @@ Screens:
 
                               # Info Form
                               - 'Profile.Info.Form.Container':
-                Control: GroupContainer
-                Variant: ManualLayout
-                Properties:
-                  X: =Parent.Width * 0.03
+                                  Control: GroupContainer
+                                  Variant: ManualLayout
+                                  Properties:
+                                    X: =Parent.Width * 0.03
                                     Y: =Parent.Height * 0.25
-                  Width: =Parent.Width * 0.94
+                                    Width: =Parent.Width * 0.94
                                     Height: =Parent.Height * 0.7
-                Children:
+                                  Children:
                                     # Employee ID
                                     - 'Profile.Info.ID.Label':
                                         Control: Label
@@ -448,16 +448,16 @@ Screens:
 
                                     # Department
                                     - 'Profile.Info.Department.Label':
-                      Control: Label
-                      Properties:
+                                        Control: Label
+                                        Properties:
                                           X: =0
                                           Y: =Parent.Height * 0.48
                                           Width: =Parent.Width * 0.3
                                           Height: =Parent.Height * 0.08
                                           Text: ="Phòng ban:"
                                           Color: =RGBA(55, 65, 81, 1)
-                        Font: =Font.'Open Sans'
-                        FontWeight: =FontWeight.Semibold
+                                          Font: =Font.'Open Sans'
+                                          FontWeight: =FontWeight.Semibold
                                           Size: =13
                                           
                                     - 'Profile.Info.Department.Value':
@@ -474,16 +474,16 @@ Screens:
 
                                     # Position
                                     - 'Profile.Info.Position.Label':
-                      Control: Label
-                      Properties:
+                                        Control: Label
+                                        Properties:
                                           X: =0
                                           Y: =Parent.Height * 0.6
                                           Width: =Parent.Width * 0.3
                                           Height: =Parent.Height * 0.08
                                           Text: ="Chức danh:"
                                           Color: =RGBA(55, 65, 81, 1)
-                        Font: =Font.'Open Sans'
-                        FontWeight: =FontWeight.Semibold
+                                          Font: =Font.'Open Sans'
+                                          FontWeight: =FontWeight.Semibold
                                           Size: =13
                                           
                                     - 'Profile.Info.Position.Value':
@@ -538,8 +538,8 @@ Screens:
 
                         # Leave Balance Tab
                         - 'Profile.LeaveBalance.Container':
-                      Control: GroupContainer
-                      Variant: ManualLayout
+                            Control: GroupContainer
+                            Variant: ManualLayout
                             Properties:
                               X: =0
                               Y: =0
@@ -648,17 +648,18 @@ Screens:
                                           Y: =Parent.Height * 0.25
                                           Width: =Parent.Width
                                           Height: =Parent.Height * 0.7
-                                          Text: =If(Not(IsBlank(varUserLeaveBalance)),
+                                          Text: |
+                                            =If(Not(IsBlank(varUserLeaveBalance)),
                                             Concatenate(
-                                              "• Tổng ngày phép được cấp: ", varUserLeaveBalance.TongNgayDuocPhep, " ngày", Char(10),
-                                              "• Ngày phép đã sử dụng: ", varUserLeaveBalance.SoNgayDaNghi, " ngày", Char(10),
-                                              "• Ngày phép còn lại: ", varUserLeaveBalance.SoNgayConLai, " ngày", Char(10),
-                                              "• Tỷ lệ sử dụng: ", Round((varUserLeaveBalance.SoNgayDaNghi / varUserLeaveBalance.TongNgayDuocPhep) * 100, 0), "%"
+                                              "• Tổng ngày phép được cấp:", varUserLeaveBalance.TongNgayDuocPhep, " ngày", Char(10),
+                                              "• Ngày phép đã sử dụng:", varUserLeaveBalance.SoNgayDaNghi, " ngày", Char(10),
+                                              "• Ngày phép còn lại:", varUserLeaveBalance.SoNgayConLai, " ngày", Char(10),
+                                              "• Tỷ lệ sử dụng:", Round((varUserLeaveBalance.SoNgayDaNghi / varUserLeaveBalance.TongNgayDuocPhep) * 100, 0), "%"
                                             ),
                                             "Chưa có thông tin số ngày phép năm hiện tại"
-                                          )
+                                            )
                                           Color: =RGBA(55, 65, 81, 1)
-                                    Font: =Font.'Open Sans'
+                                          Font: =Font.'Open Sans'
                                           Size: =12
                                           Wrap: =true
                                     
@@ -720,7 +721,7 @@ Screens:
                                           Y: =0
                                           Width: =Parent.TemplateWidth
                                           Height: =Parent.TemplateHeight
-                                          Fill: =If(Mod(ThisItem.Id, 2) = 0, RGBA(249, 250, 251, 1), RGBA(255, 255, 255, 1))
+                                          Fill: =RGBA(255, 255, 255, 1)
                                           BorderColor: =RGBA(226, 232, 240, 1)
                                           BorderThickness: =1
                                         Children:
