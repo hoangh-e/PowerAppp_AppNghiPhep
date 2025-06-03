@@ -3,12 +3,12 @@
     Properties:
       Fill: =RGBA(248, 250, 252, 1)
       OnVisible: |
-        =Set(varActiveScreen, "Reports"); Set(varReportType, "Monthly"); Set(varReportPeriod, "This Year"); Set(varSelectedDepartment, UserSession.MaDonVi); Set(varSelectedYear, Year(Today())); Set(varReportData, []); Set(varIsGenerating, false); Set(varShowExportOptions, false); Set(varCanAccessReports, Or(UserSession.MaVaiTro = "HR", UserSession.MaVaiTro = "ADMIN", UserSession.MaVaiTro = "DIRECTOR", UserSession.MaVaiTro = "MANAGER")); If(varCanAccessReports, Set(varReportStats, {TotalRequests: CountRows(DonNghiPhep), ApprovedRequests: CountRows(Filter(DonNghiPhep, TrangThai.Value = "DaDuyet")), PendingRequests: CountRows(Filter(DonNghiPhep, Or(TrangThai.Value = "ChoDuyetCap1", TrangThai.Value = "ChoDuyetCap2", TrangThai.Value = "ChoDuyetCap3"))), RejectedRequests: CountRows(Filter(DonNghiPhep, TrangThai.Value = "TuChoi"))}); Set(varReportData, ForAll(Sequence(12), {Thang: Value, TenThang: Switch(Value, 1, "Tháng 1", 2, "Tháng 2", 3, "Tháng 3", 4, "Tháng 4", 5, "Tháng 5", 6, "Tháng 6", 7, "Tháng 7", 8, "Tháng 8", 9, "Tháng 9", 10, "Tháng 10", 11, "Tháng 11", 12, "Tháng 12"), SoDon: CountRows(Filter(DonNghiPhep, And(Month(NgayTao) = Value, Year(NgayTao) = varSelectedYear))), SoDonDuyet: CountRows(Filter(DonNghiPhep, And(Month(NgayTao) = Value, Year(NgayTao) = varSelectedYear, TrangThai.Value = "DaDuyet"))), TongNgayNghi: Sum(Filter(DonNghiPhep, And(Month(NgayTao) = Value, Year(NgayTao) = varSelectedYear, TrangThai.Value = "DaDuyet")), SoNgayNghi)})))
+        =Set(varActiveScreen, "Reports"); Set(varReportType, "Monthly"); Set(varReportPeriod, "This Year"); Set(varSelectedDepartment, UserSession.MaDonVi); Set(varSelectedYear, Year(Today())); Set(varReportData, []); Set(varIsGenerating, false); Set(varShowExportOptions, false); Set(varChartType, "Column"); Set(varCanAccessReports, Or(UserSession.MaVaiTro = "HR", UserSession.MaVaiTro = "ADMIN", UserSession.MaVaiTro = "DIRECTOR", UserSession.MaVaiTro = "MANAGER")); If(varCanAccessReports, Set(varReportStats, {TotalRequests: CountRows(DonNghiPhep), ApprovedRequests: CountRows(Filter(DonNghiPhep, TrangThai.Value = "DaDuyet")), PendingRequests: CountRows(Filter(DonNghiPhep, Or(TrangThai.Value = "ChoDuyetCap1", TrangThai.Value = "ChoDuyetCap2", TrangThai.Value = "ChoDuyetCap3"))), RejectedRequests: CountRows(Filter(DonNghiPhep, TrangThai.Value = "TuChoi"))}); Set(varReportData, ForAll(Sequence(12), {Thang: Value, TenThang: Switch(Value, 1, "Tháng 1", 2, "Tháng 2", 3, "Tháng 3", 4, "Tháng 4", 5, "Tháng 5", 6, "Tháng 6", 7, "Tháng 7", 8, "Tháng 8", 9, "Tháng 9", 10, "Tháng 10", 11, "Tháng 11", 12, "Tháng 12"), SoDon: CountRows(Filter(DonNghiPhep, And(Month(NgayTao) = Value, Year(NgayTao) = varSelectedYear))), SoDonDuyet: CountRows(Filter(DonNghiPhep, And(Month(NgayTao) = Value, Year(NgayTao) = varSelectedYear, TrangThai.Value = "DaDuyet"))), TongNgayNghi: Sum(Filter(DonNghiPhep, And(Month(NgayTao) = Value, Year(NgayTao) = varSelectedYear, TrangThai.Value = "DaDuyet")), SoNgayNghi)})))
     Children:
-      # Header Component
+      # ===== LAYER 1: HEADER (TOP NAVIGATION) =====
       - 'Reports.Header':
-          Control: =CanvasComponent
-          ComponentName: =HeaderComponent
+          Control: CanvasComponent
+          ComponentName: HeaderComponent
           Properties:
             X: =0
             Y: =0
@@ -21,10 +21,10 @@
             OnLogout: |
               =Set(varIsUserAuthenticated, false); Set(UserSession, {Id: "", Name: "", Email: "", Role: "", Permission: 0, NguoiQuanLyId: "", HoTen: "", MaVaiTro: "", ChucDanh: "", MaDonVi: "", TrangThai: ""}); Navigate(LoginScreen)
 
-      # Navigation Component
+      # ===== LAYER 2: SIDE NAVIGATION =====
       - 'Reports.Navigation':
-          Control: =CanvasComponent
-          ComponentName: =NavigationComponent
+          Control: CanvasComponent
+          ComponentName: NavigationComponent
           Properties:
             X: =0
             Y: ='Reports.Header'.Height
@@ -43,11 +43,11 @@
               =Set(varActiveScreen, ScreenName); Switch(ScreenName, "Dashboard", Navigate(DashboardScreen), "LeaveRequest", Navigate(LeaveRequestScreen), "MyLeaves", Navigate(MyLeavesScreen), "Calendar", Navigate(CalendarScreen), "Management", Navigate(ManagementScreen), "Profile", Navigate(ProfileScreen), "Approval", Navigate(ApprovalScreen), "Reports", Navigate(ReportsScreen))
             OnToggleCollapse: |
               =Set(varNavCollapsed, !varNavCollapsed)
-              
-      # Main Content Container
+
+      # ===== LAYER 3: MAIN CONTENT AREA =====
       - 'Reports.Content.Container':
-          Control: =GroupContainer
-          Variant: =ManualLayout
+          Control: GroupContainer
+          Variant: ManualLayout
           Properties:
             X: ='Reports.Navigation'.Width
             Y: ='Reports.Header'.Height
@@ -56,8 +56,8 @@
             Visible: =varCanAccessReports
           Children:
             - 'Reports.Content.Padded':
-                Control: =GroupContainer
-                Variant: =ManualLayout
+                Control: GroupContainer
+                Variant: ManualLayout
                 Properties:
                   X: =Parent.Width * 0.015
                   Y: =Parent.Height * 0.015
@@ -66,8 +66,8 @@
                 Children:
                   # Page Header with Stats
                   - 'Reports.Header.Container':
-                      Control: =GroupContainer
-                      Variant: =ManualLayout
+                      Control: GroupContainer
+                      Variant: ManualLayout
                       Properties:
                         X: =0
                         Y: =0
@@ -75,7 +75,7 @@
                         Height: =Parent.Height * 0.25
                       Children:
                         - 'Reports.Header.Background':
-                            Control: =Rectangle
+                            Control: Rectangle
                             Properties:
                               X: =0
                               Y: =0
@@ -87,7 +87,7 @@
                               
                         # Title and Export
                         - 'Reports.Header.Title':
-                            Control: =Label
+                            Control: Label
                             Properties:
                               X: =Parent.Width * 0.015
                               Y: =Parent.Height * 0.1
@@ -100,7 +100,7 @@
                               Size: =14
 
                         - 'Reports.Header.Subtitle':
-                            Control: =Label
+                            Control: Label
                             Properties:
                               X: =Parent.Width * 0.015
                               Y: =Parent.Height * 0.25
@@ -112,8 +112,8 @@
                               Size: =11
 
                         - 'Reports.Export.Button':
-                            Control: =CanvasComponent
-                            ComponentName: =ButtonComponent
+                            Control: CanvasComponent
+                            ComponentName: ButtonComponent
                             Properties:
                               X: =Parent.Width * 0.75
                               Y: =(Parent.Height - Self.Height) / 2
@@ -129,8 +129,8 @@
 
                         # Stats Cards Container
                         - 'Reports.Stats.Container':
-                            Control: =GroupContainer
-                            Variant: =ManualLayout
+                            Control: GroupContainer
+                            Variant: ManualLayout
                             Properties:
                               X: =Parent.Width * 0.015
                               Y: =Parent.Height * 0.4
@@ -138,18 +138,18 @@
                               Height: =Parent.Height * 0.55
                             Children:
                               - 'Reports.Stats.Background':
-                                  Control: =Rectangle
+                                  Control: Rectangle
                                   Properties:
                                     X: =0
                                     Y: =0
-                              Width: =Parent.Width
+                                    Width: =Parent.Width
                                     Height: =Parent.Height
                                     Fill: =RGBA(249, 250, 251, 1)
                                     BorderColor: =RGBA(226, 232, 240, 1)
                                     BorderThickness: =1
 
                               - 'Reports.Stats.Title':
-                                  Control: =Label
+                                  Control: Label
                                   Properties:
                                     X: =Parent.Width * 0.02
                                     Y: =Parent.Height * 0.05
@@ -163,8 +163,8 @@
 
                               # Stats Cards
                               - 'Reports.Stats.TotalCard':
-                                  Control: =CanvasComponent
-                                  ComponentName: =StatsCardComponent
+                                  Control: CanvasComponent
+                                  ComponentName: StatsCardComponent
                                   Properties:
                                     X: =Parent.Width * 0.02
                                     Y: =Parent.Height * 0.3
@@ -176,8 +176,8 @@
                                     BackgroundColor: =RGBA(59, 130, 246, 1)
 
                               - 'Reports.Stats.ApprovedCard':
-                                  Control: =CanvasComponent
-                                  ComponentName: =StatsCardComponent
+                                  Control: CanvasComponent
+                                  ComponentName: StatsCardComponent
                                   Properties:
                                     X: =Parent.Width * 0.26
                                     Y: =Parent.Height * 0.3
@@ -189,8 +189,8 @@
                                     BackgroundColor: =RGBA(34, 197, 94, 1)
 
                               - 'Reports.Stats.PendingCard':
-                                  Control: =CanvasComponent
-                                  ComponentName: =StatsCardComponent
+                                  Control: CanvasComponent
+                                  ComponentName: StatsCardComponent
                                   Properties:
                                     X: =Parent.Width * 0.5
                                     Y: =Parent.Height * 0.3
@@ -202,13 +202,13 @@
                                     BackgroundColor: =RGBA(251, 191, 36, 1)
 
                               - 'Reports.Stats.RejectedCard':
-                                  Control: =CanvasComponent
-                                  ComponentName: =StatsCardComponent
+                                  Control: CanvasComponent
+                                  ComponentName: StatsCardComponent
                                   Properties:
                                     X: =Parent.Width * 0.74
                                     Y: =Parent.Height * 0.3
                                     Width: =Parent.Width * 0.22
-                              Height: =Parent.Height * 0.6
+                                    Height: =Parent.Height * 0.6
                                     Title: ="Từ chối"
                                     Value: =Text(varReportStats.RejectedRequests)
                                     Icon: ="Cancel"
@@ -216,8 +216,8 @@
 
                   # Report Filters Container
                   - 'Reports.Filter.Container':
-                      Control: =GroupContainer
-                      Variant: =ManualLayout
+                      Control: GroupContainer
+                      Variant: ManualLayout
                       Properties:
                         X: =0
                         Y: ='Reports.Header.Container'.Y + 'Reports.Header.Container'.Height + Parent.Height * 0.015
@@ -225,7 +225,7 @@
                         Height: =Parent.Height * 0.12
                       Children:
                         - 'Reports.Filter.Background':
-                            Control: =Rectangle
+                            Control: Rectangle
                             Properties:
                               X: =0
                               Y: =0
@@ -236,7 +236,7 @@
                               BorderThickness: =1
 
                         - 'Reports.Filter.Title':
-                            Control: =Label
+                            Control: Label
                             Properties:
                               X: =Parent.Width * 0.02
                               Y: =Parent.Height * 0.05
@@ -250,8 +250,8 @@
 
                         # Report Type Filter
                         - 'Reports.Filter.Type.Container':
-                            Control: =GroupContainer
-                            Variant: =ManualLayout
+                            Control: GroupContainer
+                            Variant: ManualLayout
                             Properties:
                               X: =Parent.Width * 0.02
                               Y: =Parent.Height * 0.3
@@ -272,7 +272,7 @@
 
                               - 'Reports.Filter.Type.Dropdown':
                                   Control: Classic/DropDown
-                      Properties:
+                                  Properties:
                                     X: =0
                                     Y: =Parent.Height * 0.35
                                     Width: =Parent.Width
@@ -288,28 +288,28 @@
                         # Period Filter
                         - 'Reports.Filter.Period.Container':
                             Control: GroupContainer
-                Variant: ManualLayout
-                Properties:
+                            Variant: ManualLayout
+                            Properties:
                               X: =Parent.Width * 0.26
                               Y: =Parent.Height * 0.3
                               Width: =Parent.Width * 0.22
                               Height: =Parent.Height * 0.6
-                Children:
+                            Children:
                               - 'Reports.Filter.Period.Label':
-                      Control: Label
-                      Properties:
+                                  Control: Label
+                                  Properties:
                                     X: =0
                                     Y: =0
                                     Width: =Parent.Width
                                     Height: =Parent.Height * 0.3
                                     Text: =Concatenate("Thời kỳ", ":")
                                     Color: =RGBA(55, 65, 81, 1)
-                        Font: =Font.'Open Sans'
+                                    Font: =Font.'Open Sans'
                                     Size: =10
                         
                               - 'Reports.Filter.Period.Dropdown':
                                   Control: Classic/DropDown
-                      Properties:
+                                  Properties:
                                     X: =0
                                     Y: =Parent.Height * 0.35
                                     Width: =Parent.Width
@@ -387,7 +387,7 @@
                               Size: =10
                               Align: =Align.Left
 
-                  # Chart Section
+                  # Chart Section - Enhanced for All Report Types
                   - 'Reports.Chart.Container':
                       Control: GroupContainer
                       Variant: ManualLayout
@@ -395,8 +395,8 @@
                         X: =0
                         Y: ='Reports.Filter.Container'.Y + 'Reports.Filter.Container'.Height + Parent.Height * 0.015
                         Width: =Parent.Width
-                        Height: =Parent.Height * 0.25
-                        Visible: =And(CountRows(varReportData) > 0, Or(varReportType = "Monthly", varReportType = "Department"))
+                        Height: =Parent.Height * 0.35
+                        Visible: =CountRows(varReportData) > 0
                       Children:
                         - 'Reports.Chart.Background':
                             Control: Rectangle
@@ -415,190 +415,216 @@
                               X: =Parent.Width * 0.02
                               Y: =Parent.Height * 0.05
                               Width: =Parent.Width * 0.96
-                              Height: =Parent.Height * 0.15
-                              Text: =Switch(varReportType, "Monthly", "Biểu đồ thống kê nghỉ phép theo tháng", "Department", "Biểu đồ thống kê nghỉ phép theo phòng ban", "Biểu đồ thống kê")
+                              Height: =Parent.Height * 0.12
+                              Text: =Switch(varReportType, 
+                                "Monthly", "Biểu đồ thống kê nghỉ phép theo tháng", 
+                                "Department", "Biểu đồ thống kê nghỉ phép theo phòng ban",
+                                "Employee", "Biểu đồ thống kê nghỉ phép theo nhân viên",
+                                "LeaveType", "Biểu đồ thống kê theo loại nghỉ phép",
+                                "Biểu đồ thống kê")
                               Color: =RGBA(17, 24, 39, 1)
                               Font: =Font.'Open Sans'
                               FontWeight: =FontWeight.Semibold
                               Size: =12
 
+                        # Chart Type Selector
+                        - 'Reports.Chart.TypeSelector':
+                            Control: GroupContainer
+                            Variant: ManualLayout
+                            Properties:
+                              X: =Parent.Width * 0.02
+                              Y: =Parent.Height * 0.18
+                              Width: =Parent.Width * 0.3
+                              Height: =Parent.Height * 0.08
+                            Children:
+                              - 'Reports.Chart.Type.Label':
+                                  Control: Label
+                                  Properties:
+                                    X: =0
+                                    Y: =0
+                                    Width: =Parent.Width * 0.3
+                                    Height: =Parent.Height
+                                    Text: ="Kiểu biểu đồ:"
+                                    Color: =RGBA(55, 65, 81, 1)
+                                    Font: =Font.'Open Sans'
+                                    Size: =10
+                                    Align: =Align.Center
+
+                              - 'Reports.Chart.Type.Dropdown':
+                                  Control: Classic/DropDown
+                                  Properties:
+                                    X: =Parent.Width * 0.35
+                                    Y: =0
+                                    Width: =Parent.Width * 0.6
+                                    Height: =Parent.Height
+                                    Items: =Switch(varReportType,
+                                      "Monthly", ["Column", "Line"],
+                                      "Department", ["Column", "Pie"],
+                                      "Employee", ["Column", "Line"],
+                                      "LeaveType", ["Column", "Pie"],
+                                      ["Column"])
+                                    Default: ="Column"
+                                    BorderColor: =RGBA(226, 232, 240, 1)
+                                    BorderThickness: =1
+                                    OnChange: =Set(varChartType, Self.Selected.Value)
+
+                        # Column Chart
                         - 'Reports.Chart.ColumnChart':
                             Control: ColumnChart
                             Properties:
                               X: =Parent.Width * 0.02
-                              Y: =Parent.Height * 0.25
+                              Y: =Parent.Height * 0.28
                               Width: =Parent.Width * 0.96
-                              Height: =Parent.Height * 0.7
+                              Height: =Parent.Height * 0.68
                               Items: =varReportData
-                              XAxis: =Switch(varReportType, "Monthly", "TenThang", "Department", "TenDonVi", "Label")
-                              YAxis: =Switch(varReportType, "Monthly", "SoDon", "Department", "TongNhanVien", "Value")
-                              Title: =Switch(varReportType, "Monthly", "Số đơn nghỉ phép", "Department", "Số nhân viên", "Giá trị")
+                              XAxis: =Switch(varReportType, 
+                                "Monthly", "TenThang", 
+                                "Department", "TenDonVi", 
+                                "Employee", "HoTen",
+                                "LeaveType", "TenLoai",
+                                "Label")
+                              YAxis: =Switch(varReportType, 
+                                "Monthly", "SoDon", 
+                                "Department", "DonDaDuyet", 
+                                "Employee", "TongDonNghi",
+                                "LeaveType", "SoLanSuDung",
+                                "Value")
+                              Title: =Switch(varReportType, 
+                                "Monthly", "Số đơn nghỉ phép", 
+                                "Department", "Đơn đã duyệt", 
+                                "Employee", "Tổng đơn nghỉ",
+                                "LeaveType", "Số lần sử dụng",
+                                "Giá trị")
                               ChartType: =ChartType.ColumnClustered
                               ShowLabels: =true
+                              Visible: =Or(IsBlank(varChartType), varChartType = "Column")
 
-        - 'Reports.DataTable':
-            Control: DataTable
-            Variant: DataTable
-            Properties:
-              X: ='Reports.Navigation'.Width + 'Reports.Content.Container'.Width * 0.02
-              Y: ='Reports.Header'.Height + 'Reports.Content.Container'.Height * 0.75
-              Width: ='Reports.Content.Container'.Width * 0.96
-              Height: ='Reports.Content.Container'.Width * 0.22
-              Items: =varReportData
-              BorderColor: =RGBA(229, 231, 235, 1)
-              BorderThickness: =1
-              Font: =Font.'Open Sans'
-              Size: =11
-              Color: =RGBA(55, 65, 81, 1)
-              HeadingColor: =RGBA(255, 255, 255, 1)
-              HeadingFill: =RGBA(59, 130, 246, 1)
-              Visible: |
-                =And(varCanAccessReports, CountRows(varReportData) > 0)
-            Children:
-              - Column1:
-                  Control: DataTableColumn@1.0.3
-                  Variant: Textual
-                  Properties:
-                    FieldDisplayName: =Switch(varReportType, "Monthly", "Tháng", "Department", "Phòng ban", "Employee", "Nhân viên", "LeaveType", "Loại nghỉ", "Tên")
-                    FieldName: ="Name"
-                    Order: =1
-                    Text: =Switch(varReportType, "Department", ThisItem.TenDonVi, "Employee", ThisItem.HoTen, "LeaveType", ThisItem.TenLoai, "Monthly", ThisItem.TenThang, "N/A")
-                    Width: =200
+                        # Line Chart for Trends
+                        - 'Reports.Chart.LineChart':
+                            Control: LineChart
+                            Properties:
+                              X: =Parent.Width * 0.02
+                              Y: =Parent.Height * 0.28
+                              Width: =Parent.Width * 0.96
+                              Height: =Parent.Height * 0.68
+                              Items: =varReportData
+                              XAxis: =Switch(varReportType, 
+                                "Monthly", "TenThang", 
+                                "Employee", "HoTen",
+                                "Label")
+                              YAxis: =Switch(varReportType, 
+                                "Monthly", "TongNgayNghi", 
+                                "Employee", "TongNgayNghi",
+                                "Value")
+                              Title: ="Xu hướng tổng ngày nghỉ"
+                              ShowLabels: =true
+                              Visible: =And(varChartType = "Line", Or(varReportType = "Monthly", varReportType = "Employee"))
 
-              - Column2:
-                  Control: DataTableColumn@1.0.3
-                  Variant: Textual
-                  Properties:
-                    FieldDisplayName: =Switch(varReportType, "Department", "Tổng NV", "Employee", "Tổng đơn", "LeaveType", "Số lần dùng", "Monthly", "Số đơn", "Giá trị 1")
-                    FieldName: ="Value1"
-                    Order: =2
-                    Text: =Switch(varReportType, "Department", Text(ThisItem.TongNhanVien), "Employee", Text(ThisItem.TongDonNghi), "LeaveType", Text(ThisItem.SoLanSuDung), "Monthly", Text(ThisItem.SoDon), "0")
-                    Width: =150
+                        # Pie Chart for Distributions
+                        - 'Reports.Chart.PieChart':
+                            Control: PieChart
+                            Properties:
+                              X: =Parent.Width * 0.02
+                              Y: =Parent.Height * 0.28
+                              Width: =Parent.Width * 0.96
+                              Height: =Parent.Height * 0.68
+                              Items: =varReportData
+                              LabelAxis: =Switch(varReportType,
+                                "Department", "TenDonVi",
+                                "LeaveType", "TenLoai",
+                                "Label")
+                              ValueAxis: =Switch(varReportType,
+                                "Department", "TongNhanVien",
+                                "LeaveType", "SoLanSuDung", 
+                                "Value")
+                              Title: =Switch(varReportType,
+                                "Department", "Phân bố nhân viên theo phòng ban",
+                                "LeaveType", "Phân bố sử dụng theo loại nghỉ",
+                                "Phân bố")
+                              ShowLabels: =true
+                              Visible: =And(varChartType = "Pie", Or(varReportType = "Department", varReportType = "LeaveType"))
 
-              - Column3:
-                  Control: DataTableColumn@1.0.3
-                  Variant: Textual
-                  Properties:
-                    FieldDisplayName: =Switch(varReportType, "Department", "Đã duyệt", "Employee", "Đã duyệt", "LeaveType", "Tổng ngày", "Monthly", "Đã duyệt", "Giá trị 2")
-                    FieldName: ="Value2"
-                    Order: =3
-                    Text: =Switch(varReportType, "Department", Text(ThisItem.DonDaDuyet), "Employee", Text(ThisItem.DonDaDuyet), "LeaveType", Text(ThisItem.TongNgayNghi), "Monthly", Text(ThisItem.SoDonDuyet), "0")
-                    Width: =150
+                        # Chart Statistics Summary
+                        - 'Reports.Chart.Summary':
+                            Control: Label
+                            Properties:
+                              X: =Parent.Width * 0.7
+                              Y: =Parent.Height * 0.18
+                              Width: =Parent.Width * 0.28
+                              Height: =Parent.Height * 0.08
+                              Text: =Switch(varReportType,
+                                "Monthly", Concatenate("Tổng: ", Sum(varReportData, SoDon), " đơn"),
+                                "Department", Concatenate("Tổng: ", Sum(varReportData, TongNhanVien), " nhân viên"),
+                                "Employee", Concatenate("Tổng: ", CountRows(varReportData), " nhân viên"),
+                                "LeaveType", Concatenate("Tổng: ", Sum(varReportData, SoLanSuDung), " lần sử dụng"),
+                                "")
+                              Color: =RGBA(59, 130, 246, 1)
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Semibold
+                              Size: =11
+                              Align: =Align.Center
 
-              - Column4:
-                  Control: DataTableColumn@1.0.3
-                  Variant: Textual
-                  Properties:
-                    FieldDisplayName: =Switch(varReportType, "Department", "Tổng ngày nghỉ", "Employee", "Tổng ngày nghỉ", "LeaveType", "Có lương", "Monthly", "Tổng ngày nghỉ", "Giá trị 3")
-                    FieldName: ="Value3"
-                    Order: =4
-                    Text: =Switch(varReportType, "Department", Text(ThisItem.TongNgayNghi), "Employee", Text(ThisItem.TongNgayNghi), "LeaveType", If(ThisItem.CoLuong, "Có", "Không"), "Monthly", Text(ThisItem.TongNgayNghi), "0")
-                    Width: =180
+      # ===== LAYER 4: DATATABLE (DIRECT SCREEN CHILD - RULE 57) =====
+      - 'Reports.DataTable':
+          Control: DataTable
+          Variant: DataTable
+          Properties:
+            X: ='Reports.Navigation'.Width + 'Reports.Content.Container'.Width * 0.02
+            Y: ='Reports.Header'.Height + 'Reports.Content.Container'.Height * 0.75
+            Width: ='Reports.Content.Container'.Width * 0.96
+            Height: ='Reports.Content.Container'.Width * 0.22
+            Items: =varReportData
+            BorderColor: =RGBA(229, 231, 235, 1)
+            BorderThickness: =1
+            Font: =Font.'Open Sans'
+            Size: =11
+            Color: =RGBA(55, 65, 81, 1)
+            HeadingColor: =RGBA(255, 255, 255, 1)
+            HeadingFill: =RGBA(59, 130, 246, 1)
+            Visible: |
+              =And(varCanAccessReports, CountRows(varReportData) > 0)
+          Children:
+            - Column1:
+                Control: DataTableColumn
+                Variant: Textual
+                Properties:
+                  FieldDisplayName: =Switch(varReportType, "Monthly", "Tháng", "Department", "Phòng ban", "Employee", "Nhân viên", "LeaveType", "Loại nghỉ", "Tên")
+                  FieldName: ="Name"
+                  Order: =1
+                  Text: =Switch(varReportType, "Department", ThisItem.TenDonVi, "Employee", ThisItem.HoTen, "LeaveType", ThisItem.TenLoai, "Monthly", ThisItem.TenThang, "N/A")
+                  Width: =200
 
-        # Export Modal
-        - 'Reports.Export.Modal':
-            Control: Rectangle
-            Properties:
-              X: =0
-              Y: =0
-              Width: =Parent.Width
-              Height: =Parent.Height
-              Fill: =RGBA(0, 0, 0, 0.5)
-              Visible: =varShowExportOptions
-              OnSelect: =Set(varShowExportOptions, false)
-            Children:
-              - 'Reports.Export.Dialog':
-                  Control: Rectangle
-                  Properties:
-                    X: =(Parent.Width - Self.Width) / 2
-                    Y: =(Parent.Height - Self.Height) / 2
-                    Width: =Parent.Width * 0.4
-                    Height: =Parent.Height * 0.3
-                    Fill: =RGBA(255, 255, 255, 1)
-                    BorderColor: =RGBA(226, 232, 240, 1)
-                    BorderThickness: =2
-                    Visible: =varShowExportOptions
-                  Children:
-                    - 'Reports.Export.Header':
-                        Control: Rectangle
-                        Properties:
-                          X: =0
-                          Y: =0
-                          Width: =Parent.Width
-                          Height: =Parent.Height * 0.2
-                          Fill: =RGBA(59, 130, 246, 1)
-                        Children:
-                          - 'Reports.Export.Title':
-                              Control: Label
-                              Properties:
-                                X: =Parent.Width * 0.05
-                                Y: =(Parent.Height - Self.Height) / 2
-                                Width: =Parent.Width * 0.9
-                                Height: =Parent.Height * 0.6
-                                Text: ="Xuất báo cáo"
-                                Color: =RGBA(255, 255, 255, 1)
-                                Font: =Font.'Open Sans'
-                                FontWeight: =FontWeight.Bold
-                                Size: =14
+            - Column2:
+                Control: DataTableColumn
+                Variant: Textual
+                Properties:
+                  FieldDisplayName: =Switch(varReportType, "Department", "Tổng NV", "Employee", "Tổng đơn", "LeaveType", "Số lần dùng", "Monthly", "Số đơn", "Giá trị 1")
+                  FieldName: ="Value1"
+                  Order: =2
+                  Text: =Switch(varReportType, "Department", Text(ThisItem.TongNhanVien), "Employee", Text(ThisItem.TongDonNghi), "LeaveType", Text(ThisItem.SoLanSuDung), "Monthly", Text(ThisItem.SoDon), "0")
+                  Width: =150
 
-                    - 'Reports.Export.Content':
-                        Control: GroupContainer
-                        Variant: ManualLayout
-                        Properties:
-                          X: =Parent.Width * 0.05
-                          Y: =Parent.Height * 0.25
-                          Width: =Parent.Width * 0.9
-                          Height: =Parent.Height * 0.5
-                        Children:
-                          - 'Reports.Export.Message':
-                              Control: Label
-                              Properties:
-                                X: =0
-                                Y: =0
-                                Width: =Parent.Width
-                                Height: =Parent.Height * 0.6
-                                Text: =Concatenate("Xuất ", CountRows(varReportData), " bản ghi dữ liệu thành file CSV?", Char(10), Char(10), "File sẽ được tải về thiết bị của bạn.")
-                                Color: =RGBA(55, 65, 81, 1)
-                                Font: =Font.'Open Sans'
-                                Size: =11
-                                Wrap: =true
+            - Column3:
+                Control: DataTableColumn
+                Variant: Textual
+                Properties:
+                  FieldDisplayName: =Switch(varReportType, "Department", "Đã duyệt", "Employee", "Đã duyệt", "LeaveType", "Tổng ngày", "Monthly", "Đã duyệt", "Giá trị 2")
+                  FieldName: ="Value2"
+                  Order: =3
+                  Text: =Switch(varReportType, "Department", Text(ThisItem.DonDaDuyet), "Employee", Text(ThisItem.DonDaDuyet), "LeaveType", Text(ThisItem.TongNgayNghi), "Monthly", Text(ThisItem.SoDonDuyet), "0")
+                  Width: =150
 
-                    - 'Reports.Export.Actions':
-                      Control: GroupContainer
-                      Variant: ManualLayout
-                        Properties:
-                          X: =Parent.Width * 0.05
-                          Y: =Parent.Height * 0.8
-                          Width: =Parent.Width * 0.9
-                          Height: =Parent.Height * 0.15
-                        Children:
-                          - 'Reports.Export.Cancel':
-                              Control: CanvasComponent
-                              ComponentName: ButtonComponent
-                              Properties:
-                                X: =0
-                                Y: =0
-                                Width: =Parent.Width * 0.45
-                                Height: =Parent.Height
-                                Text: ="Hủy"
-                                Variant: ="Outline"
-                                Size: ="Medium"
-                                OnClick: =Set(varShowExportOptions, false)
+            - Column4:
+                Control: DataTableColumn
+                Variant: Textual
+                Properties:
+                  FieldDisplayName: =Switch(varReportType, "Department", "Tổng ngày nghỉ", "Employee", "Tổng ngày nghỉ", "LeaveType", "Có lương", "Monthly", "Tổng ngày nghỉ", "Giá trị 3")
+                  FieldName: ="Value3"
+                  Order: =4
+                  Text: =Switch(varReportType, "Department", Text(ThisItem.TongNgayNghi), "Employee", Text(ThisItem.TongNgayNghi), "LeaveType", If(ThisItem.CoLuong, "Có", "Không"), "Monthly", Text(ThisItem.TongNgayNghi), "0")
+                  Width: =180
 
-                          - 'Reports.Export.Confirm':
-                              Control: CanvasComponent
-                              ComponentName: ButtonComponent
-                              Properties:
-                                X: =Parent.Width * 0.55
-                                Y: =0
-                                Width: =Parent.Width * 0.45
-                                Height: =Parent.Height
-                                Text: ="Xuất CSV"
-                                Variant: ="Primary"
-                                Size: ="Medium"
-                                OnClick: =Set(varShowExportOptions, false)
-
-      # Access Denied Section
+      # ===== LAYER 5: ACCESS DENIED CONTENT =====
       - 'Reports.AccessDenied.Container':
           Control: GroupContainer
           Variant: ManualLayout
@@ -628,43 +654,43 @@
                   Y: =Parent.Height * 0.3
                   Width: =Parent.Width * 0.6
                   Height: =Parent.Height * 0.4
-          Children:
-            - 'Reports.AccessDenied.Icon':
-                Control: Classic/Icon
-                Properties:
-                  X: =(Parent.Width - Self.Width) / 2
+                Children:
+                  - 'Reports.AccessDenied.Icon':
+                      Control: Classic/Icon
+                      Properties:
+                        X: =(Parent.Width - Self.Width) / 2
                         Y: =0
                         Width: =64
                         Height: =64
-                  Icon: =Icon.Lock
+                        Icon: =Icon.Lock
                         Color: =RGBA(239, 68, 68, 1)
-                  
-            - 'Reports.AccessDenied.Title':
-                Control: Label
-                Properties:
+                      
+                  - 'Reports.AccessDenied.Title':
+                      Control: Label
+                      Properties:
                         X: =0
                         Y: =80
                         Width: =Parent.Width
                         Height: =40
-                  Text: ="Không có quyền truy cập"
+                        Text: ="Không có quyền truy cập"
                         Color: =RGBA(17, 24, 39, 1)
-                  Font: =Font.'Open Sans'
-                  FontWeight: =FontWeight.Bold
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Bold
                         Size: =16
-                  Align: =Align.Center
+                        Align: =Align.Center
                   
                   - 'Reports.AccessDenied.Message':
                       Control: Label
-                Properties:
+                      Properties:
                         X: =0
                         Y: =130
                         Width: =Parent.Width
                         Height: =80
                         Text: ="Bạn không có quyền truy cập vào chức năng báo cáo và thống kê. Vui lòng liên hệ quản trị viên để được cấp quyền."
-                  Color: =RGBA(107, 114, 128, 1)
-                  Font: =Font.'Open Sans'
+                        Color: =RGBA(107, 114, 128, 1)
+                        Font: =Font.'Open Sans'
                         Size: =12
-                  Align: =Align.Center
+                        Align: =Align.Center
                         Wrap: =true
 
                   - 'Reports.AccessDenied.BackButton':
@@ -678,4 +704,177 @@
                         Text: ="Quay lại Dashboard"
                         Variant: ="Primary"
                         Size: ="Medium"
-                        OnClick: =Navigate(DashboardScreen) 
+                        OnClick: =Navigate(DashboardScreen)
+
+      # ===== LAYER 6: MODAL OVERLAYS (TOP LAYER) =====
+      - 'Reports.Export.Modal':
+          Control: Rectangle
+          Properties:
+            X: =0
+            Y: =0
+            Width: =Parent.Width
+            Height: =Parent.Height
+            Fill: =RGBA(0, 0, 0, 0.5)
+            Visible: =varShowExportOptions
+            OnSelect: =Set(varShowExportOptions, false)
+          Children:
+            - 'Reports.Export.Dialog':
+                Control: Rectangle
+                Properties:
+                  X: =(Parent.Width - Self.Width) / 2
+                  Y: =(Parent.Height - Self.Height) / 2
+                  Width: =Parent.Width * 0.4
+                  Height: =Parent.Height * 0.3
+                  Fill: =RGBA(255, 255, 255, 1)
+                  BorderColor: =RGBA(226, 232, 240, 1)
+                  BorderThickness: =2
+                  Visible: =varShowExportOptions
+                Children:
+                  - 'Reports.Export.Header':
+                      Control: Rectangle
+                      Properties:
+                        X: =0
+                        Y: =0
+                        Width: =Parent.Width
+                        Height: =Parent.Height * 0.2
+                        Fill: =RGBA(59, 130, 246, 1)
+                      Children:
+                        - 'Reports.Export.Title':
+                            Control: Label
+                            Properties:
+                              X: =Parent.Width * 0.05
+                              Y: =(Parent.Height - Self.Height) / 2
+                              Width: =Parent.Width * 0.9
+                              Height: =Parent.Height * 0.6
+                              Text: ="Xuất báo cáo"
+                              Color: =RGBA(255, 255, 255, 1)
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Bold
+                              Size: =14
+
+                  - 'Reports.Export.Content':
+                      Control: GroupContainer
+                      Variant: ManualLayout
+                      Properties:
+                        X: =Parent.Width * 0.05
+                        Y: =Parent.Height * 0.25
+                        Width: =Parent.Width * 0.9
+                        Height: =Parent.Height * 0.5
+                      Children:
+                        - 'Reports.Export.Message':
+                            Control: Label
+                            Properties:
+                              X: =0
+                              Y: =0
+                              Width: =Parent.Width
+                              Height: =Parent.Height * 0.3
+                              Text: =Concatenate("Xuất ", CountRows(varReportData), " bản ghi dữ liệu thành file CSV")
+                              Color: =RGBA(55, 65, 81, 1)
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Semibold
+                              Size: =11
+                              Wrap: =true
+
+                        # Export Options
+                        - 'Reports.Export.Options':
+                            Control: GroupContainer
+                            Variant: ManualLayout
+                            Properties:
+                              X: =0
+                              Y: =Parent.Height * 0.35
+                              Width: =Parent.Width
+                              Height: =Parent.Height * 0.6
+                            Children:
+                              - 'Reports.Export.Option1':
+                                  Control: Classic/CheckBox
+                                  Properties:
+                                    X: =0
+                                    Y: =0
+                                    Width: =Parent.Width
+                                    Height: =Parent.Height * 0.25
+                                    Text: ="Báo cáo hiện tại (" & varReportType & ")"
+                                    Default: =true
+                                    Font: =Font.'Open Sans'
+                                    Size: =10
+
+                              - 'Reports.Export.Option2':
+                                  Control: Classic/CheckBox
+                                  Properties:
+                                    X: =0
+                                    Y: =Parent.Height * 0.3
+                                    Width: =Parent.Width
+                                    Height: =Parent.Height * 0.25
+                                    Text: ="Báo cáo tổng hợp tất cả đơn nghỉ phép"
+                                    Default: =false
+                                    Font: =Font.'Open Sans'
+                                    Size: =10
+                                    Visible: =Or(UserSession.MaVaiTro = "HR", UserSession.MaVaiTro = "DIRECTOR", UserSession.MaVaiTro = "ADMIN")
+
+                              - 'Reports.Export.Option3':
+                                  Control: Classic/CheckBox
+                                  Properties:
+                                    X: =0
+                                    Y: =Parent.Height * 0.6
+                                    Width: =Parent.Width
+                                    Height: =Parent.Height * 0.25
+                                    Text: ="Báo cáo chi tiết theo phòng ban"
+                                    Default: =false
+                                    Font: =Font.'Open Sans'
+                                    Size: =10
+                                    Visible: =Or(UserSession.MaVaiTro = "HR", UserSession.MaVaiTro = "DIRECTOR", UserSession.MaVaiTro = "ADMIN")
+
+                  - 'Reports.Export.Actions':
+                      Control: GroupContainer
+                      Variant: ManualLayout
+                      Properties:
+                        X: =Parent.Width * 0.05
+                        Y: =Parent.Height * 0.8
+                        Width: =Parent.Width * 0.9
+                        Height: =Parent.Height * 0.15
+                      Children:
+                        - 'Reports.Export.Cancel':
+                            Control: CanvasComponent
+                            ComponentName: ButtonComponent
+                            Properties:
+                              X: =0
+                              Y: =0
+                              Width: =Parent.Width * 0.45
+                              Height: =Parent.Height
+                              Text: ="Hủy"
+                              Variant: ="Outline"
+                              Size: ="Medium"
+                              OnClick: =Set(varShowExportOptions, false)
+
+                        - 'Reports.Export.Confirm':
+                            Control: CanvasComponent
+                            ComponentName: ButtonComponent
+                            Properties:
+                              X: =Parent.Width * 0.55
+                              Y: =0
+                              Width: =Parent.Width * 0.45
+                              Height: =Parent.Height
+                              Text: ="Xuất CSV"
+                              Variant: ="Primary"
+                              Size: ="Medium"
+                              OnClick: |
+                                =If('Reports.Export.Option1'.Value, 
+                                  Export(varReportData, 
+                                    Concatenate("BaoCao_", varReportType, "_", Text(Today(), "yyyy-mm-dd")), 
+                                    ExportFormat.CSV));
+                                If('Reports.Export.Option2'.Value,
+                                  Export(AddColumns(DonNghiPhep, 
+                                    "NguoiDung", LookUp(NguoiDung, Title = MaNguoiDung.Value).HoTen,
+                                    "DonVi", LookUp(NguoiDung, Title = MaNguoiDung.Value).'MaDonVi: TenDonVi'.Value,
+                                    "LoaiNghi", LookUp(LoaiNghi, Title = MaLoai.Value).TenLoai),
+                                    Concatenate("BaoCao_TongHop_", Text(Today(), "yyyy-mm-dd")),
+                                    ExportFormat.CSV));
+                                If('Reports.Export.Option3'.Value,
+                                  Export(AddColumns(DonVi,
+                                    "TongNhanVien", CountRows(Filter(NguoiDung, MaDonVi.Value = ThisRecord.MaDonVi)),
+                                    "DonChoPheDuyet", CountRows(Filter(DonNghiPhep, And(LookUp(NguoiDung, Title = MaNguoiDung.Value).MaDonVi.Value = ThisRecord.MaDonVi, TrangThai.Value In ["ChoDuyetCap1", "ChoDuyetCap2", "ChoDuyetCap3"]))),
+                                    "DonDaDuyet", CountRows(Filter(DonNghiPhep, And(LookUp(NguoiDung, Title = MaNguoiDung.Value).MaDonVi.Value = ThisRecord.MaDonVi, TrangThai.Value = "DaDuyet"))),
+                                    "TongNgayNghi", Sum(Filter(DonNghiPhep, And(LookUp(NguoiDung, Title = MaNguoiDung.Value).MaDonVi.Value = ThisRecord.MaDonVi, TrangThai.Value = "DaDuyet")), SoNgayNghi)),
+                                    Concatenate("BaoCao_PhongBan_", Text(Today(), "yyyy-mm-dd")),
+                                    ExportFormat.CSV));
+                                Set(varShowExportOptions, false);
+                                Notify(Concatenate("Đã xuất báo cáo thành công. File đã được tải về thiết bị."), NotificationType.Success) 
