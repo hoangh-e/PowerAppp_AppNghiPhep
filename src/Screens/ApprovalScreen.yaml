@@ -4,51 +4,67 @@ Screens:
       Fill: =RGBA(248, 250, 252, 1)
       OnVisible: |
         =Set(varActiveScreen, "Approval"); 
-        // Use session from Login or fallback to Microsoft 365 lookup
-        If(IsBlank(varCurrentUser), 
-          Set(varCurrentUser, LookUp(NguoiDung, Email = User().Email)));
-        // Validate current user session
-        If(IsBlank(varCurrentUser), 
-          Navigate(LoginScreen), 
-          // Continue with screen initialization using session data
-          Set(varUserPermissions, LookUp(VaiTro, MaVaiTro = varCurrentUser.MaVaiTro).CacQuyen.Value); 
-          Set(varApprovalWorkflow, Filter(QuyTrinhDuyet, And(MaDonVi.Value = varCurrentUser.MaDonVi, DangHoatDong = true))); 
-          Set(varPendingRequests, Switch(varCurrentUser.MaVaiTro, "MANAGER", Filter(DonNghiPhep, And(TrangThai.Value = "ChoDuyetCap1", MaNhanVien.Value in Filter(NguoiDung, MaQuanLy.Value = varCurrentUser.MaNhanVien.Value).MaNhanVien.Value)), "DIRECTOR", Filter(DonNghiPhep, TrangThai.Value in ["ChoDuyetCap2", "ChoDuyetCap3"]), "HR", Filter(DonNghiPhep, TrangThai.Value in ["ChoDuyetCap1", "ChoDuyetCap2", "ChoDuyetCap3"]), [])); 
-          Set(varSelectedRequest, Blank()); 
+        Set(varSelectedApprovalLeave, Blank());
+        Set(varShowApprovalDetails, false);
+        Set(varShowApprovalConfirm, false);
+        Set(varApprovalAction, "");
           Set(varApprovalComment, ""); 
-          Set(varIsProcessing, false))
+        Set(varPendingApprovals, Filter(DonNghiPhep, Or(TrangThai.Value = "ChoDuyetCap1", TrangThai.Value = "ChoDuyetCap2", TrangThai.Value = "ChoDuyetCap3")));
+        Set(varMyLevelApprovals, Filter(varPendingApprovals, 
+          Switch(UserSession.MaVaiTro,
+            "Manager", TrangThai.Value = "ChoDuyetCap1",
+            "Director", Or(TrangThai.Value = "ChoDuyetCap2", And(TrangThai.Value = "ChoDuyetCap3", CountRows(Filter(DonNghiPhep, And(MaDon = ThisItem.MaDon, SoNgayNghi > 12))) > 0)),
+            "HR", TrangThai.Value = "ChoDuyetCap3",
+            false)))
     Children:
+      # Header Component
       - 'Approval.Header':
           Control: CanvasComponent
           ComponentName: HeaderComponent
           Properties:
-            X: =Parent.X
-            Y: =Parent.Y
+            X: =0
+            Y: =0
             Width: =Parent.Width
-            Height: =Parent.Height * 0.06
-            UserName: =varCurrentUser.HoTen
-            UserRole: =varCurrentUser.MaVaiTro
+            Height: =Parent.Height * 0.065
+            UserName: =UserSession.HoTen
+            UserRole: =UserSession.MaVaiTro
             ShowNotification: =true
-            NotificationCount: =CountRows(varPendingRequests)
+            NotificationCount: =CountRows(varMyLevelApprovals)
             OnLogout: |
-              =//LOGOUT: Clear all session data and return to login
-              Set(varLoginSuccess, false); Set(varSessionValid, false);
-              Set(varLoggedInUserEmail, ""); Clear(UserSession);
-              UpdateContext({localLogout: true});
+              =Set(varIsUserAuthenticated, false);
+              Set(UserSession, {
+                Id: "", 
+                Name: "", 
+                Email: "", 
+                Role: "", 
+                Permission: 0,
+                NguoiQuanLyId: "", 
+                HoTen: "", 
+                MaVaiTro: "", 
+                ChucDanh: "", 
+                MaDonVi: "", 
+                TrangThai: ""
+              });
               Navigate(LoginScreen)
             
+      # Navigation Component
       - 'Approval.Navigation':
           Control: CanvasComponent
           ComponentName: NavigationComponent
           Properties:
-            X: =Parent.X
-            Y: ='Approval.Header'.Y + 'Approval.Header'.Height
-            Width: =If(App.Width < 768, 
-              If(varMobileMenuOpen, Parent.Width * 0.75, Parent.Width * 0.001),
-              If(varNavCollapsed, Parent.Width * 0.06, Parent.Width * 0.2))
+            X: =0
+            Y: ='Approval.Header'.Height
+            Width: =If(varNavCollapsed, App.Width * 0.045, App.Width * 0.14)
             Height: =Parent.Height - 'Approval.Header'.Height
-            UserRole: =varCurrentUser.MaVaiTro
-            ActiveScreen: =If(IsBlank(varActiveScreen), "Approval", varActiveScreen)
+            UserRole: =UserSession.MaVaiTro
+            ActiveScreen: ="Approval"
+            IsCollapsed: =varNavCollapsed
+            DashboardScreen: =DashboardScreen
+            LeaveRequestScreen: =LeaveRequestScreen
+            MyLeavesScreen: =MyLeavesScreen
+            CalendarScreen: =CalendarScreen
+            ManagementScreen: =ManagementScreen
+            ProfileScreen: =ProfileScreen
             OnNavigate: |
               =Set(varActiveScreen, ScreenName);
               Switch(ScreenName,
@@ -61,735 +77,673 @@ Screens:
                 "Approval", Navigate(ApprovalScreen),
                 "Reports", Navigate(ReportsScreen)
               )
+            OnToggleCollapse: |
+              =Set(varNavCollapsed, !varNavCollapsed)
             
+      # Main Content Container
       - 'Approval.Content.Container':
           Control: GroupContainer
           Variant: ManualLayout
           Properties:
-            X: =0
-            Y: ='Approval.Header.Container'.Y + 'Approval.Header.Container'.Height
-            Width: =Parent.Width
-            Height: =Parent.Height - 'Approval.Header.Container'.Height
+            X: ='Approval.Navigation'.Width
+            Y: ='Approval.Header'.Height
+            Width: =Parent.Width - 'Approval.Navigation'.Width
+            Height: =Parent.Height - 'Approval.Header'.Height
           Children:
-            # Page Title & Stats
-            - 'Approval.Content.Header':
+            - 'Approval.Content.Padded':
                 Control: GroupContainer
                 Variant: ManualLayout
                 Properties:
-                  X: =Parent.Width * 0.03
-                  Y: =Parent.Height * 0.02
-                  Width: =Parent.Width * 0.94
-                  Height: =Parent.Height * 0.1
+                  X: =Parent.Width * 0.01
+                  Y: =Parent.Height * 0.01
+                  Width: =Parent.Width * 0.98
+                  Height: =Parent.Height * 0.98
                 Children:
-                  - 'Approval.Content.Title':
-                      Control: Label
-                      Properties:
-                        X: =0
-                        Y: =0
-                        Width: =Parent.Width * 0.6
-                        Height: =Parent.Height * 0.5
-                        Text: ="Phê duyệt đơn nghỉ phép"
-                        Color: =RGBA(32, 54, 71, 1)
-                        Font: =Font.'Open Sans'
-                        FontWeight: =FontWeight.Bold
-                        Size: =Parent.Height * 0.25
-                        
-                  - 'Approval.Content.Stats':
-                      Control: Label
-                      Properties:
-                        X: =0
-                        Y: ='Approval.Content.Title'.Y + 'Approval.Content.Title'.Height
-                        Width: =Parent.Width * 0.6
-                        Height: =Parent.Height * 0.35
-                        Text: |
-                          =Concatenate(
-                          "Cấp phê duyệt:", varMyApprovalLevel, 
-                          " | Đơn chờ xử lý:", CountRows(varPendingRequests),
-                          " | Vai trò:", LookUp(VaiTro, MaVaiTro = varCurrentUser.MaVaiTro).TenVaiTro)
-                        Color: =RGBA(108, 117, 125, 1)
-                        Font: =Font.'Open Sans'
-                        Size: =Parent.Height * 0.15
-                        
-                  # Filter Controls
-                  - 'Approval.Content.FilterContainer':
+                  # Page Header
+                  - 'Approval.PageHeader.Container':
                       Control: GroupContainer
                       Variant: ManualLayout
                       Properties:
-                        X: =Parent.Width * 0.65
+                        X: =0
                         Y: =0
-                        Width: =Parent.Width * 0.35
-                        Height: =Parent.Height
+                        Width: =Parent.Width
+                        Height: =Parent.Height * 0.1
                       Children:
-                        - 'Approval.Content.Filter.Label':
-                            Control: Label
+                        - 'Approval.PageHeader.Background':
+                            Control: Rectangle
                             Properties:
                               X: =0
                               Y: =0
                               Width: =Parent.Width
-                              Height: =Parent.Height * 0.3
-                              Text: ="Lọc theo trạng thái:"
-                              Color: =RGBA(55, 65, 81, 1)
-                              Font: =Font.'Open Sans'
-                              Size: =Parent.Height * 0.12
+                              Height: =Parent.Height
+                              Fill: =RGBA(255, 255, 255, 1)
+                              BorderColor: =RGBA(226, 232, 240, 1)
+                              BorderThickness: =1
                               
-                        - 'Approval.Content.Filter.Dropdown':
-                            Control: Classic/DropDown
+                        - 'Approval.PageHeader.Icon':
+                            Control: Classic/Icon
                             Properties:
-                              X: =0
-                              Y: =Parent.Height * 0.35
-                              Width: =Parent.Width
-                              Height: =Parent.Height * 0.6
-                              Items: =["All", "ChoDuyetCap1", "ChoDuyetCap2", "ChoDuyetCap3", "DaDuyet", "TuChoi"]
-                              Default: =varFilterStatus
-                              OnChange: =Set(varFilterStatus, Self.Selected.Value); Set(varFilteredRequests, If(varFilterStatus = "All", varPendingRequests, Filter(varPendingRequests, TrangThai = varFilterStatus)))
+                              X: =Parent.Width * 0.015
+                              Y: =Parent.Height * 0.25
+                              Width: =Parent.Height * 0.2
+                              Height: =Parent.Height * 0.2
+                              Icon: =Icon.CheckBadge
+                              Color: =RGBA(59, 130, 246, 1)
                               
-            # Requests List
-            - 'Approval.RequestsList.Container':
-                Control: GroupContainer
-                Variant: ManualLayout
-                Properties:
-                  X: =Parent.Width * 0.03
-                  Y: ='Approval.Content.Header'.Y + 'Approval.Content.Header'.Height + Parent.Height * 0.02
-                  Width: =Parent.Width * 0.94
-                  Height: =Parent.Height * 0.8
-                  Fill: =RGBA(255, 255, 255, 1)
-                  BorderColor: =RGBA(230, 230, 230, 1)
-                  BorderThickness: =Parent.Width * 0.001
-                  DropShadow: =DropShadow.Light
-                Children:
-                  - 'Approval.RequestsList.Header':
+                        - 'Approval.PageHeader.Title':
+                            Control: Label
+                            Properties:
+                              X: =Parent.Width * 0.015 + 'Approval.PageHeader.Icon'.Width + Parent.Width * 0.01
+                              Y: =Parent.Height * 0.2
+                              Width: =Parent.Width * 0.6
+                              Height: =Parent.Height * 0.35
+                              Text: ="Phê duyệt đơn nghỉ phép"
+                              Color: =RGBA(17, 24, 39, 1)
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Bold
+                              Size: =14
+                              
+                        - 'Approval.PageHeader.Stats':
+                            Control: Label
+                            Properties:
+                              X: =Parent.Width * 0.015 + 'Approval.PageHeader.Icon'.Width + Parent.Width * 0.01
+                              Y: =Parent.Height * 0.6
+                              Width: =Parent.Width * 0.6
+                              Height: =Parent.Height * 0.25
+                              Text: =Concatenate("Đang chờ duyệt" & ":" & " ", CountRows(varMyLevelApprovals), " " & "đơn")
+                              Color: =RGBA(75, 85, 99, 1)
+                              Font: =Font.'Open Sans'
+                              Size: =11
+
+                  # Stats Section
+                  - 'Approval.Stats.Container':
                       Control: GroupContainer
                       Variant: ManualLayout
-                      Properties:
-                        X: =Parent.Width * 0.02
-                        Y: =Parent.Height * 0.02
-                        Width: =Parent.Width * 0.96
-                        Height: =Parent.Height * 0.08
-                        Fill: =RGBA(248, 249, 250, 1)
-                        BorderColor: =RGBA(229, 231, 235, 1)
-                        BorderThickness: =Parent.Width * 0.0005
+                            Properties:
+                        X: =0
+                        Y: ='Approval.PageHeader.Container'.Y + 'Approval.PageHeader.Container'.Height + Parent.Height * 0.015
+                        Width: =Parent.Width
+                        Height: =Parent.Height * 0.15
                       Children:
-                        - 'Approval.RequestsList.Header.Employee':
+                        - 'Approval.Stats.Background':
+                            Control: Rectangle
+                            Properties:
+                              X: =0
+                              Y: =0
+                              Width: =Parent.Width
+                              Height: =Parent.Height
+                              Fill: =RGBA(255, 255, 255, 1)
+                              BorderColor: =RGBA(226, 232, 240, 1)
+                              BorderThickness: =1
+                              
+                        - 'Approval.Stats.Header':
                             Control: Label
                             Properties:
-                              X: =Parent.Width * 0.02
-                              Y: =(Parent.Height - Self.Height) / 2
-                              Width: =Parent.Width * 0.18
-                              Height: =Parent.Height * 0.6
-                              Text: ="Nhân viên"
-                              Color: =RGBA(55, 65, 81, 1)
+                              X: =Parent.Width * 0.015
+                              Y: =Parent.Height * 0.05
+                              Width: =Parent.Width * 0.97
+                              Height: =Parent.Height * 0.2
+                              Text: ="Tổng quan phê duyệt"
+                              Color: =RGBA(17, 24, 39, 1)
                               Font: =Font.'Open Sans'
-                              FontWeight: =FontWeight.Semibold
-                              Size: =Parent.Height * 0.3
-                              
-                        - 'Approval.RequestsList.Header.LeaveType':
-                            Control: Label
-                            Properties:
-                              X: =Parent.Width * 0.2
-                              Y: =(Parent.Height - Self.Height) / 2
-                              Width: =Parent.Width * 0.15
-                              Height: =Parent.Height * 0.6
-                              Text: ="Loại nghỉ"
-                              Color: =RGBA(55, 65, 81, 1)
-                              Font: =Font.'Open Sans'
-                              FontWeight: =FontWeight.Semibold
-                              Size: =Parent.Height * 0.3
-                              
-                        - 'Approval.RequestsList.Header.DateRange':
-                            Control: Label
-                            Properties:
-                              X: =Parent.Width * 0.35
-                              Y: =(Parent.Height - Self.Height) / 2
-                              Width: =Parent.Width * 0.2
-                              Height: =Parent.Height * 0.6
-                              Text: ="Thời gian nghỉ"
-                              Color: =RGBA(55, 65, 81, 1)
-                              Font: =Font.'Open Sans'
-                              FontWeight: =FontWeight.Semibold
-                              Size: =Parent.Height * 0.3
-                              
-                        - 'Approval.RequestsList.Header.Days':
-                            Control: Label
-                            Properties:
-                              X: =Parent.Width * 0.55
-                              Y: =(Parent.Height - Self.Height) / 2
-                              Width: =Parent.Width * 0.1
-                              Height: =Parent.Height * 0.6
-                              Text: ="Số ngày"
-                              Color: =RGBA(55, 65, 81, 1)
-                              Font: =Font.'Open Sans'
-                              FontWeight: =FontWeight.Semibold
-                              Size: =Parent.Height * 0.3
-                              
-                        - 'Approval.RequestsList.Header.Status':
-                            Control: Label
-                            Properties:
-                              X: =Parent.Width * 0.65
-                              Y: =(Parent.Height - Self.Height) / 2
-                              Width: =Parent.Width * 0.15
-                              Height: =Parent.Height * 0.6
-                              Text: ="Trạng thái"
-                              Color: =RGBA(55, 65, 81, 1)
-                              Font: =Font.'Open Sans'
-                              FontWeight: =FontWeight.Semibold
-                              Size: =Parent.Height * 0.3
-                              
-                        - 'Approval.RequestsList.Header.Actions':
-                            Control: Label
-                            Properties:
-                              X: =Parent.Width * 0.8
-                              Y: =(Parent.Height - Self.Height) / 2
-                              Width: =Parent.Width * 0.18
-                              Height: =Parent.Height * 0.6
-                              Text: ="Thao tác"
-                              Color: =RGBA(55, 65, 81, 1)
-                              Font: =Font.'Open Sans'
-                              FontWeight: =FontWeight.Semibold
-                              Size: =Parent.Height * 0.3
-                              
-                  # Requests Gallery
-                  - 'Approval.RequestsList.Gallery':
-                      Control: Gallery
-                      Variant: Vertical
-                      Properties:
-                        X: =Parent.Width * 0.02
-                        Y: ='Approval.RequestsList.Header'.Y + 'Approval.RequestsList.Header'.Height + Parent.Height * 0.01
-                        Width: =Parent.Width * 0.96
-                        Height: =Parent.Height * 0.85
-                        Items: =If(IsBlank(varFilteredRequests), varPendingRequests, varFilteredRequests)
-                        TemplateSize: =Self.Height * 0.12
-                        TemplatePadding: =Self.Height * 0.005
-                        BorderThickness: =0
-                        Fill: =RGBA(0, 0, 0, 0)
-                      Children:
-                        - 'Approval.RequestsList.Gallery.Row':
+                              FontWeight: =FontWeight.Bold
+                              Size: =12
+                        
+                        - 'Approval.Stats.Cards.Container':
                             Control: GroupContainer
                             Variant: ManualLayout
                             Properties:
-                              X: =Parent.TemplateX
-                              Y: =Parent.TemplateY
-                              Width: =Parent.TemplateWidth
-                              Height: =Parent.TemplateHeight
-                              Fill: =If(Mod(ThisItem.'#Row', 2) = 0, RGBA(255, 255, 255, 1), RGBA(248, 249, 250, 1))
-                              BorderColor: =RGBA(229, 231, 235, 1)
-                              BorderThickness: =Parent.Width * 0.0002
+                              X: =Parent.Width * 0.015
+                              Y: =Parent.Height * 0.3
+                              Width: =Parent.Width * 0.97
+                              Height: =Parent.Height * 0.65
                             Children:
-                              # Employee Info
-                              - 'Approval.RequestsList.Gallery.Employee':
-                                  Control: GroupContainer
-                                  Variant: ManualLayout
-                                  Properties:
-                                    X: =Parent.Width * 0.02
-                                    Y: =Parent.Height * 0.1
-                                    Width: =Parent.Width * 0.18
-                                    Height: =Parent.Height * 0.8
-                                  Children:
-                                    - 'Approval.RequestsList.Gallery.EmployeeName':
-                                        Control: Label
+                              - 'Approval.Stats.Pending':
+                                  Control: CanvasComponent
+                                  ComponentName: StatsCardComponent
                                         Properties:
                                           X: =0
                                           Y: =0
-                                          Width: =Parent.Width
-                                          Height: =Parent.Height * 0.5
-                                          Text: =LookUp(NguoiDung, MaNhanVien = ThisItem.MaNhanVien).HoTen
-                                          Color: =RGBA(32, 54, 71, 1)
-                                          Font: =Font.'Open Sans'
-                                          FontWeight: =FontWeight.Semibold
-                                          Size: =Parent.Height * 0.25
-                                          
-                                    - 'Approval.RequestsList.Gallery.EmployeeCode':
-                                        Control: Label
-                                        Properties:
-                                          X: =Parent.X
-                                          Y: ='Approval.RequestsList.Gallery.EmployeeName'.Y + 'Approval.RequestsList.Gallery.EmployeeName'.Height
-                                          Width: =Parent.Width
-                                          Height: =Parent.Height * 0.35
-                                          Text: =ThisItem.MaNhanVien
-                                          Color: =RGBA(107, 114, 128, 1)
-                                          Font: =Font.'Open Sans'
-                                          Size: =Parent.Height * 0.2
-                                          
-                                    - 'Approval.RequestsList.Gallery.Department':
-                                        Control: Label
-                                        Properties:
-                                          X: =Parent.X
-                                          Y: ='Approval.RequestsList.Gallery.EmployeeCode'.Y + 'Approval.RequestsList.Gallery.EmployeeCode'.Height
-                                          Width: =Parent.Width
-                                          Height: =Parent.Height * 0.15
-                                          Text: =LookUp(DonVi, MaDonVi = LookUp(NguoiDung, MaNhanVien = ThisItem.MaNhanVien).MaDonVi).TenDonVi
-                                          Color: =RGBA(107, 114, 128, 1)
-                                          Font: =Font.'Open Sans'
-                                          Size: =Parent.Height * 0.12
-                                          
-                              # Leave Type
-                              - 'Approval.RequestsList.Gallery.LeaveType':
-                                  Control: Label
-                                  Properties:
-                                    X: =Parent.Width * 0.2
-                                    Y: =(Parent.Height - Self.Height) / 2
-                                    Width: =Parent.Width * 0.15
-                                    Height: =Parent.Height * 0.4
-                                    Text: =LookUp(LoaiNghi, MaLoai = ThisItem.MaLoai).TenLoai
-                                    Color: =RGBA(55, 65, 81, 1)
-                                    Font: =Font.'Open Sans'
-                                    Size: =Parent.Height * 0.18
+                                    Width: =(Parent.Width - Parent.Width * 0.03) / 4
+                                    Height: =Parent.Height
+                                    Title: ="Chờ tôi duyệt"
+                                    Value: =CountRows(varMyLevelApprovals)
+                                    Icon: ="Clock"
+                                    Color: =RGBA(251, 191, 36, 1)
+                                    ShowTrend: =false
                                     
-                              # Date Range
-                              - 'Approval.RequestsList.Gallery.DateRange':
-                                  Control: GroupContainer
-                                  Variant: ManualLayout
+                              - 'Approval.Stats.Cap1':
+                                  Control: CanvasComponent
+                                  ComponentName: StatsCardComponent
                                   Properties:
-                                    X: =Parent.Width * 0.35
-                                    Y: =Parent.Height * 0.1
-                                    Width: =Parent.Width * 0.2
-                                    Height: =Parent.Height * 0.8
-                                  Children:
-                                    - 'Approval.RequestsList.Gallery.StartDate':
-                                        Control: Label
-                                        Properties:
-                                          X: =Parent.X
-                                          Y: =Parent.Y
-                                          Width: =Parent.Width
-                                          Height: =Parent.Height * 0.4
-                                          Text: =Text(ThisItem.NgayBatDau, "dd/mm/yyyy")
-                                          Color: =RGBA(55, 65, 81, 1)
-                                          Font: =Font.'Open Sans'
-                                          FontWeight: =FontWeight.Semibold
-                                          Size: =Parent.Height * 0.2
-                                          
-                                    - 'Approval.RequestsList.Gallery.EndDate':
-                                        Control: Label
-                                        Properties:
-                                          X: =Parent.X
-                                          Y: ='Approval.RequestsList.Gallery.StartDate'.Y + 'Approval.RequestsList.Gallery.StartDate'.Height
-                                          Width: =Parent.Width
-                                          Height: =Parent.Height * 0.4
-                                          Text: =Text(ThisItem.NgayKetThuc, "dd/mm/yyyy")
-                                          Color: =RGBA(107, 114, 128, 1)
-                                          Font: =Font.'Open Sans'
-                                          Size: =Parent.Height * 0.18
-                                          
-                                    - 'Approval.RequestsList.Gallery.Session':
-                                        Control: Label
-                                        Properties:
-                                          X: =Parent.X
-                                          Y: ='Approval.RequestsList.Gallery.EndDate'.Y + 'Approval.RequestsList.Gallery.EndDate'.Height
-                                          Width: =Parent.Width
-                                          Height: =Parent.Height * 0.2
-                                          Text: =Switch(ThisItem.BuoiNghi, 
-                                            "CaNgay", "Cả ngày",
-                                            "BuoiSang", "Buổi sáng", 
-                                            "BuoiChieu", "Buổi chiều",
-                                            ThisItem.BuoiNghi)
-                                          Color: =RGBA(107, 114, 128, 1)
-                                          Font: =Font.'Open Sans'
-                                          Size: =Parent.Height * 0.12
-                                          
-                              # Days Count
-                              - 'Approval.RequestsList.Gallery.Days':
-                                  Control: Label
-                                  Properties:
-                                    X: =Parent.Width * 0.55
-                                    Y: =(Parent.Height - Self.Height) / 2
-                                    Width: =Parent.Width * 0.1
-                                    Height: =Parent.Height * 0.4
-                                    Text: =ThisItem.SoNgayNghi & " ngày"
-                                    Color: =RGBA(55, 65, 81, 1)
-                                    Font: =Font.'Open Sans'
-                                    FontWeight: =FontWeight.Semibold
-                                    Size: =Parent.Height * 0.18
-                                    Align: =Align.Center
+                                    X: =(Parent.Width + Parent.Width * 0.01) / 4
+                                    Y: =0
+                                    Width: =(Parent.Width - Parent.Width * 0.03) / 4
+                                    Height: =Parent.Height
+                                    Title: ="Chờ cấp 1"
+                                    Value: =CountRows(Filter(varPendingApprovals, TrangThai.Value = "ChoDuyetCap1"))
+                                    Icon: ="Person"
+                                    Color: =RGBA(239, 68, 68, 1)
+                                    ShowTrend: =false
                                     
-                              # Status Badge
-                              - 'Approval.RequestsList.Gallery.Status':
-                                  Control: Label
+                              - 'Approval.Stats.Cap2':
+                                  Control: CanvasComponent
+                                  ComponentName: StatsCardComponent
                                   Properties:
-                                    X: =Parent.Width * 0.65
-                                    Y: =(Parent.Height - Self.Height) / 2
-                                    Width: =Parent.Width * 0.15
-                                    Height: =Parent.Height * 0.5
-                                    Text: =Switch(ThisItem.TrangThai,
-                                      "ChoDuyetCap1", "Chờ cấp 1",
-                                      "ChoDuyetCap2", "Chờ cấp 2",
-                                      "ChoDuyetCap3", "Chờ cấp 3",
-                                      "DaDuyet", "Đã duyệt",
-                                      "TuChoi", "Từ chối",
-                                      "Huy", "Đã hủy",
-                                      "HetHan", "Hết hạn",
-                                      ThisItem.TrangThai)
-                                    Color: =Switch(ThisItem.TrangThai,
-                                      "DaDuyet", RGBA(76, 175, 80, 1),
-                                      "TuChoi", RGBA(244, 67, 54, 1),
-                                      "ChoDuyetCap1", RGBA(255, 152, 0, 1),
-                                      "ChoDuyetCap2", RGBA(255, 152, 0, 1),
-                                      "ChoDuyetCap3", RGBA(255, 152, 0, 1),
-                                      "HetHan", RGBA(158, 158, 158, 1),
-                                      RGBA(107, 114, 128, 1))
-                                    Fill: =Switch(ThisItem.TrangThai,
-                                      "DaDuyet", RGBA(232, 245, 233, 1),
-                                      "TuChoi", RGBA(255, 235, 238, 1),
-                                      "ChoDuyetCap1", RGBA(255, 243, 224, 1),
-                                      "ChoDuyetCap2", RGBA(255, 243, 224, 1),
-                                      "ChoDuyetCap3", RGBA(255, 243, 224, 1),
-                                      RGBA(248, 250, 252, 1))
-                                    BorderColor: =Switch(ThisItem.TrangThai,
-                                      "DaDuyet", RGBA(200, 230, 201, 1),
-                                      "TuChoi", RGBA(255, 205, 210, 1),
-                                      "ChoDuyetCap1", RGBA(255, 224, 178, 1),
-                                      "ChoDuyetCap2", RGBA(255, 224, 178, 1),
-                                      "ChoDuyetCap3", RGBA(255, 224, 178, 1),
-                                      RGBA(224, 224, 224, 1))
-                                    BorderThickness: =Parent.Width * 0.001
-                                    Font: =Font.'Open Sans'
-                                    FontWeight: =FontWeight.Semibold
-                                    Size: =Parent.Height * 0.15
-                                    Align: =Align.Center
-                                    
-                              # Action Buttons
-                              - 'Approval.RequestsList.Gallery.Actions':
-                                  Control: GroupContainer
-                                  Variant: ManualLayout
+                                    X: =(Parent.Width + Parent.Width * 0.01) * 2 / 4
+                                    Y: =0
+                                    Width: =(Parent.Width - Parent.Width * 0.03) / 4
+                                    Height: =Parent.Height
+                                    Title: ="Chờ cấp 2"
+                                    Value: =CountRows(Filter(varPendingApprovals, TrangThai.Value = "ChoDuyetCap2"))
+                                    Icon: ="Settings"
+                                    Color: =RGBA(251, 146, 60, 1)
+                                    ShowTrend: =false
+
+                              - 'Approval.Stats.Cap3':
+                                  Control: CanvasComponent
+                                  ComponentName: StatsCardComponent
                                   Properties:
-                                    X: =Parent.Width * 0.8
-                                    Y: =Parent.Height * 0.1
-                                    Width: =Parent.Width * 0.18
-                                    Height: =Parent.Height * 0.8
-                                  Children:
-                                    # View Details Button
-                                    - 'Approval.RequestsList.Gallery.ViewButton':
-                                        Control: CanvasComponent
-                                        ComponentName: ButtonComponent
-                                        Properties:
-                                          X: =Parent.X
-                                          Y: =Parent.Y
-                                          Width: =Parent.Width * 0.45
-                                          Height: =Parent.Height * 0.4
-                                          Text: ="Chi tiết"
-                                          Variant: ="Outline"
-                                          Size: ="Small"
-                                          Icon: ="View"
-                                          OnClick: |
-                                                    =Set(varSelectedRequest, ThisItem);
-                                                    Set(varShowRequestDetails, true)
-                                          
-                                    # Approve Button (only for pending requests at user's level)
-                                    - 'Approval.RequestsList.Gallery.ApproveButton':
-                                        Control: CanvasComponent
-                                        ComponentName: ButtonComponent
-                                        Properties:
-                                          X: =Parent.Width * 0.55
-                                          Y: =Parent.Y
-                                          Width: =Parent.Width * 0.45
-                                          Height: =Parent.Height * 0.4
-                                          Text: ="Duyệt"
-                                          Variant: ="Primary"
-                                          Size: ="Small"
-                                          Icon: ="Check"
-                                          Visible: =And(
-                                            ThisItem.TrangThai = Switch(varMyApprovalLevel,
-                                              1, "ChoDuyetCap1",
-                                              2, "ChoDuyetCap2", 
-                                              3, "ChoDuyetCap3",
-                                              ""),
-                                            Not(varIsProcessing))
-                                          OnClick: |
-                                                    =Set(varSelectedRequest, ThisItem);
-                                                    Set(varApprovalAction, "Approve");
-                                                    Set(varApprovalComment, "");
-                                                    Set(varShowApprovalModal, true)
-                                          
-                                    # Reject Button
-                                    - 'Approval.RequestsList.Gallery.RejectButton':
-                                        Control: CanvasComponent
-                                        ComponentName: ButtonComponent
-                                        Properties:
-                                          X: =Parent.X
-                                          Y: =Parent.Height * 0.6
-                                          Width: =Parent.Width * 0.45
-                                          Height: =Parent.Height * 0.4
-                                          Text: ="Từ chối"
-                                          Variant: ="Danger"
-                                          Size: ="Small"
-                                          Icon: ="Cancel"
-                                          Visible: =And(
-                                            ThisItem.TrangThai in ["ChoDuyetCap1", "ChoDuyetCap2", "ChoDuyetCap3"],
-                                            Or(
-                                              And(varMyApprovalLevel = 1, ThisItem.TrangThai = "ChoDuyetCap1"),
-                                              And(varMyApprovalLevel = 2, ThisItem.TrangThai in ["ChoDuyetCap2", "ChoDuyetCap3"]),
-                                              And(varMyApprovalLevel = 3, ThisItem.TrangThai = "ChoDuyetCap3"),
-                                              varCurrentUser.MaVaiTro = "HR"
-                                            ),
-                                            Not(varIsProcessing))
-                                          OnClick: |
-                                                    =Set(varSelectedRequest, ThisItem);
-                                                    Set(varApprovalAction, "Reject");
-                                                    Set(varApprovalComment, "");
-                                                    Set(varShowApprovalModal, true)
-                                          
-                                    # Reassign Button (HR only)
-                                    - 'Approval.RequestsList.Gallery.ReassignButton':
-                                        Control: CanvasComponent
-                                        ComponentName: ButtonComponent
-                                        Properties:
-                                          X: =Parent.Width * 0.55
-                                          Y: =Parent.Height * 0.6
-                                          Width: =Parent.Width * 0.45
-                                          Height: =Parent.Height * 0.4
-                                          Text: ="Chuyển"
-                                          Variant: ="Secondary"
-                                          Size: ="Small"
-                                          Icon: ="Forward"
-                                          Visible: =And(
-                                            varCurrentUser.MaVaiTro = "HR",
-                                            ThisItem.TrangThai in ["ChoDuyetCap1", "ChoDuyetCap2", "ChoDuyetCap3"],
-                                            Not(varIsProcessing))
-                                          OnClick: |
-                                                    =Set(varSelectedRequest, ThisItem);
-                                                    Set(varApprovalAction, "Reassign");
-                                                    Set(varShowApprovalModal, true)
-                                          
-      # Approval Modal
-      - 'Approval.Modal.Overlay':
-          Control: Rectangle
+                                    X: =(Parent.Width + Parent.Width * 0.01) * 3 / 4
+                                    Y: =0
+                                    Width: =(Parent.Width - Parent.Width * 0.03) / 4
+                                    Height: =Parent.Height
+                                    Title: ="Chờ cấp 3"
+                                    Value: =CountRows(Filter(varPendingApprovals, TrangThai.Value = "ChoDuyetCap3"))
+                                    Icon: ="Crown"
+                                    Color: =RGBA(139, 69, 19, 1)
+                                    ShowTrend: =false
+
+      # DataTable for Approvals - Direct Screen child
+      - 'Approval.DataTable':
+          Control: DataTable@1.0.3
+          Variant: DataTable
           Properties:
-            X: =0
-            Y: =0
-            Width: =Parent.Width
-            Height: =Parent.Height
-            Fill: =RGBA(0, 0, 0, 0.5)
-            Visible: =varShowApprovalModal
+            X: ='Approval.Navigation'.Width + 'Approval.Content.Container'.Width * 0.02
+            Y: ='Approval.Header'.Height + 'Approval.Content.Container'.Height * 0.32
+            Width: ='Approval.Content.Container'.Width * 0.96
+            Height: ='Approval.Content.Container'.Height * 0.65
+            Items: =SortByColumns(varMyLevelApprovals, "NgayBatDau", SortOrder.Ascending)
+            BorderColor: =RGBA(229, 231, 235, 1)
+            BorderThickness: =1
+            Font: =Font.'Open Sans'
+            Size: =11
+            Color: =RGBA(55, 65, 81, 1)
+            HeadingColor: =RGBA(255, 255, 255, 1)
+            HeadingFill: =RGBA(59, 130, 246, 1)
+            HeadingFont: =Font.'Open Sans'
+            HeadingFontWeight: =FontWeight.Bold
+            HeadingSize: =12
+            NoDataText: ="Không có đơn cần phê duyệt"
+                                  Children:
+            - NguoiTao_Column:
+                Control: DataTableColumn@1.0.1
+                Variant: Textual
+                Properties:
+                  FieldDisplayName: ="Người tạo"
+                  FieldName: ="MaNguoiDung"
+                  Order: =1
+                  Text: =LookUp(NguoiDung, Title = ThisItem.MaNguoiDung.Value).HoTen
+                  OnSelect: |
+                    =Set(varSelectedApprovalLeave, Parent.Selected);
+                    Set(varShowApprovalDetails, true)
+            - NgayBatDau_Column:
+                Control: DataTableColumn@1.0.1
+                Variant: Textual
+                                        Properties:
+                  FieldDisplayName: ="Ngày bắt đầu"
+                  FieldName: ="NgayBatDau"
+                  Order: =2
+                  Text: =Text(ThisItem.NgayBatDau, "dd/mm/yyyy")
+                  OnSelect: |
+                    =Set(varSelectedApprovalLeave, Parent.Selected);
+                    Set(varShowApprovalDetails, true)
+            - NgayKetThuc_Column:
+                Control: DataTableColumn@1.0.1
+                Variant: Textual
+                                        Properties:
+                  FieldDisplayName: ="Ngày kết thúc"
+                  FieldName: ="NgayKetThuc"
+                  Order: =3
+                  Text: =Text(ThisItem.NgayKetThuc, "dd/mm/yyyy")
+                  OnSelect: |
+                    =Set(varSelectedApprovalLeave, Parent.Selected);
+                    Set(varShowApprovalDetails, true)
+            - SoNgayNghi_Column:
+                Control: DataTableColumn@1.0.1
+                Variant: Number
+                                        Properties:
+                  FieldDisplayName: ="Số ngày"
+                  FieldName: ="SoNgayNghi"
+                  Order: =4
+                  Text: =Text(ThisItem.SoNgayNghi) & " ngày"
+                  OnSelect: |
+                    =Set(varSelectedApprovalLeave, Parent.Selected);
+                    Set(varShowApprovalDetails, true)
+            - LoaiNghi_Column:
+                Control: DataTableColumn@1.0.1
+                Variant: Textual
+                                        Properties:
+                  FieldDisplayName: ="Loại nghỉ"
+                  FieldName: ="MaLoai"
+                  Order: =5
+                  Text: =LookUp(LoaiNghi, MaLoai = ThisItem.MaLoai.Value).TenLoai
+                  OnSelect: |
+                    =Set(varSelectedApprovalLeave, Parent.Selected);
+                    Set(varShowApprovalDetails, true)
+            - TrangThai_Column:
+                Control: DataTableColumn@1.0.1
+                Variant: Textual
+          Properties:
+                  FieldDisplayName: ="Trạng thái"
+                  FieldName: ="TrangThai"
+                  Order: =6
+                  Text: =Switch(ThisItem.TrangThai.Value, "ChoDuyetCap1", "Chờ duyệt cấp 1", "ChoDuyetCap2", "Chờ duyệt cấp 2", "ChoDuyetCap3", "Chờ duyệt cấp 3", "Không xác định")
             OnSelect: |
-              =Set(varShowApprovalModal, false)
+                    =Set(varSelectedApprovalLeave, Parent.Selected);
+                    Set(varShowApprovalDetails, true)
             
-      - 'Approval.Modal.Container':
+      # Approval Details Modal
+      - 'Approval.Details.Modal':
           Control: GroupContainer
           Variant: ManualLayout
           Properties:
-            X: =(Parent.Width - Self.Width) / 2
-            Y: =(Parent.Height - Self.Height) / 2
-            Width: =Parent.Width * 0.5
-            Height: =Parent.Height * 0.6
+            X: =(Parent.Width - Parent.Width * 0.8) / 2
+            Y: =(Parent.Height - Parent.Height * 0.9) / 2
+            Width: =Parent.Width * 0.8
+            Height: =Parent.Height * 0.9
             Fill: =RGBA(255, 255, 255, 1)
-            BorderColor: =RGBA(200, 200, 200, 1)
-            BorderThickness: =Parent.Width * 0.002
-            DropShadow: =DropShadow.Bold
-            Visible: =varShowApprovalModal
+            BorderColor: =RGBA(226, 232, 240, 1)
+            BorderThickness: =2
+            Visible: =varShowApprovalDetails
           Children:
-            # Modal Header
-            - 'Approval.Modal.Header':
+            - 'Approval.Details.Header':
                 Control: GroupContainer
                 Variant: ManualLayout
                 Properties:
-                  X: =Parent.X
-                  Y: =Parent.Y
-                  Width: =Parent.Width
-                  Height: =Parent.Height * 0.15
-                  Fill: =Switch(varApprovalAction,
-                    "Approve", RGBA(232, 245, 233, 1),
-                    "Reject", RGBA(255, 235, 238, 1),
-                    RGBA(248, 249, 250, 1))
-                  BorderColor: =RGBA(229, 231, 235, 1)
-                  BorderThickness: =Parent.Width * 0.001
+                  X: =Parent.Width * 0.02
+                  Y: =Parent.Height * 0.02
+                  Width: =Parent.Width * 0.96
+                  Height: =Parent.Height * 0.08
+                  Fill: =RGBA(59, 130, 246, 1)
+                  BorderColor: =RGBA(37, 99, 235, 1)
+                  BorderThickness: =1
                 Children:
-                  - 'Approval.Modal.Title':
+                  - 'Approval.Details.Title':
                       Control: Label
                       Properties:
                         X: =Parent.Width * 0.03
-                        Y: =(Parent.Height - Self.Height) / 2
+                        Y: =(Parent.Height - Parent.Height * 0.6) / 2
                         Width: =Parent.Width * 0.8
                         Height: =Parent.Height * 0.6
-                        Text: =Switch(varApprovalAction,
-                          "Approve", "Phê duyệt đơn nghỉ phép",
-                          "Reject", "Từ chối đơn nghỉ phép",
-                          "Reassign", "Chuyển đơn xử lý",
-                          "Xác nhận thao tác")
-                        Color: =RGBA(32, 54, 71, 1)
+                        Text: ="Chi tiết đơn nghỉ phép - Phê duyệt"
+                        Color: =RGBA(255, 255, 255, 1)
                         Font: =Font.'Open Sans'
                         FontWeight: =FontWeight.Bold
-                        Size: =Parent.Height * 0.3
+                        Size: =Parent.Height * 0.25
                         
-                  - 'Approval.Modal.CloseButton':
-                      Control: Classic/Icon
+                  - 'Approval.Details.CloseButton':
+                      Control: CanvasComponent
+                      ComponentName: ButtonComponent
                       Properties:
-                        X: =Parent.Width - Self.Width - Parent.Width * 0.03
+                        X: =Parent.Width * 0.84
                         Y: =(Parent.Height - Self.Height) / 2
-                        Width: =Parent.Height * 0.4
-                        Height: =Parent.Height * 0.4
-                        Icon: =Icon.Cancel
-                        Color: =RGBA(107, 114, 128, 1)
-                        OnSelect: |
-                          =Set(varShowApprovalModal, false)
-                        
-            # Request Details
-            - 'Approval.Modal.RequestDetails':
-                Control: GroupContainer
-                Variant: ManualLayout
-                Properties:
-                  X: =Parent.Width * 0.03
-                  Y: ='Approval.Modal.Header'.Y + 'Approval.Modal.Header'.Height + Parent.Height * 0.02
-                  Width: =Parent.Width * 0.94
-                  Height: =Parent.Height * 0.4
-                Children:
-                  - 'Approval.Modal.EmployeeInfo':
-                      Control: Label
-                      Properties:
-                        X: =Parent.X
-                        Y: =Parent.Y
-                        Width: =Parent.Width
-                        Height: =Parent.Height * 0.2
-                        Text: =Concatenate(
-                          "Nhân viên:", LookUp(NguoiDung, MaNhanVien = varSelectedRequest.MaNhanVien).HoTen,
-                          " (", varSelectedRequest.MaNhanVien, ")")
-                        Color: =RGBA(32, 54, 71, 1)
-                        Font: =Font.'Open Sans'
-                        FontWeight: =FontWeight.Semibold
-                        Size: =Parent.Height * 0.08
-                        
-                  - 'Approval.Modal.LeaveDetails':
-                      Control: Label
-                      Properties:
-                        X: =Parent.X
-                        Y: ='Approval.Modal.EmployeeInfo'.Y + 'Approval.Modal.EmployeeInfo'.Height
-                        Width: =Parent.Width
+                        Width: =Parent.Width * 0.13
                         Height: =Parent.Height * 0.6
-                        Text: =Concatenate(
-                          "Loại nghỉ:", LookUp(LoaiNghi, MaLoai = varSelectedRequest.MaLoai).TenLoai, Char(10),
-                          "Thời gian:", Text(varSelectedRequest.NgayBatDau, "dd/mm/yyyy"), " - ", Text(varSelectedRequest.NgayKetThuc, "dd/mm/yyyy"), Char(10),
-                          "Số ngày:", varSelectedRequest.SoNgayNghi, " ngày", Char(10),
-                          "Lý do:", varSelectedRequest.LyDo
-                        )
-                        Color: =RGBA(55, 65, 81, 1)
-                        Font: =Font.'Open Sans'
-                        Size: =Parent.Height * 0.06
+                        Text: ="Đóng"
+                        Variant: ="Outline"
+                        Size: ="Small"
+                        OnClick: |
+                          =Set(varShowApprovalDetails, false)
                         
-                  - 'Approval.Modal.CurrentStatus':
-                      Control: Label
-                      Properties:
-                        X: =Parent.X
-                        Y: ='Approval.Modal.LeaveDetails'.Y + 'Approval.Modal.LeaveDetails'.Height
-                        Width: =Parent.Width
-                        Height: =Parent.Height * 0.2
-                        Text: =Concatenate("Trạng thái hiện tại:", varSelectedRequest.TrangThai)
-                        Color: =RGBA(107, 114, 128, 1)
-                        Font: =Font.'Open Sans'
-                        FontWeight: =FontWeight.Semibold
-                        Size: =Parent.Height * 0.08
-                        
-            # Comment Section
-            - 'Approval.Modal.CommentSection':
+            - 'Approval.Details.Content':
                 Control: GroupContainer
                 Variant: ManualLayout
                 Properties:
-                  X: =Parent.Width * 0.03
-                  Y: ='Approval.Modal.RequestDetails'.Y + 'Approval.Modal.RequestDetails'.Height + Parent.Height * 0.02
-                  Width: =Parent.Width * 0.94
-                  Height: =Parent.Height * 0.25
+                  X: =Parent.Width * 0.02
+                  Y: ='Approval.Details.Header'.Y + 'Approval.Details.Header'.Height + Parent.Height * 0.02
+                  Width: =Parent.Width * 0.96
+                  Height: =Parent.Height * 0.65
+                  BorderColor: =RGBA(226, 232, 240, 1)
+                  BorderThickness: =1
+                  Fill: =RGBA(255, 255, 255, 1)
                 Children:
-                  - 'Approval.Modal.CommentLabel':
+                  # Employee Info
+                  - 'Approval.Details.Employee.Label':
                       Control: Label
                       Properties:
-                        X: =Parent.X
-                        Y: =Parent.Y
-                        Width: =Parent.Width
-                        Height: =Parent.Height * 0.25
-                        Text: =Switch(varApprovalAction,
-                          "Approve", "Ghi chú phê duyệt (không bắt buộc):",
-                          "Reject", "Lý do từ chối (bắt buộc):",
-                          "Reassign", "Ghi chú chuyển đơn:",
-                          "Ghi chú:")
-                        Color: =RGBA(55, 65, 81, 1)
+                        X: =Parent.Width * 0.03
+                        Y: =Parent.Height * 0.05
+                        Width: =Parent.Width * 0.2
+                        Height: =Parent.Height * 0.06
+                        Text: ="Nhân viên:"
+                        Color: =RGBA(17, 24, 39, 1)
                         Font: =Font.'Open Sans'
                         FontWeight: =FontWeight.Semibold
-                        Size: =Parent.Height * 0.12
+                        Size: =12
                         
-                  - 'Approval.Modal.CommentInput':
+                  - 'Approval.Details.Employee.Value':
+                      Control: Label
+                      Properties:
+                        X: =Parent.Width * 0.25
+                        Y: =Parent.Height * 0.05
+                        Width: =Parent.Width * 0.7
+                        Height: =Parent.Height * 0.06
+                        Text: =If(Not(IsBlank(varSelectedApprovalLeave)), LookUp(NguoiDung, Title = varSelectedApprovalLeave.MaNguoiDung.Value).HoTen & " (" & LookUp(NguoiDung, Title = varSelectedApprovalLeave.MaNguoiDung.Value).Email & ")", "")
+                        Color: =RGBA(55, 65, 81, 1)
+                        Font: =Font.'Open Sans'
+                        Size: =12
+                        
+                  # Leave Period
+                  - 'Approval.Details.Period.Label':
+                      Control: Label
+                      Properties:
+                        X: =Parent.Width * 0.03
+                        Y: =Parent.Height * 0.15
+                        Width: =Parent.Width * 0.2
+                        Height: =Parent.Height * 0.06
+                        Text: ="Thời gian nghỉ:"
+                        Color: =RGBA(17, 24, 39, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Semibold
+                        Size: =12
+                        
+                  - 'Approval.Details.Period.Value':
+                      Control: Label
+                      Properties:
+                        X: =Parent.Width * 0.25
+                        Y: =Parent.Height * 0.15
+                        Width: =Parent.Width * 0.7
+                        Height: =Parent.Height * 0.06
+                        Text: =If(Not(IsBlank(varSelectedApprovalLeave)), Text(varSelectedApprovalLeave.NgayBatDau, "dd/mm/yyyy") & " - " & Text(varSelectedApprovalLeave.NgayKetThuc, "dd/mm/yyyy") & " (" & varSelectedApprovalLeave.SoNgayNghi & " ngày)", "")
+                        Color: =RGBA(55, 65, 81, 1)
+                        Font: =Font.'Open Sans'
+                        Size: =12
+                        
+                  # Leave Type
+                  - 'Approval.Details.Type.Label':
+                      Control: Label
+                      Properties:
+                        X: =Parent.Width * 0.03
+                        Y: =Parent.Height * 0.25
+                        Width: =Parent.Width * 0.2
+                        Height: =Parent.Height * 0.06
+                        Text: ="Loại nghỉ:"
+                        Color: =RGBA(17, 24, 39, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Semibold
+                        Size: =12
+                        
+                  - 'Approval.Details.Type.Value':
+                      Control: Label
+                      Properties:
+                        X: =Parent.Width * 0.25
+                        Y: =Parent.Height * 0.25
+                        Width: =Parent.Width * 0.7
+                        Height: =Parent.Height * 0.06
+                        Text: =If(Not(IsBlank(varSelectedApprovalLeave)), LookUp(LoaiNghi, MaLoai = varSelectedApprovalLeave.MaLoai.Value).TenLoai, "")
+                        Color: =RGBA(55, 65, 81, 1)
+                        Font: =Font.'Open Sans'
+                        Size: =12
+                        
+                  # Reason
+                  - 'Approval.Details.Reason.Label':
+                      Control: Label
+                      Properties:
+                        X: =Parent.Width * 0.03
+                        Y: =Parent.Height * 0.35
+                        Width: =Parent.Width * 0.2
+                        Height: =Parent.Height * 0.06
+                        Text: ="Lý do:"
+                        Color: =RGBA(17, 24, 39, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Semibold
+                        Size: =12
+                        
+                  - 'Approval.Details.Reason.Value':
+                      Control: Label
+                      Properties:
+                        X: =Parent.Width * 0.25
+                        Y: =Parent.Height * 0.35
+                        Width: =Parent.Width * 0.7
+                        Height: =Parent.Height * 0.15
+                        Text: =If(Not(IsBlank(varSelectedApprovalLeave)), varSelectedApprovalLeave.LyDo, "")
+                        Color: =RGBA(55, 65, 81, 1)
+                        Font: =Font.'Open Sans'
+                        Size: =12
+                        Wrap: =true
+                        
+                  # Handover
+                  - 'Approval.Details.Handover.Label':
+                      Control: Label
+                      Properties:
+                        X: =Parent.Width * 0.03
+                        Y: =Parent.Height * 0.55
+                        Width: =Parent.Width * 0.2
+                        Height: =Parent.Height * 0.06
+                        Text: ="Bàn giao công việc:"
+                        Color: =RGBA(17, 24, 39, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Semibold
+                        Size: =12
+                        
+                  - 'Approval.Details.Handover.Value':
+                      Control: Label
+                      Properties:
+                        X: =Parent.Width * 0.25
+                        Y: =Parent.Height * 0.55
+                        Width: =Parent.Width * 0.7
+                        Height: =Parent.Height * 0.15
+                        Text: =If(Not(IsBlank(varSelectedApprovalLeave)), If(Not(IsBlank(varSelectedApprovalLeave.NguoiBanGiao)), LookUp(NguoiDung, Title = varSelectedApprovalLeave.NguoiBanGiao.Value).HoTen & " - " & varSelectedApprovalLeave.NoiDungBanGiao, "Không có"), "")
+                        Color: =RGBA(55, 65, 81, 1)
+                        Font: =Font.'Open Sans'
+                        Size: =12
+                        Wrap: =true
+                        
+            - 'Approval.Details.Actions':
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =Parent.Width * 0.02
+                  Y: ='Approval.Details.Content'.Y + 'Approval.Details.Content'.Height + Parent.Height * 0.02
+                  Width: =Parent.Width * 0.96
+                  Height: =Parent.Height * 0.2
+                Children:
+                  # Comment Input
+                  - 'Approval.Comment.Label':
+                      Control: Label
+                      Properties:
+                        X: =Parent.Width * 0.03
+                        Y: =Parent.Height * 0.05
+                        Width: =Parent.Width * 0.2
+                        Height: =Parent.Height * 0.25
+                        Text: ="Ghi chú phê duyệt:"
+                        Color: =RGBA(17, 24, 39, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Semibold
+                        Size: =12
+                        
+                  - 'Approval.Comment.Input':
                       Control: Classic/TextInput
                       Properties:
-                        X: =Parent.X
-                        Y: ='Approval.Modal.CommentLabel'.Y + 'Approval.Modal.CommentLabel'.Height
-                        Width: =Parent.Width
-                        Height: =Parent.Height * 0.75
-                        HintText: =Switch(varApprovalAction,
-                          "Approve", "Nhập ghi chú phê duyệt...",
-                          "Reject", "Nhập lý do từ chối...",
-                          "Reassign", "Nhập ghi chú chuyển đơn...",
-                          "Nhập ghi chú...")
-                        Default: =varApprovalComment
-                        OnChange: =Set(varApprovalComment, Self.Text)
-                        Mode: =TextMode.MultiLine
+                        X: =Parent.Width * 0.25
+                        Y: =Parent.Height * 0.05
+                        Width: =Parent.Width * 0.7
+                        Height: =Parent.Height * 0.25
+                        HintText: ="Nhập ghi chú (tùy chọn)"
+                        Color: =RGBA(55, 65, 81, 1)
+                        Fill: =RGBA(255, 255, 255, 1)
+                        BorderColor: =RGBA(224, 224, 224, 1)
+                        BorderThickness: =1
+                        Font: =Font.'Open Sans'
+                        Size: =12
+                        OnChange: |
+                          =Set(varApprovalComment, Self.Text)
                         
             # Action Buttons
-            - 'Approval.Modal.Actions':
+                  - 'Approval.ApproveButton':
+                      Control: CanvasComponent
+                      ComponentName: ButtonComponent
+                      Properties:
+                        X: =Parent.Width * 0.25
+                        Y: =Parent.Height * 0.45
+                        Width: =Parent.Width * 0.2
+                        Height: =Parent.Height * 0.4
+                        Text: ="Phê duyệt"
+                        Variant: ="Primary"
+                        Size: ="Medium"
+                        OnClick: |
+                          =Set(varApprovalAction, "Approve");
+                          Set(varShowApprovalConfirm, true)
+                        
+                  - 'Approval.RejectButton':
+                      Control: CanvasComponent
+                      ComponentName: ButtonComponent
+                      Properties:
+                        X: =Parent.Width * 0.5
+                        Y: =Parent.Height * 0.45
+                        Width: =Parent.Width * 0.2
+                        Height: =Parent.Height * 0.4
+                        Text: ="Từ chối"
+                        Variant: ="Danger"
+                        Size: ="Medium"
+                        OnClick: |
+                          =Set(varApprovalAction, "Reject");
+                          Set(varShowApprovalConfirm, true)
+
+      # Approval Confirmation Modal
+      - 'Approval.Confirm.Modal':
+          Control: GroupContainer
+          Variant: ManualLayout
+          Properties:
+            X: =(Parent.Width - Parent.Width * 0.4) / 2
+            Y: =(Parent.Height - Parent.Height * 0.3) / 2
+            Width: =Parent.Width * 0.4
+            Height: =Parent.Height * 0.3
+            Fill: =RGBA(255, 255, 255, 1)
+            BorderColor: =RGBA(226, 232, 240, 1)
+            BorderThickness: =2
+            Visible: =varShowApprovalConfirm
+          Children:
+            - 'Approval.Confirm.Header':
                 Control: GroupContainer
                 Variant: ManualLayout
                 Properties:
-                  X: =Parent.Width * 0.03
-                  Y: ='Approval.Modal.CommentSection'.Y + 'Approval.Modal.CommentSection'.Height + Parent.Height * 0.02
-                  Width: =Parent.Width * 0.94
-                  Height: =Parent.Height * 0.12
+                  X: =Parent.Width * 0.04
+                  Y: =Parent.Height * 0.04
+                  Width: =Parent.Width * 0.92
+                  Height: =Parent.Height * 0.15
+                  Fill: =If(varApprovalAction = "Approve", RGBA(34, 197, 94, 1), RGBA(239, 68, 68, 1))
+                  BorderColor: =If(varApprovalAction = "Approve", RGBA(21, 128, 61, 1), RGBA(220, 38, 38, 1))
+                  BorderThickness: =1
                 Children:
-                  # Confirm Button
-                  - 'Approval.Modal.ConfirmButton':
+                  - 'Approval.Confirm.Title':
+                      Control: Label
+                      Properties:
+                        X: =Parent.Width * 0.05
+                        Y: =(Parent.Height - Parent.Height * 0.7) / 2
+                        Width: =Parent.Width * 0.9
+                        Height: =Parent.Height * 0.7
+                        Text: =If(varApprovalAction = "Approve", "Xác nhận phê duyệt", "Xác nhận từ chối")
+                        Color: =RGBA(255, 255, 255, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Bold
+                        Size: =Parent.Height * 0.35
+                        Align: =Align.Center
+                  
+            - 'Approval.Confirm.Content':
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =Parent.Width * 0.04
+                  Y: ='Approval.Confirm.Header'.Y + 'Approval.Confirm.Header'.Height + Parent.Height * 0.03
+                  Width: =Parent.Width * 0.92
+                  Height: =Parent.Height * 0.4
+                Children:
+                  - 'Approval.Confirm.Message':
+                      Control: Label
+                      Properties:
+                        X: =0
+                        Y: =0
+                        Width: =Parent.Width
+                        Height: =Parent.Height
+                        Text: =If(varApprovalAction = "Approve", 
+                          Concatenate("Bạn có chắc chắn muốn phê duyệt đơn nghỉ phép từ ngày ", If(Not(IsBlank(varSelectedApprovalLeave)), Text(varSelectedApprovalLeave.NgayBatDau, "dd/mm/yyyy"), ""), " đến ", If(Not(IsBlank(varSelectedApprovalLeave)), Text(varSelectedApprovalLeave.NgayKetThuc, "dd/mm/yyyy"), ""), "?"),
+                          Concatenate("Bạn có chắc chắn muốn từ chối đơn nghỉ phép từ ngày ", If(Not(IsBlank(varSelectedApprovalLeave)), Text(varSelectedApprovalLeave.NgayBatDau, "dd/mm/yyyy"), ""), " đến ", If(Not(IsBlank(varSelectedApprovalLeave)), Text(varSelectedApprovalLeave.NgayKetThuc, "dd/mm/yyyy"), ""), "?"))
+                        Color: =RGBA(55, 65, 81, 1)
+                        Font: =Font.'Open Sans'
+                        Size: =Parent.Height * 0.15
+                        Align: =Align.Center
+                        Wrap: =true
+                  
+            - 'Approval.Confirm.Actions':
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =Parent.Width * 0.04
+                  Y: ='Approval.Confirm.Content'.Y + 'Approval.Confirm.Content'.Height + Parent.Height * 0.03
+                  Width: =Parent.Width * 0.92
+                  Height: =Parent.Height * 0.25
+                Children:
+                  - 'Approval.Confirm.CancelButton':
                       Control: CanvasComponent
                       ComponentName: ButtonComponent
                       Properties:
-                        X: =Parent.Width - (Self.Width * 2) - Parent.Width * 0.02
+                        X: =0
                         Y: =(Parent.Height - Self.Height) / 2
-                        Width: =Parent.Width * 0.25
-                        Height: =Parent.Height * 0.8
-                        Text: =Switch(varApprovalAction,
-                          "Approve", "Xác nhận duyệt",
-                          "Reject", "Xác nhận từ chối", 
-                          "Reassign", "Xác nhận chuyển",
-                          "Xác nhận")
-                        Variant: =Switch(varApprovalAction,
-                          "Approve", "Primary",
-                          "Reject", "Danger",
-                          "Secondary")
-                        IsLoading: =varIsProcessing
-                        LoadingText: ="Đang xử lý..."
-                        IsDisabled: =Or(
-                          varIsProcessing,
-                          And(varApprovalAction = "Reject", IsBlank(varApprovalComment))
-                        )
-                        OnClick: |
-                                  =Set(varIsProcessing, true);
-                                  With(varSelectedRequest,
-                                    Switch(varApprovalAction,
-                                      "Approve", 
-                                        Patch(DonNghiPhep, LookUp(DonNghiPhep, MaDon = MaDon), {
-                                          TrangThai: Switch(varMyApprovalLevel,
-                                            1, "ChoDuyetCap2",
-                                            2, "ChoDuyetCap3", 
-                                            3, "DaDuyet",
-                                            "DaDuyet"),
-                                          GhiChuPheDuyet: If(IsBlank(varApprovalComment), GhiChuPheDuyet, varApprovalComment),
-                                          NgayCapNhat: Now(),
-                                          NguoiCapNhat: varCurrentUser.MaNhanVien
-                                        }),
-                                      "Reject",
-                                        Patch(DonNghiPhep, LookUp(DonNghiPhep, MaDon = MaDon), {
-                                          TrangThai: "TuChoi",
-                                          GhiChuPheDuyet: varApprovalComment,
-                                          NgayCapNhat: Now(),
-                                          NguoiCapNhat: varCurrentUser.MaNhanVien
-                                        })
-                                    ));
-                                  Set(varIsProcessing, false);
-                                  Set(varShowApprovalModal, false);
-                                  Set(varApprovalComment, "");
-                                  Refresh(DonNghiPhep)
-                                  
-                  # Cancel Button
-                  - 'Approval.Modal.CancelButton':
-                      Control: CanvasComponent
-                      ComponentName: ButtonComponent
-                      Properties:
-                        X: =Parent.Width - Self.Width
-                        Y: =(Parent.Height - Self.Height) / 2
-                        Width: =Parent.Width * 0.2
+                        Width: =Parent.Width * 0.45
                         Height: =Parent.Height * 0.8
                         Text: ="Hủy"
                         Variant: ="Outline"
+                        Size: ="Medium"
                         OnClick: |
-                          =Set(varShowApprovalModal, false); Set(varApprovalComment, "") 
+                          =Set(varShowApprovalConfirm, false);
+                          Set(varApprovalAction, "")
+                        
+                  - 'Approval.Confirm.ConfirmButton':
+                      Control: CanvasComponent
+                      ComponentName: ButtonComponent
+                      Properties:
+                        X: =Parent.Width * 0.55
+                        Y: =(Parent.Height - Self.Height) / 2
+                        Width: =Parent.Width * 0.45
+                        Height: =Parent.Height * 0.8
+                        Text: =If(varApprovalAction = "Approve", "Phê duyệt", "Từ chối")
+                        Variant: =If(varApprovalAction = "Approve", "Primary", "Danger")
+                        Size: ="Medium"
+                        OnClick: |
+                          =If(Not(IsBlank(varSelectedApprovalLeave)),
+                            If(varApprovalAction = "Approve",
+                              /* Phê duyệt logic */
+                              With(varSelectedApprovalLeave.TrangThai.Value,
+                                Switch(ThisRecord,
+                                  "ChoDuyetCap1", 
+                                    If(varSelectedApprovalLeave.SoNgayNghi <= 12,
+                                      Patch(DonNghiPhep, varSelectedApprovalLeave, {TrangThai: {Value: "DaDuyet"}}),
+                                      Patch(DonNghiPhep, varSelectedApprovalLeave, {TrangThai: {Value: "ChoDuyetCap2"}})),
+                                  "ChoDuyetCap2",
+                                    If(varSelectedApprovalLeave.SoNgayNghi <= 12,
+                                      Patch(DonNghiPhep, varSelectedApprovalLeave, {TrangThai: {Value: "DaDuyet"}}),
+                                      Patch(DonNghiPhep, varSelectedApprovalLeave, {TrangThai: {Value: "ChoDuyetCap3"}})),
+                                  "ChoDuyetCap3",
+                                    Patch(DonNghiPhep, varSelectedApprovalLeave, {TrangThai: {Value: "DaDuyet"}})
+                                ));
+                              Notify("Đã phê duyệt đơn nghỉ phép", NotificationType.Success),
+                              /* Từ chối logic */
+                              Patch(DonNghiPhep, varSelectedApprovalLeave, {TrangThai: {Value: "TuChoi"}});
+                              Notify("Đã từ chối đơn nghỉ phép", NotificationType.Information)
+                            );
+                            Set(varShowApprovalConfirm, false);
+                            Set(varShowApprovalDetails, false);
+                            Set(varApprovalAction, "");
+                            Set(varSelectedApprovalLeave, Blank());
+                            /* Refresh data */
+                            Set(varPendingApprovals, Filter(DonNghiPhep, Or(TrangThai.Value = "ChoDuyetCap1", TrangThai.Value = "ChoDuyetCap2", TrangThai.Value = "ChoDuyetCap3")));
+                            Set(varMyLevelApprovals, Filter(varPendingApprovals, 
+                              Switch(UserSession.MaVaiTro,
+                                "Manager", TrangThai.Value = "ChoDuyetCap1",
+                                "Director", Or(TrangThai.Value = "ChoDuyetCap2", And(TrangThai.Value = "ChoDuyetCap3", CountRows(Filter(DonNghiPhep, And(MaDon = ThisItem.MaDon, SoNgayNghi > 12))) > 0)),
+                                "HR", TrangThai.Value = "ChoDuyetCap3",
+                                false))),
+                            Notify("Có lỗi xảy ra", NotificationType.Error)
+                          ) 
