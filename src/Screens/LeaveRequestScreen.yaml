@@ -3,9 +3,12 @@ Screens:
     Properties:
       Fill: =RGBA(248, 250, 252, 1)
       OnVisible: |
-        =Set(varActiveScreen, "LeaveRequest"); 
+        =//Set active screen first to ensure NavigationComponent receives correct value
+        Set(varActiveScreen, "LeaveRequest");
+        If(Not(IsUserAuthenticated), 
+          Navigate(LoginScreen), 
         If(Not(IsUserAuthenticated) Or IsBlank(User),
-          Navigate(LoginScreen_SharePoint),
+          Navigate(LoginScreen),
           Set(varCurrentUser, User);
           Set(varUserLeaveBalance, {
             TongNgayDuocPhep: 12,
@@ -63,7 +66,7 @@ Screens:
               Set(varLocalLoggedOut, true);
               Set(varLocalSessionCleared, true);
               //Navigate to login screen
-              Navigate(LoginScreen_SharePoint)
+              Navigate(LoginScreen)
             
       - 'LeaveRequest.Navigation':
           Control: CanvasComponent
@@ -74,16 +77,19 @@ Screens:
             Width: =If(varNavCollapsed, App.Width * 0.06, App.Width * 0.2)
             Height: =Parent.Height - 'LeaveRequest.Header'.Height
             UserRole: =If(IsBlank(User.MaVaiTro), "Employee", User.MaVaiTro)
-            ActiveScreen: =varActiveScreen
+            ActiveScreen: =If(IsBlank(varActiveScreen), "LeaveRequest", varActiveScreen)
             IsCollapsed: =varNavCollapsed
             OnNavigate: |
               =Set(varActiveScreen, ScreenName);
               Switch(ScreenName,
-                "Dashboard", Navigate(DashboardScreen_SharePoint),
-                "LeaveRequest", Navigate(LeaveRequestScreen_SharePoint),
-                "MyLeaves", Navigate(MyLeavesScreen_SharePoint),
-                "Calendar", Navigate(CalendarScreen_SharePoint),
-                "Management", Navigate(ManagementScreen_SharePoint)
+                "Dashboard", Navigate(DashboardScreen),
+                "LeaveRequest", Navigate(LeaveRequestScreen),
+                "MyLeaves", Navigate(MyLeavesScreen),
+                "Calendar", Navigate(CalendarScreen),
+                "Management", Navigate(ManagementScreen),
+                "Profile", Navigate(ProfileScreen),
+                "Approval", Navigate(ApprovalScreen),
+                "Reports", Navigate(ReportsScreen)
               )
             OnToggleCollapse: |
               =Set(varNavCollapsed, !varNavCollapsed)

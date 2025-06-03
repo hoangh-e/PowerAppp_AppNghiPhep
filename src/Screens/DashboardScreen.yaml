@@ -3,11 +3,14 @@ Screens:
     Properties:
       Fill: =RGBA(248, 250, 252, 1)
       OnVisible: |
-        =//SESSION VALIDATION: Redirect to login if not authenticated
+        =//Set active screen first to ensure NavigationComponent receives correct value
+        Set(varActiveScreen, "Dashboard");
+        //SESSION VALIDATION: Redirect to login if not authenticated
         If(Not(IsUserAuthenticated) Or IsBlank(User),
-          Navigate(LoginScreen_SharePoint),
+          Navigate(LoginScreen),
           //Continue with dashboard initialization only if authenticated
-          Set(varActiveScreen, "Dashboard"); 
+          Set(varNavCollapsed, false); 
+          Set(varMobileMenuOpen, false);
           //Initialize demo data for preview (using actual User data when available)
           Set(varDashboardStats, {
             TotalLeave: 12, 
@@ -17,8 +20,6 @@ Screens:
             ApprovedRequests: 2, 
             RejectedRequests: 0
           }); 
-          Set(varNavCollapsed, false); 
-          Set(varMobileMenuOpen, false);
           Set(varPendingApprovalsCount, 0);
           Set(varMyRecentLeaves, Table(
             {
@@ -39,7 +40,9 @@ Screens:
               MaLoai: "Sick",
               MaNguoiDung: "EMP001"
             }
-          ))
+          ));
+          //Debug: Set navigation test flag
+          Set(varNavigationReady, true)
         )
     Children:
       - 'Dashboard.Header':
@@ -75,7 +78,7 @@ Screens:
               Set(varLocalLoggedOut, true);
               Set(varLocalSessionCleared, true);
               //Navigate to login screen
-              Navigate(LoginScreen_SharePoint)
+              Navigate(LoginScreen)
             
       - 'Dashboard.Navigation':
           Control: CanvasComponent
@@ -86,16 +89,25 @@ Screens:
             Width: =If(varNavCollapsed, App.Width * 0.045, App.Width * 0.14)
             Height: =Parent.Height - 'Dashboard.Header'.Height
             UserRole: =If(IsBlank(User.MaVaiTro), "Employee", User.MaVaiTro)
-            ActiveScreen: =varActiveScreen
+            ActiveScreen: =If(IsBlank(varActiveScreen), "Dashboard", varActiveScreen)
             IsCollapsed: =varNavCollapsed
+            DashboardScreen: =DashboardScreen
+            LeaveRequestScreen: =LeaveRequestScreen
+            MyLeavesScreen: =MyLeavesScreen
+            CalendarScreen: =CalendarScreen
+            ManagementScreen: =ManagementScreen
+            ProfileScreen: =ProfileScreen
             OnNavigate: |
               =Set(varActiveScreen, ScreenName);
               Switch(ScreenName,
-                "Dashboard", Navigate(DashboardScreen_SharePoint),
-                "LeaveRequest", Navigate(LeaveRequestScreen_SharePoint),
-                "MyLeaves", Navigate(MyLeavesScreen_SharePoint),
-                "Calendar", Navigate(CalendarScreen_SharePoint),
-                "Management", Navigate(ManagementScreen_SharePoint)
+                "Dashboard", Navigate(DashboardScreen),
+                "LeaveRequest", Navigate(LeaveRequestScreen),
+                "MyLeaves", Navigate(MyLeavesScreen),
+                "Calendar", Navigate(CalendarScreen),
+                "Management", Navigate(ManagementScreen),
+                "Profile", Navigate(ProfileScreen),
+                "Approval", Navigate(ApprovalScreen),
+                "Reports", Navigate(ReportsScreen)
               )
             OnToggleCollapse: |
               =Set(varNavCollapsed, !varNavCollapsed)
@@ -168,7 +180,7 @@ Screens:
                               Y: =Parent.Height * 0.6
                               Width: =Parent.Width * 0.8
                               Height: =Parent.Height * 0.25
-                              Text: =Concatenate("Phòng ban:" & " " & "Phòng Công nghệ thông tin", " • ", "Chức danh:" & " " & If(IsBlank(User), "Đang tải...", If(IsBlank(User.ChucDanh), "Nhân viên", If(IsRecord(User.ChucDanh), User.ChucDanh.Value, User.ChucDanh))))
+                              Text: ="Phòng ban:" & " " & "Phòng Công nghệ thông tin" & " • " & "Chức danh:" & " " & If(IsBlank(User), "Đang tải...", If(IsBlank(User.ChucDanh), "Nhân viên", User.ChucDanh))
                               Color: =RGBA(75, 85, 99, 1)
                               Font: =Font.'Open Sans'
                               Size: =11
@@ -354,15 +366,31 @@ Screens:
                             Control: CanvasComponent
                             ComponentName: ButtonComponent
                             Properties:
-                              X: =Parent.Width * 0.75
+                              X: =Parent.Width * 0.6
                               Y: =(Parent.Height - Self.Height) / 2
-                              Width: =Parent.Width * 0.25
+                              Width: =Parent.Width * 0.18
                               Height: =Parent.Height * 0.55
                               Text: ="Xem tất cả"
                               Variant: ="Outline"
                               Size: ="Small"
                               OnClick: |
-                                =Navigate(MyLeavesScreen_SharePoint)
+                                =Navigate(MyLeavesScreen)
+                              
+                        # Debug navigation button
+                        - 'Dashboard.Activity.TestNav':
+                            Control: CanvasComponent
+                            ComponentName: ButtonComponent
+                            Properties:
+                              X: =Parent.Width * 0.8
+                              Y: =(Parent.Height - Self.Height) / 2
+                              Width: =Parent.Width * 0.18
+                              Height: =Parent.Height * 0.55
+                              Text: ="Test Nav"
+                              Variant: ="Secondary"
+                              Size: ="Small"
+                              OnClick: |
+                                =Set(varActiveScreen, "MyLeaves");
+                                Navigate(MyLeavesScreen)
                               
                   - 'Dashboard.Activity.Gallery':
                       Control: Gallery

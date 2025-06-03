@@ -3,9 +3,13 @@ Screens:
     Properties:
       Fill: =RGBA(248, 250, 252, 1)
       OnVisible: |
-        =Set(varActiveScreen, "Profile"); 
+        =//Set active screen first to ensure NavigationComponent receives correct value
+        Set(varActiveScreen, "Profile");
+        If(Not(IsUserAuthenticated), 
+          Navigate(LoginScreen), 
         If(Not(IsUserAuthenticated) Or IsBlank(User),
-          Navigate(LoginScreen_SharePoint),
+          Navigate(LoginScreen),
+          //Continue with profile initialization
           Set(varCurrentUser, User);
           Set(varUserDepartment, {
             TenDonVi: "Phòng Công nghệ thông tin",
@@ -75,7 +79,7 @@ Screens:
               Set(varLocalLoggedOut, true);
               Set(varLocalSessionCleared, true);
               //Navigate to login screen
-              Navigate(LoginScreen_SharePoint)
+              Navigate(LoginScreen)
             
       - 'Profile.Navigation':
           Control: CanvasComponent
@@ -86,17 +90,19 @@ Screens:
             Width: =If(varNavCollapsed, App.Width * 0.06, App.Width * 0.2)
             Height: =Parent.Height - 'Profile.Header'.Height
             UserRole: =If(IsBlank(User.MaVaiTro), "Employee", User.MaVaiTro)
-            ActiveScreen: =varActiveScreen
+            ActiveScreen: =If(IsBlank(varActiveScreen), "Profile", varActiveScreen)
             IsCollapsed: =varNavCollapsed
             OnNavigate: |
               =Set(varActiveScreen, ScreenName);
               Switch(ScreenName,
-                "Dashboard", Navigate(DashboardScreen_SharePoint),
-                "Profile", Navigate(ProfileScreen_SharePoint),
-                "LeaveRequest", Navigate(LeaveRequestScreen_SharePoint),
-                "MyLeaves", Navigate(MyLeavesScreen_SharePoint),
-                "Calendar", Navigate(CalendarScreen_SharePoint),
-                "Management", Navigate(ManagementScreen_SharePoint)
+                "Dashboard", Navigate(DashboardScreen),
+                "Profile", Navigate(ProfileScreen),
+                "LeaveRequest", Navigate(LeaveRequestScreen),
+                "MyLeaves", Navigate(MyLeavesScreen),
+                "Calendar", Navigate(CalendarScreen),
+                "Management", Navigate(ManagementScreen),
+                "Approval", Navigate(ApprovalScreen),
+                "Reports", Navigate(ReportsScreen)
               )
             OnToggleCollapse: |
               =Set(varNavCollapsed, !varNavCollapsed)
@@ -774,7 +780,7 @@ Screens:
                                     LoadingText: ="Đang xử lý..."
                                     FullWidth: =false
                                     OnClick: |
-                                      =Navigate(LeaveRequestScreen_SharePoint)
+                                      =Navigate(LeaveRequestScreen)
                                       
                               - 'Profile.QuickActions.ViewAll':
                                   Control: CanvasComponent
@@ -794,4 +800,4 @@ Screens:
                                     LoadingText: ="Đang xử lý..."
                                     FullWidth: =false
                                     OnClick: |
-                                      =Navigate(MyLeavesScreen_SharePoint) 
+                                      =Navigate(MyLeavesScreen) 

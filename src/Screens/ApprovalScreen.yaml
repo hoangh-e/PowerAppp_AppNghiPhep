@@ -48,8 +48,19 @@ Screens:
               If(varNavCollapsed, Parent.Width * 0.06, Parent.Width * 0.2))
             Height: =Parent.Height - 'Approval.Header'.Height
             UserRole: =varCurrentUser.MaVaiTro
-            ActiveScreen: =varActiveScreen
-            OnNavigate: =Set(varNavigateAction, true)
+            ActiveScreen: =If(IsBlank(varActiveScreen), "Approval", varActiveScreen)
+            OnNavigate: |
+              =Set(varActiveScreen, ScreenName);
+              Switch(ScreenName,
+                "Dashboard", Navigate(DashboardScreen),
+                "LeaveRequest", Navigate(LeaveRequestScreen),
+                "MyLeaves", Navigate(MyLeavesScreen),
+                "Calendar", Navigate(CalendarScreen),
+                "Management", Navigate(ManagementScreen),
+                "Profile", Navigate(ProfileScreen),
+                "Approval", Navigate(ApprovalScreen),
+                "Reports", Navigate(ReportsScreen)
+              )
             
       - 'Approval.Content.Container':
           Control: GroupContainer

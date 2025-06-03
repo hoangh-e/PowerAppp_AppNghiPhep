@@ -13,13 +13,49 @@ ComponentDefinitions:
         DisplayName: ActiveScreen
         Description: "Màn hình hiện tại"
         DataType: Text
-        Default: ="Dashboard"
+        Default: =""
       IsCollapsed:
         PropertyKind: Input
         DisplayName: IsCollapsed
         Description: "Trạng thái thu gọn navigation"
         DataType: Boolean
         Default: =false
+      DashboardScreen:
+        PropertyKind: Input
+        DisplayName: DashboardScreen
+        Description: "Reference đến DashboardScreen"
+        DataType: Screen
+        Default: =
+      LeaveRequestScreen:
+        PropertyKind: Input
+        DisplayName: LeaveRequestScreen
+        Description: "Reference đến LeaveRequestScreen"
+        DataType: Screen
+        Default: =
+      MyLeavesScreen:
+        PropertyKind: Input
+        DisplayName: MyLeavesScreen
+        Description: "Reference đến MyLeavesScreen"
+        DataType: Screen
+        Default: =
+      CalendarScreen:
+        PropertyKind: Input
+        DisplayName: CalendarScreen
+        Description: "Reference đến CalendarScreen"
+        DataType: Screen
+        Default: =
+      ManagementScreen:
+        PropertyKind: Input
+        DisplayName: ManagementScreen
+        Description: "Reference đến ManagementScreen"
+        DataType: Screen
+        Default: =
+      ProfileScreen:
+        PropertyKind: Input
+        DisplayName: ProfileScreen
+        Description: "Reference đến ProfileScreen"
+        DataType: Screen
+        Default: =
       OnNavigate:
         PropertyKind: Event
         DisplayName: OnNavigate
@@ -201,7 +237,11 @@ ComponentDefinitions:
                         RGBA(29, 78, 216, 1),
                         RGBA(17, 24, 39, 1))
                       OnSelect: |
-                        =NavigationComponent.OnNavigate("Dashboard")
+                        =Set(varDebugClick, "Dashboard clicked");
+                        Set(varActiveScreen, "Dashboard");
+                        If(Not(IsBlank(NavigationComponent.DashboardScreen)), 
+                          Navigate(NavigationComponent.DashboardScreen),
+                          NavigationComponent.OnNavigate("Dashboard"))
                         
                 # Dashboard Icon Overlay
                 - 'Navigation.Menu.Dashboard.Icon':
@@ -264,7 +304,11 @@ ComponentDefinitions:
                         RGBA(185, 28, 28, 1),
                         RGBA(17, 24, 39, 1))
                       OnSelect: |
-                        =NavigationComponent.OnNavigate("LeaveRequest")
+                        =Set(varDebugClick, "LeaveRequest clicked");
+                        Set(varActiveScreen, "LeaveRequest");
+                        If(Not(IsBlank(NavigationComponent.LeaveRequestScreen)), 
+                          Navigate(NavigationComponent.LeaveRequestScreen),
+                          NavigationComponent.OnNavigate("LeaveRequest"))
                         
                 - 'Navigation.Menu.LeaveRequest.Icon':
                     Control: Classic/Icon
@@ -326,7 +370,11 @@ ComponentDefinitions:
                         RGBA(20, 83, 45, 1),
                         RGBA(17, 24, 39, 1))
                       OnSelect: |
-                        =NavigationComponent.OnNavigate("MyLeaves")
+                        =Set(varDebugClick, "MyLeaves clicked");
+                        Set(varActiveScreen, "MyLeaves");
+                        If(Not(IsBlank(NavigationComponent.MyLeavesScreen)), 
+                          Navigate(NavigationComponent.MyLeavesScreen),
+                          NavigationComponent.OnNavigate("MyLeaves"))
                         
                 - 'Navigation.Menu.MyLeaves.Icon':
                     Control: Classic/Icon
@@ -388,7 +436,11 @@ ComponentDefinitions:
                         RGBA(146, 64, 14, 1),
                         RGBA(17, 24, 39, 1))
                       OnSelect: |
-                        =NavigationComponent.OnNavigate("Calendar")
+                        =Set(varDebugClick, "Calendar clicked");
+                        Set(varActiveScreen, "Calendar");
+                        If(Not(IsBlank(NavigationComponent.CalendarScreen)), 
+                          Navigate(NavigationComponent.CalendarScreen),
+                          NavigationComponent.OnNavigate("Calendar"))
                         
                 - 'Navigation.Menu.Calendar.Icon':
                     Control: Classic/Icon
@@ -452,7 +504,11 @@ ComponentDefinitions:
                         RGBA(109, 40, 217, 1),
                         RGBA(17, 24, 39, 1))
                       OnSelect: |
-                        =NavigationComponent.OnNavigate("Management")
+                        =Set(varDebugClick, "Management clicked");
+                        Set(varActiveScreen, "Management");
+                        If(Not(IsBlank(NavigationComponent.ManagementScreen)), 
+                          Navigate(NavigationComponent.ManagementScreen),
+                          NavigationComponent.OnNavigate("Management"))
                         
                 - 'Navigation.Menu.Management.Icon':
                     Control: Classic/Icon
