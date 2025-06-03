@@ -182,58 +182,1383 @@
                               BorderColor: =RGBA(226, 232, 240, 1)
                               BorderThickness: =1
                               
-                  - 'Management.Tabs.Users':
-                      Control: CanvasComponent
-                      ComponentName: ButtonComponent
-                      Properties:
-                        X: =Parent.Width * 0.02
-                        Y: =(Parent.Height - Self.Height) / 2
-                        Width: =Parent.Width * 0.15
-                        Height: =Parent.Height * 0.7
-                        Text: ="Người dùng"
-                        Variant: =If(varSelectedManagementTab = "Users", "Primary", "Outline")
-                        Size: ="Small"
-                        OnClick: |
-                          =Set(varSelectedManagementTab, "Users")
-                                
+                        - 'Management.Tabs.Users':
+                            Control: CanvasComponent
+                            ComponentName: ButtonComponent
+                            Properties:
+                              X: =Parent.Width * 0.02
+                              Y: =(Parent.Height - Self.Height) / 2
+                              Width: =Parent.Width * 0.15
+                              Height: =Parent.Height * 0.7
+                              Text: ="Người dùng"
+                              Variant: =If(varSelectedManagementTab = "Users", "Primary", "Outline")
+                              Size: ="Small"
+                              OnClick: |
+                                =Set(varSelectedManagementTab, "Users")
+                                      
                         - 'Management.Tabs.LeaveBalance':
-                      Control: CanvasComponent
-                      ComponentName: ButtonComponent
-                      Properties:
-                        X: =Parent.Width * 0.18
-                        Y: =(Parent.Height - Self.Height) / 2
-                        Width: =Parent.Width * 0.15
-                        Height: =Parent.Height * 0.7
-                        Text: ="Số ngày phép"
-                        Variant: =If(varSelectedManagementTab = "LeaveBalance", "Primary", "Outline")
-                        Size: ="Small"
-                        OnClick: |
-                          =Set(varSelectedManagementTab, "LeaveBalance")
-                                
+                            Control: CanvasComponent
+                            ComponentName: ButtonComponent
+                            Properties:
+                              X: =Parent.Width * 0.18
+                              Y: =(Parent.Height - Self.Height) / 2
+                              Width: =Parent.Width * 0.15
+                              Height: =Parent.Height * 0.7
+                              Text: ="Số ngày phép"
+                              Variant: =If(varSelectedManagementTab = "LeaveBalance", "Primary", "Outline")
+                              Size: ="Small"
+                              OnClick: |
+                                =Set(varSelectedManagementTab, "LeaveBalance")
+                                      
                         - 'Management.Tabs.Holidays':
-                      Control: CanvasComponent
-                      ComponentName: ButtonComponent
-                      Properties:
-                        X: =Parent.Width * 0.34
-                        Y: =(Parent.Height - Self.Height) / 2
-                        Width: =Parent.Width * 0.15
-                        Height: =Parent.Height * 0.7
+                            Control: CanvasComponent
+                            ComponentName: ButtonComponent
+                            Properties:
+                              X: =Parent.Width * 0.34
+                              Y: =(Parent.Height - Self.Height) / 2
+                              Width: =Parent.Width * 0.15
+                              Height: =Parent.Height * 0.7
                               Text: ="Ngày nghỉ lễ"
                               Variant: =If(varSelectedManagementTab = "Holidays", "Primary", "Outline")
                               Size: ="Small"
                               OnClick: |
                                 =Set(varSelectedManagementTab, "Holidays")
-                                
+                                      
                         - 'Management.Tabs.Workflow':
+                            Control: CanvasComponent
+                            ComponentName: ButtonComponent
+                            Properties:
+                              X: =Parent.Width * 0.5
+                              Y: =(Parent.Height - Self.Height) / 2
+                              Width: =Parent.Width * 0.15
+                              Height: =Parent.Height * 0.7
+                              Text: ="Quy trình"
+                              Variant: =If(varSelectedManagementTab = "Workflow", "Primary", "Outline")
+                              Size: ="Small"
+                              OnClick: |
+                                =Set(varSelectedManagementTab, "Workflow")
+
+                  # Tab Content Container
+                  - 'Management.TabContent.Container':
+                      Control: GroupContainer
+                      Variant: ManualLayout
+                      Properties:
+                        X: =0
+                        Y: ='Management.Tabs.Container'.Y + 'Management.Tabs.Container'.Height + Parent.Height * 0.015
+                        Width: =Parent.Width
+                        Height: =Parent.Height * 0.75
+                      Children:
+                        # ===== TAB NGƯỜI DÙNG =====
+                        - 'Management.Users.Container':
+                            Control: GroupContainer
+                            Variant: ManualLayout
+                            Properties:
+                              X: =0
+                              Y: =0
+                              Width: =Parent.Width
+                              Height: =Parent.Height
+                              Visible: =varSelectedManagementTab = "Users"
+                            Children:
+                              # Users Header với nút Add
+                              - 'Management.Users.Header':
+                                  Control: GroupContainer
+                                  Variant: ManualLayout
+                                  Properties:
+                                    X: =0
+                                    Y: =0
+                                    Width: =Parent.Width
+                                    Height: =Parent.Height * 0.12
+                                  Children:
+                                    - 'Management.Users.Header.Background':
+                                        Control: Rectangle
+                                        Properties:
+                                          X: =0
+                                          Y: =0
+                                          Width: =Parent.Width
+                                          Height: =Parent.Height
+                                          Fill: =RGBA(255, 255, 255, 1)
+                                          BorderColor: =RGBA(226, 232, 240, 1)
+                                          BorderThickness: =1
+
+                                    - 'Management.Users.Header.Title':
+                                        Control: Label
+                                        Properties:
+                                          X: =Parent.Width * 0.02
+                                          Y: =(Parent.Height - Self.Height) / 2
+                                          Width: =Parent.Width * 0.6
+                                          Height: =Parent.Height * 0.5
+                                          Text: =Concatenate("Danh sách người dùng", " ", "(", CountRows(varAllUsers), " ", "người", ")")
+                                          Color: =RGBA(17, 24, 39, 1)
+                                          Font: =Font.'Open Sans'
+                                          FontWeight: =FontWeight.Bold
+                                          Size: =12
+
+                                    - 'Management.Users.AddButton':
+                                        Control: CanvasComponent
+                                        ComponentName: ButtonComponent
+                                        Properties:
+                                          X: =Parent.Width * 0.75
+                                          Y: =(Parent.Height - Self.Height) / 2
+                                          Width: =Parent.Width * 0.22
+                                          Height: =Parent.Height * 0.6
+                                          Text: ="Thêm người dùng"
+                                          Variant: ="Primary"
+                                          Size: ="Medium"
+                                          OnClick: |
+                                            =Set(varIsEditingUser, false);
+                                            Set(varSelectedUser, Blank());
+                                            Set(varUserFormName, "");
+                                            Set(varUserFormEmail, "");
+                                            Set(varUserFormRole, "");
+                                            Set(varUserFormDepartment, "");
+                                            Set(varUserFormStatus, "HoatDong");
+                                            Set(varIsUserFormOpen, true)
+
+                              # Users DataTable
+                              - 'Management.Users.DataTable':
+                                  Control: DataTable
+                                  Variant: DataTable
+                                  Properties:
+                                    X: =0
+                                    Y: ='Management.Users.Header'.Y + 'Management.Users.Header'.Height
+                                    Width: =Parent.Width
+                                    Height: =Parent.Height * 0.88
+                                    Items: =varAllUsers
+                                    BorderColor: =RGBA(229, 231, 235, 1)
+                                    BorderThickness: =1
+                                    Font: =Font.'Open Sans'
+                                    Size: =11
+                                    Color: =RGBA(55, 65, 81, 1)
+                                    HeadingColor: =RGBA(255, 255, 255, 1)
+                                    HeadingFill: =RGBA(59, 130, 246, 1)
+                                    NoDataText: ="Không có dữ liệu người dùng"
+                                  Children:
+                                    - UserName_Column:
+                                        Control: DataTableColumn
+                                        Variant: Textual
+                                        Properties:
+                                          FieldDisplayName: ="Họ tên"
+                                          FieldName: ="HoTen"
+                                          Order: =1
+                                          Text: =Parent.Selected.HoTen
+                                          Width: =180
+
+                                    - UserEmail_Column:
+                                        Control: DataTableColumn
+                                        Variant: Textual
+                                        Properties:
+                                          FieldDisplayName: ="Email"
+                                          FieldName: ="Email"
+                                          Order: =2
+                                          Text: =Parent.Selected.Email
+                                          Width: =200
+
+                                    - UserDepartment_Column:
+                                        Control: DataTableColumn
+                                        Variant: Textual
+                                        Properties:
+                                          FieldDisplayName: ="Đơn vị"
+                                          FieldName: ="MaDonVi"
+                                          Order: =3
+                                          Text: =LookUp(DonVi, MaDonVi = Parent.Selected.MaDonVi.Value).TenDonVi
+                                          Width: =150
+
+                                    - UserRole_Column:
+                                        Control: DataTableColumn
+                                        Variant: Textual
+                                        Properties:
+                                          FieldDisplayName: ="Vai trò"
+                                          FieldName: ="MaVaiTro"
+                                          Order: =4
+                                          Text: =LookUp(VaiTro, MaVaiTro = Parent.Selected.MaVaiTro.Value).TenVaiTro
+                                          Width: =120
+
+                                    - UserStatus_Column:
+                                        Control: DataTableColumn
+                                        Variant: Textual
+                                        Properties:
+                                          FieldDisplayName: ="Trạng thái"
+                                          FieldName: ="TrangThai"
+                                          Order: =5
+                                          Text: =If(Parent.Selected.TrangThai.Value = "HoatDong", "Hoạt động", "Không hoạt động")
+                                          Width: =100
+
+                                    - UserActions_Column:
+                                        Control: DataTableColumn
+                                        Variant: Textual
+                                        Properties:
+                                          FieldDisplayName: ="Thao tác"
+                                          FieldName: ="Actions"
+                                          Order: =6
+                                          Text: ="Sửa | Xóa"
+                                          Width: =100
+                                          OnSelect: |
+                                            =Set(varSelectedUser, Parent.Selected);
+                                            Set(varUserFormName, Parent.Selected.HoTen);
+                                            Set(varUserFormEmail, Parent.Selected.Email);
+                                            Set(varUserFormRole, Parent.Selected.MaVaiTro.Value);
+                                            Set(varUserFormDepartment, Parent.Selected.MaDonVi.Value);
+                                            Set(varUserFormStatus, Parent.Selected.TrangThai.Value);
+                                            Set(varIsEditingUser, true);
+                                            Set(varIsUserFormOpen, true)
+
+                        # ===== TAB SỐ NGÀY PHÉP =====
+                        - 'Management.LeaveBalance.Container':
+                            Control: GroupContainer
+                            Variant: ManualLayout
+                            Properties:
+                              X: =0
+                              Y: =0
+                              Width: =Parent.Width
+                              Height: =Parent.Height
+                              Visible: =varSelectedManagementTab = "LeaveBalance"
+                            Children:
+                              # LeaveBalance Header
+                              - 'Management.LeaveBalance.Header':
+                                  Control: GroupContainer
+                                  Variant: ManualLayout
+                                  Properties:
+                                    X: =0
+                                    Y: =0
+                                    Width: =Parent.Width
+                                    Height: =Parent.Height * 0.12
+                                  Children:
+                                    - 'Management.LeaveBalance.Header.Background':
+                                        Control: Rectangle
+                                        Properties:
+                                          X: =0
+                                          Y: =0
+                                          Width: =Parent.Width
+                                          Height: =Parent.Height
+                                          Fill: =RGBA(255, 255, 255, 1)
+                                          BorderColor: =RGBA(226, 232, 240, 1)
+                                          BorderThickness: =1
+
+                                    - 'Management.LeaveBalance.Header.Title':
+                                        Control: Label
+                                        Properties:
+                                          X: =Parent.Width * 0.02
+                                          Y: =(Parent.Height - Self.Height) / 2
+                                          Width: =Parent.Width * 0.6
+                                          Height: =Parent.Height * 0.5
+                                          Text: ="Quản lý số ngày nghỉ phép"
+                                          Color: =RGBA(17, 24, 39, 1)
+                                          Font: =Font.'Open Sans'
+                                          FontWeight: =FontWeight.Bold
+                                          Size: =12
+
+                                    - 'Management.LeaveBalance.ImportButton':
+                                        Control: CanvasComponent
+                                        ComponentName: ButtonComponent
+                                        Properties:
+                                          X: =Parent.Width * 0.75
+                                          Y: =(Parent.Height - Self.Height) / 2
+                                          Width: =Parent.Width * 0.22
+                                          Height: =Parent.Height * 0.6
+                                          Text: ="Import Excel"
+                                          Variant: ="Primary"
+                                          Size: ="Medium"
+                                          OnClick: |
+                                            =Set(varShowImportModal, true)
+
+                              # LeaveBalance DataTable
+                              - 'Management.LeaveBalance.DataTable':
+                                  Control: DataTable
+                                  Variant: DataTable
+                                  Properties:
+                                    X: =0
+                                    Y: ='Management.LeaveBalance.Header'.Y + 'Management.LeaveBalance.Header'.Height
+                                    Width: =Parent.Width
+                                    Height: =Parent.Height * 0.88
+                                    Items: =SoNgayPhep
+                                    BorderColor: =RGBA(229, 231, 235, 1)
+                                    BorderThickness: =1
+                                    Font: =Font.'Open Sans'
+                                    Size: =11
+                                    Color: =RGBA(55, 65, 81, 1)
+                                    HeadingColor: =RGBA(255, 255, 255, 1)
+                                    HeadingFill: =RGBA(34, 197, 94, 1)
+                                  Children:
+                                    - LeaveEmployee_Column:
+                                        Control: DataTableColumn
+                                        Variant: Textual
+                                        Properties:
+                                          FieldDisplayName: ="Nhân viên"
+                                          FieldName: ="MaNhanVien"
+                                          Order: =1
+                                          Text: =LookUp(NguoiDung, Title = Parent.Selected.MaNhanVien.Value).HoTen
+                                          Width: =200
+
+                                    - LeaveYear_Column:
+                                        Control: DataTableColumn
+                                        Variant: Textual
+                                        Properties:
+                                          FieldDisplayName: ="Năm"
+                                          FieldName: ="Nam"
+                                          Order: =2
+                                          Text: =Text(Parent.Selected.Nam)
+                                          Width: =80
+
+                                    - LeaveTotalDays_Column:
+                                        Control: DataTableColumn
+                                        Variant: Textual
+                                        Properties:
+                                          FieldDisplayName: ="Tổng ngày phép"
+                                          FieldName: ="TongNgayDuocPhep"
+                                          Order: =3
+                                          Text: =Text(Parent.Selected.TongNgayDuocPhep)
+                                          Width: =120
+
+                                    - LeaveUsedDays_Column:
+                                        Control: DataTableColumn
+                                        Variant: Textual
+                                        Properties:
+                                          FieldDisplayName: ="Đã sử dụng"
+                                          FieldName: ="SoNgayDaNghi"
+                                          Order: =4
+                                          Text: =Text(Parent.Selected.SoNgayDaNghi)
+                                          Width: =100
+
+                                    - LeaveRemainingDays_Column:
+                                        Control: DataTableColumn
+                                        Variant: Textual
+                                        Properties:
+                                          FieldDisplayName: ="Còn lại"
+                                          FieldName: ="SoNgayConLai"
+                                          Order: =5
+                                          Text: =Text(Parent.Selected.SoNgayConLai)
+                                          Width: =100
+
+                        # ===== TAB NGÀY NGHỈ LỄ =====
+                        - 'Management.Holidays.Container':
+                            Control: GroupContainer
+                            Variant: ManualLayout
+                            Properties:
+                              X: =0
+                              Y: =0
+                              Width: =Parent.Width
+                              Height: =Parent.Height
+                              Visible: =varSelectedManagementTab = "Holidays"
+                            Children:
+                              # Holidays Header
+                              - 'Management.Holidays.Header':
+                                  Control: GroupContainer
+                                  Variant: ManualLayout
+                                  Properties:
+                                    X: =0
+                                    Y: =0
+                                    Width: =Parent.Width
+                                    Height: =Parent.Height * 0.12
+                                  Children:
+                                    - 'Management.Holidays.Header.Background':
+                                        Control: Rectangle
+                                        Properties:
+                                          X: =0
+                                          Y: =0
+                                          Width: =Parent.Width
+                                          Height: =Parent.Height
+                                          Fill: =RGBA(255, 255, 255, 1)
+                                          BorderColor: =RGBA(226, 232, 240, 1)
+                                          BorderThickness: =1
+
+                                    - 'Management.Holidays.Header.Title':
+                                        Control: Label
+                                        Properties:
+                                          X: =Parent.Width * 0.02
+                                          Y: =(Parent.Height - Self.Height) / 2
+                                          Width: =Parent.Width * 0.6
+                                          Height: =Parent.Height * 0.5
+                                          Text: =Concatenate("Danh sách ngày nghỉ lễ", " ", "(", CountRows(varHolidaysList), " ", "ngày", ")")
+                                          Color: =RGBA(17, 24, 39, 1)
+                                          Font: =Font.'Open Sans'
+                                          FontWeight: =FontWeight.Bold
+                                          Size: =12
+
+                                    - 'Management.Holidays.AddButton':
+                                        Control: CanvasComponent
+                                        ComponentName: ButtonComponent
+                                        Properties:
+                                          X: =Parent.Width * 0.75
+                                          Y: =(Parent.Height - Self.Height) / 2
+                                          Width: =Parent.Width * 0.22
+                                          Height: =Parent.Height * 0.6
+                                          Text: ="Thêm ngày lễ"
+                                          Variant: ="Primary"
+                                          Size: ="Medium"
+                                          OnClick: |
+                                            =Set(varSelectedHoliday, Blank());
+                                            Set(varHolidayFormName, "");
+                                            Set(varHolidayFormDate, Today());
+                                            Set(varIsHolidayFormOpen, true)
+
+                              # Holidays DataTable
+                              - 'Management.Holidays.DataTable':
+                                  Control: DataTable
+                                  Variant: DataTable
+                                  Properties:
+                                    X: =0
+                                    Y: ='Management.Holidays.Header'.Y + 'Management.Holidays.Header'.Height
+                                    Width: =Parent.Width
+                                    Height: =Parent.Height * 0.88
+                                    Items: =varHolidaysList
+                                    BorderColor: =RGBA(229, 231, 235, 1)
+                                    BorderThickness: =1
+                                    Font: =Font.'Open Sans'
+                                    Size: =11
+                                    Color: =RGBA(55, 65, 81, 1)
+                                    HeadingColor: =RGBA(255, 255, 255, 1)
+                                    HeadingFill: =RGBA(251, 191, 36, 1)
+                                  Children:
+                                    - HolidayName_Column:
+                                        Control: DataTableColumn
+                                        Variant: Textual
+                                        Properties:
+                                          FieldDisplayName: ="Tên ngày lễ"
+                                          FieldName: ="TenNgayLe"
+                                          Order: =1
+                                          Text: =Parent.Selected.TenNgayLe
+                                          Width: =250
+
+                                    - HolidayDate_Column:
+                                        Control: DataTableColumn
+                                        Variant: Textual
+                                        Properties:
+                                          FieldDisplayName: ="Ngày"
+                                          FieldName: ="Ngay"
+                                          Order: =2
+                                          Text: =Parent.Selected.Ngay
+                                          Width: =120
+
+                                    - HolidaySession_Column:
+                                        Control: DataTableColumn
+                                        Variant: Textual
+                                        Properties:
+                                          FieldDisplayName: ="Buổi"
+                                          FieldName: ="Buoi"
+                                          Order: =3
+                                          Text: =Parent.Selected.Buoi.Value
+                                          Width: =100
+
+                                    - HolidayYear_Column:
+                                        Control: DataTableColumn
+                                        Variant: Textual
+                                        Properties:
+                                          FieldDisplayName: ="Năm"
+                                          FieldName: ="Nam"
+                                          Order: =4
+                                          Text: =Text(Parent.Selected.Nam)
+                                          Width: =80
+
+                                    - HolidayActions_Column:
+                                        Control: DataTableColumn
+                                        Variant: Textual
+                                        Properties:
+                                          FieldDisplayName: ="Thao tác"
+                                          FieldName: ="Actions"
+                                          Order: =5
+                                          Text: ="Sửa | Xóa"
+                                          Width: =100
+                                          OnSelect: |
+                                            =Set(varSelectedHoliday, Parent.Selected);
+                                            Set(varHolidayFormName, Parent.Selected.TenNgayLe);
+                                            Set(varHolidayFormDate, DateValue(Parent.Selected.Ngay));
+                                            Set(varIsHolidayFormOpen, true)
+
+                        # ===== TAB QUY TRÌNH =====
+                        - 'Management.Workflow.Container':
+                            Control: GroupContainer
+                            Variant: ManualLayout
+                            Properties:
+                              X: =0
+                              Y: =0
+                              Width: =Parent.Width
+                              Height: =Parent.Height
+                              Visible: =varSelectedManagementTab = "Workflow"
+                            Children:
+                              # Workflow Header
+                              - 'Management.Workflow.Header':
+                                  Control: GroupContainer
+                                  Variant: ManualLayout
+                                  Properties:
+                                    X: =0
+                                    Y: =0
+                                    Width: =Parent.Width
+                                    Height: =Parent.Height * 0.15
+                                  Children:
+                                    - 'Management.Workflow.Header.Background':
+                                        Control: Rectangle
+                                        Properties:
+                                          X: =0
+                                          Y: =0
+                                          Width: =Parent.Width
+                                          Height: =Parent.Height
+                                          Fill: =RGBA(255, 255, 255, 1)
+                                          BorderColor: =RGBA(226, 232, 240, 1)
+                                          BorderThickness: =1
+
+                                    - 'Management.Workflow.Header.Title':
+                                        Control: Label
+                                        Properties:
+                                          X: =Parent.Width * 0.02
+                                          Y: =Parent.Height * 0.1
+                                          Width: =Parent.Width * 0.96
+                                          Height: =Parent.Height * 0.3
+                                          Text: ="Quy trình phê duyệt 3 cấp"
+                                          Color: =RGBA(17, 24, 39, 1)
+                                          Font: =Font.'Open Sans'
+                                          FontWeight: =FontWeight.Bold
+                                          Size: =14
+
+                                    - 'Management.Workflow.Header.Description':
+                                        Control: Label
+                                        Properties:
+                                          X: =Parent.Width * 0.02
+                                          Y: =Parent.Height * 0.5
+                                          Width: =Parent.Width * 0.96
+                                          Height: =Parent.Height * 0.4
+                                          Text: ="Thiết lập người phê duyệt cho từng cấp theo đơn vị. Chỉ có thể thay đổi khi không có đơn nào đang chờ phê duyệt."
+                                          Color: =RGBA(75, 85, 99, 1)
+                                          Font: =Font.'Open Sans'
+                                          Size: =11
+
+                              # Workflow Process Diagram
+                              - 'Management.Workflow.Process':
+                                  Control: GroupContainer
+                                  Variant: ManualLayout
+                                  Properties:
+                                    X: =0
+                                    Y: ='Management.Workflow.Header'.Y + 'Management.Workflow.Header'.Height + Parent.Height * 0.02
+                                    Width: =Parent.Width
+                                    Height: =Parent.Height * 0.4
+                                  Children:
+                                    - 'Management.Workflow.Process.Background':
+                                        Control: Rectangle
+                                        Properties:
+                                          X: =0
+                                          Y: =0
+                                          Width: =Parent.Width
+                                          Height: =Parent.Height
+                                          Fill: =RGBA(249, 250, 251, 1)
+                                          BorderColor: =RGBA(226, 232, 240, 1)
+                                          BorderThickness: =1
+
+                                    # Step 1
+                                    - 'Management.Workflow.Step1':
+                                        Control: GroupContainer
+                                        Variant: ManualLayout
+                                        Properties:
+                                          X: =Parent.Width * 0.05
+                                          Y: =Parent.Height * 0.2
+                                          Width: =Parent.Width * 0.25
+                                          Height: =Parent.Height * 0.6
+                                        Children:
+                                          - 'Management.Workflow.Step1.Background':
+                                              Control: Rectangle
+                                              Properties:
+                                                X: =0
+                                                Y: =0
+                                                Width: =Parent.Width
+                                                Height: =Parent.Height
+                                                Fill: =RGBA(59, 130, 246, 0.1)
+                                                BorderColor: =RGBA(59, 130, 246, 1)
+                                                BorderThickness: =2
+
+                                          - 'Management.Workflow.Step1.Title':
+                                              Control: Label
+                                              Properties:
+                                                X: =0
+                                                Y: =Parent.Height * 0.1
+                                                Width: =Parent.Width
+                                                Height: =Parent.Height * 0.3
+                                                Text: ="CẤP 1"
+                                                Color: =RGBA(59, 130, 246, 1)
+                                                Font: =Font.'Open Sans'
+                                                FontWeight: =FontWeight.Bold
+                                                Size: =12
+                                                Align: =Align.Center
+
+                                          - 'Management.Workflow.Step1.Role':
+                                              Control: Label
+                                              Properties:
+                                                X: =0
+                                                Y: =Parent.Height * 0.45
+                                                Width: =Parent.Width
+                                                Height: =Parent.Height * 0.45
+                                                Text: ="Trưởng nhóm/Trưởng phòng"
+                                                Color: =RGBA(17, 24, 39, 1)
+                                                Font: =Font.'Open Sans'
+                                                Size: =10
+                                                Align: =Align.Center
+                                                Wrap: =true
+
+                                    # Arrow 1
+                                    - 'Management.Workflow.Arrow1':
+                                        Control: Classic/Icon
+                                        Properties:
+                                          X: =Parent.Width * 0.32
+                                          Y: =Parent.Height * 0.45
+                                          Width: =Parent.Width * 0.04
+                                          Height: =Parent.Height * 0.1
+                                          Icon: =Icon.ChevronRight
+                                          Color: =RGBA(75, 85, 99, 1)
+
+                                    # Step 2
+                                    - 'Management.Workflow.Step2':
+                                        Control: GroupContainer
+                                        Variant: ManualLayout
+                                        Properties:
+                                          X: =Parent.Width * 0.38
+                                          Y: =Parent.Height * 0.2
+                                          Width: =Parent.Width * 0.25
+                                          Height: =Parent.Height * 0.6
+                                        Children:
+                                          - 'Management.Workflow.Step2.Background':
+                                              Control: Rectangle
+                                              Properties:
+                                                X: =0
+                                                Y: =0
+                                                Width: =Parent.Width
+                                                Height: =Parent.Height
+                                                Fill: =RGBA(251, 191, 36, 0.1)
+                                                BorderColor: =RGBA(251, 191, 36, 1)
+                                                BorderThickness: =2
+
+                                          - 'Management.Workflow.Step2.Title':
+                                              Control: Label
+                                              Properties:
+                                                X: =0
+                                                Y: =Parent.Height * 0.1
+                                                Width: =Parent.Width
+                                                Height: =Parent.Height * 0.3
+                                                Text: ="CẤP 2"
+                                                Color: =RGBA(251, 191, 36, 1)
+                                                Font: =Font.'Open Sans'
+                                                FontWeight: =FontWeight.Bold
+                                                Size: =12
+                                                Align: =Align.Center
+
+                                          - 'Management.Workflow.Step2.Role':
+                                              Control: Label
+                                              Properties:
+                                                X: =0
+                                                Y: =Parent.Height * 0.45
+                                                Width: =Parent.Width
+                                                Height: =Parent.Height * 0.45
+                                                Text: ="Giám đốc khối"
+                                                Color: =RGBA(17, 24, 39, 1)
+                                                Font: =Font.'Open Sans'
+                                                Size: =10
+                                                Align: =Align.Center
+
+                                    # Arrow 2
+                                    - 'Management.Workflow.Arrow2':
+                                        Control: Classic/Icon
+                                        Properties:
+                                          X: =Parent.Width * 0.65
+                                          Y: =Parent.Height * 0.45
+                                          Width: =Parent.Width * 0.04
+                                          Height: =Parent.Height * 0.1
+                                          Icon: =Icon.ChevronRight
+                                          Color: =RGBA(75, 85, 99, 1)
+
+                                    # Step 3
+                                    - 'Management.Workflow.Step3':
+                                        Control: GroupContainer
+                                        Variant: ManualLayout
+                                        Properties:
+                                          X: =Parent.Width * 0.71
+                                          Y: =Parent.Height * 0.2
+                                          Width: =Parent.Width * 0.25
+                                          Height: =Parent.Height * 0.6
+                                        Children:
+                                          - 'Management.Workflow.Step3.Background':
+                                              Control: Rectangle
+                                              Properties:
+                                                X: =0
+                                                Y: =0
+                                                Width: =Parent.Width
+                                                Height: =Parent.Height
+                                                Fill: =RGBA(239, 68, 68, 0.1)
+                                                BorderColor: =RGBA(239, 68, 68, 1)
+                                                BorderThickness: =2
+
+                                          - 'Management.Workflow.Step3.Title':
+                                              Control: Label
+                                              Properties:
+                                                X: =0
+                                                Y: =Parent.Height * 0.1
+                                                Width: =Parent.Width
+                                                Height: =Parent.Height * 0.3
+                                                Text: ="CẤP 3"
+                                                Color: =RGBA(239, 68, 68, 1)
+                                                Font: =Font.'Open Sans'
+                                                FontWeight: =FontWeight.Bold
+                                                Size: =12
+                                                Align: =Align.Center
+
+                                          - 'Management.Workflow.Step3.Role':
+                                              Control: Label
+                                              Properties:
+                                                X: =0
+                                                Y: =Parent.Height * 0.45
+                                                Width: =Parent.Width
+                                                Height: =Parent.Height * 0.45
+                                                Text: ="Giám đốc điều hành"
+                                                Color: =RGBA(17, 24, 39, 1)
+                                                Font: =Font.'Open Sans'
+                                                Size: =10
+                                                Align: =Align.Center
+
+                              # Workflow Configuration Table
+                              - 'Management.Workflow.Table':
+                                  Control: DataTable
+                                  Variant: DataTable
+                                  Properties:
+                                    X: =0
+                                    Y: ='Management.Workflow.Process'.Y + 'Management.Workflow.Process'.Height + Parent.Height * 0.02
+                                    Width: =Parent.Width
+                                    Height: =Parent.Height * 0.35
+                                    Items: =QuyTrinhDuyet
+                                    BorderColor: =RGBA(229, 231, 235, 1)
+                                    BorderThickness: =1
+                                    Font: =Font.'Open Sans'
+                                    Size: =11
+                                    Color: =RGBA(55, 65, 81, 1)
+                                    HeadingColor: =RGBA(255, 255, 255, 1)
+                                    HeadingFill: =RGBA(147, 51, 234, 1)
+                                  Children:
+                                    - WorkflowDepartment_Column:
+                                        Control: DataTableColumn
+                                        Variant: Textual
+                                        Properties:
+                                          FieldDisplayName: ="Đơn vị"
+                                          FieldName: ="MaDonVi"
+                                          Order: =1
+                                          Text: =LookUp(DonVi, MaDonVi = Parent.Selected.MaDonVi.Value).TenDonVi
+                                          Width: =200
+
+                                    - WorkflowLevel_Column:
+                                        Control: DataTableColumn
+                                        Variant: Textual
+                                        Properties:
+                                          FieldDisplayName: ="Cấp"
+                                          FieldName: ="Cap"
+                                          Order: =2
+                                          Text: =Concatenate("Cấp ", Parent.Selected.Cap.Value)
+                                          Width: =80
+
+                                    - WorkflowRole_Column:
+                                        Control: DataTableColumn
+                                        Variant: Textual
+                                        Properties:
+                                          FieldDisplayName: ="Vai trò"
+                                          FieldName: ="MaVaiTro"
+                                          Order: =3
+                                          Text: =LookUp(VaiTro, MaVaiTro = Parent.Selected.MaVaiTro.Value).TenVaiTro
+                                          Width: =150
+
+                                    - WorkflowApprover_Column:
+                                        Control: DataTableColumn
+                                        Variant: Textual
+                                        Properties:
+                                          FieldDisplayName: ="Người duyệt mặc định"
+                                          FieldName: ="NguoiDuyetMacDinh"
+                                          Order: =4
+                                          Text: =LookUp(NguoiDung, Title = Parent.Selected.NguoiDuyetMacDinh.Value).HoTen
+                                          Width: =200
+
+                                    - WorkflowStatus_Column:
+                                        Control: DataTableColumn
+                                        Variant: Textual
+                                        Properties:
+                                          FieldDisplayName: ="Trạng thái"
+                                          FieldName: ="DangHoatDong"
+                                          Order: =5
+                                          Text: =If(Parent.Selected.DangHoatDong, "Hoạt động", "Không hoạt động")
+                                          Width: =100
+
+      # ===== MODAL FORMS =====
+      
+      # User Form Modal
+      - 'Management.UserForm.Modal':
+          Control: GroupContainer
+          Variant: ManualLayout
+          Properties:
+            X: =(Parent.Width - Self.Width) / 2
+            Y: =(Parent.Height - Self.Height) / 2
+            Width: =Parent.Width * 0.5
+            Height: =Parent.Height * 0.7
+            Fill: =RGBA(255, 255, 255, 1)
+            BorderColor: =RGBA(226, 232, 240, 1)
+            BorderThickness: =2
+            Visible: =varIsUserFormOpen
+          Children:
+            # Form Header
+            - 'Management.UserForm.Header':
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =0
+                  Y: =0
+                  Width: =Parent.Width
+                  Height: =Parent.Height * 0.15
+                  Fill: =RGBA(59, 130, 246, 1)
+                Children:
+                  - 'Management.UserForm.Title':
+                      Control: Label
+                      Properties:
+                        X: =Parent.Width * 0.05
+                        Y: =(Parent.Height - Self.Height) / 2
+                        Width: =Parent.Width * 0.7
+                        Height: =Parent.Height * 0.6
+                        Text: =If(varIsEditingUser, "Chỉnh sửa người dùng", "Thêm người dùng mới")
+                        Color: =RGBA(255, 255, 255, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Bold
+                        Size: =14
+
+                  - 'Management.UserForm.CloseButton':
                       Control: CanvasComponent
                       ComponentName: ButtonComponent
                       Properties:
-                        X: =Parent.Width * 0.5
+                        X: =Parent.Width * 0.85
                         Y: =(Parent.Height - Self.Height) / 2
-                        Width: =Parent.Width * 0.15
-                        Height: =Parent.Height * 0.7
-                              Text: ="Quy trình"
-                              Variant: =If(varSelectedManagementTab = "Workflow", "Primary", "Outline")
-                                                Size: ="Small"
-                                                OnClick: |
-                                =Set(varSelectedManagementTab, "Workflow")
+                        Width: =Parent.Width * 0.12
+                        Height: =Parent.Height * 0.6
+                        Text: ="Đóng"
+                        Variant: ="Outline"
+                        Size: ="Small"
+                        OnClick: |
+                          =Set(varIsUserFormOpen, false)
+
+            # Form Content
+            - 'Management.UserForm.Content':
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =Parent.Width * 0.05
+                  Y: ='Management.UserForm.Header'.Height + Parent.Height * 0.03
+                  Width: =Parent.Width * 0.9
+                  Height: =Parent.Height * 0.65
+                Children:
+                  # Name Field
+                  - 'Management.UserForm.Name.Label':
+                      Control: Label
+                      Properties:
+                        X: =0
+                        Y: =0
+                        Width: =Parent.Width * 0.3
+                        Height: =Parent.Height * 0.1
+                        Text: ="Họ và tên:"
+                        Color: =RGBA(17, 24, 39, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Semibold
+                        Size: =12
+
+                  - 'Management.UserForm.Name.Input':
+                      Control: Classic/TextInput
+                      Properties:
+                        X: =Parent.Width * 0.35
+                        Y: =0
+                        Width: =Parent.Width * 0.6
+                        Height: =Parent.Height * 0.08
+                        Default: =varUserFormName
+                        BorderColor: =RGBA(226, 232, 240, 1)
+                        BorderThickness: =1
+                        Font: =Font.'Open Sans'
+                        Size: =12
+                        OnChange: |
+                          =Set(varUserFormName, Self.Text)
+
+                  # Email Field
+                  - 'Management.UserForm.Email.Label':
+                      Control: Label
+                      Properties:
+                        X: =0
+                        Y: =Parent.Height * 0.15
+                        Width: =Parent.Width * 0.3
+                        Height: =Parent.Height * 0.1
+                        Text: ="Email:"
+                        Color: =RGBA(17, 24, 39, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Semibold
+                        Size: =12
+
+                  - 'Management.UserForm.Email.Input':
+                      Control: Classic/TextInput
+                      Properties:
+                        X: =Parent.Width * 0.35
+                        Y: =Parent.Height * 0.15
+                        Width: =Parent.Width * 0.6
+                        Height: =Parent.Height * 0.08
+                        Default: =varUserFormEmail
+                        BorderColor: =RGBA(226, 232, 240, 1)
+                        BorderThickness: =1
+                        Font: =Font.'Open Sans'
+                        Size: =12
+                        OnChange: |
+                          =Set(varUserFormEmail, Self.Text)
+
+                  # Department Field
+                  - 'Management.UserForm.Department.Label':
+                      Control: Label
+                      Properties:
+                        X: =0
+                        Y: =Parent.Height * 0.3
+                        Width: =Parent.Width * 0.3
+                        Height: =Parent.Height * 0.1
+                        Text: ="Đơn vị:"
+                        Color: =RGBA(17, 24, 39, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Semibold
+                        Size: =12
+
+                  - 'Management.UserForm.Department.Dropdown':
+                      Control: Classic/DropDown
+                      Properties:
+                        X: =Parent.Width * 0.35
+                        Y: =Parent.Height * 0.3
+                        Width: =Parent.Width * 0.6
+                        Height: =Parent.Height * 0.08
+                        Items: =varAllDepartments
+                        Default: =LookUp(varAllDepartments, MaDonVi = varUserFormDepartment)
+                        BorderColor: =RGBA(226, 232, 240, 1)
+                        BorderThickness: =1
+                        OnChange: |
+                          =Set(varUserFormDepartment, Self.Selected.MaDonVi)
+
+                  # Role Field
+                  - 'Management.UserForm.Role.Label':
+                      Control: Label
+                      Properties:
+                        X: =0
+                        Y: =Parent.Height * 0.45
+                        Width: =Parent.Width * 0.3
+                        Height: =Parent.Height * 0.1
+                        Text: ="Vai trò:"
+                        Color: =RGBA(17, 24, 39, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Semibold
+                        Size: =12
+
+                  - 'Management.UserForm.Role.Dropdown':
+                      Control: Classic/DropDown
+                      Properties:
+                        X: =Parent.Width * 0.35
+                        Y: =Parent.Height * 0.45
+                        Width: =Parent.Width * 0.6
+                        Height: =Parent.Height * 0.08
+                        Items: =varAllRoles
+                        Default: =LookUp(varAllRoles, MaVaiTro = varUserFormRole)
+                        BorderColor: =RGBA(226, 232, 240, 1)
+                        BorderThickness: =1
+                        OnChange: |
+                          =Set(varUserFormRole, Self.Selected.MaVaiTro)
+
+                  # Status Field
+                  - 'Management.UserForm.Status.Label':
+                      Control: Label
+                      Properties:
+                        X: =0
+                        Y: =Parent.Height * 0.6
+                        Width: =Parent.Width * 0.3
+                        Height: =Parent.Height * 0.1
+                        Text: ="Trạng thái:"
+                        Color: =RGBA(17, 24, 39, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Semibold
+                        Size: =12
+
+                  - 'Management.UserForm.Status.Dropdown':
+                      Control: Classic/DropDown
+                      Properties:
+                        X: =Parent.Width * 0.35
+                        Y: =Parent.Height * 0.6
+                        Width: =Parent.Width * 0.6
+                        Height: =Parent.Height * 0.08
+                        Items: =["HoatDong", "KhongHoatDong"]
+                        Default: =varUserFormStatus
+                        BorderColor: =RGBA(226, 232, 240, 1)
+                        BorderThickness: =1
+                        OnChange: |
+                          =Set(varUserFormStatus, Self.Selected.Value)
+
+            # Form Actions
+            - 'Management.UserForm.Actions':
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =Parent.Width * 0.05
+                  Y: =Parent.Height * 0.85
+                  Width: =Parent.Width * 0.9
+                  Height: =Parent.Height * 0.12
+                Children:
+                  - 'Management.UserForm.SaveButton':
+                      Control: CanvasComponent
+                      ComponentName: ButtonComponent
+                      Properties:
+                        X: =0
+                        Y: =(Parent.Height - Self.Height) / 2
+                        Width: =Parent.Width * 0.45
+                        Height: =Parent.Height * 0.8
+                        Text: =If(varIsEditingUser, "Cập nhật", "Thêm mới")
+                        Variant: ="Primary"
+                        Size: ="Medium"
+                        OnClick: |
+                          =If(varIsEditingUser,
+                            Patch(NguoiDung, varSelectedUser, {
+                              HoTen: varUserFormName,
+                              Email: varUserFormEmail,
+                              MaDonVi: {Value: varUserFormDepartment},
+                              MaVaiTro: {Value: varUserFormRole},
+                              TrangThai: {Value: varUserFormStatus}
+                            }),
+                            Patch(NguoiDung, Defaults(NguoiDung), {
+                              HoTen: varUserFormName,
+                              Email: varUserFormEmail,
+                              MaDonVi: {Value: varUserFormDepartment},
+                              MaVaiTro: {Value: varUserFormRole},
+                              TrangThai: {Value: varUserFormStatus}
+                            })
+                          );
+                          Set(varAllUsers, NguoiDung);
+                          Set(varIsUserFormOpen, false);
+                          Notify(If(varIsEditingUser, "Cập nhật thành công", "Thêm mới thành công"), NotificationType.Success)
+
+                  - 'Management.UserForm.CancelButton':
+                      Control: CanvasComponent
+                      ComponentName: ButtonComponent
+                      Properties:
+                        X: =Parent.Width * 0.55
+                        Y: =(Parent.Height - Self.Height) / 2
+                        Width: =Parent.Width * 0.45
+                        Height: =Parent.Height * 0.8
+                        Text: ="Hủy"
+                        Variant: ="Outline"
+                        Size: ="Medium"
+                        OnClick: |
+                          =Set(varIsUserFormOpen, false)
+
+      # Holiday Form Modal
+      - 'Management.HolidayForm.Modal':
+          Control: GroupContainer
+          Variant: ManualLayout
+          Properties:
+            X: =(Parent.Width - Self.Width) / 2
+            Y: =(Parent.Height - Self.Height) / 2
+            Width: =Parent.Width * 0.4
+            Height: =Parent.Height * 0.5
+            Fill: =RGBA(255, 255, 255, 1)
+            BorderColor: =RGBA(226, 232, 240, 1)
+            BorderThickness: =2
+            Visible: =varIsHolidayFormOpen
+          Children:
+            # Form Header
+            - 'Management.HolidayForm.Header':
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =0
+                  Y: =0
+                  Width: =Parent.Width
+                  Height: =Parent.Height * 0.2
+                  Fill: =RGBA(251, 191, 36, 1)
+                Children:
+                  - 'Management.HolidayForm.Title':
+                      Control: Label
+                      Properties:
+                        X: =Parent.Width * 0.05
+                        Y: =(Parent.Height - Self.Height) / 2
+                        Width: =Parent.Width * 0.7
+                        Height: =Parent.Height * 0.6
+                        Text: =If(Not(IsBlank(varSelectedHoliday)), "Chỉnh sửa ngày lễ", "Thêm ngày lễ mới")
+                        Color: =RGBA(255, 255, 255, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Bold
+                        Size: =14
+
+                  - 'Management.HolidayForm.CloseButton':
+                      Control: CanvasComponent
+                      ComponentName: ButtonComponent
+                      Properties:
+                        X: =Parent.Width * 0.85
+                        Y: =(Parent.Height - Self.Height) / 2
+                        Width: =Parent.Width * 0.12
+                        Height: =Parent.Height * 0.6
+                        Text: ="Đóng"
+                        Variant: ="Outline"
+                        Size: ="Small"
+                        OnClick: |
+                          =Set(varIsHolidayFormOpen, false)
+
+            # Form Content
+            - 'Management.HolidayForm.Content':
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =Parent.Width * 0.05
+                  Y: ='Management.HolidayForm.Header'.Height + Parent.Height * 0.05
+                  Width: =Parent.Width * 0.9
+                  Height: =Parent.Height * 0.6
+                Children:
+                  # Name Field
+                  - 'Management.HolidayForm.Name.Label':
+                      Control: Label
+                      Properties:
+                        X: =0
+                        Y: =0
+                        Width: =Parent.Width * 0.3
+                        Height: =Parent.Height * 0.15
+                        Text: ="Tên ngày lễ:"
+                        Color: =RGBA(17, 24, 39, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Semibold
+                        Size: =12
+
+                  - 'Management.HolidayForm.Name.Input':
+                      Control: Classic/TextInput
+                      Properties:
+                        X: =Parent.Width * 0.35
+                        Y: =0
+                        Width: =Parent.Width * 0.6
+                        Height: =Parent.Height * 0.12
+                        Default: =varHolidayFormName
+                        BorderColor: =RGBA(226, 232, 240, 1)
+                        BorderThickness: =1
+                        Font: =Font.'Open Sans'
+                        Size: =12
+                        OnChange: |
+                          =Set(varHolidayFormName, Self.Text)
+
+                  # Date Field
+                  - 'Management.HolidayForm.Date.Label':
+                      Control: Label
+                      Properties:
+                        X: =0
+                        Y: =Parent.Height * 0.25
+                        Width: =Parent.Width * 0.3
+                        Height: =Parent.Height * 0.15
+                        Text: ="Ngày:"
+                        Color: =RGBA(17, 24, 39, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Semibold
+                        Size: =12
+
+                  - 'Management.HolidayForm.Date.Input':
+                      Control: Classic/DatePicker
+                      Properties:
+                        X: =Parent.Width * 0.35
+                        Y: =Parent.Height * 0.25
+                        Width: =Parent.Width * 0.6
+                        Height: =Parent.Height * 0.12
+                        DefaultDate: =varHolidayFormDate
+                        BorderColor: =RGBA(226, 232, 240, 1)
+                        BorderThickness: =1
+                        Font: =Font.'Open Sans'
+                        Size: =12
+                        OnChange: |
+                          =Set(varHolidayFormDate, Self.SelectedDate)
+
+            # Form Actions
+            - 'Management.HolidayForm.Actions':
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =Parent.Width * 0.05
+                  Y: =Parent.Height * 0.85
+                  Width: =Parent.Width * 0.9
+                  Height: =Parent.Height * 0.12
+                Children:
+                  - 'Management.HolidayForm.SaveButton':
+                      Control: CanvasComponent
+                      ComponentName: ButtonComponent
+                      Properties:
+                        X: =0
+                        Y: =(Parent.Height - Self.Height) / 2
+                        Width: =Parent.Width * 0.45
+                        Height: =Parent.Height * 0.8
+                        Text: =If(Not(IsBlank(varSelectedHoliday)), "Cập nhật", "Thêm mới")
+                        Variant: ="Primary"
+                        Size: ="Medium"
+                        OnClick: |
+                          =If(Not(IsBlank(varSelectedHoliday)),
+                            Patch(NgayLe, varSelectedHoliday, {
+                              TenNgayLe: varHolidayFormName,
+                              Ngay: Text(varHolidayFormDate, "yyyy-mm-dd"),
+                              Nam: Year(varHolidayFormDate)
+                            }),
+                            Patch(NgayLe, Defaults(NgayLe), {
+                              TenNgayLe: varHolidayFormName,
+                              Ngay: Text(varHolidayFormDate, "yyyy-mm-dd"),
+                              Nam: Year(varHolidayFormDate),
+                              Buoi: {Value: "CaNgay"}
+                            })
+                          );
+                          Set(varHolidaysList, NgayLe);
+                          Set(varIsHolidayFormOpen, false);
+                          Notify(If(Not(IsBlank(varSelectedHoliday)), "Cập nhật thành công", "Thêm mới thành công"), NotificationType.Success)
+
+                  - 'Management.HolidayForm.CancelButton':
+                      Control: CanvasComponent
+                      ComponentName: ButtonComponent
+                      Properties:
+                        X: =Parent.Width * 0.55
+                        Y: =(Parent.Height - Self.Height) / 2
+                        Width: =Parent.Width * 0.45
+                        Height: =Parent.Height * 0.8
+                        Text: ="Hủy"
+                        Variant: ="Outline"
+                        Size: ="Medium"
+                        OnClick: |
+                          =Set(varIsHolidayFormOpen, false)
+
+      # Import Modal
+      - 'Management.Import.Modal':
+          Control: GroupContainer
+          Variant: ManualLayout
+          Properties:
+            X: =(Parent.Width - Self.Width) / 2
+            Y: =(Parent.Height - Self.Height) / 2
+            Width: =Parent.Width * 0.6
+            Height: =Parent.Height * 0.6
+            Fill: =RGBA(255, 255, 255, 1)
+            BorderColor: =RGBA(226, 232, 240, 1)
+            BorderThickness: =2
+            Visible: =varShowImportModal
+          Children:
+            # Import Header
+            - 'Management.Import.Header':
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =0
+                  Y: =0
+                  Width: =Parent.Width
+                  Height: =Parent.Height * 0.15
+                  Fill: =RGBA(34, 197, 94, 1)
+                Children:
+                  - 'Management.Import.Title':
+                      Control: Label
+                      Properties:
+                        X: =Parent.Width * 0.05
+                        Y: =(Parent.Height - Self.Height) / 2
+                        Width: =Parent.Width * 0.7
+                        Height: =Parent.Height * 0.6
+                        Text: ="Import số ngày nghỉ phép từ Excel"
+                        Color: =RGBA(255, 255, 255, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Bold
+                        Size: =14
+
+                  - 'Management.Import.CloseButton':
+                      Control: CanvasComponent
+                      ComponentName: ButtonComponent
+                      Properties:
+                        X: =Parent.Width * 0.85
+                        Y: =(Parent.Height - Self.Height) / 2
+                        Width: =Parent.Width * 0.12
+                        Height: =Parent.Height * 0.6
+                        Text: ="Đóng"
+                        Variant: ="Outline"
+                        Size: ="Small"
+                        OnClick: |
+                          =Set(varShowImportModal, false)
+
+            # Import Instructions
+            - 'Management.Import.Instructions':
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =Parent.Width * 0.05
+                  Y: ='Management.Import.Header'.Height + Parent.Height * 0.03
+                  Width: =Parent.Width * 0.9
+                  Height: =Parent.Height * 0.6
+                Children:
+                  - 'Management.Import.Instructions.Title':
+                      Control: Label
+                      Properties:
+                        X: =0
+                        Y: =0
+                        Width: =Parent.Width
+                        Height: =Parent.Height * 0.15
+                        Text: ="Hướng dẫn import file Excel:"
+                        Color: =RGBA(17, 24, 39, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Bold
+                        Size: =12
+
+                  - 'Management.Import.Instructions.Content':
+                      Control: Label
+                      Properties:
+                        X: =0
+                        Y: =Parent.Height * 0.2
+                        Width: =Parent.Width
+                        Height: =Parent.Height * 0.6
+                        Text: =Concatenate(
+                          "File Excel cần có các cột sau:", Char(10),
+                          "• Mã Nhân viên", Char(10),
+                          "• Họ và tên", Char(10),
+                          "• Email", Char(10),
+                          "• Tổng ngày phép", Char(10),
+                          "• Năm", Char(10), Char(10),
+                          "Lưu ý: File phải ở định dạng .xlsx hoặc .csv"
+                        )
+                        Color: =RGBA(75, 85, 99, 1)
+                        Font: =Font.'Open Sans'
+                        Size: =11
+                        Wrap: =true
+
+                  - 'Management.Import.FileUpload':
+                      Control: Classic/AddMediaButton
+                      Properties:
+                        X: =0
+                        Y: =Parent.Height * 0.85
+                        Width: =Parent.Width
+                        Height: =Parent.Height * 0.12
+                        Text: ="Chọn file Excel"
+                        BorderColor: =RGBA(59, 130, 246, 1)
+                        BorderThickness: =2
+                        Color: =RGBA(59, 130, 246, 1)
+                        Fill: =RGBA(239, 246, 255, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Semibold
+                        Size: =12
+
+            # Import Actions
+            - 'Management.Import.Actions':
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =Parent.Width * 0.05
+                  Y: =Parent.Height * 0.85
+                  Width: =Parent.Width * 0.9
+                  Height: =Parent.Height * 0.12
+                Children:
+                  - 'Management.Import.ProcessButton':
+                      Control: CanvasComponent
+                      ComponentName: ButtonComponent
+                      Properties:
+                        X: =0
+                        Y: =(Parent.Height - Self.Height) / 2
+                        Width: =Parent.Width * 0.45
+                        Height: =Parent.Height * 0.8
+                        Text: ="Xử lý import"
+                        Variant: ="Primary"
+                        Size: ="Medium"
+                        OnClick: |
+                          =Notify("Chức năng import sẽ được triển khai trong phiên bản tiếp theo", NotificationType.Information);
+                          Set(varShowImportModal, false)
+
+                  - 'Management.Import.CancelButton':
+                      Control: CanvasComponent
+                      ComponentName: ButtonComponent
+                      Properties:
+                        X: =Parent.Width * 0.55
+                        Y: =(Parent.Height - Self.Height) / 2
+                        Width: =Parent.Width * 0.45
+                        Height: =Parent.Height * 0.8
+                        Text: ="Hủy"
+                        Variant: ="Outline"
+                        Size: ="Medium"
+                        OnClick: |
+                          =Set(varShowImportModal, false)

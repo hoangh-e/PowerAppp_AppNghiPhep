@@ -356,7 +356,7 @@ Screens:
                                     Width: =Parent.Width
                                     Height: =Parent.Height * 0.07
                                     Items: =varPotentialHandovers
-                                    DefaultSelectedItems: =If(Not(IsBlank(varUserManager)), [varUserManager], [])
+                                    Default: =If(Not(IsBlank(varUserManager)), [varUserManager], [])
                                     BorderColor: =RGBA(209, 213, 219, 1)
                                     BorderThickness: =1
                                     Fill: =RGBA(255, 255, 255, 1)
@@ -476,21 +476,22 @@ Screens:
                                               DateDiff(Today(), varSelectedFromDate),
                                               If(
                                                 And(varCalculatedDays >= 0.5, varCalculatedDays <= 2, ThisRecord < 1),
-                                                "⚠️ Nghỉ 0.5-2 ngày cần tạo trước 1 ngày",
+                                                "! Nghỉ 0.5-2 ngày cần tạo trước 1 ngày",
                                                 If(
                                                   And(varCalculatedDays >= 3, varCalculatedDays <= 4, ThisRecord < 7),
-                                                  "⚠️ Nghỉ 3-4 ngày cần tạo trước 7 ngày",
+                                                  "! Nghỉ 3-4 ngày cần tạo trước 7 ngày",
                                                   If(
                                                     And(varCalculatedDays >= 5, ThisRecord < 14),
-                                                    "⚠️ Nghỉ từ 5 ngày cần tạo trước 14 ngày",
-                                                    "✅ Thời gian tạo đơn hợp lệ"
+                                                    "! Nghỉ từ 5 ngày cần tạo trước 14 ngày",
+                                                    "OK! Thời gian tạo đơn hợp lệ"
                                                   )
                                                 )
                                               )
                                             ),
-                                            ""
-                                          )
-                                          Color: =If(StartsWith(Self.Text, "⚠️"), RGBA(251, 146, 60, 1), RGBA(34, 197, 94, 1))
+                                            " "
+                                            )
+                                          Color: |
+                                            =If(StartsWith(Self.Text, "!"), RGBA(251, 146, 60, 1), RGBA(34, 197, 94, 1))
                                           Font: =Font.'Open Sans'
                                           Size: =11
                                           Wrap: =true
@@ -506,97 +507,98 @@ Screens:
                                             And(Not(IsBlank(varUserLeaveBalance)), Not(IsBlank(varCalculatedDays))),
                                             If(
                                               varCalculatedDays <= varUserLeaveBalance.SoNgayConLai,
-                                              "✅ Số ngày nghỉ trong hạn mức",
-                                              Concatenate("⚠️ Vượt hạn mức ", varCalculatedDays - varUserLeaveBalance.SoNgayConLai, " ngày (nghỉ không lương)")
+                                              "OK! Số ngày nghỉ trong hạn mức",
+                                              Concatenate("! Vượt hạn mức ", varCalculatedDays - varUserLeaveBalance.SoNgayConLai, " ngày (nghỉ không lương)")
                                             ),
                                             ""
-                                          )
-                                          Color: =If(StartsWith(Self.Text, "⚠️"), RGBA(251, 146, 60, 1), RGBA(34, 197, 94, 1))
+                                            )
+                                          Color: |
+                                            =If(StartsWith(Self.Text, "!"), RGBA(251, 146, 60, 1), RGBA(34, 197, 94, 1))
                                           Font: =Font.'Open Sans'
                                           Size: =11
                                           Wrap: =true
 
-                              # Submit Buttons
-            - 'LeaveRequest.Actions.Container':
-                Control: GroupContainer
-                Variant: ManualLayout
-                Properties:
+                        # Submit Actions Container - di chuyển ra cùng level với LeftColumn và RightColumn
+                        - 'LeaveRequest.Actions.Container':
+                            Control: GroupContainer
+                            Variant: ManualLayout
+                            Properties:
+                              X: =Parent.Width * 0.025
+                              Y: =Parent.Height * 0.78
+                              Width: =Parent.Width * 0.95
+                              Height: =Parent.Height * 0.15
+                            Children:
+                              - 'LeaveRequest.Submit.Button':
+                                  Control: CanvasComponent
+                                  ComponentName: ButtonComponent
+                                  Properties:
                                     X: =0
-                                    Y: ='LeaveRequest.Validation.Container'.Y + 'LeaveRequest.Validation.Container'.Height + Parent.Height * 0.03
-                                    Width: =Parent.Width
-                                    Height: =Parent.Height * 0.12
-                Children:
-                                    - 'LeaveRequest.Submit.Button':
-                      Control: CanvasComponent
-                      ComponentName: ButtonComponent
-                      Properties:
-                                          X: =0
-                                          Y: =0
-                                          Width: =Parent.Width * 0.48
-                                          Height: =Parent.Height
-                                          Text: =If(varIsSubmitting, "Đang gửi...", "Gửi đơn")
-                        Variant: ="Primary"
-                                          Size: ="Medium"
-                        IsDisabled: =Or(
-                                            varIsSubmitting,
-                                            IsBlank(varSelectedLeaveType),
-                                            IsBlank(varSelectedFromDate),
-                                            IsBlank(varSelectedToDate),
-                          IsBlank(varLeaveReason),
-                                            varCalculatedDays <= 0
-                        )
-                        OnClick: |
-                                    =Set(varIsSubmitting, true);
-                                            With(
-                                              {
-                                                NewLeaveRequest: {
-                                                  MaNguoiDung: {Value: UserSession.Id},
-                                                  NgayBatDau: varSelectedFromDate,
-                                                  NgayKetThuc: varSelectedToDate,
-                                      SoNgayNghi: varCalculatedDays,
-                                                  MaLoai: {Value: varSelectedLeaveType.MaLoai},
-                                      LyDo: varLeaveReason,
-                                                  NguoiBanGiao: If(Not(IsBlank(varHandoverPerson)), {Value: varHandoverPerson.Title}, Blank()),
-                                      NoiDungBanGiao: varHandoverContent,
-                                                  TrangThai: {Value: "ChoDuyetCap1"},
-                                                  BuoiNghi: {Value: "CaNgay"},
-                                                  NguoiTao: {Value: UserSession.Id},
-                                                  ThoiHanPheDuyet: DateAdd(Today(), 1, Days),
-                                                  UuTien: {Value: "BinhThuong"},
-                                                  MaDon: GUID()
-                                                }
-                                              },
-                                              Patch(DonNghiPhep, Defaults(DonNghiPhep), NewLeaveRequest);
-                                              Set(varIsSubmitting, false);
-                                              Set(varShowSuccessModal, true);
-                                              Notify("Đã gửi đơn nghỉ phép thành công!", NotificationType.Success)
-                                            )
+                                    Y: =(Parent.Height - Self.Height) / 2
+                                    Width: =Parent.Width * 0.48
+                                    Height: =Parent.Height * 0.7
+                                    Text: =If(varIsSubmitting, "Đang gửi...", "Gửi đơn")
+                                    Variant: ="Primary"
+                                    Size: ="Medium"
+                                    IsDisabled: =Or(
+                                      varIsSubmitting,
+                                      IsBlank(varSelectedLeaveType),
+                                      IsBlank(varSelectedFromDate),
+                                      IsBlank(varSelectedToDate),
+                                      IsBlank(varLeaveReason),
+                                      varCalculatedDays <= 0
+                                      )
+                                    OnClick: |
+                                      =Set(varIsSubmitting, true);
+                                      With(
+                                        {
+                                          NewLeaveRequest: {
+                                            MaNguoiDung: {Value: UserSession.Id},
+                                            NgayBatDau: varSelectedFromDate,
+                                            NgayKetThuc: varSelectedToDate,
+                                            SoNgayNghi: varCalculatedDays,
+                                            MaLoai: {Value: varSelectedLeaveType.MaLoai},
+                                            LyDo: varLeaveReason,
+                                            NguoiBanGiao: If(Not(IsBlank(varHandoverPerson)), {Value: varHandoverPerson.Title}, Blank()),
+                                            NoiDungBanGiao: varHandoverContent,
+                                            TrangThai: {Value: "ChoDuyetCap1"},
+                                            BuoiNghi: {Value: "CaNgay"},
+                                            NguoiTao: {Value: UserSession.Id},
+                                            ThoiHanPheDuyet: DateAdd(Today(), 1, Days),
+                                            UuTien: {Value: "BinhThuong"},
+                                            MaDon: GUID()
+                                          }
+                                        },
+                                        Patch(DonNghiPhep, Defaults(DonNghiPhep), NewLeaveRequest);
+                                        Set(varIsSubmitting, false);
+                                        Set(varShowSuccessModal, true);
+                                        Notify("Đã gửi đơn nghỉ phép thành công!", NotificationType.Success)
+                                      )
                                             
-                                    - 'LeaveRequest.Reset.Button':
-                      Control: CanvasComponent
-                      ComponentName: ButtonComponent
-                      Properties:
-                                          X: =Parent.Width * 0.52
-                                          Y: =0
-                                          Width: =Parent.Width * 0.48
-            Height: =Parent.Height
-                                          Text: ="Làm mới"
-                                          Variant: ="Outline"
-                                          Size: ="Medium"
-                                          OnClick: |
-                                            =Set(varSelectedFromDate, Blank());
-                                            Set(varSelectedToDate, Blank());
-                                            Set(varSelectedLeaveType, Blank());
-                                            Set(varLeaveReason, "");
-                                            Set(varHandoverPerson, Blank());
-                                            Set(varHandoverContent, "");
-                                            Set(varCalculatedDays, 0);
-                                            Reset('LeaveRequest.LeaveType.Dropdown');
-                                            Reset('LeaveRequest.FromDate.DatePicker');
-                                            Reset('LeaveRequest.ToDate.DatePicker');
-                                            Reset('LeaveRequest.Reason.Input');
-                                            Reset('LeaveRequest.HandoverContent.Input');
-                                            Reset('LeaveRequest.Handover.Dropdown')
+                              - 'LeaveRequest.Reset.Button':
+                                  Control: CanvasComponent
+                                  ComponentName: ButtonComponent
+                                  Properties:
+                                    X: =Parent.Width * 0.52
+                                    Y: =(Parent.Height - Self.Height) / 2
+                                    Width: =Parent.Width * 0.48
+                                    Height: =Parent.Height * 0.7
+                                    Text: ="Làm mới"
+                                    Variant: ="Outline"
+                                    Size: ="Medium"
+                                    OnClick: |
+                                      =Set(varSelectedFromDate, Blank());
+                                      Set(varSelectedToDate, Blank());
+                                      Set(varSelectedLeaveType, Blank());
+                                      Set(varLeaveReason, "");
+                                      Set(varHandoverPerson, Blank());
+                                      Set(varHandoverContent, "");
+                                      Set(varCalculatedDays, 0);
+                                      Reset('LeaveRequest.LeaveType.Dropdown');
+                                      Reset('LeaveRequest.FromDate.DatePicker');
+                                      Reset('LeaveRequest.ToDate.DatePicker');
+                                      Reset('LeaveRequest.Reason.Input');
+                                      Reset('LeaveRequest.HandoverContent.Input');
+                                      Reset('LeaveRequest.Handover.Dropdown')
 
       # Success Modal
       - 'LeaveRequest.Success.Modal':
@@ -634,18 +636,18 @@ Screens:
                         Icon: =Icon.CheckBadge
                         Color: =RGBA(255, 255, 255, 1)
                         
-                  - 'LeaveRequest.Success.Title':
+            - 'LeaveRequest.Success.Title':
                 Control: Label
                 Properties:
-                        X: =Parent.Width * 0.2
-                        Y: =(Parent.Height - Parent.Height * 0.7) / 2
-                        Width: =Parent.Width * 0.75
-                        Height: =Parent.Height * 0.7
+                  X: =Parent.Width * 0.2
+                  Y: ='LeaveRequest.Success.Header'.Y + ('LeaveRequest.Success.Header'.Height - Self.Height) / 2
+                  Width: =Parent.Width * 0.75
+                  Height: =Parent.Height * 0.08
                   Text: ="Gửi đơn thành công!"
-                        Color: =RGBA(255, 255, 255, 1)
+                  Color: =RGBA(255, 255, 255, 1)
                   Font: =Font.'Open Sans'
                   FontWeight: =FontWeight.Bold
-                        Size: =Parent.Height * 0.3
+                  Size: =14
                   
             - 'LeaveRequest.Success.Content':
                 Control: GroupContainer
@@ -664,10 +666,10 @@ Screens:
                         Width: =Parent.Width
                         Height: =Parent.Height
                         Text: =Concatenate("Đơn nghỉ phép từ ngày ", Text(varSelectedFromDate, "dd/mm/yyyy"), " đến ", Text(varSelectedToDate, "dd/mm/yyyy"), " đã được gửi thành công.", Char(10), Char(10), "Đơn sẽ được chuyển đến người phê duyệt trong vòng 24 giờ.")
-                  Color: =RGBA(55, 65, 81, 1)
-                  Font: =Font.'Open Sans'
+                        Color: =RGBA(55, 65, 81, 1)
+                        Font: =Font.'Open Sans'
                         Size: =Parent.Height * 0.12
-                  Align: =Align.Center
+                        Align: =Align.Center
                         Wrap: =true
                   
             - 'LeaveRequest.Success.Actions':
@@ -680,15 +682,15 @@ Screens:
                   Height: =Parent.Height * 0.2
                 Children:
                   - 'LeaveRequest.Success.CreateNewButton':
-                Control: CanvasComponent
-                ComponentName: ButtonComponent
-                Properties:
+                      Control: CanvasComponent
+                      ComponentName: ButtonComponent
+                      Properties:
                         X: =0
                         Y: =(Parent.Height - Self.Height) / 2
                         Width: =Parent.Width * 0.45
                         Height: =Parent.Height * 0.8
                         Text: ="Tạo đơn mới"
-                  Variant: ="Primary"
+                        Variant: ="Primary"
                         Size: ="Medium"
                         OnClick: |
                           =Set(varShowSuccessModal, false);
@@ -709,7 +711,7 @@ Screens:
                   - 'LeaveRequest.Success.ViewMyLeavesButton':
                       Control: CanvasComponent
                       ComponentName: ButtonComponent
-          Properties:
+                      Properties:
                         X: =Parent.Width * 0.55
                         Y: =(Parent.Height - Self.Height) / 2
                         Width: =Parent.Width * 0.45

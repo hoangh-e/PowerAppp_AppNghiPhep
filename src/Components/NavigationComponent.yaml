@@ -522,6 +522,212 @@ ComponentDefinitions:
                         RGBA(147, 51, 234, 1), 
                         RGBA(75, 85, 99, 1))
                       Visible: =Or(NavigationComponent.UserRole = "Manager", NavigationComponent.UserRole = "Admin", NavigationComponent.UserRole = "ADMIN")
+
+                # Approval Menu Item (visible for managers, directors, HR)
+                - 'Navigation.Menu.Approval.Background':
+                    Control: Rectangle
+                    Properties:
+                      X: =Parent.Width * 0.04
+                      Y: =If(Or(NavigationComponent.UserRole = "Manager", NavigationComponent.UserRole = "Admin", NavigationComponent.UserRole = "ADMIN"),
+                        'Navigation.Menu.Management'.Y + 'Navigation.Menu.Management'.Height + Parent.Height * 0.004,
+                        'Navigation.Menu.Calendar'.Y + 'Navigation.Menu.Calendar'.Height + Parent.Height * 0.004)
+                      Width: =Parent.Width * 0.92
+                      Height: =Parent.Height * 0.06
+                      Fill: =If(NavigationComponent.ActiveScreen = "Approval", 
+                        RGBA(254, 242, 242, 1), 
+                        RGBA(255, 255, 255, 0))
+                      BorderColor: =If(NavigationComponent.ActiveScreen = "Approval", 
+                        RGBA(248, 113, 113, 1), 
+                        RGBA(255, 255, 255, 0))
+                      BorderThickness: =If(NavigationComponent.ActiveScreen = "Approval", 1, 0)
+                      Visible: =Or(NavigationComponent.UserRole = "Manager", NavigationComponent.UserRole = "Director", NavigationComponent.UserRole = "HR", NavigationComponent.UserRole = "ADMIN")
+
+                - 'Navigation.Menu.Approval':
+                    Control: Classic/Button
+                    Properties:
+                      X: =Parent.Width * 0.04
+                      Y: =If(Or(NavigationComponent.UserRole = "Manager", NavigationComponent.UserRole = "Admin", NavigationComponent.UserRole = "ADMIN"),
+                        'Navigation.Menu.Management'.Y + 'Navigation.Menu.Management'.Height + Parent.Height * 0.004,
+                        'Navigation.Menu.Calendar'.Y + 'Navigation.Menu.Calendar'.Height + Parent.Height * 0.004)
+                      Width: =Parent.Width * 0.92
+                      Height: =Parent.Height * 0.06
+                      Text: =If(NavigationComponent.IsCollapsed, "", "  Phê duyệt")
+                      Fill: =RGBA(255, 255, 255, 0)
+                      Color: =If(NavigationComponent.ActiveScreen = "Approval", 
+                        RGBA(220, 38, 38, 1), 
+                        RGBA(75, 85, 99, 1))
+                      BorderColor: =RGBA(255, 255, 255, 0)
+                      BorderThickness: =0
+                      Font: =Font.'Open Sans'
+                      FontWeight: =If(NavigationComponent.ActiveScreen = "Approval", 
+                        FontWeight.Semibold, 
+                        FontWeight.Normal)
+                      Size: =10
+                      Visible: =Or(NavigationComponent.UserRole = "Manager", NavigationComponent.UserRole = "Director", NavigationComponent.UserRole = "HR", NavigationComponent.UserRole = "ADMIN")
+                      HoverFill: =If(NavigationComponent.ActiveScreen = "Approval",
+                        RGBA(254, 226, 226, 1),
+                        RGBA(249, 250, 251, 1))
+                      HoverColor: =If(NavigationComponent.ActiveScreen = "Approval",
+                        RGBA(185, 28, 28, 1),
+                        RGBA(31, 41, 55, 1))
+                      PressedFill: =If(NavigationComponent.ActiveScreen = "Approval",
+                        RGBA(252, 165, 165, 1),
+                        RGBA(243, 244, 246, 1))
+                      PressedColor: =If(NavigationComponent.ActiveScreen = "Approval",
+                        RGBA(153, 27, 27, 1),
+                        RGBA(17, 24, 39, 1))
+                      OnSelect: |
+                        =Set(varDebugClick, "Approval clicked");
+                        Set(varActiveScreen, "Approval");
+                        NavigationComponent.OnNavigate("Approval")
+                        
+                - 'Navigation.Menu.Approval.Icon':
+                    Control: Classic/Icon
+                    Properties:
+                      X: =Parent.Width * 0.08
+                      Y: =If(Or(NavigationComponent.UserRole = "Manager", NavigationComponent.UserRole = "Admin", NavigationComponent.UserRole = "ADMIN"),
+                        'Navigation.Menu.Management'.Y + 'Navigation.Menu.Management'.Height + Parent.Height * 0.02,
+                        'Navigation.Menu.Calendar'.Y + 'Navigation.Menu.Calendar'.Height + Parent.Height * 0.02)
+                      Width: =Parent.Height * 0.03
+                      Height: =Parent.Height * 0.03
+                      Icon: =Icon.CheckBadge
+                      Color: =If(NavigationComponent.ActiveScreen = "Approval", 
+                        RGBA(220, 38, 38, 1), 
+                        RGBA(75, 85, 99, 1))
+                      Visible: =Or(NavigationComponent.UserRole = "Manager", NavigationComponent.UserRole = "Director", NavigationComponent.UserRole = "HR", NavigationComponent.UserRole = "ADMIN")
+
+                # Reports Menu Item (visible for managers, directors, HR)
+                - 'Navigation.Menu.Reports.Background':
+                    Control: Rectangle
+                    Properties:
+                      X: =Parent.Width * 0.04
+                      Y: ='Navigation.Menu.Approval'.Y + 'Navigation.Menu.Approval'.Height + Parent.Height * 0.004
+                      Width: =Parent.Width * 0.92
+                      Height: =Parent.Height * 0.06
+                      Fill: =If(NavigationComponent.ActiveScreen = "Reports", 
+                        RGBA(240, 253, 250, 1), 
+                        RGBA(255, 255, 255, 0))
+                      BorderColor: =If(NavigationComponent.ActiveScreen = "Reports", 
+                        RGBA(110, 231, 183, 1), 
+                        RGBA(255, 255, 255, 0))
+                      BorderThickness: =If(NavigationComponent.ActiveScreen = "Reports", 1, 0)
+                      Visible: =Or(NavigationComponent.UserRole = "Manager", NavigationComponent.UserRole = "Director", NavigationComponent.UserRole = "HR", NavigationComponent.UserRole = "ADMIN")
+
+                - 'Navigation.Menu.Reports':
+                    Control: Classic/Button
+                    Properties:
+                      X: =Parent.Width * 0.04
+                      Y: ='Navigation.Menu.Approval'.Y + 'Navigation.Menu.Approval'.Height + Parent.Height * 0.004
+                      Width: =Parent.Width * 0.92
+                      Height: =Parent.Height * 0.06
+                      Text: =If(NavigationComponent.IsCollapsed, "", "  Báo cáo")
+                      Fill: =RGBA(255, 255, 255, 0)
+                      Color: =If(NavigationComponent.ActiveScreen = "Reports", 
+                        RGBA(5, 150, 105, 1), 
+                        RGBA(75, 85, 99, 1))
+                      BorderColor: =RGBA(255, 255, 255, 0)
+                      BorderThickness: =0
+                      Font: =Font.'Open Sans'
+                      FontWeight: =If(NavigationComponent.ActiveScreen = "Reports", 
+                        FontWeight.Semibold, 
+                        FontWeight.Normal)
+                      Size: =10
+                      Visible: =Or(NavigationComponent.UserRole = "Manager", NavigationComponent.UserRole = "Director", NavigationComponent.UserRole = "HR", NavigationComponent.UserRole = "ADMIN")
+                      HoverFill: =If(NavigationComponent.ActiveScreen = "Reports",
+                        RGBA(209, 250, 229, 1),
+                        RGBA(249, 250, 251, 1))
+                      HoverColor: =If(NavigationComponent.ActiveScreen = "Reports",
+                        RGBA(4, 120, 87, 1),
+                        RGBA(31, 41, 55, 1))
+                      PressedFill: =If(NavigationComponent.ActiveScreen = "Reports",
+                        RGBA(167, 243, 208, 1),
+                        RGBA(243, 244, 246, 1))
+                      PressedColor: =If(NavigationComponent.ActiveScreen = "Reports",
+                        RGBA(6, 95, 70, 1),
+                        RGBA(17, 24, 39, 1))
+                      OnSelect: |
+                        =Set(varDebugClick, "Reports clicked");
+                        Set(varActiveScreen, "Reports");
+                        NavigationComponent.OnNavigate("Reports")
+                        
+                - 'Navigation.Menu.Reports.Icon':
+                    Control: Classic/Icon
+                    Properties:
+                      X: =Parent.Width * 0.08
+                      Y: ='Navigation.Menu.Approval'.Y + 'Navigation.Menu.Approval'.Height + Parent.Height * 0.02
+                      Width: =Parent.Height * 0.03
+                      Height: =Parent.Height * 0.03
+                      Icon: =Icon.BarChart4
+                      Color: =If(NavigationComponent.ActiveScreen = "Reports", 
+                        RGBA(5, 150, 105, 1), 
+                        RGBA(75, 85, 99, 1))
+                      Visible: =Or(NavigationComponent.UserRole = "Manager", NavigationComponent.UserRole = "Director", NavigationComponent.UserRole = "HR", NavigationComponent.UserRole = "ADMIN")
+
+                # Profile Menu Item (always visible, at bottom)
+                - 'Navigation.Menu.Profile.Background':
+                    Control: Rectangle
+                    Properties:
+                      X: =Parent.Width * 0.04
+                      Y: ='Navigation.Menu.Reports'.Y + 'Navigation.Menu.Reports'.Height + Parent.Height * 0.004
+                      Width: =Parent.Width * 0.92
+                      Height: =Parent.Height * 0.06
+                      Fill: =If(NavigationComponent.ActiveScreen = "Profile", 
+                        RGBA(255, 247, 237, 1), 
+                        RGBA(255, 255, 255, 0))
+                      BorderColor: =If(NavigationComponent.ActiveScreen = "Profile", 
+                        RGBA(251, 191, 36, 1), 
+                        RGBA(255, 255, 255, 0))
+                      BorderThickness: =If(NavigationComponent.ActiveScreen = "Profile", 1, 0)
+
+                - 'Navigation.Menu.Profile':
+                    Control: Classic/Button
+                    Properties:
+                      X: =Parent.Width * 0.04
+                      Y: ='Navigation.Menu.Reports'.Y + 'Navigation.Menu.Reports'.Height + Parent.Height * 0.004
+                      Width: =Parent.Width * 0.92
+                      Height: =Parent.Height * 0.06
+                      Text: =If(NavigationComponent.IsCollapsed, "", "  Hồ sơ cá nhân")
+                      Fill: =RGBA(255, 255, 255, 0)
+                      Color: =If(NavigationComponent.ActiveScreen = "Profile", 
+                        RGBA(217, 119, 6, 1), 
+                        RGBA(75, 85, 99, 1))
+                      BorderColor: =RGBA(255, 255, 255, 0)
+                      BorderThickness: =0
+                      Font: =Font.'Open Sans'
+                      FontWeight: =If(NavigationComponent.ActiveScreen = "Profile", 
+                        FontWeight.Semibold, 
+                        FontWeight.Normal)
+                      Size: =10
+                      HoverFill: =If(NavigationComponent.ActiveScreen = "Profile",
+                        RGBA(254, 243, 199, 1),
+                        RGBA(249, 250, 251, 1))
+                      HoverColor: =If(NavigationComponent.ActiveScreen = "Profile",
+                        RGBA(180, 83, 9, 1),
+                        RGBA(31, 41, 55, 1))
+                      PressedFill: =If(NavigationComponent.ActiveScreen = "Profile",
+                        RGBA(252, 211, 77, 1),
+                        RGBA(243, 244, 246, 1))
+                      PressedColor: =If(NavigationComponent.ActiveScreen = "Profile",
+                        RGBA(146, 64, 14, 1),
+                        RGBA(17, 24, 39, 1))
+                      OnSelect: |
+                        =Set(varDebugClick, "Profile clicked");
+                        Set(varActiveScreen, "Profile");
+                        If(Not(IsBlank(NavigationComponent.ProfileScreen)), 
+                          Navigate(NavigationComponent.ProfileScreen),
+                          NavigationComponent.OnNavigate("Profile"))
+                        
+                - 'Navigation.Menu.Profile.Icon':
+                    Control: Classic/Icon
+                    Properties:
+                      X: =Parent.Width * 0.08
+                      Y: ='Navigation.Menu.Reports'.Y + 'Navigation.Menu.Reports'.Height + Parent.Height * 0.02
+                      Width: =Parent.Height * 0.03
+                      Height: =Parent.Height * 0.03
+                      Icon: =Icon.Person
+                      Color: =If(NavigationComponent.ActiveScreen = "Profile", 
+                        RGBA(217, 119, 6, 1), 
+                        RGBA(75, 85, 99, 1))
           
           # Enhanced Footer Section for collapsed state
           - 'Navigation.Footer.Container':

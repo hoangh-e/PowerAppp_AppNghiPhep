@@ -142,7 +142,7 @@
                                   Properties:
                                     X: =0
                                     Y: =0
-                                    Width: =Parent.Width
+                              Width: =Parent.Width
                                     Height: =Parent.Height
                                     Fill: =RGBA(249, 250, 251, 1)
                                     BorderColor: =RGBA(226, 232, 240, 1)
@@ -208,7 +208,7 @@
                                     X: =Parent.Width * 0.74
                                     Y: =Parent.Height * 0.3
                                     Width: =Parent.Width * 0.22
-                                    Height: =Parent.Height * 0.6
+                              Height: =Parent.Height * 0.6
                                     Title: ="Từ chối"
                                     Value: =Text(varReportStats.RejectedRequests)
                                     Icon: ="Cancel"
@@ -272,7 +272,7 @@
 
                               - 'Reports.Filter.Type.Dropdown':
                                   Control: Classic/DropDown
-                                  Properties:
+                      Properties:
                                     X: =0
                                     Y: =Parent.Height * 0.35
                                     Width: =Parent.Width
@@ -288,28 +288,28 @@
                         # Period Filter
                         - 'Reports.Filter.Period.Container':
                             Control: GroupContainer
-                            Variant: ManualLayout
-                            Properties:
+                Variant: ManualLayout
+                Properties:
                               X: =Parent.Width * 0.26
                               Y: =Parent.Height * 0.3
                               Width: =Parent.Width * 0.22
                               Height: =Parent.Height * 0.6
-                            Children:
+                Children:
                               - 'Reports.Filter.Period.Label':
-                                  Control: Label
-                                  Properties:
+                      Control: Label
+                      Properties:
                                     X: =0
                                     Y: =0
                                     Width: =Parent.Width
                                     Height: =Parent.Height * 0.3
                                     Text: =Concatenate("Thời kỳ", ":")
                                     Color: =RGBA(55, 65, 81, 1)
-                                    Font: =Font.'Open Sans'
+                        Font: =Font.'Open Sans'
                                     Size: =10
-
+                        
                               - 'Reports.Filter.Period.Dropdown':
                                   Control: Classic/DropDown
-                                  Properties:
+                      Properties:
                                     X: =0
                                     Y: =Parent.Height * 0.35
                                     Width: =Parent.Width
@@ -564,8 +564,8 @@
                                 Wrap: =true
 
                     - 'Reports.Export.Actions':
-                        Control: GroupContainer
-                        Variant: ManualLayout
+                      Control: GroupContainer
+                      Variant: ManualLayout
                         Properties:
                           X: =Parent.Width * 0.05
                           Y: =Parent.Height * 0.8
@@ -628,43 +628,43 @@
                   Y: =Parent.Height * 0.3
                   Width: =Parent.Width * 0.6
                   Height: =Parent.Height * 0.4
-                Children:
-                  - 'Reports.AccessDenied.Icon':
-                      Control: Classic/Icon
-                      Properties:
-                        X: =(Parent.Width - Self.Width) / 2
+          Children:
+            - 'Reports.AccessDenied.Icon':
+                Control: Classic/Icon
+                Properties:
+                  X: =(Parent.Width - Self.Width) / 2
                         Y: =0
                         Width: =64
                         Height: =64
-                        Icon: =Icon.Lock
+                  Icon: =Icon.Lock
                         Color: =RGBA(239, 68, 68, 1)
-
-                  - 'Reports.AccessDenied.Title':
-                      Control: Label
-                      Properties:
+                  
+            - 'Reports.AccessDenied.Title':
+                Control: Label
+                Properties:
                         X: =0
                         Y: =80
                         Width: =Parent.Width
                         Height: =40
-                        Text: ="Không có quyền truy cập"
+                  Text: ="Không có quyền truy cập"
                         Color: =RGBA(17, 24, 39, 1)
-                        Font: =Font.'Open Sans'
-                        FontWeight: =FontWeight.Bold
+                  Font: =Font.'Open Sans'
+                  FontWeight: =FontWeight.Bold
                         Size: =16
-                        Align: =Align.Center
-
+                  Align: =Align.Center
+                  
                   - 'Reports.AccessDenied.Message':
                       Control: Label
-                      Properties:
+                Properties:
                         X: =0
                         Y: =130
                         Width: =Parent.Width
                         Height: =80
                         Text: ="Bạn không có quyền truy cập vào chức năng báo cáo và thống kê. Vui lòng liên hệ quản trị viên để được cấp quyền."
-                        Color: =RGBA(107, 114, 128, 1)
-                        Font: =Font.'Open Sans'
+                  Color: =RGBA(107, 114, 128, 1)
+                  Font: =Font.'Open Sans'
                         Size: =12
-                        Align: =Align.Center
+                  Align: =Align.Center
                         Wrap: =true
 
                   - 'Reports.AccessDenied.BackButton':
