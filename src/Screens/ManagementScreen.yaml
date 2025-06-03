@@ -1,4 +1,4 @@
-Screens:
+﻿Screens:
   ManagementScreen:
     Properties:
       Fill: =RGBA(248, 250, 252, 1)
@@ -14,8 +14,8 @@ Screens:
         Set(varUserFormDepartment, "");
         Set(varUserFormStatus, "HoatDong");
         Set(varAllUsers, NguoiDung);
-          Set(varAllDepartments, DonVi); 
-          Set(varAllRoles, VaiTro); 
+        Set(varAllDepartments, DonVi); 
+        Set(varAllRoles, VaiTro); 
         Set(varHolidaysList, NgayLe);
         Set(varSelectedHoliday, Blank());
         Set(varIsHolidayFormOpen, false);
@@ -190,11 +190,11 @@ Screens:
                         Y: =(Parent.Height - Self.Height) / 2
                         Width: =Parent.Width * 0.15
                         Height: =Parent.Height * 0.7
-                              Text: ="Người dùng"
-                              Variant: =If(varSelectedManagementTab = "Users", "Primary", "Outline")
-                              Size: ="Small"
-                              OnClick: |
-                                =Set(varSelectedManagementTab, "Users")
+                        Text: ="Người dùng"
+                        Variant: =If(varSelectedManagementTab = "Users", "Primary", "Outline")
+                        Size: ="Small"
+                        OnClick: |
+                          =Set(varSelectedManagementTab, "Users")
                                 
                         - 'Management.Tabs.LeaveBalance':
                       Control: CanvasComponent
@@ -204,11 +204,11 @@ Screens:
                         Y: =(Parent.Height - Self.Height) / 2
                         Width: =Parent.Width * 0.15
                         Height: =Parent.Height * 0.7
-                              Text: ="Số ngày phép"
-                              Variant: =If(varSelectedManagementTab = "LeaveBalance", "Primary", "Outline")
-                              Size: ="Small"
-                              OnClick: |
-                                =Set(varSelectedManagementTab, "LeaveBalance")
+                        Text: ="Số ngày phép"
+                        Variant: =If(varSelectedManagementTab = "LeaveBalance", "Primary", "Outline")
+                        Size: ="Small"
+                        OnClick: |
+                          =Set(varSelectedManagementTab, "LeaveBalance")
                                 
                         - 'Management.Tabs.Holidays':
                       Control: CanvasComponent

@@ -1,4 +1,4 @@
-Screens:
+﻿Screens:
   DashboardScreen:
     Properties:
       Fill: =RGBA(248, 250, 252, 1)

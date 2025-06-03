@@ -7,8 +7,8 @@
     Children:
       # Header Component
       - 'Reports.Header':
-          Control: CanvasComponent
-          ComponentName: HeaderComponent
+          Control: =CanvasComponent
+          ComponentName: =HeaderComponent
           Properties:
             X: =0
             Y: =0
@@ -23,8 +23,8 @@
 
       # Navigation Component
       - 'Reports.Navigation':
-          Control: CanvasComponent
-          ComponentName: NavigationComponent
+          Control: =CanvasComponent
+          ComponentName: =NavigationComponent
           Properties:
             X: =0
             Y: ='Reports.Header'.Height
@@ -46,8 +46,8 @@
               
       # Main Content Container
       - 'Reports.Content.Container':
-          Control: GroupContainer
-          Variant: ManualLayout
+          Control: =GroupContainer
+          Variant: =ManualLayout
           Properties:
             X: ='Reports.Navigation'.Width
             Y: ='Reports.Header'.Height
@@ -56,8 +56,8 @@
             Visible: =varCanAccessReports
           Children:
             - 'Reports.Content.Padded':
-                Control: GroupContainer
-                Variant: ManualLayout
+                Control: =GroupContainer
+                Variant: =ManualLayout
                 Properties:
                   X: =Parent.Width * 0.015
                   Y: =Parent.Height * 0.015
@@ -66,8 +66,8 @@
                 Children:
                   # Page Header with Stats
                   - 'Reports.Header.Container':
-                      Control: GroupContainer
-                      Variant: ManualLayout
+                      Control: =GroupContainer
+                      Variant: =ManualLayout
                       Properties:
                         X: =0
                         Y: =0
@@ -75,7 +75,7 @@
                         Height: =Parent.Height * 0.25
                       Children:
                         - 'Reports.Header.Background':
-                            Control: Rectangle
+                            Control: =Rectangle
                             Properties:
                               X: =0
                               Y: =0
@@ -87,7 +87,7 @@
                               
                         # Title and Export
                         - 'Reports.Header.Title':
-                            Control: Label
+                            Control: =Label
                             Properties:
                               X: =Parent.Width * 0.015
                               Y: =Parent.Height * 0.1
@@ -100,20 +100,20 @@
                               Size: =14
 
                         - 'Reports.Header.Subtitle':
-                            Control: Label
+                            Control: =Label
                             Properties:
                               X: =Parent.Width * 0.015
                               Y: =Parent.Height * 0.25
                               Width: =Parent.Width * 0.6
                               Height: =Parent.Height * 0.1
-                              Text: =Concatenate("Tổng", ":" & " ", varReportStats.TotalRequests, " " & "đơn nghỉ phép")
+                              Text: =Concatenate("Tổng", ":", " ", varReportStats.TotalRequests, " ", "đơn nghỉ phép")
                               Color: =RGBA(107, 114, 128, 1)
                               Font: =Font.'Open Sans'
                               Size: =11
 
                         - 'Reports.Export.Button':
-                            Control: CanvasComponent
-                            ComponentName: ButtonComponent
+                            Control: =CanvasComponent
+                            ComponentName: =ButtonComponent
                             Properties:
                               X: =Parent.Width * 0.75
                               Y: =(Parent.Height - Self.Height) / 2
@@ -129,8 +129,8 @@
 
                         # Stats Cards Container
                         - 'Reports.Stats.Container':
-                            Control: GroupContainer
-                            Variant: ManualLayout
+                            Control: =GroupContainer
+                            Variant: =ManualLayout
                             Properties:
                               X: =Parent.Width * 0.015
                               Y: =Parent.Height * 0.4
@@ -138,7 +138,7 @@
                               Height: =Parent.Height * 0.55
                             Children:
                               - 'Reports.Stats.Background':
-                                  Control: Rectangle
+                                  Control: =Rectangle
                                   Properties:
                                     X: =0
                                     Y: =0
@@ -149,7 +149,7 @@
                                     BorderThickness: =1
 
                               - 'Reports.Stats.Title':
-                                  Control: Label
+                                  Control: =Label
                                   Properties:
                                     X: =Parent.Width * 0.02
                                     Y: =Parent.Height * 0.05
@@ -163,8 +163,8 @@
 
                               # Stats Cards
                               - 'Reports.Stats.TotalCard':
-                                  Control: CanvasComponent
-                                  ComponentName: StatsCardComponent
+                                  Control: =CanvasComponent
+                                  ComponentName: =StatsCardComponent
                                   Properties:
                                     X: =Parent.Width * 0.02
                                     Y: =Parent.Height * 0.3
@@ -176,8 +176,8 @@
                                     BackgroundColor: =RGBA(59, 130, 246, 1)
 
                               - 'Reports.Stats.ApprovedCard':
-                                  Control: CanvasComponent
-                                  ComponentName: StatsCardComponent
+                                  Control: =CanvasComponent
+                                  ComponentName: =StatsCardComponent
                                   Properties:
                                     X: =Parent.Width * 0.26
                                     Y: =Parent.Height * 0.3
@@ -189,8 +189,8 @@
                                     BackgroundColor: =RGBA(34, 197, 94, 1)
 
                               - 'Reports.Stats.PendingCard':
-                                  Control: CanvasComponent
-                                  ComponentName: StatsCardComponent
+                                  Control: =CanvasComponent
+                                  ComponentName: =StatsCardComponent
                                   Properties:
                                     X: =Parent.Width * 0.5
                                     Y: =Parent.Height * 0.3
@@ -202,8 +202,8 @@
                                     BackgroundColor: =RGBA(251, 191, 36, 1)
 
                               - 'Reports.Stats.RejectedCard':
-                                  Control: CanvasComponent
-                                  ComponentName: StatsCardComponent
+                                  Control: =CanvasComponent
+                                  ComponentName: =StatsCardComponent
                                   Properties:
                                     X: =Parent.Width * 0.74
                                     Y: =Parent.Height * 0.3
@@ -214,10 +214,10 @@
                                     Icon: ="Cancel"
                                     BackgroundColor: =RGBA(239, 68, 68, 1)
 
-                  # Filter Section
+                  # Report Filters Container
                   - 'Reports.Filter.Container':
-                      Control: GroupContainer
-                      Variant: ManualLayout
+                      Control: =GroupContainer
+                      Variant: =ManualLayout
                       Properties:
                         X: =0
                         Y: ='Reports.Header.Container'.Y + 'Reports.Header.Container'.Height + Parent.Height * 0.015
@@ -225,7 +225,7 @@
                         Height: =Parent.Height * 0.12
                       Children:
                         - 'Reports.Filter.Background':
-                            Control: Rectangle
+                            Control: =Rectangle
                             Properties:
                               X: =0
                               Y: =0
@@ -236,7 +236,7 @@
                               BorderThickness: =1
 
                         - 'Reports.Filter.Title':
-                            Control: Label
+                            Control: =Label
                             Properties:
                               X: =Parent.Width * 0.02
                               Y: =Parent.Height * 0.05
@@ -250,8 +250,8 @@
 
                         # Report Type Filter
                         - 'Reports.Filter.Type.Container':
-                            Control: GroupContainer
-                            Variant: ManualLayout
+                            Control: =GroupContainer
+                            Variant: =ManualLayout
                             Properties:
                               X: =Parent.Width * 0.02
                               Y: =Parent.Height * 0.3
