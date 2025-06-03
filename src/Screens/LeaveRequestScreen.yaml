@@ -5,33 +5,16 @@ Screens:
       OnVisible: |
         =//Set active screen first to ensure NavigationComponent receives correct value
         Set(varActiveScreen, "LeaveRequest");
-        If(Not(IsUserAuthenticated), 
+        If(Not(varIsUserAuthenticated), 
           Navigate(LoginScreen), 
-        If(Not(IsUserAuthenticated) Or IsBlank(User),
-          Navigate(LoginScreen),
-          Set(varCurrentUser, User);
-          Set(varUserLeaveBalance, {
-            TongNgayDuocPhep: 12,
-            SoNgayDaNghi: 3,
-            SoNgayConLai: 9,
-            Nam: Year(Today())
-          }); 
-          Set(varLeaveTypes, Table(
-            {MaLoai: "Annual", TenLoai: "Phép năm", CoLuong: true},
-            {MaLoai: "Sick", TenLoai: "Ốm đau", CoLuong: true},
-            {MaLoai: "Personal", TenLoai: "Việc cá nhân", CoLuong: false},
-            {MaLoai: "Emergency", TenLoai: "Khẩn cấp", CoLuong: false}
-          )); 
-          Set(varSelectedLeaveType, "Annual"); 
-          Set(varStartDate, Today()); 
-          Set(varEndDate, Today()); 
-          Set(varLeaveReason, ""); 
-          Set(varHandoverPerson, ""); 
-          Set(varHandoverContent, ""); 
-          Set(varSessionType, "CaNgay");
-          Set(varSubmissionSuccess, false); 
-          Set(varIsSubmitting, false);
-          Set(varFormErrors, {}))
+          //SESSION VALIDATION: Check if user exists
+          If(Not(varIsUserAuthenticated) Or IsBlank(User),
+            Navigate(LoginScreen),
+            //Continue with screen initialization
+            Set(varNavCollapsed, false);
+            Set(varMobileMenuOpen, false)
+          )
+        )
     Children:
       - 'LeaveRequest.Header':
           Control: CanvasComponent
@@ -50,7 +33,7 @@ Screens:
               Set(varLoginSuccess, false);
               Set(varSessionValid, false);
               Set(varLoggedInUserEmail, "");
-              Set(IsUserAuthenticated, false);
+              Set(varIsUserAuthenticated, false);
               //Clear user session object
               Set(UserSession, {
                 Id: "", Name: "", Email: "", Role: "", Permission: 0,

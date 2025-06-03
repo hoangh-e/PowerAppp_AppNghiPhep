@@ -3,54 +3,53 @@ Screens:
     Properties:
       Fill: =RGBA(248, 250, 252, 1)
       OnVisible: |
-        =//Set active screen first to ensure NavigationComponent receives correct value
-        Set(varActiveScreen, "MyLeaves");
-        If(Not(IsUserAuthenticated), 
-          Navigate(LoginScreen), 
-          //Initialize navigation variables
-          Set(varNavCollapsed, false);
-          Set(varMobileMenuOpen, false);
-          // Use session from Login or fallback to Microsoft 365 lookup
-          If(IsBlank(varCurrentUser), 
-            Set(varCurrentUser, LookUp(NguoiDung, Email = User().Email)));
-          // Validate current user session
-          If(IsBlank(varCurrentUser), 
-            Navigate(LoginScreen), 
-            // Continue with screen initialization using session data
-            Set(varMyLeaveRequests, Filter(DonNghiPhep, MaNhanVien.Value = varCurrentUser.MaNhanVien.Value)); 
-            Set(varLeaveTypes, LoaiNghi); 
-            Set(varFilterPeriod, "All"); 
-            Set(varFilterStatus, "All"); 
-            Set(varFilterType, "All"); 
-            Set(varSelectedRequest, Blank())
-          )
-        )
+        =Set(varActiveScreen, "MyLeaves");
+        Set(varSelectedStatus, "");
+        Set(varFilterDateFrom, Blank());
+        Set(varFilterDateTo, Blank());
+        Set(varCurrentUserLeaves, Filter(DonNghiPhep, And(Not(IsBlank(MaNguoiDung.Value)), MaNguoiDung.Value = UserSession.Id)))
     Children:
+      # Header Component
       - 'MyLeaves.Header':
           Control: CanvasComponent
           ComponentName: HeaderComponent
           Properties:
-            X: =Parent.X
-            Y: =Parent.Y
+            X: =0
+            Y: =0
             Width: =Parent.Width
-            Height: =Parent.Height * 0.06
-            UserName: =varCurrentUser.HoTen
-            UserRole: =varCurrentUser.MaVaiTro
+            Height: =Parent.Height * 0.065
+            UserName: =UserSession.HoTen
+            UserRole: =UserSession.MaVaiTro
             ShowNotification: =true
-            NotificationCount: =CountRows(Filter(varMyLeaveRequests, TrangThai in ["ChoDuyetCap1", "ChoDuyetCap2", "ChoDuyetCap3"]))
+            NotificationCount: =0
             OnLogout: |
-              =LogoutUser()
-            
+              =Set(varIsUserAuthenticated, false);
+              Set(UserSession, {
+                Id: "", 
+                Name: "", 
+                Email: "", 
+                Role: "", 
+                Permission: 0,
+                NguoiQuanLyId: "", 
+                HoTen: "", 
+                MaVaiTro: "", 
+                ChucDanh: "", 
+                MaDonVi: "", 
+                TrangThai: ""
+              });
+              Navigate(LoginScreen)
+
+      # Navigation Component
       - 'MyLeaves.Navigation':
           Control: CanvasComponent
           ComponentName: NavigationComponent
           Properties:
-            X: =Parent.X
-            Y: ='MyLeaves.Header'.Y + 'MyLeaves.Header'.Height
+            X: =0
+            Y: ='MyLeaves.Header'.Height
             Width: =If(varNavCollapsed, App.Width * 0.045, App.Width * 0.14)
             Height: =Parent.Height - 'MyLeaves.Header'.Height
-            UserRole: =If(IsBlank(User.MaVaiTro), "Employee", User.MaVaiTro)
-            ActiveScreen: =If(IsBlank(varActiveScreen), "MyLeaves", varActiveScreen)
+            UserRole: =UserSession.MaVaiTro
+            ActiveScreen: ="MyLeaves"
             IsCollapsed: =varNavCollapsed
             DashboardScreen: =DashboardScreen
             LeaveRequestScreen: =LeaveRequestScreen
@@ -72,348 +71,453 @@ Screens:
               )
             OnToggleCollapse: |
               =Set(varNavCollapsed, !varNavCollapsed)
-            
+
+      # Main Content Container
       - 'MyLeaves.Content.Container':
           Control: GroupContainer
           Variant: ManualLayout
           Properties:
-            X: ='MyLeaves.Navigation'.X + 'MyLeaves.Navigation'.Width
-            Y: ='MyLeaves.Header'.Y + 'MyLeaves.Header'.Height
+            X: ='MyLeaves.Navigation'.Width
+            Y: ='MyLeaves.Header'.Height
             Width: =Parent.Width - 'MyLeaves.Navigation'.Width
             Height: =Parent.Height - 'MyLeaves.Header'.Height
-            Fill: =RGBA(248, 250, 252, 1)
           Children:
-            # Page Header
-            - 'MyLeaves.Content.Header':
+            - 'MyLeaves.Content.Padded':
                 Control: GroupContainer
                 Variant: ManualLayout
                 Properties:
-                  X: =Parent.Width * 0.03
-                  Y: =Parent.Height * 0.02
-                  Width: =Parent.Width * 0.94
-                  Height: =Parent.Height * 0.12
+                  X: =Parent.Width * 0.01
+                  Y: =Parent.Height * 0.01
+                  Width: =Parent.Width * 0.98
+                  Height: =Parent.Height * 0.98
                 Children:
-                  - 'MyLeaves.Content.Title':
-                      Control: Label
+                  # Page Header
+                  - 'MyLeaves.PageHeader.Container':
+                      Control: GroupContainer
+                      Variant: ManualLayout
                       Properties:
-                        X: =Parent.X
-                        Y: =Parent.Y
-                        Width: =Parent.Width * 0.5
-                        Height: =Parent.Height * 0.4
-                        Text: ="Đơn nghỉ phép của tôi"
-                        Color: =RGBA(32, 54, 71, 1)
-                        Font: =Font.'Open Sans'
-                        FontWeight: =FontWeight.Bold
-                        Size: =Parent.Height * 0.2
-                        
-                  - 'MyLeaves.Content.Stats':
-                      Control: Label
-                      Properties:
-                        X: =Parent.X
-                        Y: ='MyLeaves.Content.Title'.Y + 'MyLeaves.Content.Title'.Height
-                        Width: =Parent.Width * 0.5
-                        Height: =Parent.Height * 0.25
-                        Text: =Concatenate(
-                          "Tổng số đơn:", CountRows(varMyLeaveRequests),
-                          " | Đang chờ:", CountRows(Filter(varMyLeaveRequests, TrangThai in ["ChoDuyetCap1", "ChoDuyetCap2", "ChoDuyetCap3"])),
-                          " | Đã duyệt:", CountRows(Filter(varMyLeaveRequests, TrangThai = "DaDuyet")))
-                        Color: =RGBA(108, 117, 125, 1)
-                        Font: =Font.'Open Sans'
-                        Size: =Parent.Height * 0.1
-                        
-                  # New Request Button
-                  - 'MyLeaves.Content.NewRequestButton':
-                      Control: CanvasComponent
-                      ComponentName: ButtonComponent
-                      Properties:
-                        X: =Parent.Width - Self.Width * 2 - Parent.Width * 0.02
-                        Y: =(Parent.Height * 0.65 - Self.Height) / 2
-                        Width: =Parent.Width * 0.18
-                        Height: =Parent.Height * 0.35
-                        Text: ="Tạo đơn mới"
-                        Variant: ="Primary"
-                        Icon: ="Add"
-                        OnClick: =Navigate(LeaveRequestScreen)
-                        
-                  # Debug Navigation Button
-                  - 'MyLeaves.Content.DebugNavButton':
-                      Control: CanvasComponent
-                      ComponentName: ButtonComponent
-                      Properties:
-                        X: =Parent.Width - Self.Width
-                        Y: =(Parent.Height * 0.65 - Self.Height) / 2
-                        Width: =Parent.Width * 0.15
-                        Height: =Parent.Height * 0.35
-                        Text: ="Test Nav"
-                        Variant: ="Secondary"
-                        Icon: ="Home"
-                        OnClick: |
-                          =Set(varActiveScreen, "Dashboard");
-                          Navigate(DashboardScreen)
-                          
-                  # Debug Info Label
-                  - 'MyLeaves.Content.DebugLabel':
-                      Control: Label
-                      Properties:
-                        X: =Parent.Width * 0.02
-                        Y: =Parent.Height * 0.85
-                        Width: =Parent.Width * 0.96
+                        X: =0
+                        Y: =0
+                        Width: =Parent.Width
                         Height: =Parent.Height * 0.1
-                        Text: '="Debug: " & If(IsBlank(varDebugClick), "No click", varDebugClick) & " | Active: " & If(IsBlank(varActiveScreen), "No active", varActiveScreen)'
-                        Color: =RGBA(255, 0, 0, 1)
-                        Font: =Font.'Open Sans'
-                        Size: =12
-                        
-                  # Filter Controls
+                      Children:
+                        - 'MyLeaves.PageHeader.Background':
+                            Control: Rectangle
+                            Properties:
+                              X: =0
+                              Y: =0
+                              Width: =Parent.Width
+                              Height: =Parent.Height
+                              Fill: =RGBA(255, 255, 255, 1)
+                              BorderColor: =RGBA(226, 232, 240, 1)
+                              BorderThickness: =1
+                              
+                        - 'MyLeaves.PageHeader.Icon':
+                            Control: Classic/Icon
+                            Properties:
+                              X: =Parent.Width * 0.015
+                              Y: =Parent.Height * 0.25
+                              Width: =Parent.Height * 0.2
+                              Height: =Parent.Height * 0.2
+                              Icon: =Icon.DetailList
+                              Color: =RGBA(59, 130, 246, 1)
+                              
+                        - 'MyLeaves.PageHeader.Title':
+                            Control: Label
+                            Properties:
+                              X: =Parent.Width * 0.015 + 'MyLeaves.PageHeader.Icon'.Width + Parent.Width * 0.01
+                              Y: =Parent.Height * 0.2
+                              Width: =Parent.Width * 0.6
+                              Height: =Parent.Height * 0.35
+                              Text: ="Đơn nghỉ phép của tôi"
+                              Color: =RGBA(17, 24, 39, 1)
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Bold
+                              Size: =14
+                              
+                        - 'MyLeaves.PageHeader.Stats':
+                            Control: Label
+                            Properties:
+                              X: =Parent.Width * 0.015 + 'MyLeaves.PageHeader.Icon'.Width + Parent.Width * 0.01
+                              Y: =Parent.Height * 0.6
+                              Width: =Parent.Width * 0.6
+                              Height: =Parent.Height * 0.25
+                              Text: =Concatenate("Tổng", ":" & " ", CountRows(varCurrentUserLeaves), " " & "đơn nghỉ phép")
+                              Color: =RGBA(75, 85, 99, 1)
+                              Font: =Font.'Open Sans'
+                              Size: =11
+
+                        - 'MyLeaves.NewRequest.Button':
+                            Control: CanvasComponent
+                            ComponentName: ButtonComponent
+                            Properties:
+                              X: =Parent.Width * 0.75
+                              Y: =(Parent.Height - Self.Height) / 2
+                              Width: =Parent.Width * 0.22
+                              Height: =Parent.Height * 0.6
+                              Text: ="Tạo đơn mới"
+                              Variant: ="Primary"
+                              Size: ="Medium"
+                              OnClick: |
+                                =Navigate(LeaveRequestScreen)
+
+                  # Stats Section
+                  - 'MyLeaves.Stats.Container':
+                      Control: GroupContainer
+                      Variant: ManualLayout
+                      Properties:
+                        X: =0
+                        Y: ='MyLeaves.PageHeader.Container'.Y + 'MyLeaves.PageHeader.Container'.Height + Parent.Height * 0.015
+                        Width: =Parent.Width
+                        Height: =Parent.Height * 0.15
+                      Children:
+                        - 'MyLeaves.Stats.Background':
+                            Control: Rectangle
+                            Properties:
+                              X: =0
+                              Y: =0
+                              Width: =Parent.Width
+                              Height: =Parent.Height
+                              Fill: =RGBA(255, 255, 255, 1)
+                              BorderColor: =RGBA(226, 232, 240, 1)
+                              BorderThickness: =1
+                              
+                        - 'MyLeaves.Stats.Header':
+                            Control: Label
+                            Properties:
+                              X: =Parent.Width * 0.015
+                              Y: =Parent.Height * 0.05
+                              Width: =Parent.Width * 0.97
+                              Height: =Parent.Height * 0.2
+                              Text: ="Thống kê nhanh"
+                              Color: =RGBA(17, 24, 39, 1)
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Bold
+                              Size: =12
+                              
+                        - 'MyLeaves.Stats.Cards.Container':
+                            Control: GroupContainer
+                            Variant: ManualLayout
+                            Properties:
+                              X: =Parent.Width * 0.015
+                              Y: =Parent.Height * 0.3
+                              Width: =Parent.Width * 0.97
+                              Height: =Parent.Height * 0.65
+                            Children:
+                              - 'MyLeaves.Stats.Pending':
+                                  Control: CanvasComponent
+                                  ComponentName: StatsCardComponent
+                                  Properties:
+                                    X: =0
+                                    Y: =0
+                                    Width: =(Parent.Width - Parent.Width * 0.03) / 4
+                                    Height: =Parent.Height
+                                    Title: ="Chờ duyệt"
+                                    Value: =CountRows(Filter(varCurrentUserLeaves, Or(TrangThai.Value = "ChoDuyetCap1", TrangThai.Value = "ChoDuyetCap2", TrangThai.Value = "ChoDuyetCap3")))
+                                    Icon: ="Clock"
+                                    Color: =RGBA(251, 191, 36, 1)
+                                    ShowTrend: =false
+                                    
+                              - 'MyLeaves.Stats.Approved':
+                                  Control: CanvasComponent
+                                  ComponentName: StatsCardComponent
+                                  Properties:
+                                    X: =(Parent.Width + Parent.Width * 0.01) / 4
+                                    Y: =0
+                                    Width: =(Parent.Width - Parent.Width * 0.03) / 4
+                                    Height: =Parent.Height
+                                    Title: ="Đã duyệt"
+                                    Value: =CountRows(Filter(varCurrentUserLeaves, TrangThai.Value = "DaDuyet"))
+                                    Icon: ="CheckBadge"
+                                    Color: =RGBA(34, 197, 94, 1)
+                                    ShowTrend: =false
+                                    
+                              - 'MyLeaves.Stats.Rejected':
+                                  Control: CanvasComponent
+                                  ComponentName: StatsCardComponent
+                                  Properties:
+                                    X: =(Parent.Width + Parent.Width * 0.01) * 2 / 4
+                                    Y: =0
+                                    Width: =(Parent.Width - Parent.Width * 0.03) / 4
+                                    Height: =Parent.Height
+                                    Title: ="Từ chối"
+                                    Value: =CountRows(Filter(varCurrentUserLeaves, TrangThai.Value = "TuChoi"))
+                                    Icon: ="Cancel"
+                                    Color: =RGBA(239, 68, 68, 1)
+                                    ShowTrend: =false
+
+                              - 'MyLeaves.Stats.Total':
+                                  Control: CanvasComponent
+                                  ComponentName: StatsCardComponent
+                                  Properties:
+                                    X: =(Parent.Width + Parent.Width * 0.01) * 3 / 4
+                                    Y: =0
+                                    Width: =(Parent.Width - Parent.Width * 0.03) / 4
+                                    Height: =Parent.Height
+                                    Title: ="Tổng cộng"
+                                    Value: =CountRows(varCurrentUserLeaves)
+                                    Icon: ="CalendarBlank"
+                                    Color: =RGBA(59, 130, 246, 1)
+                                    ShowTrend: =false
+
+                  # Filter Section
                   - 'MyLeaves.Filter.Container':
                       Control: GroupContainer
                       Variant: ManualLayout
                       Properties:
-                        X: =Parent.X
-                        Y: =Parent.Height * 0.7
+                        X: =0
+                        Y: ='MyLeaves.Stats.Container'.Y + 'MyLeaves.Stats.Container'.Height + Parent.Height * 0.015
                         Width: =Parent.Width
-                        Height: =Parent.Height * 0.3
+                        Height: =Parent.Height * 0.12
                       Children:
-                        # Period Filter
-                        - 'MyLeaves.Filter.Period.Container':
-                            Control: GroupContainer
-                            Variant: ManualLayout
+                        - 'MyLeaves.Filter.Background':
+                            Control: Rectangle
                             Properties:
-                              X: =Parent.X
-                              Y: =Parent.Y
-                              Width: =Parent.Width * 0.22
+                              X: =0
+                              Y: =0
+                              Width: =Parent.Width
                               Height: =Parent.Height
-                            Children:
-                              - 'MyLeaves.Filter.Period.Label':
-                                  Control: Label
-                                  Properties:
-                                    X: =Parent.X
-                                    Y: =Parent.Y
-                                    Width: =Parent.Width
-                                    Height: =Parent.Height * 0.4
-                                    Text: ="Thời gian:"
-                                    Color: =RGBA(55, 65, 81, 1)
-                                    Font: =Font.'Open Sans'
-                                    Size: =Parent.Height * 0.2
-                                    
-                              - 'MyLeaves.Filter.Period.Dropdown':
-                                  Control: Classic/DropDown
-                                  Properties:
-                                    X: =Parent.X
-                                    Y: =Parent.Height * 0.4
-                                    Width: =Parent.Width
-                                    Height: =Parent.Height * 0.6
-                                    Items: =["All", "ThisMonth", "LastMonth", "Last3Months", "ThisYear"]
-                                    Default: =varFilterPeriod
-                                    OnChange: |
-                                      =Set(varFilterPeriod, Self.Selected.Value);
-                                      Set(varFilteredLeaves, Filter(varMyLeaveRequests, 
-                                        And(
-                                          Switch(varFilterPeriod, 
-                                            "All", true, 
-                                            "ThisMonth", And(Month(NgayTao) = Month(Today()), Year(NgayTao) = Year(Today())), 
-                                            "LastMonth", And(Month(NgayTao) = Month(DateAdd(Today(), -1, TimeUnit.Months)), Year(NgayTao) = Year(DateAdd(Today(), -1, TimeUnit.Months))), 
-                                            "Last3Months", NgayTao >= DateAdd(Today(), -3, TimeUnit.Months), 
-                                            "ThisYear", Year(NgayTao) = Year(Today()), 
-                                            true), 
-                                          If(varFilterStatus = "All", true, TrangThai = varFilterStatus)
-                                        )
-                                      ))
-                                                      
-                        # Status Filter
-                        - 'MyLeaves.Filter.Status.Container':
-                            Control: GroupContainer
-                            Variant: ManualLayout
-                            Properties:
-                              X: =Parent.Width * 0.24
-                              Y: =Parent.Y
-                              Width: =Parent.Width * 0.22
-                              Height: =Parent.Height
-                            Children:
-                              - 'MyLeaves.Filter.Status.Label':
-                                  Control: Label
-                                  Properties:
-                                    X: =Parent.X
-                                    Y: =Parent.Y
-                                    Width: =Parent.Width
-                                    Height: =Parent.Height * 0.4
-                                    Text: ="Trạng thái:"
-                                    Color: =RGBA(55, 65, 81, 1)
-                                    Font: =Font.'Open Sans'
-                                    Size: =Parent.Height * 0.2
-                                    
-                              - 'MyLeaves.Filter.Status.Dropdown':
-                                  Control: Classic/DropDown
-                                  Properties:
-                                    X: =Parent.X
-                                    Y: =Parent.Height * 0.4
-                                    Width: =Parent.Width
-                                    Height: =Parent.Height * 0.6
-                                    Items: =["All", "ChoDuyetCap1", "ChoDuyetCap2", "ChoDuyetCap3", "DaDuyet", "TuChoi", "Huy"]
-                                    Default: =varFilterStatus
-                                    OnChange: |
-                                      =Set(varFilterStatus, Self.Selected.Value);
-                                      Set(varFilteredLeaves, Filter(varMyLeaveRequests, 
-                                        And(
-                                          Switch(varFilterPeriod, 
-                                            "All", true, 
-                                            "ThisMonth", And(Month(NgayTao) = Month(Today()), Year(NgayTao) = Year(Today())), 
-                                            "LastMonth", And(Month(NgayTao) = Month(DateAdd(Today(), -1, TimeUnit.Months)), Year(NgayTao) = Year(DateAdd(Today(), -1, TimeUnit.Months))), 
-                                            "Last3Months", NgayTao >= DateAdd(Today(), -3, TimeUnit.Months), 
-                                            "ThisYear", Year(NgayTao) = Year(Today()), 
-                                            true), 
-                                          If(varFilterStatus = "All", true, TrangThai = varFilterStatus)
-                                        )
-                                      ))
-                                                      
-                        # Sort Controls
-                        - 'MyLeaves.Sort.Container':
-                            Control: GroupContainer
-                            Variant: ManualLayout
-                            Properties:
-                              X: =Parent.Width * 0.48
-                              Y: =Parent.Y
-                              Width: =Parent.Width * 0.22
-                              Height: =Parent.Height
-                            Children:
-                              - 'MyLeaves.Sort.Label':
-                                  Control: Label
-                                  Properties:
-                                    X: =Parent.X
-                                    Y: =Parent.Y
-                                    Width: =Parent.Width
-                                    Height: =Parent.Height * 0.4
-                                    Text: ="Sắp xếp:"
-                                    Color: =RGBA(55, 65, 81, 1)
-                                    Font: =Font.'Open Sans'
-                                    Size: =Parent.Height * 0.2
-                                    
-                              - 'MyLeaves.Sort.Dropdown':
-                                  Control: Classic/DropDown
-                                  Properties:
-                                    X: =Parent.X
-                                    Y: =Parent.Height * 0.4
-                                    Width: =Parent.Width
-                                    Height: =Parent.Height * 0.6
-                                    Items: =["NgayTao Desc", "NgayTao Asc", "NgayBatDau Desc", "NgayBatDau Asc", "TrangThai"]
-                                    Default: ="NgayTao Desc"
-                                    OnChange: |
-                                      =Set(varSortBy, Left(Self.Selected.Value, Find(" ", Self.Selected.Value & " ") - 1));
-                                      Set(varSortOrder, If(Find("Desc", Self.Selected.Value) > 0, "Desc", "Asc"));
-                                      Set(varSortedLeaves, SortByColumns(varFilteredLeaves, varSortBy, If(varSortOrder = "Desc", Descending, Ascending)))
-                                                    
-            # Leaves DataTable Container
-            - 'MyLeaves.List.Container':
-                Control: GroupContainer
-                Variant: ManualLayout
-                Properties:
-                  X: =Parent.Width * 0.03
-                  Y: ='MyLeaves.Content.Header'.Y + 'MyLeaves.Content.Header'.Height + Parent.Height * 0.02
-                  Width: =Parent.Width * 0.94
-                  Height: =Parent.Height * 0.8
-                  Fill: =RGBA(255, 255, 255, 1)
-                  BorderColor: =RGBA(230, 230, 230, 1)
-                  BorderThickness: =Parent.Width * 0.001
-                  DropShadow: =DropShadow.Light
-                Children:
-                  # Leaves DataTable
-                  - 'MyLeaves.List.DataTable':
-                      Control: DataTable
-                      Properties:
-                        X: =Parent.Width * 0.02
-                        Y: =Parent.Height * 0.02
-                        Width: =Parent.Width * 0.75
-                        Height: =Parent.Height * 0.95
-                        Items: =SortByColumns(If(IsBlank(varFilteredLeaves), varMyLeaveRequests, varFilteredLeaves), If(IsBlank(varSortBy), "NgayTao", varSortBy), If(varSortOrder = "Desc", Descending, Ascending))
-                        BorderThickness: =Parent.Width * 0.001
-                        BorderColor: =RGBA(229, 231, 235, 1)
-                        Fill: =RGBA(255, 255, 255, 1)
-                        HeaderFill: =RGBA(248, 249, 250, 1)
-                        HeaderColor: =RGBA(55, 65, 81, 1)
-                        Color: =RGBA(55, 65, 81, 1)
-                        Font: =Font.'Open Sans'
-                        Size: =12
-                        OnSelect: |
-                          =Set(varSelectedLeave, Self.Selected);
-                          Set(varCurrentRowIndex, Self.SelectedRowIndex)
-                        
-                  # Action Buttons Panel
-                  - 'MyLeaves.List.ActionPanel':
-                      Control: GroupContainer
-                      Variant: ManualLayout
-                      Properties:
-                        X: =Parent.Width * 0.78
-                        Y: =Parent.Height * 0.02
-                        Width: =Parent.Width * 0.2
-                        Height: =Parent.Height * 0.95
-                        Fill: =RGBA(248, 250, 252, 1)
-                        BorderColor: =RGBA(229, 231, 235, 1)
-                        BorderThickness: =Parent.Width * 0.001
-                      Children:
-                        - 'MyLeaves.Actions.Title':
+                              Fill: =RGBA(249, 250, 251, 1)
+                              BorderColor: =RGBA(229, 231, 235, 1)
+                              BorderThickness: =1
+                              
+                        - 'MyLeaves.Filter.Header':
                             Control: Label
                             Properties:
-                              X: =Parent.Width * 0.05
-                              Y: =Parent.Height * 0.02
-                              Width: =Parent.Width * 0.9
-                              Height: =Parent.Height * 0.08
-                              Text: ="Thao tác"
-                              Color: =RGBA(55, 65, 81, 1)
+                              X: =Parent.Width * 0.015
+                              Y: =Parent.Height * 0.05
+                              Width: =Parent.Width * 0.97
+                              Height: =Parent.Height * 0.2
+                              Text: ="Bộ lọc"
+                              Color: =RGBA(17, 24, 39, 1)
                               Font: =Font.'Open Sans'
                               FontWeight: =FontWeight.Bold
-                              Size: =14
-                              Align: =Align.Center
+                              Size: =12
                               
-                        # View Details Button
-                        - 'MyLeaves.Actions.ViewButton':
-                            Control: CanvasComponent
-                            ComponentName: ButtonComponent
+                        - 'MyLeaves.Filter.Controls.Container':
+                            Control: GroupContainer
+                            Variant: ManualLayout
                             Properties:
-                              X: =Parent.Width * 0.1
-                              Y: =Parent.Height * 0.15
-                              Width: =Parent.Width * 0.8
-                              Height: =Parent.Height * 0.08
-                              Text: ="Xem chi tiết"
-                              Variant: ="Outline"
-                              Icon: ="Search"
-                              Enabled: =Not(IsBlank(varSelectedLeave))
-                              OnClick: |
-                                =Set(varShowDetails, true)
-                              
-                        # Edit Button
-                        - 'MyLeaves.Actions.EditButton':
-                            Control: CanvasComponent
-                            ComponentName: ButtonComponent
+                              X: =Parent.Width * 0.015
+                              Y: =Parent.Height * 0.3
+                              Width: =Parent.Width * 0.97
+                              Height: =Parent.Height * 0.4
+                            Children:
+                              # Status Filter
+                              - 'MyLeaves.Filter.StatusLabel':
+                                  Control: Label
+                                  Properties:
+                                    X: =0
+                                    Y: =(Parent.Height - Self.Height) / 2
+                                    Width: =Parent.Width * 0.1
+                                    Height: =Parent.Height * 0.8
+                                    Text: ="Trạng thái" & ":"
+                                    Color: =RGBA(55, 65, 81, 1)
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Size: =11
+                                    Align: =Align.Left
+
+                              - 'MyLeaves.Filter.StatusDropdown':
+                                  Control: Classic/DropDown
+                                  Properties:
+                                    X: =Parent.Width * 0.11
+                                    Y: =0
+                                    Width: =Parent.Width * 0.18
+                                    Height: =Parent.Height
+                                    Items: =["Tất cả", "ChoDuyetCap1", "ChoDuyetCap2", "ChoDuyetCap3", "DaDuyet", "TuChoi", "Huy"]
+                                    Default: ="Tất cả"
+                                    BorderColor: =RGBA(209, 213, 219, 1)
+                                    BorderThickness: =1
+                                    Fill: =RGBA(255, 255, 255, 1)
+                                    Color: =RGBA(55, 65, 81, 1)
+                                    Font: =Font.'Open Sans'
+                                    Size: =11
+                                    OnChange: |
+                                      =Set(varSelectedStatus, If(Self.Selected.Value = "Tất cả", "", Self.Selected.Value))
+
+                              # Date From Filter
+                              - 'MyLeaves.Filter.FromLabel':
+                                  Control: Label
+                                  Properties:
+                                    X: =Parent.Width * 0.31
+                                    Y: =(Parent.Height - Self.Height) / 2
+                                    Width: =Parent.Width * 0.08
+                                    Height: =Parent.Height * 0.8
+                                    Text: =Concatenate("Từ ngày", ":")
+                                    Color: =RGBA(55, 65, 81, 1)
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Size: =11
+                                    Align: =Align.Left
+
+                              - 'MyLeaves.Filter.DateFrom':
+                                  Control: Classic/DatePicker
+                                  Properties:
+                                    X: =Parent.Width * 0.4
+                                    Y: =0
+                                    Width: =Parent.Width * 0.15
+                                    Height: =Parent.Height
+                                    BorderColor: =RGBA(209, 213, 219, 1)
+                                    BorderThickness: =1
+                                    Fill: =RGBA(255, 255, 255, 1)
+                                    Color: =RGBA(55, 65, 81, 1)
+                                    Font: =Font.'Open Sans'
+                                    Size: =11
+                                    OnChange: |
+                                      =Set(varFilterDateFrom, Self.SelectedDate)
+
+                              # Date To Filter
+                              - 'MyLeaves.Filter.ToLabel':
+                                  Control: Label
+                                  Properties:
+                                    X: =Parent.Width * 0.57
+                                    Y: =(Parent.Height - Self.Height) / 2
+                                    Width: =Parent.Width * 0.08
+                                    Height: =Parent.Height * 0.8
+                                    Text: =Concatenate("Đến ngày", ":")
+                                    Color: =RGBA(55, 65, 81, 1)
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Size: =11
+                                    Align: =Align.Left
+
+                              - 'MyLeaves.Filter.DateTo':
+                                  Control: Classic/DatePicker
+                                  Properties:
+                                    X: =Parent.Width * 0.66
+                                    Y: =0
+                                    Width: =Parent.Width * 0.15
+                                    Height: =Parent.Height
+                                    BorderColor: =RGBA(209, 213, 219, 1)
+                                    BorderThickness: =1
+                                    Fill: =RGBA(255, 255, 255, 1)
+                                    Color: =RGBA(55, 65, 81, 1)
+                                    Font: =Font.'Open Sans'
+                                    Size: =11
+                                    OnChange: |
+                                      =Set(varFilterDateTo, Self.SelectedDate)
+
+                              # Clear Filter Button
+                              - 'MyLeaves.Filter.ClearButton':
+                                  Control: CanvasComponent
+                                  ComponentName: ButtonComponent
+                                  Properties:
+                                    X: =Parent.Width * 0.83
+                                    Y: =0
+                                    Width: =Parent.Width * 0.15
+                                    Height: =Parent.Height
+                                    Text: ="Xóa bộ lọc"
+                                    Variant: ="Outline"
+                                    Size: ="Small"
+                                    OnClick: |
+                                      =Set(varSelectedStatus, ""); Set(varFilterDateFrom, Blank()); Set(varFilterDateTo, Blank()); Reset('MyLeaves.Filter.StatusDropdown'); Reset('MyLeaves.Filter.DateFrom'); Reset('MyLeaves.Filter.DateTo')
+
+                        # Summary Stats
+                        - 'MyLeaves.Filter.Summary':
+                            Control: Label
                             Properties:
-                              X: =Parent.Width * 0.1
-                              Y: =Parent.Height * 0.25
-                              Width: =Parent.Width * 0.8
-                              Height: =Parent.Height * 0.08
-                              Text: ="Chỉnh sửa"
-                              Variant: ="Secondary"
-                              Icon: ="Edit"
-                              Visible: =And(Not(IsBlank(varSelectedLeave)), varSelectedLeave.TrangThai in ["ChoDuyetCap1"])
-                              OnClick: |
-                                =Set(varEditRequest, varSelectedLeave);
-                                Navigate(LeaveRequestScreen)
-                              
-                        # Cancel Button
-                        - 'MyLeaves.Actions.CancelButton':
-                            Control: CanvasComponent
-                            ComponentName: ButtonComponent
-                            Properties:
-                              X: =Parent.Width * 0.1
-                              Y: =Parent.Height * 0.35
-                              Width: =Parent.Width * 0.8
-                              Height: =Parent.Height * 0.08
-                              Text: ="Hủy đơn"
-                              Variant: ="Danger"
-                              Icon: ="Cancel"
-                              Visible: =And(Not(IsBlank(varSelectedLeave)), varSelectedLeave.TrangThai in ["ChoDuyetCap1", "ChoDuyetCap2", "ChoDuyetCap3"])
-                              OnClick: |
-                                =Set(varShowCancelModal, true)
-            
-      # Leave Details Modal
+                              X: =Parent.Width * 0.015
+                              Y: =Parent.Height * 0.75
+                              Width: =Parent.Width * 0.97
+                              Height: =Parent.Height * 0.2
+                              Text: =Concatenate("Hiển thị ", CountRows(Filter(varCurrentUserLeaves, And(Or(IsBlank(varSelectedStatus), TrangThai.Value = varSelectedStatus), Or(IsBlank(varFilterDateFrom), NgayBatDau >= varFilterDateFrom), Or(IsBlank(varFilterDateTo), NgayKetThuc <= varFilterDateTo)))), " " & "kết quả")
+                              Color: =RGBA(107, 114, 128, 1)
+                              Font: =Font.'Open Sans'
+                              Size: =10
+                              Align: =Align.Left
+
+      # DataTable - Direct Screen child following rules
+      - 'MyLeaves.DataTable':
+          Control: DataTable@1.0.3
+          Variant: DataTable
+          Properties:
+            X: ='MyLeaves.Navigation'.Width + 'MyLeaves.Content.Container'.Width * 0.02
+            Y: ='MyLeaves.Header'.Height + 'MyLeaves.Content.Container'.Height * 0.44
+            Width: ='MyLeaves.Content.Container'.Width * 0.96
+            Height: ='MyLeaves.Content.Container'.Height * 0.54
+            Items: =SortByColumns(Filter(varCurrentUserLeaves, And(Or(IsBlank(varSelectedStatus), TrangThai.Value = varSelectedStatus), Or(IsBlank(varFilterDateFrom), NgayBatDau >= varFilterDateFrom), Or(IsBlank(varFilterDateTo), NgayKetThuc <= varFilterDateTo))), "NgayBatDau", SortOrder.Descending)
+            BorderColor: =RGBA(229, 231, 235, 1)
+            BorderThickness: =1
+            Font: =Font.'Open Sans'
+            Size: =11
+            Color: =RGBA(55, 65, 81, 1)
+            HeadingColor: =RGBA(255, 255, 255, 1)
+            HeadingFill: =RGBA(59, 130, 246, 1)
+            HeadingFont: =Font.'Open Sans'
+            HeadingFontWeight: =FontWeight.Bold
+            HeadingSize: =12
+            HoverFill: =RGBA(239, 246, 255, 0.8)
+            SelectedFill: =RGBA(219, 234, 254, 1)
+            NoDataText: ="Không có đơn nghỉ phép nào"
+          Children:
+            - NgayBatDau_Column:
+                Control: DataTableColumn@1.0.1
+                Variant: Textual
+                IsLocked: true
+                Properties:
+                  FieldDisplayName: ="Ngày bắt đầu"
+                  FieldName: ="NgayBatDau"
+                  Order: =1
+                  Text: =Text(ThisItem.NgayBatDau, "dd/mm/yyyy")
+            - NgayKetThuc_Column:
+                Control: DataTableColumn@1.0.1
+                Variant: Textual
+                IsLocked: true
+                Properties:
+                  FieldDisplayName: ="Ngày kết thúc"
+                  FieldName: ="NgayKetThuc"
+                  Order: =2
+                  Text: =Text(ThisItem.NgayKetThuc, "dd/mm/yyyy")
+            - SoNgayNghi_Column:
+                Control: DataTableColumn@1.0.1
+                Variant: Number
+                IsLocked: true
+                Properties:
+                  FieldDisplayName: ="Số ngày"
+                  FieldName: ="SoNgayNghi"
+                  Order: =3
+                  Text: =Text(ThisItem.SoNgayNghi) & " ngày"
+            - LoaiNghi_Column:
+                Control: DataTableColumn@1.0.1
+                Variant: Textual
+                IsLocked: true
+                Properties:
+                  FieldDisplayName: ="Loại nghỉ"
+                  FieldName: ="MaLoai"
+                  Order: =4
+                  Text: =LookUp(LoaiNghi, MaLoai = ThisItem.MaLoai.Value).TenLoai
+            - LyDo_Column:
+                Control: DataTableColumn@1.0.1
+                Variant: Textual
+                IsLocked: true
+                Properties:
+                  FieldDisplayName: ="Lý do"
+                  FieldName: ="LyDo"
+                  Order: =5
+                  Text: =If(Len(ThisItem.LyDo) > 30, Left(ThisItem.LyDo, 27) & "...", ThisItem.LyDo)
+            - TrangThai_Column:
+                Control: DataTableColumn@1.0.1
+                Variant: Textual
+                IsLocked: true
+                Properties:
+                  FieldDisplayName: ="Trạng thái"
+                  FieldName: ="TrangThai"
+                  Order: =6
+                  Text: =Switch(ThisItem.TrangThai.Value, "ChoDuyetCap1", "Chờ duyệt cấp 1", "ChoDuyetCap2", "Chờ duyệt cấp 2", "ChoDuyetCap3", "Chờ duyệt cấp 3", "DaDuyet", "Đã duyệt", "TuChoi", "Từ chối", "Huy", "Đã hủy", "Không xác định")
+            - ThaoTac_Column:
+                Control: DataTableColumn@1.0.1
+                Variant: Textual
+                Properties:
+                  FieldDisplayName: ="Thao tác"
+                  FieldName: ="ThaoTac"
+                  Order: =7
+                  Text: ="Chi tiết"
+                  IsHyperlink: =true
+                  OnSelect: |
+                    =Set(varSelectedLeave, Parent.Selected); Set(varShowDetails, true)
+
+      # Leave Details Modal Overlay (Background)
       - 'MyLeaves.Details.Overlay':
           Control: Rectangle
           Properties:
@@ -426,18 +530,18 @@ Screens:
             OnSelect: |
               =Set(varShowDetails, false)
             
+      # Leave Details Modal
       - 'MyLeaves.Details.Modal':
           Control: GroupContainer
           Variant: ManualLayout
           Properties:
-            X: =(Parent.Width - Self.Width) / 2
-            Y: =(Parent.Height - Self.Height) / 2
+            X: =(Parent.Width - Parent.Width * 0.6) / 2
+            Y: =(Parent.Height - Parent.Height * 0.7) / 2
             Width: =Parent.Width * 0.6
             Height: =Parent.Height * 0.7
             Fill: =RGBA(255, 255, 255, 1)
-            BorderColor: =RGBA(230, 230, 230, 1)
-            BorderThickness: =Parent.Width * 0.002
-            DropShadow: =DropShadow.Bold
+            BorderColor: =RGBA(226, 232, 240, 1)
+            BorderThickness: =2
             Visible: =varShowDetails
           Children:
             - 'MyLeaves.Details.Header':
@@ -450,17 +554,17 @@ Screens:
                   Height: =Parent.Height * 0.1
                   Fill: =RGBA(248, 249, 250, 1)
                   BorderColor: =RGBA(229, 231, 235, 1)
-                  BorderThickness: =Parent.Width * 0.001
+                  BorderThickness: =1
                 Children:
                   - 'MyLeaves.Details.Title':
                       Control: Label
                       Properties:
                         X: =Parent.Width * 0.03
-                        Y: =(Parent.Height - Self.Height) / 2
+                        Y: =(Parent.Height - Parent.Height * 0.6) / 2
                         Width: =Parent.Width * 0.8
                         Height: =Parent.Height * 0.6
                         Text: ="Chi tiết đơn nghỉ phép"
-                        Color: =RGBA(32, 54, 71, 1)
+                        Color: =RGBA(17, 24, 39, 1)
                         Font: =Font.'Open Sans'
                         FontWeight: =FontWeight.Bold
                         Size: =Parent.Height * 0.3
@@ -469,15 +573,15 @@ Screens:
                       Control: CanvasComponent
                       ComponentName: ButtonComponent
                       Properties:
-                        X: =Parent.Width * 0.85
+                        X: =Parent.Width * 0.84
                         Y: =(Parent.Height - Self.Height) / 2
-                        Width: =Parent.Width * 0.12
+                        Width: =Parent.Width * 0.13
                         Height: =Parent.Height * 0.6
                         Text: ="Đóng"
-                        Variant: ="Ghost"
+                        Variant: ="Outline"
                         Size: ="Small"
-                        Icon: ="Cancel"
-                        OnClick: =Set(varShowDetails, false)
+                        OnClick: |
+                          =Set(varShowDetails, false)
                         
             - 'MyLeaves.Details.Content':
                 Control: GroupContainer
@@ -491,139 +595,24 @@ Screens:
                   - 'MyLeaves.Details.Info':
                       Control: Label
                       Properties:
-                        X: =Parent.X
-                        Y: =Parent.Y
+                        X: =0
+                        Y: =0
                         Width: =Parent.Width
                         Height: =Parent.Height
                         Text: |
                           =If(Not(IsBlank(varSelectedLeave)),
                             Concatenate(
-                              "Mã đơn:" & " " & varSelectedLeave.MaDon, Char(10),
-                              "Loại nghỉ:" & " " & LookUp(LoaiNghi, MaLoai = varSelectedLeave.MaLoai).TenLoai, Char(10),
-                              "Thời gian:" & " " & Text(varSelectedLeave.NgayBatDau, "dd/mm/yyyy") & " - " & Text(varSelectedLeave.NgayKetThuc, "dd/mm/yyyy"), Char(10),
-                              "Số ngày:" & " " & varSelectedLeave.SoNgayNghi & " ngày", Char(10),
-                              "Buổi nghỉ:" & " " & Switch(varSelectedLeave.BuoiNghi, "CaNgay", "Cả ngày", "BuoiSang", "Buổi sáng", "BuoiChieu", "Buổi chiều", varSelectedLeave.BuoiNghi), Char(10),
-                              "Trạng thái:" & " " & Switch(varSelectedLeave.TrangThai, "ChoDuyetCap1", "Chờ phê duyệt cấp 1", "ChoDuyetCap2", "Chờ phê duyệt cấp 2", "ChoDuyetCap3", "Chờ phê duyệt cấp 3", "DaDuyet", "Đã phê duyệt", "TuChoi", "Bị từ chối", "Huy", "Đã hủy", varSelectedLeave.TrangThai), Char(10),
-                              "Lý do:" & " " & varSelectedLeave.LyDo, Char(10),
-                              If(Not(IsBlank(varSelectedLeave.NguoiBanGiao)), "Người bàn giao:" & " " & LookUp(NguoiDung, MaNhanVien = varSelectedLeave.NguoiBanGiao).HoTen & Char(10), ""),
-                              If(Not(IsBlank(varSelectedLeave.NoiDungBanGiao)), "Nội dung bàn giao:" & " " & varSelectedLeave.NoiDungBanGiao & Char(10), ""),
-                              "Ngày tạo:" & " " & Text(varSelectedLeave.NgayTao, "dd/mm/yyyy hh:mm"), Char(10),
-                              If(Not(IsBlank(varSelectedLeave.GhiChuPheDuyet)), "Ghi chú phê duyệt:" & " " & varSelectedLeave.GhiChuPheDuyet, "")
+                              "Mã đơn" & ":" & " " & varSelectedLeave.MaDon, Char(10),
+                              "Loại nghỉ" & ":" & " " & LookUp(LoaiNghi, MaLoai = varSelectedLeave.MaLoai.Value).TenLoai, Char(10),
+                              "Thời gian" & ":" & " " & Text(varSelectedLeave.NgayBatDau, "dd/mm/yyyy") & " - " & Text(varSelectedLeave.NgayKetThuc, "dd/mm/yyyy"), Char(10),
+                              "Số ngày" & ":" & " " & varSelectedLeave.SoNgayNghi & " ngày", Char(10),
+                              "Buổi nghỉ" & ":" & " " & Switch(varSelectedLeave.BuoiNghi.Value, "CaNgay", "Cả ngày", "Sang", "Buổi sáng", "Chieu", "Buổi chiều", varSelectedLeave.BuoiNghi.Value), Char(10),
+                              "Trạng thái" & ":" & " " & Switch(varSelectedLeave.TrangThai.Value, "ChoDuyetCap1", "Chờ phê duyệt cấp 1", "ChoDuyetCap2", "Chờ phê duyệt cấp 2", "ChoDuyetCap3", "Chờ phê duyệt cấp 3", "DaDuyet", "Đã phê duyệt", "TuChoi", "Bị từ chối", "Huy", "Đã hủy", varSelectedLeave.TrangThai.Value), Char(10),
+                              "Lý do" & ":" & " " & varSelectedLeave.LyDo, Char(10),
+                              If(Not(IsBlank(varSelectedLeave.NguoiBanGiao)), "Người bàn giao" & ":" & " " & LookUp(NguoiDung, MaNguoiDung = varSelectedLeave.NguoiBanGiao.Value).HoTen & Char(10), ""),
+                              If(Not(IsBlank(varSelectedLeave.NoiDungBanGiao)), "Nội dung bàn giao" & ":" & " " & varSelectedLeave.NoiDungBanGiao & Char(10), ""),
+                              "Ngày tạo" & ":" & " " & Text(varSelectedLeave.Created, "dd/mm/yyyy hh:mm"), Char(10)
                             ), "")
                         Color: =RGBA(55, 65, 81, 1)
                         Font: =Font.'Open Sans'
                         Size: =Parent.Height * 0.04
-                        
-      # Cancel Confirmation Modal
-      - 'MyLeaves.Cancel.Overlay':
-          Control: Rectangle
-          Properties:
-            X: =0
-            Y: =0
-            Width: =Parent.Width
-            Height: =Parent.Height
-            Fill: =RGBA(0, 0, 0, 0.5)
-            Visible: =varShowCancelModal
-            OnSelect: |
-              =Set(varShowCancelModal, false)
-            
-      - 'MyLeaves.Cancel.Modal':
-          Control: GroupContainer
-          Variant: ManualLayout
-          Properties:
-            X: =(Parent.Width - Self.Width) / 2
-            Y: =(Parent.Height - Self.Height) / 2
-            Width: =Parent.Width * 0.4
-            Height: =Parent.Height * 0.3
-            Fill: =RGBA(255, 255, 255, 1)
-            BorderColor: =RGBA(244, 67, 54, 1)
-            BorderThickness: =Parent.Width * 0.002
-            DropShadow: =DropShadow.Bold
-            Visible: =varShowCancelModal
-          Children:
-            - 'MyLeaves.Cancel.Icon':
-                Control: Classic/Icon
-                Properties:
-                  X: =(Parent.Width - Self.Width) / 2
-                  Y: =Parent.Height * 0.1
-                  Width: =Parent.Height * 0.15
-                  Height: =Parent.Height * 0.15
-                  Icon: =Icon.Cancel
-                  Color: =RGBA(244, 67, 54, 1)
-                  
-            - 'MyLeaves.Cancel.Title':
-                Control: Label
-                Properties:
-                  X: =Parent.Width * 0.05
-                  Y: ='MyLeaves.Cancel.Icon'.Y + 'MyLeaves.Cancel.Icon'.Height + Parent.Height * 0.05
-                  Width: =Parent.Width * 0.9
-                  Height: =Parent.Height * 0.15
-                  Text: ="Xác nhận hủy đơn"
-                  Color: =RGBA(244, 67, 54, 1)
-                  Font: =Font.'Open Sans'
-                  FontWeight: =FontWeight.Bold
-                  Size: =Parent.Height * 0.06
-                  Align: =Align.Center
-                  
-            - 'MyLeaves.Cancel.Message':
-                Control: Label
-                Properties:
-                  X: =Parent.Width * 0.05
-                  Y: ='MyLeaves.Cancel.Title'.Y + 'MyLeaves.Cancel.Title'.Height
-                  Width: =Parent.Width * 0.9
-                  Height: =Parent.Height * 0.25
-                  Text: ="Bạn có chắc chắn muốn hủy đơn nghỉ phép này? Hành động này không thể hoàn tác."
-                  Color: =RGBA(55, 65, 81, 1)
-                  Font: =Font.'Open Sans'
-                  Size: =Parent.Height * 0.04
-                  Align: =Align.Center
-                  
-            - 'MyLeaves.Cancel.Actions':
-                Control: GroupContainer
-                Variant: ManualLayout
-                Properties:
-                  X: =Parent.Width * 0.05
-                  Y: =Parent.Height * 0.75
-                  Width: =Parent.Width * 0.9
-                  Height: =Parent.Height * 0.2
-                Children:
-                  - 'MyLeaves.Cancel.ConfirmButton':
-                      Control: CanvasComponent
-                      ComponentName: ButtonComponent
-                      Properties:
-                        X: =Parent.X
-                        Y: =Parent.Y
-                        Width: =Parent.Width * 0.45
-                        Height: =Parent.Height
-                        Text: ="Xác nhận hủy"
-                        Variant: ="Danger"
-                        IsLoading: =varIsProcessing
-                        LoadingText: ="Đang hủy..."
-                        OnClick: |
-                          =Set(varIsProcessing, true);
-                          Set(varCancelResult, Patch(DonNghiPhep, varSelectedLeave, {
-                            TrangThai: "Huy",
-                            NgayCapNhat: Now(),
-                            NguoiCapNhat: varCurrentUser.MaNhanVien,
-                            GhiChuPheDuyet: "Đơn đã được hủy bởi nhân viên"
-                          }));
-                          If(Not(IsError(varCancelResult)),
-                            Set(varMyLeaveRequests, Filter(DonNghiPhep, MaNhanVien = varCurrentUser.MaNhanVien)),
-                            Set(varFilteredLeaves, varMyLeaveRequests));
-                          Set(varIsProcessing, false);
-                          Set(varShowCancelModal, false);
-                          Set(varSelectedLeave, {})
-                        
-                  - 'MyLeaves.Cancel.CancelButton':
-                      Control: CanvasComponent
-                      ComponentName: ButtonComponent
-                      Properties:
-                        X: =Parent.Width * 0.55
-                        Y: =Parent.Y
-                        Width: =Parent.Width * 0.45
-                        Height: =Parent.Height
-                        Text: ="Không hủy"
-                        Variant: ="Outline"
-                        OnClick: |
-                          =Set(varShowCancelModal, false);
-                          Set(varSelectedLeave, {}) 

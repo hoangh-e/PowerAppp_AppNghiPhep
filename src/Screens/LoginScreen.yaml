@@ -4,7 +4,7 @@ Screens:
       Fill: =RGBA(248, 250, 252, 1)
       OnVisible: |
         =Set(varLoginError, ""); Set(varIsTraditionalLoading, false); Set(varShowLoginForm, true);
-        Set(varLoginSuccess, false); Set(varLoggedInUserEmail, ""); Set(varSessionValid, false);
+        Set(varLoginSuccess, false); Set(varLoggedInUserEmail, ""); Set(varSessionValid, false); Set(varIsUserAuthenticated, false);
         Set(UserSession, {
           Id: "",
           Name: "", 
@@ -188,7 +188,7 @@ Screens:
                       If(IsBlank(ThisRecord),
                         Set(varLoginError, "Email hoặc mật khẩu không đúng"); Set(varIsTraditionalLoading, false),
                         If(ThisRecord.TrangThai.Value = "HoatDong",
-                          Set(varLoginSuccess, true); Set(varSessionValid, true);
+                          Set(varLoginSuccess, true); Set(varSessionValid, true); Set(varIsUserAuthenticated, true);
                           Set(varLoggedInUserEmail, 'Login.Email.Input'.Text);
                           Set(UserSession, {
                             Name: ThisRecord.HoTen,
@@ -264,7 +264,7 @@ Screens:
                         PressedFill: =RGBA(227, 242, 253, 1)
                         PressedColor: =RGBA(0, 0, 0, 1)
                         OnSelect: |
-                          =Set(varLoginSuccess, true); Set(varSessionValid, true);
+                          =Set(varLoginSuccess, true); Set(varSessionValid, true); Set(varIsUserAuthenticated, true);
                           Set(varLoggedInUserEmail, "admin@demo.com");
                           Set(UserSession, {
                             Name: "Quản trị viên Demo",
@@ -303,7 +303,7 @@ Screens:
                         PressedFill: =RGBA(227, 242, 253, 1)
                         PressedColor: =RGBA(0, 0, 0, 1)
                         OnSelect: |
-                          =Set(varLoginSuccess, true); Set(varSessionValid, true);
+                          =Set(varLoginSuccess, true); Set(varSessionValid, true); Set(varIsUserAuthenticated, true);
                           Set(varLoggedInUserEmail, "employee@demo.com");
                           Set(UserSession, {
                             Name: "Nguyễn Văn An",
@@ -342,7 +342,7 @@ Screens:
                         PressedFill: =RGBA(227, 242, 253, 1)
                         PressedColor: =RGBA(0, 0, 0, 1)
                         OnSelect: |
-                          =Set(varLoginSuccess, true); Set(varSessionValid, true);
+                          =Set(varLoginSuccess, true); Set(varSessionValid, true); Set(varIsUserAuthenticated, true);
                           Set(varLoggedInUserEmail, "manager@demo.com");
                           Set(UserSession, {
                             Name: "Trần Thị Bích",

@@ -2795,6 +2795,12 @@ Fill: =If(ThisItem.GioiTinh.Value = "Male", ...) # Should be "Nam"
 54. **UNICODE CHARACTER RESTRICTIONS** - CRITICAL: Never use emoji characters (👤, 📊, ⚠️) or special Unicode symbols in YAML text values. Use standard ASCII text and Vietnamese characters only to prevent "invalid mapping" YAML parsing errors
 55. **CLASSIC/TEXTINPUT PROPERTIES** - CRITICAL: Use `Default:` for initial value (NOT `Text:`), use `HintText:` for placeholder (NOT `Placeholder:`), use `Mode:` for input type (NOT `TextMode:`)
 56. **YAML COMMENT PLACEMENT** - CRITICAL: Never use inline comments in YAML property values. Place comments on separate lines above properties using `# Comment` format. Inline comments break YAML parsing
+57. **DATATABLE SCREEN CHILDREN ONLY** - CRITICAL: DataTable controls MUST be direct Children of Screens ONLY. Never nest DataTable inside GroupContainer or other containers
+58. **GROUPCONTAINER BORDERRADIUS RESTRICTION** - CRITICAL: GroupContainer controls do NOT support BorderRadius property. PA2108 error will occur
+59. **DATATABLECOLUMN REFERENCE RULES** - CRITICAL: In DataTableColumn context, use `Parent.Selected` to reference selected record, NOT `ThisItem`. ThisItem does not exist in DataTableColumn context
+60. **SHAREPOINT FILTER IN OPERATOR** - CRITICAL: Avoid using `In` operator with SharePoint Choice columns in Filter functions. Use `Or` statements instead for better compatibility
+61. **COMPONENT PROPERTIES OPTIMIZATION** - CRITICAL: Only include necessary custom properties in component usage. Excessive unnecessary properties can cause "Expected operator" and "Invalid argument type" errors
+62. **SORTORDER CONSTANTS** - CRITICAL: Use `SortOrder.Descending` or `SortOrder.Ascending` in SortByColumns function, NOT plain text "Descending" or "Ascending"
 
 **Agent must follow these rules ABSOLUTELY when generating Power App YAML code.**
 
@@ -3293,7 +3299,269 @@ Text: ="Hello " & varUser & " World"
 
 ---
 
-## 🚨 CRITICAL REMINDERS
+## 🚨 DATATABLE & GROUPCONTAINER CRITICAL RULES
+
+### Rule 57: DataTable Screen Children Only
+**CRITICAL**: DataTable controls MUST be direct Children of Screens ONLY. Never nest DataTable inside GroupContainer or other containers.
+
+```yaml
+# ✅ CORRECT - DataTable as direct Screen child
+Screens:
+  MyScreen:
+    Children:
+      - MyDataTable:
+          Control: DataTable@1.0.3
+          Variant: DataTable
+          Properties:
+            X: =Parent.Width * 0.03
+            Y: =Parent.Height * 0.3  
+            Items: =MyDataSource
+          Children:
+            - ColumnName:
+                Control: DataTableColumn@1.0.1
+                Variant: Textual
+                Properties:
+                  FieldDisplayName: ="Display Name"
+                  FieldName: ="FieldName"
+                  Order: =1
+                  Text: =ThisItem.FieldName
+
+# ❌ WRONG - DataTable nested in containers
+Screens:
+  MyScreen:
+    Children:
+      - Container:
+          Control: GroupContainer
+          Children:
+            - MyDataTable:  # ERROR - Cannot nest DataTable
+                Control: DataTable@1.0.3
+```
+
+### Rule 58: GroupContainer BorderRadius Restriction  
+**CRITICAL**: GroupContainer controls do NOT support BorderRadius property. PA2108 error will occur.
+
+```yaml
+# ❌ WRONG - GroupContainer with BorderRadius
+- Container:
+    Control: GroupContainer
+    Properties:
+      BorderRadius: =8        # PA2108 ERROR
+
+# ✅ CORRECT - GroupContainer without BorderRadius
+- Container:
+    Control: GroupContainer
+    Properties:
+      BorderThickness: =1
+      BorderColor: =RGBA(226, 232, 240, 1)
+      # NO BorderRadius property
+```
+
+### Rule 59: DataTableColumn Reference Rules
+**CRITICAL**: In DataTableColumn OnSelect events, use Parent.Selected to reference the selected record from DataTable.
+
+```yaml
+# ❌ WRONG - ThisItem does not exist in DataTableColumn context
+- ActionColumn:
+    Control: DataTableColumn@1.0.1
+    Properties:
+      OnSelect: |
+        =Set(varSelectedItem, ThisItem)  # ERROR - ThisItem not available
+
+# ❌ WRONG - Self references the DataTableColumn control, not data
+- ActionColumn:
+    Control: DataTableColumn@1.0.1
+    Properties:
+      OnSelect: |
+        =Set(varSelectedItem, Self)      # ERROR - Gets column control, not data
+
+# ✅ CORRECT - Parent.Selected references DataTable's selected record
+- ActionColumn:
+    Control: DataTableColumn@1.0.1
+    Properties:
+      OnSelect: |
+        =Set(varSelectedItem, Parent.Selected)  # Gets SharePoint record data
+```
+
+**DATATABLE REFERENCE RULES:**
+- **In DataTableColumn**: Use `Parent.Selected` to get selected record from parent DataTable
+- **Never use**: `ThisItem` in DataTableColumn context (doesn't exist)
+- **Self reference**: Gets DataTableColumn control, not the data record
+- **Parent.Selected**: Gets the actual SharePoint/data source record
+
+### Rule 60: SharePoint Filter In Operator Restriction
+**CRITICAL**: Avoid using In operator with SharePoint Choice columns. Use Or statements instead for better compatibility.
+
+```yaml
+# ❌ WRONG - In operator may fail with SharePoint Choice columns
+Items: =Filter(MyTable, TrangThai.Value In ["Status1", "Status2", "Status3"])
+Value: =CountRows(Filter(MyData, Category.Value In ["A", "B", "C"]))
+
+# ✅ CORRECT - Use Or statements for SharePoint Choice columns
+Items: =Filter(MyTable, Or(TrangThai.Value = "Status1", TrangThai.Value = "Status2", TrangThai.Value = "Status3"))
+Value: =CountRows(Filter(MyData, Or(Category.Value = "A", Category.Value = "B", Category.Value = "C")))
+```
+
+**SHAREPOINT FILTER RULES:**
+- **Avoid**: `In` operator with SharePoint Choice/Lookup columns using `.Value`
+- **Use**: `Or` statements for multiple value comparisons
+- **Safe**: `In` operator with Text columns and local collections
+- **Test**: Filter expressions with SharePoint data sources before deployment
+
+### Rule 61: Component Properties Optimization
+**CRITICAL**: When using custom components, only include necessary properties. Excess properties can cause Invalid Argument errors.
+
+```yaml
+# ❌ WRONG - Too many unnecessary properties causing errors
+- MyStatsCard:
+    Control: CanvasComponent
+    ComponentName: StatsCardComponent
+    Properties:
+      Color: =RGBA(251, 191, 36, 1)
+      Height: =Parent.Height
+      Icon: ="Clock"
+      IsClickable: =false          # May not be needed
+      MaxValue: =100              # May not be needed
+      OnClick: =                  # Empty value can cause issues
+      ShowProgress: =false        # May not be needed
+      ShowTrend: =false          # May not be needed
+      Subtitle: =""              # Empty string may cause issues
+      Title: ="Status"
+      TrendText: =""             # Empty string may cause issues
+      TrendValue: =0             # May not be needed
+      Value: =42
+      Width: =200
+
+# ✅ CORRECT - Only essential properties
+- MyStatsCard:
+    Control: CanvasComponent
+    ComponentName: StatsCardComponent
+    Properties:
+      X: =0
+      Y: =0
+      Width: =200
+      Height: =Parent.Height
+      Title: ="Status"
+      Value: =42
+      Icon: ="Clock"
+      Color: =RGBA(251, 191, 36, 1)
+      ShowTrend: =false           # Only if component requires it
+```
+
+**COMPONENT PROPERTIES RULES:**
+- **Include**: Only properties that the component actually uses
+- **Exclude**: Properties with empty values (`OnClick: =`, `Subtitle: =""`)
+- **Check**: Component definition for required vs optional properties
+- **Test**: Component with minimal properties first, then add as needed
+- **Order**: Position properties (X, Y, Width, Height) first, then component-specific properties
+
+**Agent must follow these NEW rules ABSOLUTELY when generating Power App YAML code.**
+
+### 9.32 DataTableColumn Reference Errors
+**CRITICAL ERROR**: "ThisItem isn't recognized" in DataTableColumn context
+
+```yaml
+# ❌ WRONG - ThisItem doesn't exist in DataTableColumn
+- ThaoTac_Column:
+    Control: DataTableColumn@1.0.1
+    Properties:
+      OnSelect: |
+        =Set(varSelectedLeave, ThisItem)  # ERROR - ThisItem not recognized
+
+# ✅ CORRECT - Use Parent.Selected to reference DataTable's selected record
+- ThaoTac_Column:
+    Control: DataTableColumn@1.0.1
+    Properties:
+      OnSelect: |
+        =Set(varSelectedLeave, Parent.Selected)  # Parent.Selected = DataTable.Selected
+```
+
+**DATATABLECOLUMN REFERENCE RULES:**
+- **In DataTableColumn**: Use `Parent.Selected` for selected record data
+- **In Gallery Template**: Use `ThisItem` for current item data
+- **In DataTable Items**: Use record properties directly
+- **NEVER**: Use `ThisItem` in DataTableColumn context
+
+### 9.33 SharePoint Filter In Operator Issues
+**CRITICAL ERROR**: "Expected operator" with In operator on SharePoint Choice columns
+
+```yaml
+# ❌ WRONG - In operator causes issues with SharePoint Choice columns
+Value: =CountRows(Filter(DonNghiPhep, TrangThai.Value In ["ChoDuyetCap1", "ChoDuyetCap2"]))
+
+# ✅ CORRECT - Use Or statements for SharePoint Choice filtering
+Value: =CountRows(Filter(DonNghiPhep, Or(TrangThai.Value = "ChoDuyetCap1", TrangThai.Value = "ChoDuyetCap2")))
+```
+
+**SHAREPOINT FILTER RULES:**
+- **AVOID**: `In` operator with SharePoint Choice/Lookup columns  
+- **USE**: `Or` statements for multiple value matching
+- **REASON**: SharePoint Choice columns may have type compatibility issues with In operator
+- **ALTERNATIVE**: Use `&&` for AND conditions, `||` for OR conditions in complex filters
+
+### 9.34 Component Properties Optimization
+**CRITICAL ERROR**: "Expected operator" and "Invalid argument type" from excessive component properties
+
+```yaml
+# ❌ WRONG - Too many unnecessary properties causing conflicts
+- MyComponent:
+    Control: CanvasComponent
+    ComponentName: StatsCardComponent
+    Properties:
+      Color: =RGBA(251, 191, 36, 1)
+      Height: =Parent.Height
+      Icon: ="Clock"
+      IsClickable: =false
+      MaxValue: =100
+      OnClick: =
+      ShowProgress: =false
+      ShowTrend: =false
+      Subtitle: =""
+      TrendText: =""
+      TrendValue: =0
+      Value: =CountRows(...)
+
+# ✅ CORRECT - Only essential properties to avoid conflicts
+- MyComponent:
+    Control: CanvasComponent
+    ComponentName: StatsCardComponent
+    Properties:
+      X: =0
+      Y: =0
+      Width: =Parent.Width / 4
+      Height: =Parent.Height
+      Title: ="Chờ duyệt"
+      Value: =CountRows(...)
+      Icon: ="Clock"
+```
+
+**COMPONENT PROPERTIES RULES:**
+- **INCLUDE**: Only required custom properties and positioning (X, Y, Width, Height)
+- **EXCLUDE**: Unnecessary styling properties that have defaults
+- **TEST**: Remove properties one by one if getting "Expected operator" errors
+- **PRIORITY**: Position > Core Data > Styling > Optional features
+
+### 9.35 SortOrder Constants Usage
+**CRITICAL ERROR**: "'Descending' isn't recognized" in SortByColumns
+
+```yaml
+# ❌ WRONG - Plain text sort direction not recognized
+Items: =SortByColumns(MyCollection, "FieldName", Descending)
+Items: =SortByColumns(MyCollection, "FieldName", "Descending")
+
+# ✅ CORRECT - Use SortOrder enum constants
+Items: =SortByColumns(MyCollection, "FieldName", SortOrder.Descending)
+Items: =SortByColumns(MyCollection, "FieldName", SortOrder.Ascending)
+```
+
+**SORTORDER RULES:**
+- **ALWAYS**: Use `SortOrder.Descending` or `SortOrder.Ascending`
+- **NEVER**: Use plain text "Descending" or "Ascending" 
+- **SYNTAX**: SortByColumns(Collection, "ColumnName", SortOrder.Direction)
+- **VALID**: `SortOrder.Descending`, `SortOrder.Ascending` only
+
+---
+
+## 🚨 UPDATED CRITICAL REMINDERS
 
 1. **CORRECT COMPONENT STRUCTURE** - Use `ComponentDefinitions` with proper custom property syntax
 2. **NO ABSOLUTE VALUES** - Everything must be relative
@@ -3351,5 +3619,11 @@ Text: ="Hello " & varUser & " World"
 54. **UNICODE CHARACTER RESTRICTIONS** - CRITICAL: Never use emoji characters (👤, 📊, ⚠️) or special Unicode symbols in YAML text values. Use standard ASCII text and Vietnamese characters only to prevent "invalid mapping" YAML parsing errors
 55. **CLASSIC/TEXTINPUT PROPERTIES** - CRITICAL: Use `Default:` for initial value (NOT `Text:`), use `HintText:` for placeholder (NOT `Placeholder:`), use `Mode:` for input type (NOT `TextMode:`)
 56. **YAML COMMENT PLACEMENT** - CRITICAL: Never use inline comments in YAML property values. Place comments on separate lines above properties using `# Comment` format. Inline comments break YAML parsing
+57. **DATATABLE SCREEN CHILDREN ONLY** - CRITICAL: DataTable controls MUST be direct Children of Screens ONLY. Never nest DataTable inside GroupContainer or other containers
+58. **GROUPCONTAINER BORDERRADIUS RESTRICTION** - CRITICAL: GroupContainer controls do NOT support BorderRadius property. PA2108 error will occur
+59. **DATATABLECOLUMN REFERENCE RULES** - CRITICAL: In DataTableColumn context, use `Parent.Selected` to reference selected record, NOT `ThisItem`. ThisItem does not exist in DataTableColumn context
+60. **SHAREPOINT FILTER IN OPERATOR** - CRITICAL: Avoid using `In` operator with SharePoint Choice columns in Filter functions. Use `Or` statements instead for better compatibility
+61. **COMPONENT PROPERTIES OPTIMIZATION** - CRITICAL: Only include necessary custom properties in component usage. Excessive unnecessary properties can cause "Expected operator" and "Invalid argument type" errors
+62. **SORTORDER CONSTANTS** - CRITICAL: Use `SortOrder.Descending` or `SortOrder.Ascending` in SortByColumns function, NOT plain text "Descending" or "Ascending"
 
 **Agent must follow these rules ABSOLUTELY when generating Power App YAML code.**

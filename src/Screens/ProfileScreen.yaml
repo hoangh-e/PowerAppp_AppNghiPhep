@@ -5,46 +5,52 @@ Screens:
       OnVisible: |
         =//Set active screen first to ensure NavigationComponent receives correct value
         Set(varActiveScreen, "Profile");
-        If(Not(IsUserAuthenticated), 
+        If(Not(varIsUserAuthenticated), 
           Navigate(LoginScreen), 
-        If(Not(IsUserAuthenticated) Or IsBlank(User),
-          Navigate(LoginScreen),
-          //Continue with profile initialization
-          Set(varCurrentUser, User);
-          Set(varUserDepartment, {
-            TenDonVi: "Phòng Công nghệ thông tin",
-            MaDonVi: "IT"
-          }); 
-          Set(varUserRole, {
-            TenVaiTro: If(User.MaVaiTro = "ADMIN", "Quản trị viên", If(User.MaVaiTro = "Manager", "Trưởng phòng", "Nhân viên")),
-            MaVaiTro: User.MaVaiTro
-          }); 
-          Set(varUserLeaveBalance, {
-            TongNgayDuocPhep: 12,
-            SoNgayDaNghi: 3,
-            SoNgayConLai: 9,
-            Nam: Year(Today())
-          }); 
-          Set(varUserLeaveHistory, Table(
-            {
-              ID: "REQ001",
-              NgayBatDau: DateAdd(Today(), -30),
-              NgayKetThuc: DateAdd(Today(), -28),
-              SoNgayNghi: 3,
-              TrangThai: "DaDuyet",
-              MaLoai: "Annual"
-            },
-            {
-              ID: "REQ002", 
-              NgayBatDau: DateAdd(Today(), -15),
-              NgayKetThuc: DateAdd(Today(), -13),
-              SoNgayNghi: 3,
-              TrangThai: "ChoDuyetCap1",
-              MaLoai: "Sick"
-            }
-          )); 
-          Set(varEditMode, false); 
-          Set(varProfileErrors, {}))
+          If(Not(varIsUserAuthenticated) Or IsBlank(User),
+            Navigate(LoginScreen),
+            //Continue with screen initialization
+            Set(varNavCollapsed, false);
+            Set(varMobileMenuOpen, false);
+            Set(varCurrentUser, User);
+            Set(varEditMode, false);
+            Set(varIsSaving, false);
+            Set(varSaveSuccess, false);
+            Set(varUserDepartment, {
+              TenDonVi: "Phòng Công nghệ thông tin",
+              MaDonVi: "IT"
+            }); 
+            Set(varUserRole, {
+              TenVaiTro: If(User.MaVaiTro = "ADMIN", "Quản trị viên", If(User.MaVaiTro = "Manager", "Trưởng phòng", "Nhân viên")),
+              MaVaiTro: User.MaVaiTro
+            }); 
+            Set(varUserLeaveBalance, {
+              TongNgayDuocPhep: 12,
+              SoNgayDaNghi: 3,
+              SoNgayConLai: 9,
+              Nam: Year(Today())
+            }); 
+            Set(varUserLeaveHistory, Table(
+              {
+                ID: "REQ001",
+                NgayBatDau: DateAdd(Today(), -30),
+                NgayKetThuc: DateAdd(Today(), -28),
+                SoNgayNghi: 3,
+                TrangThai: "DaDuyet",
+                MaLoai: "Annual"
+              },
+              {
+                ID: "REQ002", 
+                NgayBatDau: DateAdd(Today(), -15),
+                NgayKetThuc: DateAdd(Today(), -13),
+                SoNgayNghi: 3,
+                TrangThai: "ChoDuyetCap1",
+                MaLoai: "Sick"
+              }
+            )); 
+            Set(varProfileErrors, {})
+          )
+        )
     Children:
       - 'Profile.Header':
           Control: CanvasComponent
@@ -63,7 +69,7 @@ Screens:
               Set(varLoginSuccess, false);
               Set(varSessionValid, false);
               Set(varLoggedInUserEmail, "");
-              Set(IsUserAuthenticated, false);
+              Set(varIsUserAuthenticated, false);
               //Clear user session object
               Set(UserSession, {
                 Id: "", Name: "", Email: "", Role: "", Permission: 0,

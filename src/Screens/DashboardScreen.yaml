@@ -3,48 +3,76 @@ Screens:
     Properties:
       Fill: =RGBA(248, 250, 252, 1)
       OnVisible: |
-        =//Set active screen first to ensure NavigationComponent receives correct value
+        =//Set active screen for navigation
         Set(varActiveScreen, "Dashboard");
-        //SESSION VALIDATION: Redirect to login if not authenticated
-        If(Not(IsUserAuthenticated) Or IsBlank(User),
-          Navigate(LoginScreen),
-          //Continue with dashboard initialization only if authenticated
-          Set(varNavCollapsed, false); 
-          Set(varMobileMenuOpen, false);
-          //Initialize demo data for preview (using actual User data when available)
-          Set(varDashboardStats, {
-            TotalLeave: 12, 
-            UsedLeave: 3, 
-            RemainingLeave: 9, 
-            PendingRequests: 1, 
-            ApprovedRequests: 2, 
-            RejectedRequests: 0
-          }); 
-          Set(varPendingApprovalsCount, 0);
-          Set(varMyRecentLeaves, Table(
-            {
-              ID: "REQ001",
-              NgayBatDau: DateAdd(Today(), -5), 
-              NgayKetThuc: DateAdd(Today(), -4), 
-              SoNgayNghi: 2, 
-              TrangThai: "DaDuyet",
-              MaLoai: "Annual",
-              MaNguoiDung: "EMP001"
-            },
-            {
-              ID: "REQ002",
-              NgayBatDau: DateAdd(Today(), -10), 
-              NgayKetThuc: DateAdd(Today(), -8), 
-              SoNgayNghi: 3, 
-              TrangThai: "ChoDuyetCap1",
-              MaLoai: "Sick",
-              MaNguoiDung: "EMP001"
-            }
-          ));
-          //Debug: Set navigation test flag
-          Set(varNavigationReady, true)
-        )
+        //Initialize navigation variables
+        Set(varNavCollapsed, false); 
+        Set(varMobileMenuOpen, false);
+        //Use UserSession data directly (no fallback demo)
+        Set(varUser, {
+          Id: UserSession.Id,
+          Name: UserSession.HoTen, 
+          Email: UserSession.Email,
+          Role: UserSession.Role,
+          MaVaiTro: UserSession.MaVaiTro,
+          HoTen: UserSession.HoTen,
+          ChucDanh: UserSession.ChucDanh,
+          MaDonVi: UserSession.MaDonVi
+        });
+        //Load dashboard data based on user
+        Set(varDashboardStats, {
+          TotalLeave: 12, 
+          UsedLeave: 3, 
+          RemainingLeave: 9, 
+          PendingRequests: 1, 
+          ApprovedRequests: 2, 
+          RejectedRequests: 0
+        }); 
+        Set(varPendingApprovalsCount, 0);
+        Set(varMyRecentLeaves, Table(
+          {
+            ID: "REQ001",
+            NgayBatDau: DateAdd(Today(), -5), 
+            NgayKetThuc: DateAdd(Today(), -4), 
+            SoNgayNghi: 2, 
+            TrangThai: "DaDuyet",
+            MaLoai: "Annual",
+            MaNguoiDung: UserSession.Id
+          },
+          {
+            ID: "REQ002",
+            NgayBatDau: DateAdd(Today(), -10), 
+            NgayKetThuc: DateAdd(Today(), -8), 
+            SoNgayNghi: 3, 
+            TrangThai: "ChoDuyetCap1",
+            MaLoai: "Sick",
+            MaNguoiDung: UserSession.Id
+          }
+        ));
+        //Start authentication check
+        Set(varAuthTimerStart, true)
     Children:
+      # Authentication Check Timer
+      - 'Dashboard.AuthTimer':
+          Control: Timer
+          Properties:
+            X: =0
+            Y: =0
+            Width: =1
+            Height: =1
+            Duration: =100
+            AutoStart: =varAuthTimerStart
+            Visible: =false
+            OnTimerEnd: |
+              =//Reset timer flag
+              Set(varAuthTimerStart, false);
+              //Check authentication: If not logged in, redirect to login
+              If(Not(varIsUserAuthenticated),
+                Navigate(LoginScreen),
+                //Continue with dashboard - user is authenticated
+                Set(varAuthenticationValid, true)
+              )
+      
       - 'Dashboard.Header':
           Control: CanvasComponent
           ComponentName: HeaderComponent
@@ -53,33 +81,30 @@ Screens:
             Y: =0
             Width: =Parent.Width
             Height: =Parent.Height * 0.065
-            UserName: =If(IsBlank(User.HoTen), "Đang tải...", User.HoTen)
-            UserRole: =If(IsBlank(User.MaVaiTro), "User", User.MaVaiTro)
+            UserName: =UserSession.HoTen
+            UserRole: =UserSession.MaVaiTro
             ShowNotification: =true
             NotificationCount: =varPendingApprovalsCount
             OnLogout: |
-              =//Clear all session variables first
-              Set(varLoginSuccess, false);
-              Set(varSessionValid, false);
-              Set(varLoggedInUserEmail, "");
-              Set(IsUserAuthenticated, false);
-              //Clear user session object
+              =//Clear authentication flag
+              Set(varIsUserAuthenticated, false);
+              //Clear UserSession data
               Set(UserSession, {
-                Id: "", Name: "", Email: "", Role: "", Permission: 0,
-                NguoiQuanLyId: "", HoTen: "", MaVaiTro: "", 
-                ChucDanh: "", MaDonVi: "", TrangThai: ""
+                Id: "", 
+                Name: "", 
+                Email: "", 
+                Role: "", 
+                Permission: 0,
+                NguoiQuanLyId: "", 
+                HoTen: "", 
+                MaVaiTro: "", 
+                ChucDanh: "", 
+                MaDonVi: "", 
+                TrangThai: ""
               });
-              //Clear current user and dashboard data
-              Set(varCurrentUser, Blank());
-              Set(User, Blank());
-              Set(varDashboardStats, {});
-              Set(varMyRecentLeaves, Table());
-              //Set logout flags
-              Set(varLocalLoggedOut, true);
-              Set(varLocalSessionCleared, true);
-              //Navigate to login screen
+              //Navigate to login
               Navigate(LoginScreen)
-            
+      
       - 'Dashboard.Navigation':
           Control: CanvasComponent
           ComponentName: NavigationComponent
@@ -88,7 +113,7 @@ Screens:
             Y: ='Dashboard.Header'.Height
             Width: =If(varNavCollapsed, App.Width * 0.045, App.Width * 0.14)
             Height: =Parent.Height - 'Dashboard.Header'.Height
-            UserRole: =If(IsBlank(User.MaVaiTro), "Employee", User.MaVaiTro)
+            UserRole: =UserSession.MaVaiTro
             ActiveScreen: =If(IsBlank(varActiveScreen), "Dashboard", varActiveScreen)
             IsCollapsed: =varNavCollapsed
             DashboardScreen: =DashboardScreen
@@ -167,7 +192,7 @@ Screens:
                               Y: =Parent.Height * 0.2
                               Width: =Parent.Width * 0.8
                               Height: =Parent.Height * 0.35
-                              Text: ="Chào mừng quay trở lại, " & If(IsBlank(User.HoTen), "Người dùng", User.HoTen)
+                              Text: ="Chào mừng quay trở lại, " & UserSession.HoTen
                               Color: =RGBA(17, 24, 39, 1)
                               Font: =Font.'Open Sans'
                               FontWeight: =FontWeight.Bold
@@ -180,7 +205,7 @@ Screens:
                               Y: =Parent.Height * 0.6
                               Width: =Parent.Width * 0.8
                               Height: =Parent.Height * 0.25
-                              Text: ="Phòng ban:" & " " & "Phòng Công nghệ thông tin" & " • " & "Chức danh:" & " " & If(IsBlank(User), "Đang tải...", If(IsBlank(User.ChucDanh), "Nhân viên", User.ChucDanh))
+                              Text: ="Phòng ban:" & " " & UserSession.MaDonVi & " • " & "Chức danh:" & " " & UserSession.ChucDanh
                               Color: =RGBA(75, 85, 99, 1)
                               Font: =Font.'Open Sans'
                               Size: =11
