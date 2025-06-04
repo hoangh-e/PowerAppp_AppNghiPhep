@@ -1,147 +1,88 @@
-1. F01 – Điều hướng đến các chức năng chính
-Màn hình chính: Trang chủ
 
-Bảng dữ liệu sử dụng chính: NguoiDung, VaiTro, Quyen
 
-Chức năng con:
+### **F01 – Điều hướng đến các chức năng chính (Trang chủ)**
 
- - F01-1: Điều hướng menu chính
+* **F01-1**: Điều hướng menu chính
 
+---
 
-2. F02 – Xác thực người dùng
-Màn hình chính: Đăng nhập
+### **F02 – Xác thực người dùng (Đăng nhập)**
 
-Bảng dữ liệu sử dụng chính: NguoiDung, VaiTro, DonVi
+* **F02-1**: Đăng nhập hệ thống
 
-Chức năng con:
+---
 
-- F02-1: Đăng nhập hệ thống
+### **F03 – Thông tin cá nhân (Thông tin cá nhân)**
 
+* **F03-1**: Xem thông tin cá nhân và ngày nghỉ còn lại
+* **F03-2**: Chỉnh sửa thông tin cá nhân
 
-3. F03 – Thông tin cá nhân
-Màn hình chính: Thông tin cá nhân
+---
 
-Bảng dữ liệu sử dụng chính: NguoiDung, DonVi, SoNgayPhep
+### **F04 – Quản lý đơn nghỉ phép (Quản lý đơn nghỉ phép)**
 
-Chức năng con:
+* **F04-1**: Tạo đơn nghỉ phép thường
+* **F04-2**: Chỉnh sửa đơn nghỉ phép
+* **F04-3**: Hủy đơn nghỉ phép
 
- - F03-1: Xem thông tin cá nhân và ngày nghỉ còn lại
+---
 
+### **F05 – Xem lịch nghỉ cá nhân (Lịch nghỉ)**
 
+* **F05-1**: Hiển thị danh sách ngày nghỉ cá nhân
 
-4. F04 – Quản lý đơn nghỉ phép
-Màn hình chính: Quản lý đơn nghỉ phép
+---
 
-Bảng dữ liệu sử dụng chính: DonNghiPhep, LoaiNghi, NguoiDung, SoNgayPhep
+### **F06 – Xem lịch nghỉ toàn công ty (Lịch nghỉ)**
 
-Chức năng con:
+* **F06-1**: Hiển thị danh sách ngày nghỉ toàn công ty
 
-- F04-1: Tạo đơn nghỉ phép
+---
 
-- F04-2: Xem chi tiết đơn nghỉ phép
+### **F07 – Phê duyệt đơn nghỉ phép (Quản lý đơn nghỉ phép)**
 
-- F04-3: Hủy đơn nghỉ phép
+* **F07-1**: Phê duyệt cấp 1 (Manager)
+* **F07-2**: Phê duyệt cấp 2 (Giám đốc khối)
+* **F07-3**: Phê duyệt cấp 3 (Giám đốc điều hành)
 
+---
 
-5. F05 – Xem lịch nghỉ cá nhân
-Màn hình chính: Lịch nghỉ cá nhân
+### **F08 – Quản lý người dùng (Quản trị)**
 
-Bảng dữ liệu sử dụng chính: DonNghiPhep, NgayLe, NguoiDung
+* **F08-1**: Thêm người dùng mới
+* **F08-2**: Chỉnh sửa thông tin người dùng
+* **F08-3**: Xóa người dùng
 
-Chức năng con:
+---
 
-- F05-1: Hiển thị danh sách ngày nghỉ cá nhân
+### **F09 – Import số ngày phép (Quản lý nghỉ phép)**
 
+* **F09-1**: Import dữ liệu từ Excel
 
-6. F06 – Xem lịch nghỉ toàn công ty
-Màn hình chính: Lịch nghỉ toàn hệ thống
+---
 
-Bảng dữ liệu sử dụng chính: DonNghiPhep, NguoiDung, DonVi, NgayLe
+### **F10 – Quản lý ngày nghỉ lễ (Quản lý ngày nghỉ lễ)**
 
-Chức năng con:
+* **F10-1**: Điều chỉnh ngày nghỉ lễ
+* **F10-2**: Thiết lập lịch làm việc
 
-- F06-1: Hiển thị danh sách ngày nghỉ toàn công ty
+---
 
+### **F11 – Thiết lập quy trình & vai trò (Quản trị)**
 
-7. F07 – Phê duyệt đơn nghỉ phép
-Màn hình chính: Quản lý đơn nghỉ phép
+* **F11-1**: Thiết lập quy trình phê duyệt 3 cấp
+* **F11-2**: Điều chỉnh role người dùng
 
-Bảng dữ liệu sử dụng chính: DonNghiPhep, NguoiDung, QuyTrinhDuyet, VaiTro
+---
 
-Chức năng con:
+### **F12 – Dashboard báo cáo (Báo cáo/Thống kê)**
 
-- F07-1: Phê duyệt cấp 1 (Manager)
+* **F12-1**: Hiển thị Dashboard báo cáo theo bộ lọc
 
-- F07-2: Phê duyệt cấp 2 (Giám đốc khối)
+---
 
-- F07-3: Phê duyệt cấp 3 (Giám đốc điều hành)
+### **F13 – Xuất báo cáo (Quản trị)**
 
+* **F13-1**: Xuất báo cáo tổng hợp
+* **F13-2**: Xuất báo cáo chi tiết
 
-8. F08 – Quản lý người dùng
-Màn hình chính: Quản lý người dùng
-
-Bảng dữ liệu sử dụng chính: NguoiDung, DonVi, VaiTro, SoNgayPhep
-
-Chức năng con:
-
-- F08-1: Thêm người dùng mới
-
-- F08-2: Chỉnh sửa thông tin người dùng
-
-- F08-3: Xóa người dùng
-
-
-9. F09 – Cập nhật số ngày nghỉ phép (Import)
-Màn hình chính: Quản lý nghỉ phép
-
-Bảng dữ liệu sử dụng chính: SoNgayPhep, NguoiDung
-
-Chức năng con:
-
-- F09-1: Import dữ liệu số ngày nghỉ phép hằng năm từ Excel
-
-
-10. F10 – Quản lý lịch nghỉ lễ / nghỉ phép toàn hệ thống
-Màn hình chính: Quản lý ngày nghỉ lễ (Holiday Management)
-
-Bảng dữ liệu sử dụng chính: NgayLe, CauHinhHeThong
-
-Chức năng con:
-
-- F10-1: Điều chỉnh ngày nghỉ lễ, ngày nghỉ đặc biệt
-
-- F10-2: Thiết lập lịch làm việc (tuần)
-
-
-11. F11 – Thiết lập quy trình & vai trò
-Màn hình chính: Quản lý vai trò
-
-Bảng dữ liệu sử dụng chính: QuyTrinhDuyet, VaiTro, Quyen, DonVi
-
-Chức năng con:
-
-- F11-1: Thiết lập quy trình phê duyệt 3 cấp
-
-- F11-2: Điều chỉnh role người dùng
-
-
-12. F12 – Dashboard báo cáo
-Màn hình chính: Báo cáo/Thống kê
-
-Bảng dữ liệu sử dụng chính: DonNghiPhep, NguoiDung, DonVi, SoNgayPhep
-
-Chức năng con:
-
-- F12-1: Hiển thị Dashboard báo cáo theo bộ lọc
-
-
-13. F13 – Xuất báo cáo
-Màn hình chính: Báo cáo/Thống kê
-
-Bảng dữ liệu sử dụng chính: DonNghiPhep, NguoiDung, DonVi, LoaiNghi, SoNgayPhep
-
-Chức năng con:
-
-- F13-1: Xuất báo cáo tổng hợp
-
-- F13-2: Xuất báo cáo chi tiết

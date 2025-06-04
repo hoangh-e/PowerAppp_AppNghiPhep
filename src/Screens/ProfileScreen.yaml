@@ -61,6 +61,7 @@ Screens:
             MyLeavesScreen: =MyLeavesScreen
             CalendarScreen: =CalendarScreen
             ManagementScreen: =ManagementScreen
+            ReportsScreen: =ReportsScreen
             ProfileScreen: =ProfileScreen
             OnNavigate: |
               =Set(varActiveScreen, ScreenName);
@@ -138,7 +139,7 @@ Screens:
                               Color: =RGBA(17, 24, 39, 1)
                               Font: =Font.'Open Sans'
                               FontWeight: =FontWeight.Bold
-                              Size: =14
+                              Size: =FontSizes.Medium
                                     
                         - 'Profile.PageHeader.Stats':
                             Control: Label
@@ -150,7 +151,7 @@ Screens:
                               Text: =Concatenate("Nhân viên" & ":" & " ", UserSession.HoTen, " | ", UserSession.MaVaiTro)
                               Color: =RGBA(75, 85, 99, 1)
                               Font: =Font.'Open Sans'
-                              Size: =11
+                              Size: =FontSizes.Small
                                 
                   # Tab Navigation
                   - 'Profile.Tabs.Container':
@@ -273,7 +274,7 @@ Screens:
                                     - 'Profile.Info.Avatar.Name':
                                         Control: Label
                                         Properties:
-                                          X: =Parent.Height * 0.9
+                                          X: =Parent.Height 
                                           Y: =Parent.Height * 0.1
                                           Width: =Parent.Width * 0.6
                                           Height: =Parent.Height * 0.4
@@ -281,19 +282,19 @@ Screens:
                                           Color: =RGBA(17, 24, 39, 1)
                                           Font: =Font.'Open Sans'
                                           FontWeight: =FontWeight.Bold
-                                          Size: =18
+                                          Size: =FontSizes.XLarge
                                           
                                     - 'Profile.Info.Avatar.Role':
                                         Control: Label
                                         Properties:
-                                          X: =Parent.Height * 0.9
+                                          X: =Parent.Height
                                           Y: =Parent.Height * 0.55
                                           Width: =Parent.Width * 0.6
                                           Height: =Parent.Height * 0.35
                                           Text: =If(Not(IsBlank(varCurrentUser)), varCurrentUser.ChucDanh.Value & " - " & LookUp(DonVi, MaDonVi = varCurrentUser.MaDonVi.Value).TenDonVi, UserSession.ChucDanh)
                                           Color: =RGBA(75, 85, 99, 1)
                                           Font: =Font.'Open Sans'
-                                          Size: =14
+                                          Size: =FontSizes.Medium
                                           
                                     - 'Profile.Info.EditButton':
                                         Control: CanvasComponent
@@ -336,7 +337,7 @@ Screens:
                                           Color: =RGBA(55, 65, 81, 1)
                                           Font: =Font.'Open Sans'
                                           FontWeight: =FontWeight.Semibold
-                                          Size: =13
+                                          Size: =FontSizes.Base
                                           
                                     - 'Profile.Info.ID.Value':
                                         Control: Label
@@ -348,7 +349,7 @@ Screens:
                                           Text: =UserSession.Id
                                           Color: =RGBA(17, 24, 39, 1)
                                           Font: =Font.'Open Sans'
-                                          Size: =13
+                                          Size: =FontSizes.Base
 
                                     # Full Name
                                     - 'Profile.Info.Name.Label':
@@ -362,7 +363,7 @@ Screens:
                                           Color: =RGBA(55, 65, 81, 1)
                                           Font: =Font.'Open Sans'
                                           FontWeight: =FontWeight.Semibold
-                                          Size: =13
+                                          Size: =FontSizes.Base
                                           
                                     - 'Profile.Info.Name.Input':
                                         Control: Classic/TextInput
@@ -378,7 +379,7 @@ Screens:
                                           BorderColor: =If(varIsEditing, RGBA(59, 130, 246, 1), RGBA(226, 232, 240, 1))
                                           BorderThickness: =1
                                           Font: =Font.'Open Sans'
-                                          Size: =13
+                                          Size: =FontSizes.Base
                                           OnChange: |
                                             =Set(varEditedName, Self.Text)
 
@@ -394,7 +395,7 @@ Screens:
                                           Color: =RGBA(55, 65, 81, 1)
                                           Font: =Font.'Open Sans'
                                           FontWeight: =FontWeight.Semibold
-                                          Size: =13
+                                          Size: =FontSizes.Base
                                           
                                     - 'Profile.Info.Email.Input':
                                         Control: Classic/TextInput
@@ -410,7 +411,7 @@ Screens:
                                           BorderColor: =If(varIsEditing, RGBA(59, 130, 246, 1), RGBA(226, 232, 240, 1))
                                           BorderThickness: =1
                                           Font: =Font.'Open Sans'
-                                          Size: =13
+                                          Size: =FontSizes.Base
                                           OnChange: |
                                             =Set(varEditedEmail, Self.Text)
 
@@ -426,7 +427,7 @@ Screens:
                                           Color: =RGBA(55, 65, 81, 1)
                                           Font: =Font.'Open Sans'
                                           FontWeight: =FontWeight.Semibold
-                                          Size: =13
+                                          Size: =FontSizes.Base
                                           
                                     - 'Profile.Info.Phone.Input':
                                         Control: Classic/TextInput
@@ -442,7 +443,7 @@ Screens:
                                           BorderColor: =If(varIsEditing, RGBA(59, 130, 246, 1), RGBA(226, 232, 240, 1))
                                           BorderThickness: =1
                                           Font: =Font.'Open Sans'
-                                          Size: =13
+                                          Size: =FontSizes.Base
                                           OnChange: |
                                             =Set(varEditedPhone, Self.Text)
 
@@ -458,7 +459,7 @@ Screens:
                                           Color: =RGBA(55, 65, 81, 1)
                                           Font: =Font.'Open Sans'
                                           FontWeight: =FontWeight.Semibold
-                                          Size: =13
+                                          Size: =FontSizes.Base
                                           
                                     - 'Profile.Info.Department.Value':
                                         Control: Label
@@ -470,7 +471,7 @@ Screens:
                                           Text: =If(Not(IsBlank(varCurrentUser)), LookUp(DonVi, MaDonVi = varCurrentUser.MaDonVi.Value).TenDonVi, "")
                                           Color: =RGBA(17, 24, 39, 1)
                                           Font: =Font.'Open Sans'
-                                          Size: =13
+                                          Size: =FontSizes.Base
 
                                     # Position
                                     - 'Profile.Info.Position.Label':
@@ -484,7 +485,7 @@ Screens:
                                           Color: =RGBA(55, 65, 81, 1)
                                           Font: =Font.'Open Sans'
                                           FontWeight: =FontWeight.Semibold
-                                          Size: =13
+                                          Size: =FontSizes.Base
                                           
                                     - 'Profile.Info.Position.Value':
                                         Control: Label
@@ -496,7 +497,7 @@ Screens:
                                           Text: =If(Not(IsBlank(varCurrentUser)), varCurrentUser.ChucDanh.Value, UserSession.ChucDanh)
                                           Color: =RGBA(17, 24, 39, 1)
                                           Font: =Font.'Open Sans'
-                                          Size: =13
+                                          Size: =FontSizes.Base
 
                                     # Save Button
                                     - 'Profile.Info.SaveButton':
@@ -639,7 +640,7 @@ Screens:
                                           Color: =RGBA(17, 24, 39, 1)
                                           Font: =Font.'Open Sans'
                                           FontWeight: =FontWeight.Bold
-                                          Size: =14
+                                          Size: =FontSizes.Medium
                                           
                                     - 'Profile.LeaveBalance.Details.Info':
                                         Control: Label
@@ -660,7 +661,7 @@ Screens:
                                             )
                                           Color: =RGBA(55, 65, 81, 1)
                                           Font: =Font.'Open Sans'
-                                          Size: =12
+                                          Size: =FontSizes.Base
                                           Wrap: =true
                                     
                         # History Tab
@@ -697,7 +698,7 @@ Screens:
                                     Color: =RGBA(17, 24, 39, 1)
                                     Font: =Font.'Open Sans'
                                     FontWeight: =FontWeight.Bold
-                                    Size: =14
+                                    Size: =FontSizes.Medium
                                     
                               # History List
                               - 'Profile.History.Gallery':
@@ -737,7 +738,7 @@ Screens:
                                                 Color: =RGBA(17, 24, 39, 1)
                                                 Font: =Font.'Open Sans'
                                                 FontWeight: =FontWeight.Semibold
-                                                Size: =11
+                                                Size: =FontSizes.Small
                                                 
                                           # Days
                                           - 'Profile.History.Days':
@@ -750,7 +751,7 @@ Screens:
                                                 Text: =ThisItem.SoNgayNghi & " ngày"
                                                 Color: =RGBA(75, 85, 99, 1)
                                                 Font: =Font.'Open Sans'
-                                                Size: =10
+                                                Size: =FontSizes.Small
                                                 
                                           # Leave Type
                                           - 'Profile.History.Type':
@@ -763,7 +764,7 @@ Screens:
                                                 Text: =LookUp(LoaiNghi, MaLoai = ThisItem.MaLoai.Value).TenLoai
                                                 Color: =RGBA(17, 24, 39, 1)
                                                 Font: =Font.'Open Sans'
-                                                Size: =11
+                                                Size: =FontSizes.Small
                                                 
                                           # Status
                                           - 'Profile.History.Status':
@@ -799,7 +800,7 @@ Screens:
                                                 BorderThickness: =1
                                                 Font: =Font.'Open Sans'
                                                 FontWeight: =FontWeight.Semibold
-                                                Size: =10
+                                                Size: =FontSizes.Small
                                                 Align: =Align.Center
                                                 
                                           # Reason (truncated)
@@ -813,5 +814,5 @@ Screens:
                                                 Text: =If(Len(ThisItem.LyDo) > 30, Left(ThisItem.LyDo, 27) & "...", ThisItem.LyDo)
                                                 Color: =RGBA(75, 85, 99, 1)
                                                 Font: =Font.'Open Sans'
-                                                Size: =10
+                                                Size: =FontSizes.Small
                                                 Wrap: =true 

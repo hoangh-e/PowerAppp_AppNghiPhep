@@ -66,7 +66,7 @@ Screens:
                   Color: =RGBA(55, 65, 81, 1)
                   Font: =Font.'Open Sans'
                   FontWeight: =FontWeight.Bold
-                  Size: =18
+                  Size: =FontSizes.XLarge
                   Align: =Align.Center
 
             # Subtitle
@@ -80,7 +80,7 @@ Screens:
                   Text: ="Hệ thống quản lý nghỉ phép doanh nghiệp"
                   Color: =RGBA(107, 114, 128, 1)
                   Font: =Font.'Open Sans'
-                  Size: =12
+                  Size: =FontSizes.Base
                   Align: =Align.Center
 
             # ===== FORM SECTION =====
@@ -96,7 +96,7 @@ Screens:
                   Color: =RGBA(55, 65, 81, 1)
                   Font: =Font.'Open Sans'
                   FontWeight: =FontWeight.Semibold
-                  Size: =13
+                  Size: =FontSizes.Medium
 
             # Email Input
             - 'Login.Email.Input':
@@ -112,7 +112,7 @@ Screens:
                   BorderColor: =RGBA(224, 224, 224, 1)
                   BorderThickness: =1
                   Font: =Font.'Open Sans'
-                  Size: =13
+                  Size: =FontSizes.Medium
 
             # Password Label
             - 'Login.Password.Label':
@@ -126,7 +126,7 @@ Screens:
                   Color: =RGBA(55, 65, 81, 1)
                   Font: =Font.'Open Sans'
                   FontWeight: =FontWeight.Semibold
-                  Size: =13
+                  Size: =FontSizes.Medium
 
             # Password Input
             - 'Login.Password.Input':
@@ -143,7 +143,7 @@ Screens:
                   BorderColor: =RGBA(224, 224, 224, 1)
                   BorderThickness: =1
                   Font: =Font.'Open Sans'
-                  Size: =13
+                  Size: =FontSizes.Medium
 
             # Error Message
             - 'Login.Error.Message':
@@ -156,7 +156,7 @@ Screens:
                   Text: =varLoginError
                   Color: =RGBA(244, 67, 54, 1)
                   Font: =Font.'Open Sans'
-                  Size: =12
+                  Size: =FontSizes.Base
                   Align: =Align.Center
                   Visible: =Not(IsBlank(varLoginError))
 
@@ -175,7 +175,7 @@ Screens:
                   BorderThickness: =1
                   Font: =Font.'Open Sans'
                   FontWeight: =FontWeight.Semibold
-                  Size: =14
+                  Size: =FontSizes.Medium
                   HoverFill: =If(varIsTraditionalLoading, RGBA(158, 158, 158, 1), RGBA(25, 118, 210, 1))
                   HoverBorderColor: =If(varIsTraditionalLoading, RGBA(158, 158, 158, 1), RGBA(25, 118, 210, 1))
                   HoverColor: =RGBA(255, 255, 255, 1)
@@ -229,7 +229,7 @@ Screens:
                   Color: =RGBA(107, 114, 128, 1)
                   Font: =Font.'Open Sans'
                   FontWeight: =FontWeight.Semibold
-                  Size: =11
+                  Size: =FontSizes.Small
                   Align: =Align.Center
 
             # Demo Buttons Container
@@ -257,7 +257,7 @@ Screens:
                         BorderThickness: =1
                         Font: =Font.'Open Sans'
                         FontWeight: =FontWeight.Normal
-                        Size: =12
+                        Size: =FontSizes.Medium
                         HoverFill: =RGBA(237, 242, 247, 1)
                         HoverBorderColor: =RGBA(187, 222, 251, 1)
                         HoverColor: =RGBA(17, 24, 39, 1)
@@ -296,7 +296,7 @@ Screens:
                         BorderThickness: =1
                         Font: =Font.'Open Sans'
                         FontWeight: =FontWeight.Normal
-                        Size: =12
+                        Size: =FontSizes.Medium
                         HoverFill: =RGBA(237, 242, 247, 1)
                         HoverBorderColor: =RGBA(187, 222, 251, 1)
                         HoverColor: =RGBA(17, 24, 39, 1)
@@ -335,7 +335,7 @@ Screens:
                         BorderThickness: =1
                         Font: =Font.'Open Sans'
                         FontWeight: =FontWeight.Normal
-                        Size: =12
+                        Size: =FontSizes.Medium
                         HoverFill: =RGBA(237, 242, 247, 1)
                         HoverBorderColor: =RGBA(187, 222, 251, 1)
                         HoverColor: =RGBA(17, 24, 39, 1)
@@ -370,5 +370,5 @@ Screens:
             Text: ="Version 2.0.0 SharePoint | Powered by Microsoft Power Platform"
             Color: =RGBA(107, 114, 128, 1)
             Font: =Font.'Open Sans'
-            Size: =11
+            Size: =FontSizes.Small
             Align: =Align.Center

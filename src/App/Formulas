@@ -7,25 +7,45 @@ MenuItems = Table(
   {Id:5, Name: "Management", DisplayName: "Quản lý HR", Screen: "ManagementScreen", Icon: Icon.Settings, Color: RGBA(139, 92, 246, 1)}
 );
 
-//Global styles for Leave Management UI
+//Global Font Sizes for consistent typography across all screens
+FontSizes = {
+  Small: 10,        // Captions, hints, metadata, timestamps
+  Base: 12,         // Body text, normal content, descriptions
+  Medium: 14,       // Form labels, button text, navigation items
+  Large: 16,        // Section headers, card titles, modal headers
+  XLarge: 18,       // Page headers, screen titles
+  XXLarge: 20       // Main app headers, welcome messages
+};
+
+//Typography scale for consistent text styling
+Typography = {
+  Caption: {Size: FontSizes.Small, Weight: FontWeight.Normal, Font: Font.'Open Sans'},
+  Body: {Size: FontSizes.Base, Weight: FontWeight.Normal, Font: Font.'Open Sans'},
+  Label: {Size: FontSizes.Medium, Weight: FontWeight.Semibold, Font: Font.'Open Sans'},
+  Heading3: {Size: FontSizes.Large, Weight: FontWeight.Bold, Font: Font.'Open Sans'},
+  Heading2: {Size: FontSizes.XLarge, Weight: FontWeight.Bold, Font: Font.'Open Sans'},
+  Heading1: {Size: FontSizes.XXLarge, Weight: FontWeight.Bold, Font: Font.'Open Sans'}
+};
+
+//Global styles for Leave Management UI - Using FontSizes
 Styles = {
   Title: {
     Font: Font.'Open Sans',
-    Size: 24,
+    Size: FontSizes.XXLarge,    // Updated to use FontSizes
     Weight: FontWeight.Bold,
     Color: RGBA(32, 54, 71, 1),
     Alignment: Align.Center
   },
   Button: {
     Font: Font.'Open Sans',
-    Size: 14,
+    Size: FontSizes.Medium,     // Updated to use FontSizes
     Weight: FontWeight.Semibold,
     Color: RGBA(255, 255, 255, 1),
     Fill: RGBA(33, 150, 243, 1)
   },
   Card: {
     Font: Font.'Open Sans',
-    Size: 12,
+    Size: FontSizes.Base,       // Updated to use FontSizes
     Weight: FontWeight.Normal,
     Color: RGBA(55, 65, 81, 1),
     Fill: RGBA(255, 255, 255, 1),
@@ -33,7 +53,7 @@ Styles = {
   },
   Input: {
     Font: Font.'Open Sans',
-    Size: 14,
+    Size: FontSizes.Medium,     // Updated to use FontSizes
     Weight: FontWeight.Normal,
     Color: RGBA(55, 65, 81, 1),
     Fill: RGBA(255, 255, 255, 1),

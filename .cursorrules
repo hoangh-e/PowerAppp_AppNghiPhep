@@ -420,6 +420,7 @@ MenuItems = Table(...);
 //=== STYLING ===
 Styles = {...};
 Colors = {...};
+FontSizes = {...};  // Global font size definitions
 
 //=== BUSINESS LOGIC ===
 CheckPermission(...);
@@ -1406,182 +1407,157 @@ Control: Legend
 Control: AddMedia
 Control: Timer
 
-# Data
+# Data Import/Export
 Control: Import
 Control: Export
 Control: ListBox
 Control: PowerBI
 ```
 
-### 6.3.1 FormViewer Control (Display Only)
-**FormViewer** is used for displaying data in a structured form layout without editing capabilities:
+### 6.7.1 Export Control
+**Export** is used for exporting data from the app:
 
 ```yaml
-# FormViewer Example - Read-only form display
-- FormViewer1:
-    Control: FormViewer@2.3.4
-    Layout: Vertical
+# Export Example - Export data to file
+- Export1:
+    Control: Export@2.1.0
     Properties:
-      BorderColor: =RGBA(32, 54, 71, 1)
-      DataSource: =CauHinhHeThong
-      X: =40
-      Y: =40
-    Children:
-      - Title_DataCard1:
-          Control: TypedDataCard@1.0.7
-          Variant: ClassicTextualView
-          IsLocked: true
-          Properties:
-            BorderColor: =RGBA(32, 54, 71, 1)
-            DataField: ="Title"
-            Default: =ThisItem.Title
-            DisplayName: =DataSourceInfo([@CauHinhHeThong],DataSourceInfo.DisplayName,'Title')
-            Required: =false
-            Width: =266
-            X: =0
-            Y: =0
-          Children:
-            - DataCardKey1:
-                Control: Label@2.5.1
-                MetadataKey: FieldName
-                Properties:
-                  AutoHeight: =true
-                  BorderColor: =RGBA(0, 0, 0, 1)
-                  Color: =RGBA(32, 54, 71, 1)
-                  Font: =Font.'Open Sans'
-                  Height: =34
-                  Text: =Parent.DisplayName
-                  Width: =Parent.Width - 60
-                  Wrap: =false
-                  X: =30
-                  Y: =10
-            - DataCardValue1:
-                Control: Label@2.5.1
-                MetadataKey: FieldValue
-                Properties:
-                  AutoHeight: =true
-                  BorderColor: =RGBA(32, 54, 71, 1)
-                  DisplayMode: =Parent.DisplayMode
-                  Font: =Font.'Open Sans'
-                  Height: =27
-                  PaddingLeft: =0
-                  PaddingRight: =0
-                  PaddingTop: =0
-                  Text: =Parent.Default
-                  Width: =Parent.Width - 60
-                  X: =30
-                  Y: =DataCardKey1.Y + DataCardKey1.Height + 5
+      BorderColor: =ColorFade(Self.Fill, -15%)
+      Color: =RGBA(255, 255, 255, 1)
+      DisabledBorderColor: =RGBA(56, 56, 56, 1)
+      Fill: =RGBA(100, 118, 132, 1)
+      Font: =Font.'Open Sans'
+      HoverBorderColor: =ColorFade(Self.BorderColor, 20%)
+      HoverColor: =RGBA(255, 255, 255, 1)
+      HoverFill: =ColorFade(RGBA(100, 118, 132, 1), -20%)
+      PressedBorderColor: =ColorFade(Self.BorderColor, -20%)
+      PressedFill: =ColorFade(Self.Fill, -20%)
+      Text: ="Export Data"
+      Data: =MyCollection
+      OnSelect: =Export(MyCollection, "ExportedData", ExportFormat.CSV)
+      X: =Parent.Width * 0.1
+      Y: =Parent.Height * 0.2
+      Width: =Parent.Width * 0.2
+      Height: =Parent.Height * 0.08
 ```
 
-### 6.3.2 Form Control (Editable Form)
-**Form** is used for creating editable forms with data binding:
+**Export Control Properties:**
+- `Align` - Text alignment
+- `BorderColor` - Border color
+- `BorderStyle` - Border style
+- `BorderThickness` - Border thickness
+- `Color` - Text color
+- `ContentLanguage` - Content language
+- `Data` - Data to export
+- `DisabledBorderColor` - Disabled border color
+- `DisabledColor` - Disabled text color
+- `DisabledFill` - Disabled fill color
+- `DisplayMode` - Display mode (Edit, View, Disabled)
+- `Fill` - Background fill color
+- `FocusedBorderColor` - Focused border color
+- `FocusedBorderThickness` - Focused border thickness
+- `Font` - Font family
+- `FontWeight` - Font weight
+- `Height` - Control height
+- `HoverBorderColor` - Hover border color
+- `HoverColor` - Hover text color
+- `HoverFill` - Hover fill color
+- `Italic` - Italic text
+- `OnSelect` - Action when selected
+- `Padding` - Internal padding
+- `PressedBorderColor` - Pressed border color
+- `PressedColor` - Pressed text color
+- `PressedFill` - Pressed fill color
+- `RadiusBottomLeft` - Bottom left radius
+- `RadiusBottomRight` - Bottom right radius
+- `RadiusTopLeft` - Top left radius
+- `RadiusTopRight` - Top right radius
+- `Size` - Font size
+- `Strikethrough` - Strikethrough text
+- `TabIndex` - Tab index
+- `Text` - Display text
+- `Tooltip` - Tooltip text
+- `Underline` - Underline text
+- `VerticalAlign` - Vertical alignment
+- `Visible` - Control visibility
+- `Width` - Control width
+- `X` - Horizontal position
+- `Y` - Vertical position
+
+### 6.7.2 Import Control
+**Import** is used for importing data into the app:
 
 ```yaml
-# Form Example - Editable form with validation
-- Form2:
-    Control: Form@2.4.3
-    Variant: Classic
-    Layout: Vertical
+# Import Example - Import data from file
+- Import1:
+    Control: Import@2.1.0
     Properties:
-      BorderColor: =RGBA(32, 54, 71, 1)
-      DataSource: =DonVi
-      X: =40
-      Y: =40
-    Children:
-      - Title_DataCard2:
-          Control: TypedDataCard@1.0.7
-          Variant: ClassicTextualEdit
-          IsLocked: true
-          Properties:
-            BorderColor: =RGBA(32, 54, 71, 1)
-            DataField: ="Title"
-            Default: =ThisItem.Title
-            DisplayName: =DataSourceInfo([@DonVi],DataSourceInfo.DisplayName,'Title')
-            MaxLength: =DataSourceInfo([@DonVi], DataSourceInfo.MaxLength, 'Title')
-            Required: =false
-            Update: =DataCardValue10.Text
-            Width: =266
-            X: =0
-            Y: =0
-          Children:
-            - DataCardKey10:
-                Control: Label@2.5.1
-                MetadataKey: FieldName
-                Properties:
-                  AutoHeight: =true
-                  BorderColor: =RGBA(0, 0, 0, 1)
-                  Color: =RGBA(32, 54, 71, 1)
-                  Font: =Font.'Open Sans'
-                  Height: =34
-                  Text: =Parent.DisplayName
-                  Width: =Parent.Width - 60
-                  Wrap: =false
-                  X: =30
-                  Y: =10
-            - DataCardValue10:
-                Control: Classic/TextInput@2.3.2
-                MetadataKey: FieldValue
-                Properties:
-                  BorderColor: =If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)
-                  Default: =Parent.Default
-                  DelayOutput: =true
-                  DisplayMode: =Parent.DisplayMode
-                  Font: =Font.'Open Sans'
-                  HoverBorderColor: =RGBA(32, 54, 71, 1)
-                  HoverFill: =RGBA(205, 209, 213, 1)
-                  MaxLength: =Parent.MaxLength
-                  PaddingLeft: =5
-                  RadiusBottomLeft: =0
-                  RadiusBottomRight: =0
-                  RadiusTopLeft: =0
-                  RadiusTopRight: =0
-                  Tooltip: =Parent.DisplayName
-                  Width: =Parent.Width - 60
-                  X: =30
-                  Y: =DataCardKey10.Y + DataCardKey10.Height + 5
-            - ErrorMessage4:
-                Control: Label@2.5.1
-                MetadataKey: ErrorMessage
-                Properties:
-                  AutoHeight: =true
-                  BorderColor: =RGBA(0, 0, 0, 1)
-                  Color: =RGBA(168, 0, 0, 1)
-                  Font: =Font.'Open Sans'
-                  FontWeight: =FontWeight.Semibold
-                  Height: =10
-                  Live: =Live.Assertive
-                  PaddingBottom: =0
-                  PaddingLeft: =0
-                  PaddingRight: =0
-                  PaddingTop: =0
-                  Size: =14
-                  Text: =Parent.Error
-                  Visible: =Parent.DisplayMode=DisplayMode.Edit
-                  Width: =Parent.Width - 60
-                  X: =30
-                  Y: =DataCardValue10.Y + DataCardValue10.Height
-            - StarVisible4:
-                Control: Label@2.5.1
-                MetadataKey: FieldRequired
-                Properties:
-                  Align: =Align.Center
-                  BorderColor: =RGBA(0, 0, 0, 1)
-                  Color: =RGBA(32, 54, 71, 1)
-                  Font: =Font.'Open Sans'
-                  Height: =DataCardKey10.Height
-                  Text: ="*"
-                  Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
-                  Width: =30
-                  Wrap: =false
-                  Y: =DataCardKey10.Y
+      BorderColor: =ColorFade(Self.Fill, -15%)
+      Color: =RGBA(255, 255, 255, 1)
+      DisabledBorderColor: =RGBA(56, 56, 56, 1)
+      Fill: =RGBA(100, 118, 132, 1)
+      Font: =Font.'Open Sans'
+      HoverBorderColor: =ColorFade(Self.BorderColor, 20%)
+      HoverColor: =RGBA(255, 255, 255, 1)
+      HoverFill: =ColorFade(RGBA(100, 118, 132, 1), -20%)
+      PressedBorderColor: =ColorFade(Self.BorderColor, -20%)
+      PressedFill: =ColorFade(Self.Fill, -20%)
+      Text: ="Import Data"
+      OnSelect: =Set(varImportedData, Import())
+      X: =Parent.Width * 0.1
+      Y: =Parent.Height * 0.35
+      Width: =Parent.Width * 0.2
+      Height: =Parent.Height * 0.08
 ```
 
-**RULES for FormViewer and Form:**
-- **FormViewer**: Use for read-only data display with structured layout
-- **Form**: Use for editable forms with validation and data binding
-- **TypedDataCard**: Use with appropriate Variant (ClassicTextualView, ClassicTextualEdit, ClassicComboBoxView, ClassicComboBoxEdit)
-- **MetadataKey**: Always include for proper data binding (FieldName, FieldValue, ErrorMessage, FieldRequired)
-- **DataSourceInfo**: Use for dynamic display names and validation rules
+**Import Control Properties:**
+- `Align` - Text alignment
+- `BorderColor` - Border color
+- `BorderStyle` - Border style
+- `BorderThickness` - Border thickness
+- `Color` - Text color
+- `ContentLanguage` - Content language
+- `DisabledBorderColor` - Disabled border color
+- `DisabledColor` - Disabled text color
+- `DisabledFill` - Disabled fill color
+- `DisplayMode` - Display mode (Edit, View, Disabled)
+- `Fill` - Background fill color
+- `FocusedBorderColor` - Focused border color
+- `FocusedBorderThickness` - Focused border thickness
+- `Font` - Font family
+- `FontWeight` - Font weight
+- `Height` - Control height
+- `HoverBorderColor` - Hover border color
+- `HoverColor` - Hover text color
+- `HoverFill` - Hover fill color
+- `Italic` - Italic text
+- `OnSelect` - Action when selected
+- `Padding` - Internal padding
+- `PressedBorderColor` - Pressed border color
+- `PressedColor` - Pressed text color
+- `PressedFill` - Pressed fill color
+- `RadiusBottomLeft` - Bottom left radius
+- `RadiusBottomRight` - Bottom right radius
+- `RadiusTopLeft` - Top left radius
+- `RadiusTopRight` - Top right radius
+- `Size` - Font size
+- `Strikethrough` - Strikethrough text
+- `TabIndex` - Tab index
+- `Text` - Display text
+- `Tooltip` - Tooltip text
+- `Underline` - Underline text
+- `VerticalAlign` - Vertical alignment
+- `Visible` - Control visibility
+- `Width` - Control width
+- `X` - Horizontal position
+- `Y` - Vertical position
+
+**RULES for Export/Import Controls:**
+- **Export**: Use for downloading data from app to user's device
+- **Import**: Use for uploading data from user's device to app
+- **Data Property**: Export requires `Data` property with collection to export
+- **OnSelect**: Use for triggering export/import actions
+- **Styling**: Both support comprehensive styling properties similar to buttons
 
 ---
 
@@ -2092,6 +2068,43 @@ Properties:
 - **VariableHeight variant**: KHÔNG hỗ trợ `WrapCount` property
 - **WrapCount**: Chỉ sử dụng với Horizontal/Vertical variants
 - **TemplateSize**: Bắt buộc cho tất cả Gallery variants
+
+### 9.8.1 Gallery TemplateSize Recognition Issues
+**CRITICAL**: `Parent.TemplateSize` may not be recognized in child controls of Gallery with WrapCount.
+
+```yaml
+# ❌ WRONG - Parent.TemplateSize may cause "isn't recognized" error
+- 'Calendar.Days.Gallery':
+    Control: Gallery
+    Variant: Vertical
+    Properties:
+      WrapCount: =7
+      TemplateSize: =Self.Height / 5
+    Children:
+      - 'Day.Cell':
+          Properties:
+            Y: =Parent.TemplateSize * 0.45  # ERROR: TemplateSize isn't recognized
+            Height: =Parent.TemplateSize * 0.25  # ERROR: TemplateSize isn't recognized
+
+# ✅ CORRECT - Use direct calculation instead of Parent.TemplateSize
+- 'Calendar.Days.Gallery':
+    Control: Gallery
+    Variant: Vertical
+    Properties:
+      WrapCount: =7
+      TemplateSize: =Self.Height / 5
+    Children:
+      - 'Day.Cell':
+          Properties:
+            Y: =(Parent.Height / 5) * 0.45    # Direct calculation
+            Height: =(Parent.Height / 5) * 0.25  # Direct calculation
+```
+
+**GALLERY TEMPLATESIZE RULES:**
+- **Gallery Property**: Use `TemplateSize: =Self.Height / 5` in Gallery properties
+- **Child Controls**: Use `(Parent.Height / 5)` instead of `Parent.TemplateSize`
+- **WrapCount Galleries**: Always use direct calculation for child positioning
+- **Avoid**: `Parent.TemplateSize` references in child controls of wrapped galleries
 
 ### 9.19 Rectangle Variant Property
 **Error**: `Unknown property 'Variant' for control type 'Rectangle'`
@@ -2971,6 +2984,13 @@ Fill: =If(ThisItem.GioiTinh.Value = "Male", ...) # Should be "Nam"
 60. **SHAREPOINT FILTER IN OPERATOR** - CRITICAL: Avoid using `In` operator with SharePoint Choice columns in Filter functions. Use `Or` statements instead for better compatibility
 61. **COMPONENT PROPERTIES OPTIMIZATION** - CRITICAL: Only include necessary custom properties in component usage. Excessive unnecessary properties can cause "Expected operator" and "Invalid argument type" errors
 62. **SORTORDER CONSTANTS** - CRITICAL: Use `SortOrder.Descending` or `SortOrder.Ascending` in SortByColumns function, NOT plain text "Descending" or "Ascending"
+63. **EXPORT/IMPORT CONTROLS ALLOWED** - CRITICAL: Export@2.1.0 and Import@2.1.0 controls are now allowed and supported. Export requires `Data` property for data to export, both support comprehensive styling properties (BorderColor, Fill, HoverFill, etc.). Use `OnSelect` for triggering export/import actions
+64. **APP FONT SIZE MANAGEMENT** - CRITICAL: All font sizes must be defined globally in `src/App/Formulas` as FontSizes object and referenced consistently across all screens. Use FontSizes.Small(10), FontSizes.Base(12), FontSizes.Medium(14), FontSizes.Large(16), FontSizes.XLarge(18), FontSizes.XXLarge(20). Never use hard-coded font sizes like Size: =12 or Size: 14. Components must receive font sizes via custom properties
+65. **GALLERY TEMPLATESIZE RESTRICTIONS** - CRITICAL: `Parent.TemplateSize` may not be recognized in child controls of Gallery with WrapCount. Use direct calculation `(Parent.Height / 5)` instead of `Parent.TemplateSize` for child positioning and sizing. NEVER reference `Parent.TemplateSize` in wrapped galleries - always use direct parent dimension calculations
+66. **TABLE SCHEMA COMPATIBILITY** - CRITICAL: Never use `Set(varName, Table(...))` for complex data structures. Use `ClearCollect(colName, ...)` instead to avoid "Incompatible type" errors. Power Apps requires consistent schema and ClearCollect is more flexible than Set with Table
+67. **IMPORT FUNCTION RESTRICTIONS** - CRITICAL: `Import()` function is not supported in Power Apps formulas. Never use `Set(varData, Import())`. For Import controls, use simulated data with counters like `Set(varImportedDataCount, Rand() * 10 + 5)` and `Text(Round(varImportedDataCount, 0))` for demo purposes
+68. **COLLECTION NAMING CONVENTIONS** - CRITICAL: Use `col` prefix for collections created with ClearCollect (e.g., `colAllUsers`, `colHolidaysList`, `colWorkflowData`). Use `var` prefix only for simple variables. This prevents confusion and schema conflicts
+69. **COUNTROWS WITH COLLECTIONS** - CRITICAL: Only use `CountRows()` with valid Table/Collection objects. Never use with undefined variables or Import() results. Use counter variables for simulated data counts instead of CountRows on invalid objects
 
 **Agent must follow these rules ABSOLUTELY when generating Power App YAML code.**
 
@@ -3795,5 +3815,104 @@ Items: =SortByColumns(MyCollection, "FieldName", SortOrder.Ascending)
 60. **SHAREPOINT FILTER IN OPERATOR** - CRITICAL: Avoid using `In` operator with SharePoint Choice columns in Filter functions. Use `Or` statements instead for better compatibility
 61. **COMPONENT PROPERTIES OPTIMIZATION** - CRITICAL: Only include necessary custom properties in component usage. Excessive unnecessary properties can cause "Expected operator" and "Invalid argument type" errors
 62. **SORTORDER CONSTANTS** - CRITICAL: Use `SortOrder.Descending` or `SortOrder.Ascending` in SortByColumns function, NOT plain text "Descending" or "Ascending"
+63. **EXPORT/IMPORT CONTROLS ALLOWED** - CRITICAL: Export@2.1.0 and Import@2.1.0 controls are now allowed and supported. Export requires `Data` property for data to export, both support comprehensive styling properties (BorderColor, Fill, HoverFill, etc.). Use `OnSelect` for triggering export/import actions
+64. **APP FONT SIZE MANAGEMENT** - CRITICAL: All font sizes must be defined globally in `src/App/Formulas` as FontSizes object and referenced consistently across all screens. Use FontSizes.Small(10), FontSizes.Base(12), FontSizes.Medium(14), FontSizes.Large(16), FontSizes.XLarge(18), FontSizes.XXLarge(20). Never use hard-coded font sizes like Size: =12 or Size: 14. Components must receive font sizes via custom properties
+65. **GALLERY TEMPLATESIZE RESTRICTIONS** - CRITICAL: `Parent.TemplateSize` may not be recognized in child controls of Gallery with WrapCount. Use direct calculation `(Parent.Height / 5)` instead of `Parent.TemplateSize` for child positioning and sizing. NEVER reference `Parent.TemplateSize` in wrapped galleries - always use direct parent dimension calculations
+66. **TABLE SCHEMA COMPATIBILITY** - CRITICAL: Never use `Set(varName, Table(...))` for complex data structures. Use `ClearCollect(colName, ...)` instead to avoid "Incompatible type" errors. Power Apps requires consistent schema and ClearCollect is more flexible than Set with Table
+67. **IMPORT FUNCTION RESTRICTIONS** - CRITICAL: `Import()` function is not supported in Power Apps formulas. Never use `Set(varData, Import())`. For Import controls, use simulated data with counters like `Set(varImportedDataCount, Rand() * 10 + 5)` and `Text(Round(varImportedDataCount, 0))` for demo purposes
+68. **COLLECTION NAMING CONVENTIONS** - CRITICAL: Use `col` prefix for collections created with ClearCollect (e.g., `colAllUsers`, `colHolidaysList`, `colWorkflowData`). Use `var` prefix only for simple variables. This prevents confusion and schema conflicts
+69. **COUNTROWS WITH COLLECTIONS** - CRITICAL: Only use `CountRows()` with valid Table/Collection objects. Never use with undefined variables or Import() results. Use counter variables for simulated data counts instead of CountRows on invalid objects
 
 **Agent must follow these rules ABSOLUTELY when generating Power App YAML code.**
+
+#### 2.6.1.1 App Font Size Management
+**CRITICAL**: All font sizes must be defined globally in `src/App/Formulas` and referenced consistently across all screens.
+
+**MANDATORY Font Size Hierarchy**:
+```yaml
+# In src/App/Formulas - Define global font sizes
+FontSizes = {
+  Base: 12,           // Base font size for normal content
+  Small: 10,          // FontSizes.Base - 2 for captions, hints
+  Medium: 14,         // FontSizes.Base + 2 for labels, inputs  
+  Large: 16,          // FontSizes.Base + 4 for section headers
+  XLarge: 18,         // FontSizes.Base + 6 for page titles
+  XXLarge: 20         // FontSizes.Base + 8 for main headers
+};
+
+# Typography scale for consistency
+Typography = {
+  Caption: {Size: FontSizes.Small, Weight: FontWeight.Normal},
+  Body: {Size: FontSizes.Base, Weight: FontWeight.Normal},
+  Label: {Size: FontSizes.Medium, Weight: FontWeight.Semibold},
+  Heading3: {Size: FontSizes.Large, Weight: FontWeight.Bold},
+  Heading2: {Size: FontSizes.XLarge, Weight: FontWeight.Bold},
+  Heading1: {Size: FontSizes.XXLarge, Weight: FontWeight.Bold}
+};
+```
+
+**SCREEN USAGE - MANDATORY References**:
+```yaml
+# ✅ CORRECT - Reference App font sizes in all screens
+Properties:
+  Size: =FontSizes.Base           # Normal content
+  Size: =FontSizes.Medium         # Labels and inputs
+  Size: =FontSizes.Large          # Section headers
+  Size: =FontSizes.XLarge         # Page titles
+  Size: =Typography.Body.Size     # Using typography object
+  Size: =Typography.Heading1.Size # Main headers
+  FontWeight: =Typography.Label.Weight  # With weight
+
+# ❌ WRONG - Hard-coded font sizes
+Properties:
+  Size: 12                        # Hard-coded value
+  Size: =14                       # Fixed number
+  Size: 16                        # Not referencing App
+
+# ❌ WRONG - Inconsistent font sizes across screens
+# Screen1: Size: =12
+# Screen2: Size: =13  
+# Screen3: Size: =14
+# Should all use FontSizes.Base for consistency
+```
+
+**FONT SIZE USAGE GUIDELINES**:
+- **FontSizes.Small (10)**: Captions, hints, metadata, timestamps
+- **FontSizes.Base (12)**: Body text, normal content, descriptions
+- **FontSizes.Medium (14)**: Form labels, button text, navigation items
+- **FontSizes.Large (16)**: Section headers, card titles, modal headers
+- **FontSizes.XLarge (18)**: Page headers, screen titles
+- **FontSizes.XXLarge (20)**: Main app headers, welcome messages
+
+**COMPONENT FONT SIZE RULES**:
+Components must receive font sizes via custom properties, not access App globals directly:
+
+```yaml
+# ✅ CORRECT - Component with font size properties
+ComponentDefinitions:
+  HeaderComponent:
+    CustomProperties:
+      TitleSize:
+        PropertyKind: Input
+        DataType: Number
+        Default: =16
+      SubtitleSize:
+        PropertyKind: Input  
+        DataType: Number
+        Default: =12
+    Children:
+      - Title:
+          Properties:
+            Size: =HeaderComponent.TitleSize
+      - Subtitle:
+          Properties:
+            Size: =HeaderComponent.SubtitleSize
+
+# In Screen - Pass App font sizes to component
+- MyHeader:
+    Control: CanvasComponent
+    ComponentName: HeaderComponent  
+    Properties:
+      TitleSize: =FontSizes.XLarge      # Pass App font size
+      SubtitleSize: =FontSizes.Base     # Pass App font size
+```

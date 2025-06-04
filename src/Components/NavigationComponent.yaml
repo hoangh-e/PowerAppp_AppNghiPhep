@@ -56,6 +56,12 @@ ComponentDefinitions:
         Description: "Reference đến ProfileScreen"
         DataType: Screen
         Default: =
+      ReportsScreen:
+        PropertyKind: Input
+        DisplayName: ReportsScreen
+        Description: "Reference đến ReportsScreen"
+        DataType: Screen
+        Default: =
       OnNavigate:
         PropertyKind: Event
         DisplayName: OnNavigate
@@ -648,7 +654,9 @@ ComponentDefinitions:
                       OnSelect: |
                         =Set(varDebugClick, "Reports clicked");
                         Set(varActiveScreen, "Reports");
-                        NavigationComponent.OnNavigate("Reports")
+                        If(Not(IsBlank(NavigationComponent.ReportsScreen)), 
+                          Navigate(NavigationComponent.ReportsScreen),
+                          NavigationComponent.OnNavigate("Reports"))
                         
                 - 'Navigation.Menu.Reports.Icon':
                     Control: Classic/Icon

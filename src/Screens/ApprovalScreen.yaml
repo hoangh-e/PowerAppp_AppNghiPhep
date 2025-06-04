@@ -49,14 +49,20 @@ Screens:
           Control: CanvasComponent
           ComponentName: NavigationComponent
           Properties:
-            ActiveScreen: ="Approval"
-            CalendarScreen: =CalendarScreen
-            DashboardScreen: =DashboardScreen
+            X: =0
+            Y: ='Approval.Header'.Height
+            Width: =If(varNavCollapsed, App.Width * 0.045, App.Width * 0.14)
             Height: =Parent.Height - 'Approval.Header'.Height
+            UserRole: =UserSession.MaVaiTro
+            ActiveScreen: ="Approval"
             IsCollapsed: =varNavCollapsed
+            DashboardScreen: =DashboardScreen
             LeaveRequestScreen: =LeaveRequestScreen
-            ManagementScreen: =ManagementScreen
             MyLeavesScreen: =MyLeavesScreen
+            CalendarScreen: =CalendarScreen
+            ManagementScreen: =ManagementScreen
+            ReportsScreen: =ReportsScreen
+            ProfileScreen: =ProfileScreen
             OnNavigate: |
               =Set(varActiveScreen, ScreenName);
               Switch(ScreenName,
@@ -71,10 +77,6 @@ Screens:
               )
             OnToggleCollapse: |
               =Set(varNavCollapsed, !varNavCollapsed)
-            ProfileScreen: =ProfileScreen
-            UserRole: =UserSession.MaVaiTro
-            Width: =If(varNavCollapsed, App.Width * 0.045, App.Width * 0.14)
-            Y: ='Approval.Header'.Height
       - Approval.Content.Container:
           Control: GroupContainer@1.3.0
           Variant: ManualLayout
@@ -124,7 +126,7 @@ Screens:
                               Font: =Font.'Open Sans'
                               FontWeight: =FontWeight.Bold
                               Height: =Parent.Height * 0.35
-                              Size: =14
+                              Size: =FontSizes.Medium
                               Text: ="Phê duyệt đơn nghỉ phép"
                               Width: =Parent.Width * 0.6
                               X: =Parent.Width * 0.015 + 'Approval.PageHeader.Icon'.Width + Parent.Width * 0.01
@@ -135,7 +137,7 @@ Screens:
                               Color: =RGBA(75, 85, 99, 1)
                               Font: =Font.'Open Sans'
                               Height: =Parent.Height * 0.25
-                              Size: =11
+                              Size: =FontSizes.Base
                               Text: =Concatenate("Đang chờ duyệt" & ":" & " ", CountRows(varMyLevelApprovals), " " & "đơn")
                               Width: =Parent.Width * 0.6
                               X: =Parent.Width * 0.015 + 'Approval.PageHeader.Icon'.Width + Parent.Width * 0.01
@@ -163,7 +165,7 @@ Screens:
                               Font: =Font.'Open Sans'
                               FontWeight: =FontWeight.Bold
                               Height: =Parent.Height * 0.2
-                              Size: =12
+                              Size: =FontSizes.Base
                               Text: ="Tổng quan phê duyệt"
                               Width: =Parent.Width * 0.97
                               X: =Parent.Width * 0.015
@@ -264,11 +266,11 @@ Screens:
             HeadingFill: =RGBA(59, 130, 246, 1)
             HeadingFont: =Font.'Open Sans'
             HeadingFontWeight: =FontWeight.Bold
-            HeadingSize: =12
+            HeadingSize: =FontSizes.Base
             Height: ='Approval.Content.Container'.Height * 0.65
             Items: =SortByColumns(varMyLevelApprovals, "NgayBatDau", SortOrder.Ascending)
             NoDataText: ="Không có đơn cần phê duyệt"
-            Size: =11
+            Size: =FontSizes.Small
             Width: ='Approval.Content.Container'.Width * 0.96
             X: ='Approval.Navigation'.Width + 'Approval.Content.Container'.Width * 0.02
             Y: ='Approval.Header'.Height + 'Approval.Content.Container'.Height * 0.32
@@ -372,7 +374,7 @@ Screens:
                         Font: =Font.'Open Sans'
                         FontWeight: =FontWeight.Bold
                         Height: =Parent.Height * 0.6
-                        Size: =Parent.Height * 0.25
+                        Size: =FontSizes.Medium
                         Text: ="Chi tiết đơn nghỉ phép - Phê duyệt"
                         Width: =Parent.Width * 0.8
                         X: =Parent.Width * 0.03
@@ -415,7 +417,7 @@ Screens:
                         Font: =Font.'Open Sans'
                         FontWeight: =FontWeight.Semibold
                         Height: =Parent.Height * 0.06
-                        Size: =12
+                        Size: =FontSizes.Base
                         Text: ="Nhân viên:"
                         Width: =Parent.Width * 0.2
                         X: =Parent.Width * 0.03
@@ -426,7 +428,7 @@ Screens:
                         Color: =RGBA(55, 65, 81, 1)
                         Font: =Font.'Open Sans'
                         Height: =Parent.Height * 0.06
-                        Size: =12
+                        Size: =FontSizes.Base
                         Text: =If(Not(IsBlank(varSelectedApprovalLeave)), LookUp(NguoiDung, Title = varSelectedApprovalLeave.MaNguoiDung.Value).HoTen & " (" & LookUp(NguoiDung, Title = varSelectedApprovalLeave.MaNguoiDung.Value).Email & ")", "")
                         Width: =Parent.Width * 0.7
                         X: =Parent.Width * 0.25
@@ -438,7 +440,7 @@ Screens:
                         Font: =Font.'Open Sans'
                         FontWeight: =FontWeight.Semibold
                         Height: =Parent.Height * 0.06
-                        Size: =12
+                        Size: =FontSizes.Base
                         Text: ="Thời gian nghỉ:"
                         Width: =Parent.Width * 0.2
                         X: =Parent.Width * 0.03
@@ -449,7 +451,7 @@ Screens:
                         Color: =RGBA(55, 65, 81, 1)
                         Font: =Font.'Open Sans'
                         Height: =Parent.Height * 0.06
-                        Size: =12
+                        Size: =FontSizes.Base
                         Text: =If(Not(IsBlank(varSelectedApprovalLeave)), Text(varSelectedApprovalLeave.NgayBatDau, "dd/mm/yyyy") & " - " & Text(varSelectedApprovalLeave.NgayKetThuc, "dd/mm/yyyy") & " (" & varSelectedApprovalLeave.SoNgayNghi & " ngày)", "")
                         Width: =Parent.Width * 0.7
                         X: =Parent.Width * 0.25
@@ -461,7 +463,7 @@ Screens:
                         Font: =Font.'Open Sans'
                         FontWeight: =FontWeight.Semibold
                         Height: =Parent.Height * 0.06
-                        Size: =12
+                        Size: =FontSizes.Base
                         Text: ="Loại nghỉ:"
                         Width: =Parent.Width * 0.2
                         X: =Parent.Width * 0.03
@@ -472,7 +474,7 @@ Screens:
                         Color: =RGBA(55, 65, 81, 1)
                         Font: =Font.'Open Sans'
                         Height: =Parent.Height * 0.06
-                        Size: =12
+                        Size: =FontSizes.Base
                         Text: =If(Not(IsBlank(varSelectedApprovalLeave)), LookUp(LoaiNghi, MaLoai = varSelectedApprovalLeave.MaLoai.Value).TenLoai, "")
                         Width: =Parent.Width * 0.7
                         X: =Parent.Width * 0.25
@@ -484,7 +486,7 @@ Screens:
                         Font: =Font.'Open Sans'
                         FontWeight: =FontWeight.Semibold
                         Height: =Parent.Height * 0.06
-                        Size: =12
+                        Size: =FontSizes.Base
                         Text: ="Lý do:"
                         Width: =Parent.Width * 0.2
                         X: =Parent.Width * 0.03
@@ -495,7 +497,7 @@ Screens:
                         Color: =RGBA(55, 65, 81, 1)
                         Font: =Font.'Open Sans'
                         Height: =Parent.Height * 0.15
-                        Size: =12
+                        Size: =FontSizes.Base
                         Text: =If(Not(IsBlank(varSelectedApprovalLeave)), varSelectedApprovalLeave.LyDo, "")
                         Width: =Parent.Width * 0.7
                         X: =Parent.Width * 0.25
@@ -507,7 +509,7 @@ Screens:
                         Font: =Font.'Open Sans'
                         FontWeight: =FontWeight.Semibold
                         Height: =Parent.Height * 0.06
-                        Size: =12
+                        Size: =FontSizes.Base
                         Text: ="Bàn giao công việc:"
                         Width: =Parent.Width * 0.2
                         X: =Parent.Width * 0.03
@@ -518,7 +520,7 @@ Screens:
                         Color: =RGBA(55, 65, 81, 1)
                         Font: =Font.'Open Sans'
                         Height: =Parent.Height * 0.15
-                        Size: =12
+                        Size: =FontSizes.Base
                         Text: =If(Not(IsBlank(varSelectedApprovalLeave)), If(Not(IsBlank(varSelectedApprovalLeave.NguoiBanGiao)), LookUp(NguoiDung, Title = varSelectedApprovalLeave.NguoiBanGiao.Value).HoTen & " - " & varSelectedApprovalLeave.NoiDungBanGiao, "Không có"), "")
                         Width: =Parent.Width * 0.7
                         X: =Parent.Width * 0.25
@@ -539,7 +541,7 @@ Screens:
                         Font: =Font.'Open Sans'
                         FontWeight: =FontWeight.Semibold
                         Height: =Parent.Height * 0.25
-                        Size: =12
+                        Size: =FontSizes.Base
                         Text: ="Ghi chú phê duyệt:"
                         Width: =Parent.Width * 0.2
                         X: =Parent.Width * 0.03
@@ -555,7 +557,7 @@ Screens:
                         HintText: ="Nhập ghi chú (tùy chọn)"
                         OnChange: |
                           =Set(varApprovalComment, Self.Text)
-                        Size: =12
+                        Size: =FontSizes.Base
                         Width: =Parent.Width * 0.7
                         X: =Parent.Width * 0.25
                         Y: =Parent.Height * 0.05
@@ -632,7 +634,7 @@ Screens:
                         Font: =Font.'Open Sans'
                         FontWeight: =FontWeight.Bold
                         Height: =Parent.Height * 0.7
-                        Size: =Parent.Height * 0.35
+                        Size: =FontSizes.Medium
                         Text: =If(varApprovalAction = "Approve", "Xác nhận phê duyệt", "Xác nhận từ chối")
                         Width: =Parent.Width * 0.9
                         X: =Parent.Width * 0.05
@@ -653,7 +655,7 @@ Screens:
                         Color: =RGBA(55, 65, 81, 1)
                         Font: =Font.'Open Sans'
                         Height: =Parent.Height
-                        Size: =Parent.Height * 0.15
+                        Size: =FontSizes.Base
                         Text: =If(varApprovalAction = "Approve", Concatenate("Bạn có chắc chắn muốn phê duyệt đơn nghỉ phép từ ngày ", If(Not(IsBlank(varSelectedApprovalLeave)), Text(varSelectedApprovalLeave.NgayBatDau, "dd/mm/yyyy"), ""), " đến ", If(Not(IsBlank(varSelectedApprovalLeave)), Text(varSelectedApprovalLeave.NgayKetThuc, "dd/mm/yyyy"), ""), "?"), Concatenate("Bạn có chắc chắn muốn từ chối đơn nghỉ phép từ ngày ", If(Not(IsBlank(varSelectedApprovalLeave)), Text(varSelectedApprovalLeave.NgayBatDau, "dd/mm/yyyy"), ""), " đến ", If(Not(IsBlank(varSelectedApprovalLeave)), Text(varSelectedApprovalLeave.NgayKetThuc, "dd/mm/yyyy"), ""), "?"))
                         Width: =Parent.Width
             - Approval.Confirm.Actions:

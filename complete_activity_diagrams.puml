@@ -1,946 +1,687 @@
-/'
-================================================================================
-BẢNG MAPPING CHỨC NĂNG - CƠ SỞ DỮ LIỆU - MÀN HÌNH
-================================================================================
+@startuml F01_1_Navigation
+title F01-1: Điều hướng menu chính
 
-| Mã | Chức năng chính | Các bảng SharePoint liên quan | Màn hình liên quan |
-|----|----------------|------------------------------|-------------------|
-| F01 | Điều hướng đến các chức năng chính | NguoiDung, VaiTro, Quyen | All Screens (Navigation Component) |
-| F01-1 | Điều hướng menu chính | VaiTro, Quyen | NavigationComponent, HeaderComponent |
-| F02 | Xác thực người dùng | NguoiDung, VaiTro, DonVi | LoginScreen_SharePoint |
-| F02-1 | Đăng nhập hệ thống | NguoiDung, VaiTro, Quyen | LoginScreen_SharePoint |
-| F03 | Thông tin cá nhân | NguoiDung, DonVi, SoNgayPhep | ProfileScreen_SharePoint |
-| F03-1 | Xem thông tin cá nhân và ngày nghỉ còn lại | NguoiDung, DonVi, VaiTro, SoNgayPhep | ProfileScreen_SharePoint |
-| F04 | Quản lý đơn nghỉ phép | DonNghiPhep, LoaiNghi, NguoiDung, SoNgayPhep | LeaveRequestScreen_SharePoint, MyLeavesScreen_SharePoint |
-| F04-1 | Tạo đơn nghỉ phép thường | DonNghiPhep, LoaiNghi, NguoiDung, SoNgayPhep, QuyTrinhDuyet | LeaveRequestScreen_SharePoint |
-| F04-2 | Chỉnh sửa đơn nghỉ phép | DonNghiPhep, LoaiNghi, NguoiDung | LeaveRequestScreen_SharePoint, MyLeavesScreen_SharePoint |
-| F04-3 | Hủy đơn nghỉ phép | DonNghiPhep, NguoiDung | MyLeavesScreen_SharePoint |
-| F04-4 | Xem danh sách đơn nghỉ phép cá nhân | DonNghiPhep, LoaiNghi, NguoiDung | MyLeavesScreen_SharePoint |
-| F05 | Xem lịch nghỉ cá nhân | DonNghiPhep, NgayLe, NguoiDung | ProfileScreen_SharePoint, CalendarScreen_SharePoint |
-| F05-1 | Hiển thị danh sách ngày nghỉ cá nhân | DonNghiPhep, NgayLe, LoaiNghi | CalendarScreen_SharePoint |
-| F06 | Xem lịch nghỉ toàn công ty | DonNghiPhep, NguoiDung, DonVi, NgayLe | CalendarScreen_SharePoint |
-| F06-1 | Hiển thị danh sách ngày nghỉ toàn công ty | DonNghiPhep, NguoiDung, DonVi, VaiTro | CalendarScreen_SharePoint |
-| F07 | Phê duyệt đơn nghỉ phép | DonNghiPhep, NguoiDung, QuyTrinhDuyet, VaiTro | ApprovalScreen_SharePoint |
-| F07-1 | Phê duyệt cấp 1 (Manager) | DonNghiPhep, NguoiDung, QuyTrinhDuyet, MauEmail | ApprovalScreen_SharePoint |
-| F07-2 | Phê duyệt cấp 2 (Giám đốc khối) | DonNghiPhep, NguoiDung, QuyTrinhDuyet, MauEmail | ApprovalScreen_SharePoint |
-| F07-3 | Phê duyệt cấp 3 (Giám đốc điều hành) | DonNghiPhep, NguoiDung, QuyTrinhDuyet, SoNgayPhep, MauEmail | ApprovalScreen_SharePoint |
-| F08 | Quản lý người dùng | NguoiDung, DonVi, VaiTro, SoNgayPhep | ManagementScreen_SharePoint |
-| F08-1 | Thêm người dùng mới | NguoiDung, DonVi, VaiTro, MauEmail | ManagementScreen_SharePoint |
-| F08-2 | Chỉnh sửa thông tin người dùng | NguoiDung, DonVi, VaiTro, MauEmail | ManagementScreen_SharePoint |
-| F08-3 | Xóa người dùng | NguoiDung, DonNghiPhep, QuyTrinhDuyet | ManagementScreen_SharePoint |
-| F08-4 | Ghi nhận kết quả nghỉ phép | DonNghiPhep, SoNgayPhep, NguoiDung | LeaveConfirmationScreen |
-| F09 | Import số ngày phép | SoNgayPhep, NguoiDung, MauEmail | ManagementScreen_SharePoint |
-| F09-1 | Import dữ liệu từ Excel | SoNgayPhep, NguoiDung, DonVi | ManagementScreen_SharePoint |
-| F10 | Quản lý ngày nghỉ lễ | NgayLe, CauHinhHeThong, MauEmail | ManagementScreen_SharePoint |
-| F10-1 | Điều chỉnh ngày nghỉ lễ | NgayLe, CauHinhHeThong, NguoiDung | ManagementScreen_SharePoint |
-| F10-2 | Thiết lập lịch làm việc | CauHinhHeThong, NgayLe, NguoiDung | ManagementScreen_SharePoint |
-| F11 | Thiết lập quy trình & role | QuyTrinhDuyet, VaiTro, Quyen, DonVi | ManagementScreen_SharePoint |
-| F11-1 | Thiết lập quy trình phê duyệt 3 cấp | QuyTrinhDuyet, VaiTro, DonVi, NguoiDung, DonNghiPhep | ManagementScreen_SharePoint |
-| F11-2 | Điều chỉnh role người dùng | NguoiDung, VaiTro, Quyen, MauEmail | ManagementScreen_SharePoint |
-| F12 | Dashboard báo cáo | DonNghiPhep, NguoiDung, DonVi, SoNgayPhep | DashboardScreen_SharePoint, ReportsScreen_SharePoint |
-| F12-1 | Hiển thị Dashboard báo cáo theo bộ lọc | DonNghiPhep, NguoiDung, DonVi, LoaiNghi, VaiTro | DashboardScreen_SharePoint |
-| F13 | Xuất báo cáo | DonNghiPhep, NguoiDung, DonVi, LoaiNghi, SoNgayPhep | ReportsScreen_SharePoint |
-| F13-1 | Xuất báo cáo tổng hợp | DonNghiPhep, NguoiDung, DonVi, LoaiNghi | ReportsScreen_SharePoint |
-| F13-2 | Xuất báo cáo chi tiết | DonNghiPhep, NguoiDung, DonVi, LoaiNghi, QuyTrinhDuyet | ReportsScreen_SharePoint |
-| F13-3 | Xuất báo cáo tùy chỉnh | All Tables (configurable) | ReportsScreen_SharePoint |
-| F14 | Hệ thống thông báo | MauEmail, NguoiDung, DonNghiPhep, CauHinhHeThong | All Screens (HeaderComponent) |
-| F14-1 | Hệ thống thông báo tự động | MauEmail, NguoiDung, DonNghiPhep, QuyTrinhDuyet | All Screens (notification system) |
-| F14-2 | Hệ thống thông báo email | MauEmail, NguoiDung, DonNghiPhep, CauHinhHeThong | External Email System |
-| F15 | Quản lý file đính kèm | DonNghiPhep, NguoiDung (SharePoint Document Library) | LeaveRequestScreen_SharePoint, AttachmentScreen |
-| F15-1 | Quản lý file đính kèm | DonNghiPhep, SharePoint Document Library | LeaveRequestScreen_SharePoint, AttachmentScreen |
-| F15-2 | Xem file đính kèm | DonNghiPhep, SharePoint Document Library | AttachmentScreen, MyLeavesScreen_SharePoint |
-
-================================================================================
-BẢNG SHAREPOINT LISTS (11 bảng chính)
-================================================================================
-
-MASTER DATA:
-1. Quyen - Hệ thống quyền bit-wise
-2. VaiTro - Vai trò và phân quyền (lookup Quyen)
-3. LoaiNghi - Danh mục loại nghỉ phép
-4. NgayLe - Lịch nghỉ lễ hàng năm
-5. CauHinhHeThong - Cấu hình tham số hệ thống
-6. MauEmail - Template email thông báo
-
-REFERENCE DATA:
-7. DonVi - Cấu trúc tổ chức công ty
-
-USER DATA:
-8. NguoiDung - Thông tin nhân viên (lookup DonVi, VaiTro)
-9. QuyTrinhDuyet - Cấu hình quy trình phê duyệt
-
-TRANSACTION DATA:
-10. SoNgayPhep - Quota nghỉ phép cá nhân (lookup NguoiDung)
-11. DonNghiPhep - Đơn nghỉ phép và trạng thái (lookup NguoiDung, LoaiNghi)
-
-================================================================================
-SCREENS TỔNG QUAN (Các màn hình chính)
-================================================================================
-
-1. LoginScreen_SharePoint - Đăng nhập hệ thống
-2. DashboardScreen_SharePoint - Trang chủ với dashboard
-3. ProfileScreen_SharePoint - Thông tin cá nhân
-4. LeaveRequestScreen_SharePoint - Tạo/Sửa đơn nghỉ phép
-5. MyLeavesScreen_SharePoint - Quản lý đơn nghỉ phép cá nhân
-6. ApprovalScreen_SharePoint - Phê duyệt đơn nghỉ phép
-7. CalendarScreen_SharePoint - Xem lịch nghỉ phép
-8. ReportsScreen_SharePoint - Báo cáo và thống kê
-9. ManagementScreen_SharePoint - Quản lý hệ thống
-10. AttachmentScreen - Quản lý file đính kèm
-11. LeaveConfirmationScreen - Ghi nhận kết quả nghỉ phép
-
-COMPONENTS:
-- HeaderComponent - Header với thông báo
-- NavigationComponent - Menu điều hướng
-- ButtonComponent - Các button tái sử dụng
-
-================================================================================
-'/
-
-x@startuml F01_Navigation
-title F01-1: Điều hướng đến các chức năng chính
 |User|
 start
-:Truy cập ứng dụng;
-:Hiển thị trang chủ với menu chính;
-:Chọn chức năng muốn sử dụng;
-|System|
-:Chuyển đến giao diện được chọn;
-:Kiểm tra quyền người dùng;
-:Hiển thị view người dùng được phép truy cập;
-stop
-@enduml
+:Đã đăng nhập vào hệ thống;
+:Click vào menu item;
 
-@startuml F02_Authentication
-title F02-1: Xác thực người dùng
-|User|
-start
-:Nhập thông tin đăng nhập;
-note right: Tài khoản (Email) và Mật khẩu
-:Nhấn nút Đăng nhập;
 |System|
-:Kiểm tra thông tin đăng nhập;
-if (Thông tin hợp lệ?) then (yes)
-  :Lấy thông tin và quyền truy cập của người dùng;
-  note right: Tính toán tổng quyền của vai trò
-  :Tạo session người dùng;
-  :Chuyển đến trang chủ;
-  :Thông báo đăng nhập thành công;
+:Kiểm tra menu hợp lệ;
+if (Menu hợp lệ?) then (yes)
+  :Chuyển đến màn hình tương ứng;
+  :Cập nhật menu đang chọn;
+  |User|
+  :Truy cập màn hình mới;
 else (no)
   :Hiển thị thông báo lỗi;
 endif
 stop
 @enduml
 
-@startuml F03_Personal_Info
+@startuml F02_1_Login
+title F02-1: Đăng nhập hệ thống
+
+|User|
+start
+:Truy cập trang đăng nhập;
+:Nhập email và mật khẩu;
+:Nhấn nút Đăng nhập;
+
+|System|
+if (Thông tin đầy đủ?) then (yes)
+  |SharePoint|
+  :Kiểm tra thông tin đăng nhập;
+  if (Thông tin đúng?) then (yes)
+    if (Tài khoản đang hoạt động?) then (yes)
+      |System|
+      :Tạo phiên đăng nhập;
+      :Chuyển đến Dashboard;
+      |User|
+      :Truy cập Dashboard;
+    else (no)
+      |System|
+      :Hiển thị "Tài khoản bị khóa";
+    endif
+  else (no)
+    |System|
+    :Hiển thị "Thông tin đăng nhập không đúng";
+  endif
+else (no)
+  :Hiển thị "Vui lòng nhập đầy đủ thông tin";
+endif
+stop
+@enduml
+
+@startuml F03_1_ViewPersonalInfo
 title F03-1: Xem thông tin cá nhân và ngày nghỉ còn lại
+
 |User|
 start
 :Truy cập trang thông tin cá nhân;
+
 |System|
-:Lấy thông tin người dùng từ SharePoint;
+:Lấy thông tin người dùng;
+|SharePoint|
+:Truy xuất dữ liệu cá nhân;
+:Truy xuất số ngày phép;
+|System|
+:Tính toán ngày phép đã dùng;
+:Tính toán ngày phép còn lại;
 :Hiển thị thông tin cá nhân;
-note right: Tên, chức vụ, phòng ban, email
-:Tính toán số ngày nghỉ còn lại;
-:Hiển thị số ngày nghỉ còn lại;
-note right: Từ SharePoint List
+:Hiển thị thống kê ngày phép;
+|User|
+:Xem thông tin cá nhân;
 stop
 @enduml
 
-@startuml F04_1_Create_Leave_Request
+@startuml F03_2_EditPersonalInfo
+title F03-2: Chỉnh sửa thông tin cá nhân
+
+|User|
+start
+:Click nút Chỉnh sửa;
+
+|System|
+:Mở chế độ chỉnh sửa;
+
+|User|
+:Sửa thông tin (Họ tên, Email, SĐT);
+:Nhấn nút Lưu;
+
+|System|
+:Kiểm tra thông tin hợp lệ;
+if (Thông tin hợp lệ?) then (yes)
+  |SharePoint|
+  :Cập nhật thông tin vào SharePoint;
+  |System|
+  :Cập nhật phiên đăng nhập;
+  :Hiển thị thông báo thành công;
+  |User|
+  :Thông tin được cập nhật;
+else (no)
+  :Hiển thị lỗi nhập liệu;
+endif
+stop
+@enduml
+
+@startuml F04_1_CreateLeaveRequest
 title F04-1: Tạo đơn nghỉ phép
-|Employee|
-start
-:Truy cập form tạo đơn nghỉ phép;
-:Nhập thông tin đơn nghỉ phép;
-note right
-- Thời gian nghỉ (từ ngày - đến ngày)
-- Số ngày nghỉ
-- Lý do nghỉ
-- Người nhận bàn giao công việc
-- Nội dung bàn giao
-- File đính kèm (nếu có)
-end note
-:Nhấn nút xác nhận tạo đơn;
-|System|
-:Kiểm tra điều kiện tạo đơn;
-if (Thông tin tạo đơn hợp lệ?) then (yes)
-  :Kiểm tra số ngày nghỉ phép còn lại;
-  if (Đủ ngày phép?) then (yes)
-    :Tạo đơn nghỉ phép;
-    :Gửi thông báo phê duyệt đến Manager;
-    :Thông báo tạo đơn thành công;
-  else (no)
-    if (Cho phép nghỉ không lương?) then (yes)
-      :Tạo đơn với phần vượt là không lương;
-      :Gửi thông báo phê duyệt đến Manager;
-      :Thông báo tạo đơn thành công;
-    else (no)
-      :Thông báo không đủ ngày phép;
-    endif
-  endif
-else (no)
-  :Thông báo thông tin không hợp lệ;
-  note right
-  Điều kiện tạo đơn:
-  - 0.5-2 ngày: trước 1 ngày làm việc
-  - 3-4 ngày: trước 7 ngày làm việc  
-  - 5+ ngày: trước 14 ngày làm việc
-  end note
-endif
-stop
-@enduml
 
-@startuml F04_2_Edit_Leave_Request
-title F04-2: Chỉnh sửa đơn nghỉ phép
-|Employee|
+|User|
 start
-:Truy cập danh sách đơn nghỉ phép cá nhân;
-:Chọn đơn cần chỉnh sửa;
-:Nhấn nút sửa;
+:Truy cập trang tạo đơn;
+:Chọn loại nghỉ phép;
+:Chọn ngày bắt đầu và kết thúc;
+:Nhập lý do nghỉ;
+:Chọn người bàn giao;
+:Nhập nội dung bàn giao;
+:Nhấn nút Gửi đơn;
+
 |System|
-:Kiểm tra trạng thái đơn;
-if (Đơn đang chờ duyệt?) then (yes)
-  :Hiển thị form chỉnh sửa;
-  |Employee|
-  :Cập nhật thông tin đơn nghỉ phép;
-  :Xác nhận lưu thay đổi;
+:Tính toán số ngày nghỉ;
+:Kiểm tra thông tin đầy đủ;
+if (Thông tin đầy đủ?) then (yes)
+  :Kiểm tra ngày phép còn lại;
+  |SharePoint|
+  :Lưu đơn nghỉ phép;
+  :Đặt trạng thái "Chờ duyệt cấp 1";
   |System|
-  :Kiểm tra thông tin hợp lệ;
-  if (Thông tin hợp lệ?) then (yes)
-    :Cập nhật đơn nghỉ phép;
-    :Gửi lại thông báo phê duyệt;
-    :Thông báo cập nhật thành công;
-  else (no)
-    :Thông báo không hợp lệ;
-  endif
+  :Hiển thị thông báo thành công;
+  |Notification|
+  :Gửi thông báo đến người duyệt;
+  |User|
+  :Nhận xác nhận tạo đơn;
 else (no)
-  :Thông báo không thể chỉnh sửa;
-  note right: Đơn đã được duyệt hoặc từ chối
-endif
-stop
-@enduml
-
-@startuml F04_3_Cancel_Leave_Request
-title F04-3: Hủy đơn nghỉ phép
-|Employee|
-start
-:Truy cập danh sách đơn nghỉ phép cá nhân;
-:Chọn đơn cần hủy;
-:Nhấn nút hủy;
-|System|
-:Kiểm tra trạng thái đơn;
-if (Đơn đang chờ duyệt?) then (yes)
-  |Employee|
-  :Xác nhận hủy đơn;
-  :Nhập lý do hủy (tùy chọn);
   |System|
-  :Cập nhật trạng thái đơn thành "Đã hủy";
-  :Gửi thông báo đến người phê duyệt;
-  :Thông báo hủy thành công;
-else (no)
-  :Thông báo không thể hủy;
-  note right: Đơn đã được duyệt hoặc từ chối
+  :Hiển thị lỗi nhập liệu;
 endif
 stop
 @enduml
 
-@startuml F04_4_View_My_Leaves
-title F04-4: Xem danh sách đơn nghỉ phép cá nhân
-|Employee|
+@startuml F04_2_ViewLeaveDetails
+title F04-2: Xem chi tiết đơn nghỉ phép
+
+|User|
 start
-:Truy cập trang Đơn nghỉ phép của tôi;
+:Truy cập danh sách đơn của tôi;
+:Click vào đơn cần xem;
+
 |System|
-:Lấy danh sách đơn nghỉ phép của user;
-:Hiển thị danh sách với bộ lọc;
-note right
-- Lọc theo trạng thái (Chờ duyệt/Đã duyệt/Từ chối)
-- Lọc theo thời gian
-- Sắp xếp theo ngày tạo
-end note
-|Employee|
-:Sử dụng bộ lọc (tùy chọn);
-:Chọn đơn để xem chi tiết;
+:Lấy danh sách đơn của user;
+|SharePoint|
+:Lấy thông tin chi tiết đơn;
 |System|
 :Hiển thị chi tiết đơn nghỉ phép;
 :Hiển thị lịch sử phê duyệt;
-:Hiển thị các hành động có thể thực hiện;
-note right
-- Chỉnh sửa (nếu chờ duyệt)
-- Hủy (nếu chờ duyệt)
-- Xem file đính kèm
-- In đơn nghỉ phép
-end note
+|User|
+:Xem chi tiết đơn;
 stop
 @enduml
 
-@startuml F05_Personal_Calendar
-title F05-1: Xem lịch nghỉ cá nhân
-|Employee|
+@startuml F04_3_CancelLeaveRequest
+title F04-3: Hủy đơn nghỉ phép
+
+|User|
+start
+:Chọn đơn cần hủy;
+
+|System|
+:Kiểm tra trạng thái đơn;
+if (Đơn chờ duyệt?) then (yes)
+  :Hiển thị xác nhận hủy;
+  |User|
+  :Nhập lý do hủy;
+  :Xác nhận hủy đơn;
+  |System|
+  |SharePoint|
+  :Cập nhật trạng thái "Đã hủy";
+  |System|
+  :Hiển thị thông báo thành công;
+  |Notification|
+  :Gửi thông báo hủy đơn;
+  |User|
+  :Nhận xác nhận hủy;
+else (no)
+  |System|
+  :Hiển thị "Không thể hủy đơn này";
+endif
+stop
+@enduml
+
+@startuml F05_1_PersonalCalendar
+title F05-1: Hiển thị lịch nghỉ cá nhân
+
+|User|
 start
 :Truy cập lịch cá nhân;
+:Chọn tháng/năm;
+
 |System|
 :Lấy dữ liệu nghỉ phép cá nhân;
-:Hiển thị lịch nghỉ phép;
-note right: Hiển thị các ngày nghỉ đã được phê duyệt
-:Cho phép chuyển đổi view (tháng/tuần);
-:Hiển thị chi tiết khi click vào ngày nghỉ;
-stop
-@enduml
+:Tạo lưới lịch (5 tuần x 7 ngày);
 
-@startuml F06_Company_Calendar
-title F06-1: Xem lịch nghỉ toàn công ty
-|Manager/Director/HR|
-start
-:Truy cập Lịch nghỉ toàn công ty;
-|System|
-:Kiểm tra quyền truy cập;
-if (Có quyền xem toàn công ty?) then (yes)
-  :Lấy dữ liệu nghỉ phép theo phân quyền;
-  note right
-  - Manager: Nhân viên trong đơn vị
-  - Director/HR: Toàn bộ nhân viên
-  end note
-  :Hiển thị lịch nghỉ phép tổng hợp;
-  :Cho phép lọc theo phòng ban/nhân viên;
-  :Hiển thị thống kê tổng quan;
-else (no)
-  :Thông báo không có quyền truy cập;
+repeat
+  :Kiểm tra ngày có nghỉ phép;
+  if (Có nghỉ phép?) then (yes)
+    :Đánh dấu ngày nghỉ;
+  endif
+repeat while (Còn ngày trong lưới?)
+
+|User|
+if (Click vào ngày có nghỉ?) then (yes)
+  |System|
+  :Hiển thị chi tiết nghỉ phép;
+  |User|
+  :Xem chi tiết nghỉ;
 endif
 stop
 @enduml
 
-@startuml F07_1_Level1_Approval
-title F07-1: Phê duyệt cấp 1 (Quản lý)
+@startuml F06_1_CompanyCalendar
+title F06-1: Hiển thị lịch nghỉ toàn công ty
+
+|Manager/Director/HR|
+start
+:Truy cập lịch công ty;
+
+|System|
+:Kiểm tra quyền xem toàn công ty;
+if (Có quyền?) then (yes)
+  |SharePoint|
+  :Lấy dữ liệu nghỉ phép toàn công ty;
+  |System|
+  :Tạo lịch với số lượng người nghỉ;
+  
+  repeat
+    :Đếm số người nghỉ mỗi ngày;
+    :Hiển thị số lượng;
+  repeat while (Còn ngày?)
+  
+  |Manager/Director/HR|
+  if (Click vào ngày?) then (yes)
+    |System|
+    :Hiển thị danh sách người nghỉ;
+    |Manager/Director/HR|
+    :Xem chi tiết nghỉ phép nhân viên;
+  endif
+else (no)
+  |System|
+  :Hiển thị "Không có quyền truy cập";
+endif
+stop
+@enduml
+
+@startuml F07_1_Level1Approval
+title F07-1: Phê duyệt cấp 1
+
 |Manager|
 start
-:Nhận thông báo đơn chờ phê duyệt cấp 1;
-note right: Qua app hoặc email
-:Truy cập danh sách đơn chờ duyệt;
-:Chọn đơn cần phê duyệt;
-:Xem chi tiết đơn nghỉ phép;
-note right
-- Thông tin nhân viên
-- Thời gian nghỉ
-- Lý do nghỉ
-- Nội dung bàn giao
-- File đính kèm
-end note
+:Truy cập trang phê duyệt;
+:Xem danh sách đơn chờ duyệt;
+:Click xem chi tiết đơn;
+
+|System|
+:Lấy đơn chờ duyệt cấp 1;
+:Lọc đơn theo quyền;
+:Hiển thị chi tiết đơn;
+
+|Manager|
+:Xem thông tin đơn;
+:Nhập ý kiến (tùy chọn);
+:Chọn Phê duyệt hoặc Từ chối;
+
+|System|
 if (Phê duyệt?) then (yes)
+  if (Số ngày > 12?) then (yes)
+    |SharePoint|
+    :Cập nhật trạng thái "Chờ duyệt cấp 2";
+  else (no)
+    :Cập nhật trạng thái "Đã duyệt";
+  endif
   |System|
-  :Cập nhật trạng thái: "Đã duyệt cấp 1";
-  :Chuyển đơn đến cấp 2 (Giám đốc khối);
-  :Gửi thông báo đến Giám đốc khối;
-  :Gửi thông báo đến người tạo đơn;
-  note right: Thông báo đã qua cấp 1
+  |Email System|
+  :Gửi email thông báo;
 else (no)
-  |Manager|
-  :Nhập lý do từ chối;
+  |SharePoint|
+  :Cập nhật trạng thái "Từ chối";
   |System|
-  :Cập nhật trạng thái: "Từ chối" (cấp 1);
-  :Gửi thông báo từ chối đến người tạo đơn;
-  :Ghi lý do từ chối vào hệ thống;
+  |Email System|
+  :Gửi email từ chối;
 endif
+|System|
+:Hiển thị thông báo thành công;
+|Manager|
+:Nhận xác nhận phê duyệt;
 stop
 @enduml
 
-@startuml F07_2_Level2_Approval
-title F07-2: Phê duyệt cấp 2 (Giám đốc khối)
+@startuml F07_2_Level2Approval
+title F07-2: Phê duyệt cấp 2
+
 |Director|
 start
-:Nhận thông báo đơn chờ phê duyệt cấp 2;
-note right: Đơn đã qua cấp 1
-:Truy cập danh sách đơn chờ duyệt cấp 2;
-:Chọn đơn cần phê duyệt;
-:Xem chi tiết đơn và toàn bộ lịch sử phê duyệt;
-if (Phê duyệt cấp 2?) then (yes)
-  |System|
-  :Cập nhật trạng thái: "Đã duyệt cấp 2";
-  :Chuyển đơn đến cấp 3 (Giám đốc điều hành);
-  :Gửi thông báo đến Giám đốc điều hành;
-  :Gửi thông báo đến người tạo đơn;
-  note right: Thông báo đã qua cấp 2
+:Truy cập trang phê duyệt;
+:Lọc đơn chờ duyệt cấp 2;
+
+|System|
+:Lấy đơn chờ duyệt cấp 2;
+:Hiển thị danh sách đơn;
+
+|Director|
+:Xem thông tin đơn;
+:Chọn Phê duyệt hoặc Từ chối;
+
+|System|
+if (Phê duyệt?) then (yes)
+  if (Số ngày > 12?) then (yes)
+    |SharePoint|
+    :Cập nhật trạng thái "Chờ duyệt cấp 3";
+    |Notification|
+    :Chuyển đến Giám đốc điều hành;
+  else (no)
+    |SharePoint|
+    :Cập nhật trạng thái "Đã duyệt";
+    |Email System|
+    :Gửi email hoàn tất;
+  endif
 else (no)
-  |Director|
-  :Nhập lý do từ chối;
-  |System|
-  :Cập nhật trạng thái: "Từ chối" (cấp 2);
-  :Gửi thông báo từ chối đến người tạo đơn;
-  :Gửi thông báo đến Manager cấp 1;
-  :Ghi lý do từ chối vào hệ thống;
+  |SharePoint|
+  :Cập nhật trạng thái "Từ chối";
+  |Email System|
+  :Gửi email từ chối;
 endif
+|System|
+:Hiển thị thông báo thành công;
+|Director|
+:Nhận xác nhận phê duyệt;
 stop
 @enduml
 
-@startuml F07_3_Level3_Approval
-title F07-3: Phê duyệt cấp 3 (Giám đốc điều hành)
-|CEO|
+@startuml F07_3_Level3Approval
+title F07-3: Phê duyệt cấp 3
+
+|Executive Director|
 start
-:Nhận thông báo đơn chờ phê duyệt cấp 3;
-note right: Đơn đã qua cấp 1 và 2
-:Truy cập danh sách đơn chờ duyệt cấp 3;
-:Chọn đơn cần phê duyệt;
-:Xem chi tiết đơn và toàn bộ lịch sử phê duyệt;
-if (Phê duyệt cấp 3?) then (yes)
-  |System|
-  :Cập nhật trạng thái: "Đã duyệt hoàn tất";
-  :Gửi thông báo đến HR để ghi nhận;
-  :Cập nhật lịch nghỉ phép chính thức;
-  :Gửi thông báo phê duyệt cuối đến người tạo đơn;
-  :Gửi thông báo đến Manager và Director;
-  :Cập nhật số ngày phép còn lại;
-else (no)
-  |CEO|
-  :Nhập lý do từ chối;
-  |System|
-  :Cập nhật trạng thái: "Từ chối" (cấp 3);
-  :Gửi thông báo từ chối đến người tạo đơn;
-  :Gửi thông báo đến Manager và Director;
-  :Ghi lý do từ chối vào hệ thống;
-endif
+:Truy cập trang phê duyệt;
+:Xem đơn nghỉ dài hạn (>12 ngày);
+
+|System|
+:Lấy đơn chờ duyệt cấp 3;
+:Hiển thị thông tin đơn nghỉ dài hạn;
+
+|Executive Director|
+:Phê duyệt cuối cùng;
+
+|System|
+|SharePoint|
+:Cập nhật trạng thái "Đã duyệt";
+|System|
+:Hiển thị thông báo hoàn tất;
+|Notification|
+:Thông báo C&B/HR ghi nhận;
+|Executive Director|
+:Nhận xác nhận hoàn tất;
 stop
 @enduml
 
-@startuml F08_1_Add_User
+@startuml F08_1_AddUser
 title F08-1: Thêm người dùng mới
-|HR/Admin|
-start
-:Truy cập giao diện quản lý người dùng;
-:Chọn "Thêm người dùng mới";
-:Nhập thông tin người dùng;
-note right
-- Mã nhân viên
-- Họ và tên
-- Email
-- Số điện thoại
-- Chức danh
-- Đơn vị/Phòng ban
-- Ngày bắt đầu làm việc
-- Vai trò (Role)
-- Manager trực tiếp
-end note
-|System|
-:Kiểm tra mã nhân viên trùng lặp;
-if (Mã nhân viên đã tồn tại?) then (yes)
-  :Thông báo lỗi trùng lặp;
-  :Yêu cầu nhập mã khác;
-else (no)
-  :Kiểm tra định dạng email;
-  if (Email hợp lệ?) then (yes)
-    :Tạo tài khoản mới trong SharePoint;
-    :Gửi email chào mừng đến người dùng;
-    :Thông báo tạo tài khoản thành công;
-  else (no)
-    :Thông báo lỗi định dạng email;
-  endif
-endif
-stop
-@enduml
 
-@startuml F08_2_Edit_User
-title F08-2: Chỉnh sửa thông tin người dùng
-|HR/Admin|
+|Admin|
 start
-:Truy cập giao diện quản lý người dùng;
-:Tìm kiếm người dùng cần sửa;
-note right: Tìm theo mã NV, tên, email
-:Chọn người dùng từ danh sách;
-:Hiển thị form chỉnh sửa với thông tin hiện tại;
-:Cập nhật thông tin cần thiết;
-note right
-Có thể sửa:
-- Họ và tên
-- Email
-- Số điện thoại
-- Chức danh
-- Đơn vị/Phòng ban
-- Role
-- Manager trực tiếp
-- Trạng thái tài khoản
-end note
+:Truy cập trang quản lý;
+:Nhấn nút Thêm người dùng;
+
 |System|
-:Kiểm tra thông tin mới;
+:Kiểm tra quyền Admin;
+:Hiển thị form thêm user;
+
+|Admin|
+:Nhập thông tin cơ bản;
+:Chọn phòng ban và vai trò;
+:Nhấn nút Lưu;
+
+|System|
+:Kiểm tra thông tin hợp lệ;
 if (Thông tin hợp lệ?) then (yes)
-  :Cập nhật thông tin trong SharePoint;
-  :Gửi email thông báo cập nhật;
-  :Thông báo cập nhật thành công;
+  |SharePoint|
+  :Tạo tài khoản người dùng mới;
+  |System|
+  :Hiển thị thông báo thành công;
+  |Email System|
+  :Gửi email thông báo tài khoản mới;
+  |Admin|
+  :Nhận xác nhận tạo user;
 else (no)
-  :Thông báo không hợp lệ;
+  |System|
+  :Hiển thị lỗi nhập liệu;
 endif
 stop
 @enduml
 
-@startuml F08_3_Delete_User
+@startuml F08_2_EditUser
+title F08-2: Chỉnh sửa thông tin người dùng
+
+|Admin|
+start
+:Truy cập trang quản lý;
+:Chọn user từ danh sách;
+:Nhấn nút Sửa;
+
+|System|
+:Kiểm tra user tồn tại;
+:Hiển thị form với thông tin hiện tại;
+
+|Admin|
+:Chỉnh sửa thông tin;
+:Nhấn nút Lưu thay đổi;
+
+|System|
+:Kiểm tra thông tin hợp lệ;
+if (Thông tin hợp lệ?) then (yes)
+  |SharePoint|
+  :Cập nhật thông tin user;
+  |System|
+  :Hiển thị thông báo thành công;
+  |Admin|
+  :Nhận xác nhận cập nhật;
+else (no)
+  |System|
+  :Hiển thị lỗi nhập liệu;
+endif
+stop
+@enduml
+
+@startuml F08_3_DeleteUser
 title F08-3: Xóa người dùng
-|HR/Admin|
+
+|Admin|
 start
-:Truy cập giao diện quản lý người dùng;
-:Tìm kiếm người dùng cần xóa;
-:Chọn người dùng từ danh sách;
-:Hiển thị thông tin người dùng;
+:Truy cập trang quản lý;
+:Chọn user cần xóa;
+:Nhấn nút Xóa;
+
 |System|
-:Kiểm tra dữ liệu liên quan;
-if (Có đơn nghỉ phép đang chờ duyệt?) then (yes)
-  :Thông báo không thể xóa;
-  note right: Cần xử lý hết đơn chờ duyệt trước
+:Kiểm tra user không có đơn đang chờ;
+if (User có đơn đang chờ?) then (yes)
+  :Hiển thị "Không thể xóa";
 else (no)
-  |HR/Admin|
-  :Xác nhận xóa người dùng;
-  |System|
-  :Vô hiệu hóa tài khoản;
-  :Cập nhật trạng thái tài khoản thành "Ngưng hoạt động";
-  :Chuyển đơn nghỉ phép sang Manager mới (nếu có);
-  :Thông báo xóa thành công;
-endif
-stop
-@enduml
-
-
-@startuml F09_Import_Leave_Days
-title F09-1: Nhập số ngày phép
-|HR/Admin|
-start
-:Truy cập form upload Excel;
-:Chọn file Excel chứa dữ liệu ngày phép;
-note right
-File Excel gồm:
-- Mã nhân viên
-- Họ và tên
-- Email
-- Tổng ngày phép năm
-- Ngày phép đã sử dụng
-- Ngày phép còn lại
-- Năm áp dụng
-end note
-:Upload file;
-|System|
-:Kiểm tra định dạng file;
-if (File hợp lệ?) then (yes)
-  :Đọc dữ liệu từ Excel;
-  :Kiểm tra dữ liệu;
-  if (Dữ liệu hợp lệ?) then (yes)
-    :Cập nhật số ngày phép vào SharePoint;
-    :Gửi mail thông báo đến tất cả nhân viên;
-    :Thông báo import thành công;
-  else (no)
-    :Hiển thị lỗi dữ liệu;
-    :Yêu cầu sửa file và upload lại;
-  endif
-else (no)
-  :Thông báo lỗi định dạng file;
-endif
-stop
-@enduml
-
-@startuml F10_1_Holiday_Management
-title F10-1: Quản lý ngày nghỉ lễ
-|HR/Admin|
-start
-:Truy cập giao diện quản lý ngày nghỉ lễ;
-:Xem danh sách ngày nghỉ hiện tại;
-:Chọn hành động;
-if (Thêm ngày nghỉ?) then (yes)
-  :Nhập thông tin ngày nghỉ mới;
-  note right
-  - Tên ngày lễ
-  - Ngày bắt đầu
-  - Ngày kết thúc
-  - Loại nghỉ (toàn ngày/nửa ngày)
-  - Ghi chú
-  - Năm áp dụng
-  end note
-  |System|
-  :Kiểm tra trùng lặp;
-  :Thêm vào danh sách ngày nghỉ;
-  :Cập nhật lịch hệ thống;
-elseif (Sửa ngày nghỉ?) then (yes)
-  :Chọn ngày nghỉ cần sửa;
-  :Cập nhật thông tin;
-  |System|
-  :Lưu thay đổi;
-  :Cập nhật lịch hệ thống;
-else (Xóa ngày nghỉ)
-  :Chọn ngày nghỉ cần xóa;
+  :Hiển thị xác nhận xóa;
+  |Admin|
   :Xác nhận xóa;
   |System|
-  :Xóa khỏi danh sách;
-  :Cập nhật lịch hệ thống;
+  |SharePoint|
+  :Vô hiệu hóa tài khoản;
+  |System|
+  :Hiển thị thông báo thành công;
+  |Admin|
+  :Nhận xác nhận vô hiệu hóa;
 endif
-:Gửi thông báo cập nhật đến tất cả nhân viên;
 stop
 @enduml
 
-@startuml F10_2_Work_Schedule_Setup
-title F10-2: Thiết lập lịch làm việc
+@startuml F09_1_ImportLeaveBalance
+title F09-1: Import số ngày nghỉ phép từ Excel
+
+|HR|
+start
+:Truy cập trang quản lý;
+:Nhấn nút Import số ngày phép;
+
+|System|
+:Hiển thị trang import;
+
+|HR|
+:Tải template Excel (tùy chọn);
+:Upload file Excel;
+
+|System|
+:Kiểm tra định dạng file;
+if (File đúng định dạng?) then (yes)
+  :Xem trước dữ liệu;
+  |HR|
+  :Nhấn nút Xử lý import;
+  |System|
+  :Kiểm tra dữ liệu trong file;
+  if (Dữ liệu hợp lệ?) then (yes)
+    |SharePoint|
+    :Cập nhật số ngày phép;
+    |System|
+    :Hiển thị thông báo thành công;
+    |Email System|
+    :Gửi email thông báo toàn bộ nhân viên;
+    |HR|
+    :Nhận xác nhận import;
+  else (no)
+    |System|
+    :Hiển thị lỗi dữ liệu;
+  endif
+else (no)
+  |System|
+  :Hiển thị lỗi định dạng file;
+endif
+stop
+@enduml
+
+@startuml F10_1_ManageHolidays
+title F10-1: Quản lý ngày nghỉ lễ
+
 |HR/Admin|
 start
-:Truy cập giao diện thiết lập lịch làm việc;
-:Cấu hình thời lượng nghỉ các ngày trong tuần;
-note right
-- Thứ 2-6: Toàn ngày (8h)
-- Thứ 7: Nửa ngày/Toàn ngày (4h/8h)
-- Chủ nhật: Nghỉ
-- Cấu hình giờ làm việc (8:00-17:00)
-end note
-:Thiết lập quy tắc tính ngày nghỉ;
-note right
-- 1 ngày = 8 giờ
-- 0.5 ngày = 4 giờ
-- Quy tắc làm tròn
-- Tính toán ngày nghỉ lễ
-end note
-|System|
-:Kiểm tra tính hợp lệ của cấu hình;
-if (Cấu hình hợp lệ?) then (yes)
-  :Lưu cấu hình lịch làm việc;
-  :Cập nhật toàn bộ hệ thống tính toán;
-  :Thông báo cập nhật thành công;
-else (no)
-  :Thông báo lỗi cấu hình;
-  :Yêu cầu điều chỉnh;
-endif
-stop
-@enduml
+:Truy cập trang quản lý;
+:Xem danh sách ngày lễ;
+:Nhấn nút Thêm ngày lễ;
 
-@startuml F11_1_Workflow_Setup
-title F11-1: Thiết lập quy trình phê duyệt
-|Admin|
-start
-:Truy cập form cấu hình quy trình phê duyệt;
-:Kiểm tra đơn nghỉ phép đang chờ duyệt;
-if (Có đơn chờ duyệt?) then (yes)
-  :Thông báo không thể thay đổi;
-  :Hiển thị danh sách đơn chờ duyệt;
-  :Yêu cầu xử lý hết đơn chờ duyệt;
-  stop
-else (no)
-  :Thiết lập người phê duyệt cho 3 cấp;
-  note right
-  - Cấp 1: Manager trực tiếp
-  - Cấp 2: Giám đốc khối
-  - Cấp 3: Giám đốc điều hành
-  end note
-  :Cấu hình điều kiện phê duyệt;
-  note right
-  - Số ngày nghỉ cần phê duyệt từng cấp
-  - Loại nghỉ phép cần phê duyệt
-  - Thời gian phê duyệt tối đa
-  - Matrix phê duyệt theo role
-  end note
+|System|
+:Kiểm tra quyền quản lý ngày lễ;
+:Hiển thị form thêm ngày lễ;
+
+|HR/Admin|
+:Nhập thông tin ngày lễ;
+:Nhấn nút Lưu;
+
+|System|
+:Kiểm tra thông tin hợp lệ;
+if (Thông tin hợp lệ?) then (yes)
+  |SharePoint|
+  :Thêm ngày lễ mới;
   |System|
-  :Kiểm tra tính hợp lệ của quy trình;
-  :Lưu cấu hình quy trình;
-  :Gửi thông báo đến các người phê duyệt;
-  :Thông báo cập nhật thành công;
+  :Hiển thị thông báo thành công;
+  :Cập nhật lịch toàn hệ thống;
+  |HR/Admin|
+  :Nhận xác nhận thêm ngày lễ;
+else (no)
+  |System|
+  :Hiển thị lỗi nhập liệu;
 endif
 stop
 @enduml
 
-@startuml F11_2_Role_Assignment
-title F11-2: Gán role người dùng
+@startuml F11_1_SetupApprovalWorkflow
+title F11-1: Thiết lập quy trình phê duyệt 3 cấp
+
 |Admin|
 start
-:Truy cập giao diện phân quyền;
-:Tìm kiếm người dùng cần gán role;
-:Chọn người dùng từ danh sách;
-:Hiển thị role hiện tại;
-:Chọn role mới;
-note right
-Roles available:
-- Employee: Nhân viên
-- Manager: Quản lý trực tiếp
-- Director: Giám đốc khối
-- CEO: Giám đốc điều hành
-- HR: Nhân sự
-- Admin: Quản trị viên hệ thống
-end note
-:Xác nhận thay đổi role;
+:Truy cập cấu hình hệ thống;
+
 |System|
-:Kiểm tra quyền thay đổi role;
-if (Có quyền thay đổi?) then (yes)
-  :Cập nhật role người dùng;
-  :Cập nhật quyền truy cập menu;
-  :Cập nhật quyền phê duyệt;
-  :Gửi mail thông báo đến người dùng;
-  :Thông báo cập nhật thành công;
+:Kiểm tra không có đơn đang chờ;
+if (Có đơn đang chờ?) then (yes)
+  :Hiển thị "Không thể thay đổi";
 else (no)
-  :Thông báo không có quyền;
+  :Hiển thị cấu hình quy trình;
+  |Admin|
+  :Thiết lập cấp 1 (Quản lý);
+  :Thiết lập cấp 2 (Giám đốc);
+  :Thiết lập cấp 3 (Điều hành);
+  :Cấu hình thời gian chờ;
+  :Nhấn nút Lưu cấu hình;
+  |System|
+  |SharePoint|
+  :Lưu cấu hình quy trình;
+  |System|
+  :Hiển thị thông báo thành công;
+  |Admin|
+  :Nhận xác nhận cấu hình;
 endif
 stop
 @enduml
 
-@startuml F12_Dashboard_Reports
-title F12-1: Dashboard báo cáo
+@startuml F11_2_ManageUserRoles
+title F11-2: Quản lý vai trò người dùng
+
+|Admin|
+start
+:Truy cập quản lý user;
+:Chọn user cần thay đổi vai trò;
+
+|System|
+:Kiểm tra user tồn tại;
+:Hiển thị vai trò hiện tại;
+
+|Admin|
+:Chọn vai trò mới;
+:Nhấn nút Cập nhật;
+
+|System|
+:Kiểm tra vai trò hợp lệ;
+if (Vai trò hợp lệ?) then (yes)
+  |SharePoint|
+  :Cập nhật vai trò;
+  |System|
+  :Cập nhật quyền hạn;
+  :Hiển thị thông báo thành công;
+  |Email System|
+  :Gửi email thông báo thay đổi;
+  |Admin|
+  :Nhận xác nhận cập nhật;
+else (no)
+  |System|
+  :Hiển thị lỗi vai trò;
+endif
+stop
+@enduml
+
+@startuml F12_1_DashboardReports
+title F12-1: Hiển thị báo cáo theo bộ lọc
+
 |Manager/Director/HR|
 start
-:Truy cập dashboard báo cáo;
+:Truy cập trang báo cáo;
+:Chọn bộ lọc (Tháng/Năm/Phòng ban);
+
 |System|
-:Kiểm tra quyền truy cập;
-:Lấy dữ liệu theo phân quyền;
-note right
-- Manager: Dữ liệu team/đơn vị
-- Director: Dữ liệu khối
-- HR: Dữ liệu toàn công ty
-end note
-:Hiển thị biểu đồ tổng quan;
-note right
-- Tổng số ngày nghỉ theo tháng
-- Thống kê theo nhân viên/phòng ban
-- Biểu đồ xu hướng nghỉ phép
-- Top nhân viên nghỉ nhiều nhất
-- Tỷ lệ phê duyệt/từ chối
-end note
-|User|
-:Sử dụng bộ lọc;
-note right: Lọc theo thời gian, phòng ban, nhân viên, trạng thái
+:Kiểm tra quyền xem báo cáo;
+:Kiểm tra tham số lọc;
+|SharePoint|
+:Lấy dữ liệu theo bộ lọc;
 |System|
-:Cập nhật biểu đồ theo bộ lọc;
-:Hiển thị dữ liệu chi tiết;
-:Cung cấp insight và xu hướng;
+:Tính toán thống kê;
+:Hiển thị biểu đồ và báo cáo;
+
+|Manager/Director/HR|
+:Xem báo cáo thống kê;
+if (Thay đổi bộ lọc?) then (yes)
+  :Chọn bộ lọc mới;
+  |System|
+  :Cập nhật dữ liệu theo bộ lọc mới;
+endif
 stop
 @enduml
 
-@startuml F13_1_Export_Summary_Report
+@startuml F13_1_ExportSummaryReport
 title F13-1: Xuất báo cáo tổng hợp
+
 |HR/Director|
 start
-:Truy cập chức năng xuất báo cáo;
-:Chọn "Báo cáo tổng hợp";
-:Mở popup lọc dữ liệu;
-:Chọn tiêu chí xuất báo cáo;
-note right
-- Khoảng thời gian (tháng/quý/năm)
-- Phòng ban (tùy chọn)
-- Loại tổng hợp (theo tháng/quý/năm)
-- Định dạng file (Excel/PDF)
-end note
-:Xác nhận xuất báo cáo;
+:Truy cập trang báo cáo;
+:Chọn khoảng thời gian;
+:Chọn phạm vi (Toàn công ty/Phòng ban);
+:Nhấn nút Xuất báo cáo tổng hợp;
+
 |System|
-:Tạo báo cáo tổng hợp;
-note right
-Nội dung báo cáo:
-- Tổng số ngày nghỉ theo phòng ban
-- Xu hướng nghỉ phép theo thời gian
-- Top nhân viên nghỉ nhiều nhất
-- Thống kê loại nghỉ phép
-- So sánh với kỳ trước
-end note
-:Xuất file tổng hợp;
-:Tải file về máy;
-:Thông báo xuất báo cáo thành công;
+:Kiểm tra quyền xuất báo cáo;
+if (Có quyền xuất?) then (yes)
+  :Kiểm tra tham số;
+  |SharePoint|
+  :Lấy dữ liệu theo tham số;
+  |System|
+  :Tạo file CSV tổng hợp;
+  :Tải xuống file CSV;
+  |HR/Director|
+  :Lưu file CSV;
+else (no)
+  |System|
+  :Hiển thị "Không có quyền xuất báo cáo";
+endif
 stop
 @enduml
 
-@startuml F13_2_Export_Detail_Report
+@startuml F13_2_ExportDetailedReport
 title F13-2: Xuất báo cáo chi tiết
+
 |HR/Director|
 start
-:Truy cập chức năng xuất báo cáo;
-:Chọn "Báo cáo chi tiết";
-:Mở popup lọc dữ liệu;
-:Chọn tiêu chí xuất báo cáo;
-note right
-- Khoảng thời gian
-- Phòng ban cụ thể
-- Nhân viên cụ thể (tùy chọn)
-- Trạng thái đơn (tất cả/đã duyệt/từ chối)
-- Định dạng file (Excel/PDF)
-end note
-:Xác nhận xuất báo cáo;
-|System|
-:Tạo báo cáo chi tiết từng nhân viên;
-note right
-Nội dung báo cáo:
-- Danh sách chi tiết từng đơn nghỉ phép
-- Thông tin nhân viên đầy đủ
-- Thời gian nghỉ chi tiết
-- Trạng thái phê duyệt
-- Lịch sử phê duyệt đầy đủ
-- Ghi chú và lý do
-end note
-:Xuất file chi tiết;
-:Tải file về máy;
-:Thông báo xuất báo cáo thành công;
-stop
-@enduml
+:Truy cập trang báo cáo;
+:Chọn nhân viên hoặc phòng ban;
+:Chọn khoảng thời gian;
+:Nhấn nút Xuất báo cáo chi tiết;
 
-@startuml F13_3_Export_Custom_Report
-title F13-3: Xuất báo cáo tùy chỉnh
-|HR/Director|
-start
-:Truy cập chức năng xuất báo cáo;
-:Chọn "Báo cáo tùy chỉnh";
-:Mở popup cấu hình báo cáo;
-:Chọn các trường dữ liệu cần xuất;
-note right
-Trường có thể chọn:
-- Thông tin nhân viên
-- Thông tin đơn nghỉ phép
-- Lịch sử phê duyệt
-- Thống kê tổng hợp
-- Ghi chú và file đính kèm
-- Tính toán ngày nghỉ
-end note
-:Thiết lập bộ lọc và sắp xếp;
-:Xem trước báo cáo;
-:Xác nhận xuất báo cáo;
 |System|
-:Tạo báo cáo theo cấu hình tùy chỉnh;
-:Xuất file tùy chỉnh;
-:Lưu template báo cáo để sử dụng lại;
-:Tải file về máy;
-:Thông báo xuất báo cáo thành công;
-stop
-@enduml
-
-@startuml F14_1_Notification_System
-title F14-1: Hệ thống thông báo tự động
-|System|
-start
-:Sự kiện xảy ra trong hệ thống;
-note right
-Các sự kiện trigger thông báo:
-- Tạo đơn nghỉ phép mới
-- Phê duyệt/Từ chối đơn
-- Cập nhật thông tin đơn
-- Nhắc nhở deadline phê duyệt
-- Ghi nhận kết quả nghỉ phép
-- Thay đổi quy trình
-end note
-:Xác định loại sự kiện;
-:Lấy danh sách người nhận thông báo;
-note right
-Người nhận theo sự kiện:
-- Người tạo đơn
-- Người phê duyệt các cấp
-- HR
-- Manager liên quan
-end note
-:Tạo nội dung thông báo;
-note right
-Nội dung bao gồm:
-- Tiêu đề thông báo rõ ràng
-- Nội dung chi tiết
-- Link đến chức năng liên quan
-- Thời gian tạo
-- Mức độ ưu tiên
-end note
-:Gửi thông báo trong app;
-|User|
-:Nhận thông báo trong app;
-:Xem danh sách thông báo;
-:Click vào thông báo;
-|System|
-:Chuyển đến màn hình liên quan;
-:Đánh dấu thông báo đã đọc;
-|User|
-:Thực hiện hành động cần thiết;
-stop
-@enduml
-
-@startuml F14_2_Email_Notification
-title F14-2: Hệ thống thông báo email
-|System|
-start
-:Sự kiện quan trọng xảy ra;
-note right
-Sự kiện gửi email:
-- Đơn mới chờ phê duyệt
-- Phê duyệt/Từ chối đơn cuối cùng
-- Nhắc nhở deadline phê duyệt
-- Cập nhật số ngày phép hàng năm
-- Thay đổi quy trình quan trọng
-end note
-:Kiểm tra cài đặt email của user;
-if (User cho phép nhận email?) then (yes)
-  :Tạo template email;
-  note right
-  Template bao gồm:
-  - Subject line rõ ràng
-  - Nội dung HTML đẹp
-  - Link đến ứng dụng
-  - Thông tin liên hệ support
-  - Logo công ty
-  end note
-  :Gửi email qua SharePoint/Outlook;
-  :Ghi log gửi email;
-  |User|
-  :Nhận email;
-  :Click link trong email;
+:Kiểm tra quyền xuất báo cáo chi tiết;
+if (Có quyền xuất chi tiết?) then (yes)
+  :Kiểm tra tham số lựa chọn;
+  |SharePoint|
+  :Lấy chi tiết từng đơn nghỉ phép;
   |System|
-  :Chuyển đến ứng dụng;
-  :Hiển thị màn hình liên quan;
+  :Tạo file CSV với lịch sử đầy đủ;
+  :Tải xuống file CSV chi tiết;
+  |HR/Director|
+  :Lưu file CSV chi tiết;
 else (no)
-  :Chỉ gửi thông báo trong app;
-endif
-stop
-@enduml
-
-@startuml F15_1_File_Attachment
-title F15-1: Quản lý file đính kèm
-|User|
-start
-:Truy cập form tạo/sửa đơn nghỉ phép;
-:Chọn "Thêm file đính kèm";
-|System|
-:Hiển thị dialog chọn file;
-|User|
-:Chọn file từ máy tính;
-note right
-Loại file cho phép:
-- PDF, DOC, DOCX
-- JPG, PNG, GIF
-- TXT
-- Kích thước tối đa: 10MB
-end note
-|System|
-:Kiểm tra loại file và kích thước;
-if (File hợp lệ?) then (yes)
-  :Upload file lên SharePoint Document Library;
-  :Tạo link tham chiếu;
-  :Hiển thị file trong danh sách;
-  :Cho phép xem trước (nếu hỗ trợ);
-  |User|
-  :Xem danh sách file đã đính kèm;
-  :Có thể xóa file (nếu chưa submit);
-  :Submit đơn nghỉ phép;
   |System|
-  :Lưu thông tin file với đơn nghỉ phép;
-  :Khóa chỉnh sửa file;
-else (no)
-  :Thông báo lỗi file không hợp lệ;
-  :Yêu cầu chọn file khác;
+  :Hiển thị "Không có quyền xuất báo cáo chi tiết";
 endif
 stop
 @enduml
-
-@startuml F15_2_View_Attachment
-title F15-2: Xem file đính kèm
-|User|
-start
-:Truy cập chi tiết đơn nghỉ phép;
-|System|
-:Hiển thị thông tin đơn;
-:Hiển thị danh sách file đính kèm;
-|User|
-:Click vào file cần xem;
-|System|
-:Kiểm tra quyền truy cập file;
-if (Có quyền xem?) then (yes)
-  :Lấy file từ SharePoint;
-  :Hiển thị file trong viewer;
-  note right
-  Hỗ trợ xem:
-  - PDF: PDF viewer tích hợp
-  - Image: Image viewer
-  - Office: Office Online viewer
-  - Text: Text viewer
-  end note
-  |User|
-  :Xem nội dung file;
-  :Có thể tải file về (nếu có quyền);
-else (no)
-  :Thông báo không có quyền truy cập;
-endif
-stop
-@enduml 

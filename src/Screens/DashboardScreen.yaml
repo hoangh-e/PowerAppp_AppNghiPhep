@@ -121,6 +121,7 @@
             MyLeavesScreen: =MyLeavesScreen
             CalendarScreen: =CalendarScreen
             ManagementScreen: =ManagementScreen
+            ReportsScreen: =ReportsScreen
             ProfileScreen: =ProfileScreen
             OnNavigate: |
               =Set(varActiveScreen, ScreenName);
@@ -196,7 +197,7 @@
                               Color: =RGBA(17, 24, 39, 1)
                               Font: =Font.'Open Sans'
                               FontWeight: =FontWeight.Bold
-                              Size: =14
+                              Size: =FontSizes.Medium
                               
                         - 'Dashboard.Content.Subtitle':
                             Control: Label
@@ -208,7 +209,7 @@
                               Text: ="Phòng ban:" & " " & UserSession.MaDonVi & " • " & "Chức danh:" & " " & UserSession.ChucDanh
                               Color: =RGBA(75, 85, 99, 1)
                               Font: =Font.'Open Sans'
-                              Size: =11
+                              Size: =FontSizes.Small
             
             - 'Dashboard.Stats.Container':
                 Control: GroupContainer
@@ -241,7 +242,7 @@
                         Color: =RGBA(17, 24, 39, 1)
                         Font: =Font.'Open Sans'
                         FontWeight: =FontWeight.Bold
-                        Size: =14
+                        Size: =FontSizes.Medium
                         
                   - 'Dashboard.Stats.LeaveBalance.Container':
                       Control: GroupContainer
@@ -385,7 +386,7 @@
                               Color: =RGBA(17, 24, 39, 1)
                               Font: =Font.'Open Sans'
                               FontWeight: =FontWeight.Bold
-                              Size: =14
+                              Size: =FontSizes.Medium
                               
                         - 'Dashboard.Activity.ViewAll':
                             Control: CanvasComponent
@@ -484,7 +485,7 @@
                                     Color: =RGBA(17, 24, 39, 1)
                                     Font: =Font.'Open Sans'
                                     FontWeight: =FontWeight.Semibold
-                                    Size: =10
+                                    Size: =FontSizes.Small
                                     
                               - 'Gallery.Item.Days':
                                   Control: Label
@@ -497,7 +498,7 @@
                                     Color: =RGBA(59, 130, 246, 1)
                                     Font: =Font.'Open Sans'
                                     FontWeight: =FontWeight.Bold
-                                    Size: =10
+                                    Size: =FontSizes.Small
                                     Align: =Align.Right
                                     
                               - 'Gallery.Item.Status':
@@ -519,5 +520,5 @@
                                       RGBA(107, 114, 128, 1))
                                     Font: =Font.'Open Sans'
                                     FontWeight: =FontWeight.Normal
-                                    Size: =9
+                                    Size: =FontSizes.Small
 

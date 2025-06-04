@@ -61,6 +61,7 @@
               MyLeavesScreen: =MyLeavesScreen
               CalendarScreen: =CalendarScreen
               ManagementScreen: =ManagementScreen
+              ReportsScreen: =ReportsScreen
               ProfileScreen: =ProfileScreen
               OnNavigate: |
                 =Set(varActiveScreen, ScreenName);
@@ -138,7 +139,7 @@
                                 Color: =RGBA(17, 24, 39, 1)
                                 Font: =Font.'Open Sans'
                                 FontWeight: =FontWeight.Bold
-                                Size: =14
+                                Size: =FontSizes.Medium
                           
                           - 'MyLeaves.PageHeader.Stats':
                               Control: Label
@@ -150,7 +151,7 @@
                                 Text: =Concatenate("Tổng", ":" & " ", CountRows(varCurrentUserLeaves), " " & "đơn nghỉ phép")
                                 Color: =RGBA(75, 85, 99, 1)
                                 Font: =Font.'Open Sans'
-                                Size: =11
+                                Size: =FontSizes.Small
                           
                           - 'MyLeaves.NewRequest.Button':
                               Control: CanvasComponent
@@ -162,7 +163,7 @@
                                 Height: =Parent.Height * 0.6
                                 Text: ="Tạo đơn mới"
                                 Variant: ="Primary"
-                                Size: ="Medium"
+                                Size: =FontSizes.Medium
                                 OnClick: |
                                   =Navigate(LeaveRequestScreen)
 
@@ -198,7 +199,7 @@
                                 Color: =RGBA(17, 24, 39, 1)
                                 Font: =Font.'Open Sans'
                                 FontWeight: =FontWeight.Bold
-                                Size: =12
+                                Size: =FontSizes.Base
                           
                           - 'MyLeaves.Stats.Cards.Container':
                               Control: GroupContainer
@@ -297,7 +298,7 @@
                                 Color: =RGBA(17, 24, 39, 1)
                                 Font: =Font.'Open Sans'
                                 FontWeight: =FontWeight.Bold
-                                Size: =12
+                                Size: =FontSizes.Base
                                 
                           - 'MyLeaves.Filter.Controls.Container':
                               Control: GroupContainer
@@ -320,7 +321,7 @@
                                       Color: =RGBA(55, 65, 81, 1)
                                       Font: =Font.'Open Sans'
                                       FontWeight: =FontWeight.Semibold
-                                      Size: =11
+                                      Size: =FontSizes.Small
                                       Align: =Align.Left
                                       
                                 - 'MyLeaves.Filter.StatusDropdown':
@@ -337,7 +338,7 @@
                                       Fill: =RGBA(255, 255, 255, 1)
                                       Color: =RGBA(55, 65, 81, 1)
                                       Font: =Font.'Open Sans'
-                                      Size: =11
+                                      Size: =FontSizes.Small
                                       OnChange: |
                                         =Set(varSelectedStatus, If(Self.Selected.Value = "Tất cả", "", Self.Selected.Value))
 
@@ -353,7 +354,7 @@
                                       Color: =RGBA(55, 65, 81, 1)
                                       Font: =Font.'Open Sans'
                                       FontWeight: =FontWeight.Semibold
-                                      Size: =11
+                                      Size: =FontSizes.Small
                                       Align: =Align.Left
                                       
                                 - 'MyLeaves.Filter.DateFrom':
@@ -368,7 +369,7 @@
                                       Fill: =RGBA(255, 255, 255, 1)
                                       Color: =RGBA(55, 65, 81, 1)
                                       Font: =Font.'Open Sans'
-                                      Size: =11
+                                      Size: =FontSizes.Small
                                       OnChange: |
                                         =Set(varFilterDateFrom, Self.SelectedDate)
 
@@ -384,7 +385,7 @@
                                       Color: =RGBA(55, 65, 81, 1)
                                       Font: =Font.'Open Sans'
                                       FontWeight: =FontWeight.Semibold
-                                      Size: =11
+                                      Size: =FontSizes.Small
                                       Align: =Align.Left
                                       
                                 - 'MyLeaves.Filter.DateTo':
@@ -399,7 +400,7 @@
                                       Fill: =RGBA(255, 255, 255, 1)
                                       Color: =RGBA(55, 65, 81, 1)
                                       Font: =Font.'Open Sans'
-                                      Size: =11
+                                      Size: =FontSizes.Small
                                       OnChange: |
                                         =Set(varFilterDateTo, Self.SelectedDate)
 
@@ -414,7 +415,7 @@
                                       Height: =Parent.Height
                                       Text: ="Xóa bộ lọc"
                                       Variant: ="Outline"
-                                      Size: ="Small"
+                                      Size: =FontSizes.Small
                                       OnClick: |
                                         =Set(varSelectedStatus, ""); Set(varFilterDateFrom, Blank()); Set(varFilterDateTo, Blank()); Reset('MyLeaves.Filter.StatusDropdown'); Reset('MyLeaves.Filter.DateFrom'); Reset('MyLeaves.Filter.DateTo')
 
@@ -429,7 +430,7 @@
                                 Text: =Concatenate("Hiển thị ", CountRows(Filter(varCurrentUserLeaves, And(Or(IsBlank(varSelectedStatus), TrangThai.Value = varSelectedStatus), Or(IsBlank(varFilterDateFrom), NgayBatDau >= varFilterDateFrom), Or(IsBlank(varFilterDateTo), NgayKetThuc <= varFilterDateTo)))), " " & "kết quả")
                                 Color: =RGBA(107, 114, 128, 1)
                                 Font: =Font.'Open Sans'
-                                Size: =10
+                                Size: =FontSizes.Small
                                 Align: =Align.Left
 
         # Action Bar for selected records
@@ -467,7 +468,7 @@
                     Height: =Parent.Height * 0.7
                     Text: ="Xem chi tiết"
                     Variant: ="Primary"
-                    Size: ="Small"
+                    Size: =FontSizes.Small
                     IsDisabled: =IsBlank(varSelectedLeave)
                     OnClick: |
                       =Set(varShowDetails, true)
@@ -482,7 +483,7 @@
                     Height: =Parent.Height * 0.7
                     Text: ="Hủy đơn"
                     Variant: ="Danger"
-                    Size: ="Small"
+                    Size: =FontSizes.Small
                     IsDisabled: =Or(IsBlank(varSelectedLeave), Not(Or(varSelectedLeave.TrangThai.Value = "ChoDuyetCap1", varSelectedLeave.TrangThai.Value = "ChoDuyetCap2", varSelectedLeave.TrangThai.Value = "ChoDuyetCap3")))
                     OnClick: |
                       =Set(varShowCancelConfirm, true)
@@ -497,7 +498,7 @@
                     Height: =Parent.Height * 0.7
                     Text: ="Bỏ chọn"
                     Variant: ="Outline"
-                    Size: ="Small"
+                    Size: =FontSizes.Small
                     OnClick: |
                       =Set(varSelectedLeave, Blank());
                       Set(varRecordSelected, false)
@@ -513,7 +514,7 @@
                     Color: =RGBA(34, 197, 94, 1)
                     Font: =Font.'Open Sans'
                     FontWeight: =FontWeight.Bold
-                    Size: =16
+                    Size: =FontSizes.Large
                     Align: =Align.Center
 
         # DataTable - Direct Screen child following rules
@@ -529,13 +530,13 @@
               BorderColor: =RGBA(229, 231, 235, 1)
               BorderThickness: =1
               Font: =Font.'Open Sans'
-              Size: =11
+              Size: =FontSizes.Small
               Color: =RGBA(55, 65, 81, 1)
               HeadingColor: =RGBA(255, 255, 255, 1)
               HeadingFill: =RGBA(59, 130, 246, 1)
               HeadingFont: =Font.'Open Sans'
               HeadingFontWeight: =FontWeight.Bold
-              HeadingSize: =12
+              HeadingSize: =FontSizes.Base
               NoDataText: ="Không có đơn nghỉ phép nào"
             Children:
               - NgayBatDau_Column:
@@ -648,7 +649,7 @@
                           Color: =RGBA(255, 255, 255, 1)
                           Font: =Font.'Open Sans'
                           FontWeight: =FontWeight.Bold
-                          Size: =Parent.Height * 0.3
+                          Size: =FontSizes.Medium
                           
                     - 'MyLeaves.Details.CloseButton':
                         Control: CanvasComponent
@@ -660,7 +661,7 @@
                           Height: =Parent.Height * 0.6
                           Text: ="Đóng"
                           Variant: ="Outline"
-                          Size: ="Small"
+                          Size: =FontSizes.Small
                           OnClick: |
                             =Set(varShowDetails, false)
                           
@@ -688,7 +689,7 @@
                           Color: =RGBA(17, 24, 39, 1)
                           Font: =Font.'Open Sans'
                           FontWeight: =FontWeight.Semibold
-                          Size: =12
+                          Size: =FontSizes.Base
                           
                     - 'MyLeaves.Details.MaDon.Value':
                         Control: Label
@@ -700,7 +701,7 @@
                           Text: =If(Not(IsBlank(varSelectedLeave)), varSelectedLeave.MaDon, "")
                           Color: =RGBA(55, 65, 81, 1)
                           Font: =Font.'Open Sans'
-                          Size: =12
+                          Size: =FontSizes.Base
                           
                     # Loại nghỉ
                     - 'MyLeaves.Details.LoaiNghi.Label':
@@ -714,7 +715,7 @@
                           Color: =RGBA(17, 24, 39, 1)
                           Font: =Font.'Open Sans'
                           FontWeight: =FontWeight.Semibold
-                          Size: =12
+                          Size: =FontSizes.Base
                           
                     - 'MyLeaves.Details.LoaiNghi.Value':
                         Control: Label
@@ -726,7 +727,7 @@
                           Text: =If(Not(IsBlank(varSelectedLeave)), LookUp(LoaiNghi, MaLoai = varSelectedLeave.MaLoai.Value).TenLoai, "")
                           Color: =RGBA(55, 65, 81, 1)
                           Font: =Font.'Open Sans'
-                          Size: =12
+                          Size: =FontSizes.Base
                           
                     # Thời gian nghỉ
                     - 'MyLeaves.Details.ThoiGian.Label':
@@ -740,7 +741,7 @@
                           Color: =RGBA(17, 24, 39, 1)
                           Font: =Font.'Open Sans'
                           FontWeight: =FontWeight.Semibold
-                          Size: =12
+                          Size: =FontSizes.Base
                           
                     - 'MyLeaves.Details.ThoiGian.Value':
                         Control: Label
@@ -752,7 +753,7 @@
                           Text: =If(Not(IsBlank(varSelectedLeave)), Text(varSelectedLeave.NgayBatDau, "dd/mm/yyyy") & " - " & Text(varSelectedLeave.NgayKetThuc, "dd/mm/yyyy"), "")
                           Color: =RGBA(55, 65, 81, 1)
                           Font: =Font.'Open Sans'
-                          Size: =12
+                          Size: =FontSizes.Base
                           
                     # Số ngày nghỉ
                     - 'MyLeaves.Details.SoNgay.Label':
@@ -766,7 +767,7 @@
                           Color: =RGBA(17, 24, 39, 1)
                           Font: =Font.'Open Sans'
                           FontWeight: =FontWeight.Semibold
-                          Size: =12
+                          Size: =FontSizes.Base
                           
                     - 'MyLeaves.Details.SoNgay.Value':
                         Control: Label
@@ -778,7 +779,7 @@
                           Text: =If(Not(IsBlank(varSelectedLeave)), varSelectedLeave.SoNgayNghi & " ngày", "")
                           Color: =RGBA(55, 65, 81, 1)
                           Font: =Font.'Open Sans'
-                          Size: =12
+                          Size: =FontSizes.Base
                           
                     # Trạng thái
                     - 'MyLeaves.Details.TrangThai.Label':
@@ -792,7 +793,7 @@
                           Color: =RGBA(17, 24, 39, 1)
                           Font: =Font.'Open Sans'
                           FontWeight: =FontWeight.Semibold
-                          Size: =12
+                          Size: =FontSizes.Base
                           
                     - 'MyLeaves.Details.TrangThai.Value':
                         Control: Label
@@ -805,7 +806,7 @@
                           Color: =If(And(Not(IsBlank(varSelectedLeave)), Not(IsBlank(varSelectedLeave.TrangThai))), Switch(varSelectedLeave.TrangThai.Value, "ChoDuyetCap1", RGBA(180, 83, 9, 1), "ChoDuyetCap2", RGBA(180, 83, 9, 1), "ChoDuyetCap3", RGBA(180, 83, 9, 1), "DaDuyet", RGBA(21, 128, 61, 1), "TuChoi", RGBA(220, 38, 38, 1), "Huy", RGBA(107, 114, 128, 1), RGBA(55, 65, 81, 1)), RGBA(55, 65, 81, 1))
                           Font: =Font.'Open Sans'
                           FontWeight: =FontWeight.Semibold
-                          Size: =12
+                          Size: =FontSizes.Base
                           
                     # Buổi nghỉ
                     - 'MyLeaves.Details.BuoiNghi.Label':
@@ -819,7 +820,7 @@
                           Color: =RGBA(17, 24, 39, 1)
                           Font: =Font.'Open Sans'
                           FontWeight: =FontWeight.Semibold
-                          Size: =12
+                          Size: =FontSizes.Base
                           
                     - 'MyLeaves.Details.BuoiNghi.Value':
                         Control: Label
@@ -831,7 +832,7 @@
                           Text: =If(Not(IsBlank(varSelectedLeave)), Switch(varSelectedLeave.BuoiNghi.Value, "CaNgay", "Cả ngày", "Sang", "Buổi sáng", "Chieu", "Buổi chiều", varSelectedLeave.BuoiNghi.Value), "")
                           Color: =RGBA(55, 65, 81, 1)
                           Font: =Font.'Open Sans'
-                          Size: =12
+                          Size: =FontSizes.Base
                           
                     # Lý do nghỉ
                     - 'MyLeaves.Details.LyDo.Label':
@@ -845,7 +846,7 @@
                           Color: =RGBA(17, 24, 39, 1)
                           Font: =Font.'Open Sans'
                           FontWeight: =FontWeight.Semibold
-                          Size: =12
+                          Size: =FontSizes.Base
                           
                     - 'MyLeaves.Details.LyDo.Value':
                         Control: Label
@@ -857,7 +858,7 @@
                           Text: =If(Not(IsBlank(varSelectedLeave)), varSelectedLeave.LyDo, "")
                           Color: =RGBA(55, 65, 81, 1)
                           Font: =Font.'Open Sans'
-                          Size: =12
+                          Size: =FontSizes.Base
                           Wrap: =true
 
         # Cancel Confirmation Modal Overlay
@@ -910,7 +911,7 @@
                           Color: =RGBA(255, 255, 255, 1)
                           Font: =Font.'Open Sans'
                           FontWeight: =FontWeight.Bold
-                          Size: =Parent.Height * 0.35
+                          Size: =FontSizes.Medium
                           Align: =Align.Center
                     
               - 'MyLeaves.Cancel.Content':
@@ -932,7 +933,7 @@
                           Text: =Concatenate("Bạn có chắc chắn muốn hủy đơn nghỉ phép từ ngày ", If(Not(IsBlank(varSelectedLeave)), Text(varSelectedLeave.NgayBatDau, "dd/mm/yyyy"), ""), " đến ", If(Not(IsBlank(varSelectedLeave)), Text(varSelectedLeave.NgayKetThuc, "dd/mm/yyyy"), ""), "?", Char(10), Char(10), "Hành động này không thể hoàn tác.")
                           Color: =RGBA(55, 65, 81, 1)
                           Font: =Font.'Open Sans'
-                          Size: =Parent.Height * 0.15
+                          Size: =FontSizes.Small
                           Align: =Align.Center
                           Wrap: =true
                     
@@ -955,7 +956,7 @@
                           Height: =Parent.Height * 0.8
                           Text: ="Không"
                           Variant: ="Outline"
-                          Size: ="Medium"
+                          Size: =FontSizes.Medium
                           OnClick: |
                             =Set(varShowCancelConfirm, false)
                           
@@ -969,7 +970,7 @@
                           Height: =Parent.Height * 0.8
                           Text: ="Hủy đơn"
                           Variant: ="Danger"
-                          Size: ="Medium"
+                          Size: =FontSizes.Medium
                           OnClick: |
                             =If(Not(IsBlank(varSelectedLeave)),
                               Patch(DonNghiPhep, varSelectedLeave, {TrangThai: {Value: "Huy"}});
