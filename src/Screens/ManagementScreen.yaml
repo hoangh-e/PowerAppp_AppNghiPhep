@@ -268,6 +268,7 @@
                               Width: =Parent.Width * 0.15
                               Height: =Parent.Height * 0.7
                               Text: ="Người dùng"
+                              Variant: =If(varSelectedManagementTab = "Users", "Primary", "Outline")
                               Size: =FontSizes.Small
                               OnClick: |
                                 =Set(varSelectedManagementTab, "Users");
@@ -283,6 +284,7 @@
                               Width: =Parent.Width * 0.15
                               Height: =Parent.Height * 0.7
                               Text: ="Số ngày phép"
+                              Variant: =If(varSelectedManagementTab = "LeaveBalance", "Primary", "Outline")
                               Size: =FontSizes.Small
                               OnClick: |
                                 =Set(varSelectedManagementTab, "LeaveBalance");
@@ -298,6 +300,7 @@
                               Width: =Parent.Width * 0.15
                               Height: =Parent.Height * 0.7
                               Text: ="Ngày nghỉ lễ"
+                              Variant: =If(varSelectedManagementTab = "Holidays", "Primary", "Outline")
                               Size: =FontSizes.Small
                               OnClick: |
                                 =Set(varSelectedManagementTab, "Holidays");
@@ -313,6 +316,7 @@
                               Width: =Parent.Width * 0.15
                               Height: =Parent.Height * 0.7
                               Text: ="Quy trình"
+                              Variant: =If(varSelectedManagementTab = "Workflow", "Primary", "Outline")
                               Size: =FontSizes.Small
                               OnClick: |
                                 =Set(varSelectedManagementTab, "Workflow");
@@ -398,6 +402,7 @@
                                           Width: =Parent.Width * 0.12
                                           Height: =Parent.Height * 0.6
                                           Text: ="Thêm"
+                                          Variant: ="Primary"
                                           Size: =FontSizes.Medium
                                           OnClick: |
                                             =Set(varIsEditingUser, false);
@@ -421,6 +426,7 @@
                                           Width: =Parent.Width * 0.1
                                           Height: =Parent.Height * 0.6
                                           Text: ="Sửa"
+                                          Variant: ="Outline"
                                           Size: =FontSizes.Medium
                                           OnClick: |
                                             =If(varRecordSelected,
@@ -430,7 +436,7 @@
                                               Set(varUserFormEmail, varSelectedUserRecord.Email);
                                               Set(varUserFormDepartment, "");
                                               Set(varUserFormRole, "");
-                                              Set(varUserFormStatus, If(Not(IsBlank(varSelectedUserRecord.TrangThai.Value)), varSelectedUserRecord.TrangThai.Value, "HoatDong"));
+                                              Set(varUserFormStatus, If(Not(IsBlank(varSelectedUserRecord.TrangThai)), varSelectedUserRecord.TrangThai, "HoatDong"));
                                               Set(varIsUserFormOpen, true),
                                               Notify("Vui lòng chọn một người dùng để chỉnh sửa", NotificationType.Warning)
                                             )
@@ -444,6 +450,7 @@
                                           Width: =Parent.Width * 0.09
                                           Height: =Parent.Height * 0.6
                                           Text: ="Xóa"
+                                          Variant: ="Destructive"
                                           Size: =FontSizes.Medium
                                           OnClick: |
                                             =If(varRecordSelected,
@@ -466,6 +473,7 @@
                                           Width: =Parent.Width * 0.1
                                           Height: =Parent.Height * 0.6
                                           Text: ="Làm mới"
+                                          Variant: ="Outline"
                                           Size: =FontSizes.Medium
                                           OnClick: |
                                             =Refresh(NguoiDung);
@@ -545,6 +553,7 @@
                                           Width: =Parent.Width * 0.2
                                           Height: =Parent.Height * 0.5
                                           Text: ="Xem template"
+                                          Variant: ="Outline"
                                           Size: =FontSizes.Small
                                           OnClick: |
                                             =Launch("https://cmmspronet.sharepoint.com/:x:/s/PMQLNP/EZJjRDPQHg5JqpwY6N1wchQBW9myTx__boa2PVcTWA3NcQ?e=16pqk1")
@@ -589,6 +598,7 @@
                                           Width: =Parent.Width * 0.09
                                           Height: =Parent.Height * 0.5
                                           Text: ="?"
+                                          Variant: ="Outline"
                                           Size: =FontSizes.Small
                                           OnClick: |
                                             =Notify("Hướng dẫn: 1) Click 'Xem template' để tải file mẫu. 2) Điền đúng định dạng: MaNhanVien, HoTen, Email, TongNgayPhep, Nam. 3) Click 'Import' để tải file đã hoàn thiện.", NotificationType.Information)
@@ -647,6 +657,7 @@
                                           Width: =Parent.Width * 0.22
                                           Height: =Parent.Height * 0.6
                                           Text: ="Thêm ngày lễ"
+                                          Variant: ="Primary"
                                           Size: =FontSizes.Medium
                                           OnClick: |
                                             =Set(varSelectedHoliday, {MaNgayLe: 0, TenNgayLe: "", Ngay: "", Nam: 2024, Buoi: "CaNgay"});
@@ -972,14 +983,14 @@
                   FieldDisplayName: ="Chức danh"
                   FieldName: ="ChucDanh"
                   Order: =4
-                  Text: =If(Not(IsBlank(ThisItem.ChucDanh.Value)), 
-                    Switch(ThisItem.ChucDanh.Value,
+                  Text: =If(Not(IsBlank(ThisItem.ChucDanh)), 
+                    Switch(ThisItem.ChucDanh,
                       "Nhân viên", "Nhân viên",
                       "Giám đốc khối", "Giám đốc khối", 
                       "Giám đốc điều hành", "Giám đốc điều hành",
                       "Chuyên viên", "Chuyên viên",
                       "Trưởng phòng", "Trưởng phòng",
-                      ThisItem.ChucDanh.Value),
+                      ThisItem.ChucDanh),
                     "Chưa cập nhật")
                   Width: =Parent.Width * 0.14
                   OnSelect: |
@@ -1008,11 +1019,11 @@
                   FieldDisplayName: ="Trạng thái"
                   FieldName: ="TrangThai"
                   Order: =6
-                  Text: =If(Not(IsBlank(ThisItem.TrangThai.Value)),
-                    Switch(ThisItem.TrangThai.Value,
+                  Text: =If(Not(IsBlank(ThisItem.TrangThai)),
+                    Switch(ThisItem.TrangThai,
                       "HoatDong", "Hoạt động",
                       "KhongHoatDong", "Không hoạt động",
-                      ThisItem.TrangThai.Value),
+                      ThisItem.TrangThai),
                     "Chưa cập nhật")
                   Width: =Parent.Width * 0.11
                   OnSelect: |
@@ -1151,7 +1162,7 @@
                   FieldDisplayName: ="Buổi"
                   FieldName: ="Buoi"
                   Order: =3
-                  Text: =ThisItem.Buoi.Value
+                  Text: =ThisItem.Buoi
             - Nam_Column3:
                 Control: DataTableColumn
                 Variant: Number
@@ -1229,7 +1240,7 @@
                   FieldName: ="Cap"
                   Order: =2
                   Text: |
-                    =Switch(ThisItem.Cap.Value,
+                    =Switch(ThisItem.Cap,
                       "1", "Cấp 1",
                       "2", "Cấp 2", 
                       "3", "Cấp 3",
@@ -1321,6 +1332,7 @@
                         Width: =Parent.Width * 0.12
                         Height: =Parent.Height * 0.6
                         Text: ="Đóng"
+                        Variant: ="Outline"
                         Size: =FontSizes.Small
                         OnClick: |
                           =Set(varShowImportModal, false)
@@ -1427,6 +1439,7 @@
                         Width: =Parent.Width * 0.45
                         Height: =Parent.Height * 0.8
                         Text: ="Hủy"
+                        Variant: ="Outline"
                         Size: =FontSizes.Medium
                         OnClick: |
                           =Set(varShowImportModal, false)
@@ -1478,6 +1491,7 @@
                         Width: =Parent.Width * 0.12
                         Height: =Parent.Height * 0.6
                         Text: ="Đóng"
+                        Variant: ="Outline"
                         Size: =FontSizes.Small
                         OnClick: |
                           =Set(varIsUserFormOpen, false)
@@ -1606,7 +1620,7 @@
                         BorderColor: =RGBA(226, 232, 240, 1)
                         BorderThickness: =1
                         OnChange: |
-                          =Set(varUserFormDepartment, Self.Selected.Value)
+                          =Set(varUserFormDepartment, Self.Selected)
 
                   # Role Field
                   - 'Management.UserForm.Role.Label':
@@ -1634,7 +1648,7 @@
                         BorderColor: =RGBA(226, 232, 240, 1)
                         BorderThickness: =1
                         OnChange: |
-                          =Set(varUserFormRole, Self.Selected.Value)
+                          =Set(varUserFormRole, Self.Selected)
 
                   # Status Field
                   - 'Management.UserForm.Status.Label':
@@ -1664,7 +1678,7 @@
                         BorderColor: =RGBA(226, 232, 240, 1)
                         BorderThickness: =1
                         OnChange: |
-                          =Set(varUserFormStatus, Self.Selected.Value)
+                          =Set(varUserFormStatus, Self.Selected)
 
             # Form Actions
             - 'Management.UserForm.Actions':
@@ -1685,6 +1699,7 @@
                         Width: =Parent.Width * 0.45
                         Height: =Parent.Height * 0.8
                         Text: =If(varIsEditingUser, "Cập nhật", "Thêm mới")
+                        Variant: ="Primary"
                         Size: =FontSizes.Medium
                         OnClick: |
                           =If(varIsEditingUser,
@@ -1714,6 +1729,7 @@
                         Width: =Parent.Width * 0.45
                         Height: =Parent.Height * 0.8
                         Text: ="Hủy"
+                        Variant: ="Outline"
                         Size: =FontSizes.Medium
                         OnClick: |
                           =Set(varIsUserFormOpen, false)
@@ -1765,6 +1781,7 @@
                         Width: =Parent.Width * 0.12
                         Height: =Parent.Height * 0.6
                         Text: ="Đóng"
+                        Variant: ="Outline"
                         Size: =FontSizes.Small
                         OnClick: |
                           =Set(varIsHolidayFormOpen, false)
@@ -1864,7 +1881,7 @@
                         BorderColor: =RGBA(226, 232, 240, 1)
                         BorderThickness: =1
                         OnChange: |
-                          =Set(varHolidayFormSession, Self.Selected.Value)
+                          =Set(varHolidayFormSession, Self.Selected)
 
                   # Year Field
                   - 'Management.HolidayForm.Year.Label':
@@ -1915,6 +1932,7 @@
                         Width: =Parent.Width * 0.45
                         Height: =Parent.Height * 0.8
                         Text: ="Thêm ngày lễ"
+                        Variant: ="Primary"
                         Size: =FontSizes.Medium
                         OnClick: |
                           =If(And(Not(IsBlank(varHolidayFormName)), Not(IsBlank(varHolidayFormDate))),
@@ -1934,6 +1952,7 @@
                         Width: =Parent.Width * 0.45
                         Height: =Parent.Height * 0.8
                         Text: ="Hủy"
+                        Variant: ="Outline"
                         Size: =FontSizes.Medium
                         OnClick: |
                           =Set(varIsHolidayFormOpen, false)

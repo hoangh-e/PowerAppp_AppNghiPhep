@@ -98,80 +98,80 @@ ComponentDefinitions:
             Y: =Parent.Height * 0.12
             Width: =Parent.Height * 0.28
             Height: =Parent.Height * 0.28
-            Fill: =ColorFade(StatsCardComponent.Color, 0.9)
-            BorderColor: =ColorFade(StatsCardComponent.Color, 0.8)
+                              Fill: =ColorFade(StatsCardComponent.Color, 0.9)
+                              BorderColor: =ColorFade(StatsCardComponent.Color, 0.8)
             BorderThickness: =2
-            
+                              
       # Main Icon - Centered trong container
-      - 'StatsCard.Icon':
-          Control: Classic/Icon
-          Properties:
+                        - 'StatsCard.Icon':
+                            Control: Classic/Icon
+                            Properties:
             X: =Parent.Width * 0.08 + (Parent.Height * 0.28 - Parent.Height * 0.14) / 2
             Y: =Parent.Height * 0.12 + (Parent.Height * 0.28 - Parent.Height * 0.14) / 2
             Width: =Parent.Height * 0.14
             Height: =Parent.Height * 0.14
-            Icon: =Switch(StatsCardComponent.Icon,
-              "CalendarBlank", Icon.CalendarBlank,
-              "CheckBadge", Icon.CheckBadge,
-              "Clock", Icon.Clock,
-              "Cancel", Icon.Cancel,
-              "People", Icon.People,
+                              Icon: =Switch(StatsCardComponent.Icon,
+                                "CalendarBlank", Icon.CalendarBlank,
+                                "CheckBadge", Icon.CheckBadge,
+                                "Clock", Icon.Clock,
+                                "Cancel", Icon.Cancel,
+                                "People", Icon.People,
               "ChevronUp", Icon.ChevronUp,
               "ChevronDown", Icon.ChevronDown,
               "DetailList", Icon.DetailList,
-              Icon.CalendarBlank)
-            Color: =StatsCardComponent.Color
-            
+                                Icon.CalendarBlank)
+                              Color: =StatsCardComponent.Color
+                              
       # Content Area - Right side với spacing tốt
       # Main Value - Typography hierarchy rõ ràng
-      - 'StatsCard.Value':
-          Control: Label
-          Properties:
+                        - 'StatsCard.Value':
+                            Control: Label
+                            Properties:
             X: =Parent.Width * 0.42
             Y: =Parent.Height * 0.08
             Width: =Parent.Width * 0.5
             Height: =Parent.Height * 0.22
-            Text: =Text(StatsCardComponent.Value)
-            Color: =RGBA(17, 24, 39, 1)
-            Font: =Font.'Open Sans'
-            FontWeight: =FontWeight.Bold
+                              Text: =Text(StatsCardComponent.Value)
+                              Color: =RGBA(17, 24, 39, 1)
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Bold
             Size: =Parent.Height * 0.12
-            Align: =Align.Left
+                              Align: =Align.Left
             VerticalAlign: =VerticalAlign.Middle
-            
+                              
       # Title - Căn lề với Value
-      - 'StatsCard.Title':
-          Control: Label
-          Properties:
+                        - 'StatsCard.Title':
+                            Control: Label
+                            Properties:
             X: =Parent.Width * 0.42
             Y: =Parent.Height * 0.32
             Width: =Parent.Width * 0.5
             Height: =Parent.Height * 0.18
-            Text: =StatsCardComponent.Title
+                              Text: =StatsCardComponent.Title
             Color: =RGBA(75, 85, 99, 1)
-            Font: =Font.'Open Sans'
-            FontWeight: =FontWeight.Semibold
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Semibold
             Size: =Parent.Height * 0.065
-            Align: =Align.Left
+                              Align: =Align.Left
             VerticalAlign: =VerticalAlign.Top
-            
+                              
       # Subtitle - Spacing consistent
-      - 'StatsCard.Subtitle':
-          Control: Label
-          Properties:
+                        - 'StatsCard.Subtitle':
+                            Control: Label
+                            Properties:
             X: =Parent.Width * 0.42
             Y: =Parent.Height * 0.52
             Width: =Parent.Width * 0.5
             Height: =Parent.Height * 0.14
-            Text: =StatsCardComponent.Subtitle
-            Color: =RGBA(156, 163, 175, 1)
-            Font: =Font.'Open Sans'
+                              Text: =StatsCardComponent.Subtitle
+                              Color: =RGBA(156, 163, 175, 1)
+                              Font: =Font.'Open Sans'
             FontWeight: =FontWeight.Normal
             Size: =Parent.Height * 0.05
-            Align: =Align.Left
+                              Align: =Align.Left
             VerticalAlign: =VerticalAlign.Top
-            Visible: =Not(IsBlank(StatsCardComponent.Subtitle))
-            
+                              Visible: =Not(IsBlank(StatsCardComponent.Subtitle))
+                              
       # Progress Section - Bottom area với margin đều
       # Progress Bar Background
       - 'StatsCard.Progress.Background':
@@ -188,7 +188,7 @@ ComponentDefinitions:
       # Progress Bar Fill - Proportional width
       - 'StatsCard.Progress.Fill':
           Control: Rectangle
-          Properties:
+                      Properties:
             X: =Parent.Width * 0.08
             Y: =Parent.Height * 0.78
             Width: =Parent.Width * 0.84 * Min(StatsCardComponent.Value / Max(StatsCardComponent.MaxValue, 1), 1)
@@ -199,9 +199,9 @@ ComponentDefinitions:
             
       # Trend Section - Alternative to progress với alignment tốt
       # Trend Icon - Left aligned với content area
-      - 'StatsCard.Trend.Icon':
-          Control: Classic/Icon
-          Properties:
+                        - 'StatsCard.Trend.Icon':
+                            Control: Classic/Icon
+                            Properties:
             X: =Parent.Width * 0.08
             Y: =Parent.Height * 0.75
             Width: =Parent.Height * 0.08
@@ -217,39 +217,39 @@ ComponentDefinitions:
                 RGBA(239, 68, 68, 1), 
                 RGBA(156, 163, 175, 1)))
             Visible: =StatsCardComponent.ShowTrend
-            
+                              
       # Trend Text - Aligned với icon
-      - 'StatsCard.Trend.Text':
-          Control: Label
-          Properties:
+                        - 'StatsCard.Trend.Text':
+                            Control: Label
+                            Properties:
             X: =Parent.Width * 0.18
             Y: =Parent.Height * 0.75
             Width: =Parent.Width * 0.74
             Height: =Parent.Height * 0.08
-            Text: =StatsCardComponent.TrendText
+                              Text: =StatsCardComponent.TrendText
             Color: =If(StatsCardComponent.TrendValue > 0, 
               RGBA(34, 197, 94, 1), 
               If(StatsCardComponent.TrendValue < 0, 
                 RGBA(239, 68, 68, 1), 
                 RGBA(156, 163, 175, 1)))
-            Font: =Font.'Open Sans'
-            FontWeight: =FontWeight.Semibold
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Semibold
             Size: =Parent.Height * 0.045
-            Align: =Align.Left
+                              Align: =Align.Left
             VerticalAlign: =VerticalAlign.Middle
             Visible: =StatsCardComponent.ShowTrend
             
       # Click Overlay - Invisible overlay cho toàn bộ card
       - 'StatsCard.ClickOverlay':
-          Control: Rectangle
-          Properties:
-            X: =0
-            Y: =0
-            Width: =Parent.Width
-            Height: =Parent.Height
-            Fill: =RGBA(0, 0, 0, 0)
-            BorderColor: =RGBA(0, 0, 0, 0)
-            BorderThickness: =0
-            Visible: =StatsCardComponent.IsClickable
-            OnSelect: |
-              =StatsCardComponent.OnClick() 
+                            Control: Rectangle
+                Properties:
+                  X: =0
+                  Y: =0
+                  Width: =Parent.Width
+                  Height: =Parent.Height
+                  Fill: =RGBA(0, 0, 0, 0)
+                  BorderColor: =RGBA(0, 0, 0, 0)
+                  BorderThickness: =0
+                  Visible: =StatsCardComponent.IsClickable
+                  OnSelect: |
+                    =StatsCardComponent.OnClick() 
