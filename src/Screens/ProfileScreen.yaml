@@ -4,14 +4,40 @@ Screens:
       Fill: =RGBA(248, 250, 252, 1)
       OnVisible: |
         =Set(varActiveScreen, "Profile");
+        //Permission checks using inline bitwise expressions
+        Set(varUserPermissions, {
+          CanViewPersonalLeaves: UserCanViewPersonalLeaves,
+          CanCreatePersonalLeaves: UserCanViewPersonalLeaves,
+          CanViewDashboard: UserCanViewDashboard,
+          CanManageUsers: UserCanManageUsers
+        });
         Set(varIsEditing, false);
         Set(varEditedName, UserSession.HoTen);
         Set(varEditedEmail, UserSession.Email);
         Set(varEditedPhone, "");
             Set(varIsSaving, false);
-        Set(varCurrentUser, LookUp(NguoiDung, Title = UserSession.Id));
-        Set(varUserLeaveBalance, LookUp(SoNgayPhep, And(MaNhanVien.Value = UserSession.Id, Nam = Year(Today()))));
-        Set(varUserLeaveHistory, Filter(DonNghiPhep, MaNguoiDung.Value = UserSession.Id));
+        //Load user data with fallback demo data
+        Set(varCurrentUser, 
+          If(IsUserAuthenticated,
+            LookUp(NguoiDung, Title = UserSession.Id),
+            {Title: UserSession.Id, HoTen: UserSession.HoTen, Email: UserSession.Email, MaDonVi: UserSession.MaDonVi, ChucDanh: UserSession.ChucDanh, TrangThai: "HoatDong"}
+          )
+        );
+        Set(varUserLeaveBalance, 
+          If(IsUserAuthenticated,
+            LookUp(SoNgayPhep, And(MaNhanVien.Value = UserSession.Id, Nam = Year(Today()))),
+            {MaNhanVien: UserSession.Id, Nam: Year(Today()), TongNgayDuocPhep: 12, SoNgayDaNghi: 3, SoNgayConLai: 9}
+          )
+        );
+        Set(varUserLeaveHistory, 
+          If(IsUserAuthenticated,
+            Filter(DonNghiPhep, MaNguoiDung.Value = UserSession.Id),
+            Table(
+              {MaDon: "LR001", NgayBatDau: Date(2024,11,15), NgayKetThuc: Date(2024,11,15), SoNgayNghi: 1, LyDo: "Nghỉ ốm", TrangThai: "DaDuyet"},
+              {MaDon: "LR002", NgayBatDau: Date(2024,10,10), NgayKetThuc: Date(2024,10,12), SoNgayNghi: 3, LyDo: "Nghỉ phép", TrangThai: "DaDuyet"}
+            )
+          )
+        );
         Set(varSelectedTab, "Info")
     Children:
       # Header Component

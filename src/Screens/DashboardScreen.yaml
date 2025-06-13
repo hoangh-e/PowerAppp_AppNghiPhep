@@ -8,7 +8,23 @@
         //Initialize navigation variables
         Set(varNavCollapsed, false); 
         Set(varMobileMenuOpen, false);
-        //Use UserSession data directly (no fallback demo)
+        
+        //Check user permissions using inline bitwise expressions
+        Set(varUserPermissions, {
+          CanViewPersonalLeaves: UserCanViewPersonalLeaves,
+          CanCreateSpecialLeaves: UserCanCreateSpecialLeaves,
+          CanViewTeamLeaves: UserCanViewTeamLeaves,
+          CanViewAllLeaves: UserCanViewAllLeaves,
+          CanApproveLevel1: UserCanApproveLevel1,
+          CanApproveLevel2: UserCanApproveLevel2,
+          CanApproveLevel3: UserCanApproveLevel3,
+          CanExportReports: UserCanExportReports,
+          CanManageUsers: UserCanManageUsers,
+          UserPermissionLevel: GetUserPermissionLevel,
+          CanAccessManagement: CanAccessManagement
+        });
+        
+        //Use UserSession data directly
         Set(varUser, {
           Id: UserSession.Id,
           Name: UserSession.HoTen, 
@@ -17,38 +33,94 @@
           MaVaiTro: UserSession.MaVaiTro,
           HoTen: UserSession.HoTen,
           ChucDanh: UserSession.ChucDanh,
-          MaDonVi: UserSession.MaDonVi
+          MaDonVi: UserSession.MaDonVi,
+          Permission: UserSession.Permission
         });
-        //Load dashboard data based on user
+        
+        //Load dashboard data - Dashboard luôn hiển thị cho tất cả user đã đăng nhập
+        //Chỉ điều chỉnh dữ liệu hiển thị dựa trên quyền cụ thể
         Set(varDashboardStats, {
-          TotalLeave: 12, 
-          UsedLeave: 3, 
-          RemainingLeave: 9, 
-          PendingRequests: 1, 
-          ApprovedRequests: 2, 
-          RejectedRequests: 0
+          TotalLeave: If(varUserPermissions.CanViewPersonalLeaves, 12, 0), 
+          UsedLeave: If(varUserPermissions.CanViewPersonalLeaves, 3, 0), 
+          RemainingLeave: If(varUserPermissions.CanViewPersonalLeaves, 9, 0), 
+          PendingRequests: If(varUserPermissions.CanViewPersonalLeaves, 1, 0), 
+          ApprovedRequests: If(varUserPermissions.CanViewPersonalLeaves, 2, 0), 
+          RejectedRequests: If(varUserPermissions.CanViewPersonalLeaves, 0, 0)
         }); 
-        Set(varPendingApprovalsCount, 0);
-        Set(varMyRecentLeaves, Table(
-          {
-            ID: "REQ001",
-            NgayBatDau: DateAdd(Today(), -5), 
-            NgayKetThuc: DateAdd(Today(), -4), 
-            SoNgayNghi: 2, 
-            TrangThai: "DaDuyet",
-            MaLoai: "Annual",
-            MaNguoiDung: UserSession.Id
-          },
-          {
-            ID: "REQ002",
-            NgayBatDau: DateAdd(Today(), -10), 
-            NgayKetThuc: DateAdd(Today(), -8), 
-            SoNgayNghi: 3, 
-            TrangThai: "ChoDuyetCap1",
-            MaLoai: "Sick",
-            MaNguoiDung: UserSession.Id
-          }
-        ));
+        
+        //Load pending approvals count from SharePoint based on user permissions
+        Set(varPendingApprovalsCount, 
+          If(Or(UserCanApproveLevel1, UserCanApproveLevel2, UserCanApproveLevel3),
+            CountRows(
+              Filter(DonNghiPhep, 
+                Or(
+                  And(UserCanApproveLevel1, TrangThai.Value = "ChoDuyetCap1"),
+                  And(UserCanApproveLevel2, TrangThai.Value = "ChoDuyetCap2"), 
+                  And(UserCanApproveLevel3, TrangThai.Value = "ChoDuyetCap3")
+                )
+              )
+            ),
+            0
+          )
+        );
+        
+        //Initialize recent leaves collection
+        If(And(varUserPermissions.CanViewPersonalLeaves, Not(IsBlank(UserSession.Id))),
+          //Load from SharePoint - use direct data
+          ClearCollect(colMyRecentLeaves,
+            Sort(
+              Filter(DonNghiPhep, 
+                And(
+                  MaNguoiDung.Value = UserSession.Id,
+                  NgayBatDau >= DateAdd(Today(), -30, TimeUnit.Days)
+                )
+              ),
+              NgayBatDau,
+              SortOrder.Descending
+            )
+          ),
+          If(varUserPermissions.CanViewPersonalLeaves,
+            // Test data với cấu trúc giống hệt SharePoint
+            ClearCollect(colMyRecentLeaves,
+              {
+                ID: 1,
+                Title: "Nghỉ phép tháng 1",
+                NgayBatDau: DateAdd(Today(), -10, TimeUnit.Days),
+                NgayKetThuc: DateAdd(Today(), -8, TimeUnit.Days),
+                SoNgayNghi: 3,
+                TrangThai: { Value: "DaDuyet" },
+                LyDo: "Nghỉ phép gia đình",
+                NguoiDuyet: { Value: "Admin" },
+                NgayTao: DateAdd(Today(), -11, TimeUnit.Days)
+              },
+              {
+                ID: 2,
+                Title: "Nghỉ phép tháng 2",
+                NgayBatDau: DateAdd(Today(), -5, TimeUnit.Days),
+                NgayKetThuc: DateAdd(Today(), -3, TimeUnit.Days),
+                SoNgayNghi: 3,
+                TrangThai: { Value: "ChoDuyetCap1" },
+                LyDo: "Nghỉ phép cá nhân",
+                NguoiDuyet: { Value: "" },
+                NgayTao: DateAdd(Today(), -6, TimeUnit.Days)
+              },
+              {
+                ID: 3,
+                Title: "Nghỉ phép tháng 3",
+                NgayBatDau: DateAdd(Today(), -2, TimeUnit.Days),
+                NgayKetThuc: DateAdd(Today(), -1, TimeUnit.Days),
+                SoNgayNghi: 2,
+                TrangThai: { Value: "TuChoi" },
+                LyDo: "Nghỉ phép khẩn cấp",
+                NguoiDuyet: { Value: "Manager" },
+                NgayTao: DateAdd(Today(), -3, TimeUnit.Days)
+              }
+            ),
+            //No permission - empty collection
+            ClearCollect(colMyRecentLeaves)
+          )
+        );
+        
         //Start authentication check
         Set(varAuthTimerStart, true)
     Children:
@@ -139,8 +211,7 @@
               =Set(varNavCollapsed, !varNavCollapsed)
             
       - 'Dashboard.Content.Container':    
-          Control: GroupContainer
-          Variant: ManualLayout
+          Control: Container
           Properties:
             X: ='Dashboard.Navigation'.Width
             Y: ='Dashboard.Header'.Height
@@ -148,8 +219,7 @@
             Height: =Parent.Height - 'Dashboard.Header'.Height
           Children:
             - 'Dashboard.Content.Padded':
-                Control: GroupContainer
-                Variant: ManualLayout
+                Control: Container
                 Properties:
                   X: =Parent.Width * 0.01
                   Y: =Parent.Height * 0.01
@@ -157,8 +227,7 @@
                   Height: =Parent.Height * 0.98
                 Children:
                   - 'Dashboard.Content.Welcome':
-                      Control: GroupContainer
-                      Variant: ManualLayout
+                      Control: Container
                       Properties:
                         X: =0
                         Y: =0
@@ -183,7 +252,7 @@
                               Y: =Parent.Height * 0.25
                               Width: =Parent.Height * 0.2
                               Height: =Parent.Height * 0.2
-                              Icon: =Icon.DetailList
+                              Icon: =Icon.Home
                               Color: =RGBA(59, 130, 246, 1)
                               
                         - 'Dashboard.Content.Title':
@@ -212,13 +281,13 @@
                               Size: =FontSizes.Small
             
             - 'Dashboard.Stats.Container':
-                Control: GroupContainer
-                Variant: ManualLayout
+                Control: Container
                 Properties:
                   X: =0
                   Y: ='Dashboard.Content.Welcome'.Y + 'Dashboard.Content.Welcome'.Height + Parent.Height * 0.015
                   Width: =Parent.Width
                   Height: =Parent.Height * 0.35
+                  Visible: =true
                 Children:
                   - 'Dashboard.Stats.Background':
                       Control: Rectangle
@@ -245,13 +314,13 @@
                         Size: =FontSizes.Medium
                         
                   - 'Dashboard.Stats.LeaveBalance.Container':
-                      Control: GroupContainer
-                      Variant: ManualLayout
+                      Control: Container
                       Properties:
                         X: =Parent.Width * 0.015
                         Y: =Parent.Height * 0.18
                         Width: =Parent.Width * 0.97
                         Height: =Parent.Height * 0.34
+                        Visible: =varUserPermissions.CanViewPersonalLeaves
                       Children:
                         - 'Dashboard.Stats.TotalLeave':
                             Control: CanvasComponent
@@ -259,11 +328,11 @@
                             Properties:
                               X: =0
                               Y: =0
-                              Width: =(Parent.Width - Parent.Width * 0.025) / 3
+                              Width: =Parent.Width / 3 - Parent.Width * 0.01
                               Height: =Parent.Height
                               Title: ="Tổng ngày phép"
                               Value: =varDashboardStats.TotalLeave
-                              Icon: ="CalendarBlank"
+                              Icon: =Icon.CalendarBlank
                               Color: =RGBA(59, 130, 246, 1)
                               ShowTrend: =false
                               
@@ -271,13 +340,13 @@
                             Control: CanvasComponent
                             ComponentName: StatsCardComponent
                             Properties:
-                              X: =(Parent.Width + Parent.Width * 0.0125) / 3
+                              X: =Parent.Width / 3 + Parent.Width * 0.005
                               Y: =0
-                              Width: =(Parent.Width - Parent.Width * 0.025) / 3
+                              Width: =Parent.Width / 3 - Parent.Width * 0.01
                               Height: =Parent.Height
                               Title: ="Đã sử dụng"
                               Value: =varDashboardStats.UsedLeave
-                              Icon: ="CheckBadge"
+                              Icon: =Icon.CheckBadge
                               Color: =RGBA(34, 197, 94, 1)
                               ShowTrend: =false
                               
@@ -285,19 +354,18 @@
                             Control: CanvasComponent
                             ComponentName: StatsCardComponent
                             Properties:
-                              X: =(Parent.Width + Parent.Width * 0.0125) * 2 / 3
+                              X: =Parent.Width * 2 / 3 + Parent.Width * 0.01
                               Y: =0
-                              Width: =(Parent.Width - Parent.Width * 0.025) / 3
+                              Width: =Parent.Width / 3 - Parent.Width * 0.01
                               Height: =Parent.Height
                               Title: ="Còn lại"
                               Value: =varDashboardStats.RemainingLeave
-                              Icon: ="Clock"
+                              Icon: =Icon.Clock
                               Color: =RGBA(251, 191, 36, 1)
                               ShowTrend: =false
                               
                   - 'Dashboard.Stats.RequestStatus.Container':
-                      Control: GroupContainer
-                      Variant: ManualLayout
+                      Control: Container
                       Properties:
                         X: =Parent.Width * 0.015
                         Y: =Parent.Height * 0.58
@@ -310,11 +378,11 @@
                             Properties:
                               X: =0
                               Y: =0
-                              Width: =(Parent.Width - Parent.Width * 0.025) / 3
+                              Width: =Parent.Width / 3 - Parent.Width * 0.01
                               Height: =Parent.Height
                               Title: ="Đang chờ duyệt"
                               Value: =varDashboardStats.PendingRequests
-                              Icon: ="Calendar"
+                              Icon: =Icon.CalendarBlank
                               Color: =RGBA(251, 191, 36, 1)
                               ShowTrend: =false
                               
@@ -322,13 +390,13 @@
                             Control: CanvasComponent
                             ComponentName: StatsCardComponent
                             Properties:
-                              X: =(Parent.Width + Parent.Width * 0.0125) / 3
+                              X: =Parent.Width / 3 + Parent.Width * 0.005
                               Y: =0
-                              Width: =(Parent.Width - Parent.Width * 0.025) / 3
+                              Width: =Parent.Width / 3 - Parent.Width * 0.01
                               Height: =Parent.Height
                               Title: ="Đã được duyệt"
                               Value: =varDashboardStats.ApprovedRequests
-                              Icon: ="CheckBadge"
+                              Icon: =Icon.CheckBadge
                               Color: =RGBA(34, 197, 94, 1)
                               ShowTrend: =false
                               
@@ -336,26 +404,72 @@
                             Control: CanvasComponent
                             ComponentName: StatsCardComponent
                             Properties:
-                              X: =(Parent.Width + Parent.Width * 0.0125) * 2 / 3
+                              X: =Parent.Width * 2 / 3 + Parent.Width * 0.01
                               Y: =0
-                              Width: =(Parent.Width - Parent.Width * 0.025) / 3
+                              Width: =Parent.Width / 3 - Parent.Width * 0.01
                               Height: =Parent.Height
                               Title: ="Bị từ chối"
                               Value: =varDashboardStats.RejectedRequests
-                              Icon: ="Cancel"
+                              Icon: =Icon.Cancel
                               Color: =RGBA(239, 68, 68, 1)
                               ShowTrend: =false
             
-            - 'Dashboard.Activity.Container':
-                Control: GroupContainer
-                Variant: ManualLayout
+            # Limited Permission Message - hiển thị khi user có ít quyền
+            - 'Dashboard.LimitedPermission.Container':
+                Control: Container
                 Properties:
                   X: =0
                   Y: ='Dashboard.Stats.Container'.Y + 'Dashboard.Stats.Container'.Height + Parent.Height * 0.015
                   Width: =Parent.Width
-                  Height: =Parent.Height * 0.44
+                  Height: =Parent.Height * 0.12
+                  Visible: =Not(varUserPermissions.CanViewPersonalLeaves)
                 Children:
-                  - 'Dashboard.Activity.Background':
+                  - 'Dashboard.LimitedPermission.Background':
+                      Control: Rectangle
+                      Properties:
+                        X: =0
+                        Y: =0
+                        Width: =Parent.Width
+                        Height: =Parent.Height
+                        Fill: =RGBA(255, 248, 220, 1)
+                        BorderColor: =RGBA(251, 191, 36, 1)
+                        BorderThickness: =1
+                        
+                  - 'Dashboard.LimitedPermission.Icon':
+                      Control: Classic/Icon
+                      Properties:
+                        X: =Parent.Width * 0.03
+                        Y: =(Parent.Height - Self.Width) / 2
+                        Width: =Parent.Height * 0.4
+                        Height: =Parent.Height * 0.4
+                        Icon: =Icon.Information
+                        Color: =RGBA(251, 191, 36, 1)
+                        
+                  - 'Dashboard.LimitedPermission.Message':
+                      Control: Label
+                      Properties:
+                        X: =Parent.Width * 0.1
+                        Y: =Parent.Height * 0.15
+                        Width: =Parent.Width * 0.85
+                        Height: =Parent.Height * 0.7
+                        Text: ="Quyền hạn của bạn bị giới hạn. Một số tính năng có thể không hiển thị đầy đủ. Liên hệ quản trị viên để được cấp thêm quyền."
+                        Color: =RGBA(180, 83, 9, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Normal
+                        Size: =FontSizes.Base
+                        Align: =Align.Left
+                        Wrap: =true
+            
+            - 'Dashboard.LeaveStats.Container':
+                Control: Container
+                Properties:
+                  X: =0
+                  Y: ='Dashboard.LimitedPermission.Container'.Y + 'Dashboard.LimitedPermission.Container'.Height + Parent.Height * 0.015
+                  Width: =Parent.Width
+                  Height: =Parent.Height * 0.32
+                  Visible: =true
+                Children:
+                  - 'Dashboard.LeaveStats.Background':
                       Control: Rectangle
                       Properties:
                         X: =0
@@ -366,29 +480,28 @@
                         BorderColor: =RGBA(226, 232, 240, 1)
                         BorderThickness: =1
                         
-                  - 'Dashboard.Activity.Header.Container':
-                      Control: GroupContainer
-                      Variant: ManualLayout
+                  - 'Dashboard.LeaveStats.Header.Container':
+                      Control: Container
                       Properties:
                         X: =Parent.Width * 0.015
                         Y: =Parent.Height * 0.03
                         Width: =Parent.Width * 0.97
                         Height: =Parent.Height * 0.12
                       Children:
-                        - 'Dashboard.Activity.Title':
+                        - 'Dashboard.LeaveStats.Title':
                             Control: Label
                             Properties:
                               X: =0
                               Y: =0
                               Width: =Parent.Width * 0.7
                               Height: =Parent.Height
-                              Text: ="Hoạt động gần đây"
+                              Text: ="Tình hình nghỉ phép 6 tháng gần đây"
                               Color: =RGBA(17, 24, 39, 1)
                               Font: =Font.'Open Sans'
                               FontWeight: =FontWeight.Bold
                               Size: =FontSizes.Medium
                               
-                        - 'Dashboard.Activity.ViewAll':
+                        - 'Dashboard.LeaveStats.ViewAll':
                             Control: CanvasComponent
                             ComponentName: ButtonComponent
                             Properties:
@@ -396,129 +509,33 @@
                               Y: =(Parent.Height - Self.Height) / 2
                               Width: =Parent.Width * 0.18
                               Height: =Parent.Height * 0.55
-                              Text: ="Xem tất cả"
+                              Text: ="Xem chi tiết"
                               Variant: ="Outline"
                               Size: ="Small"
-                              OnClick: |
-                                =Navigate(MyLeavesScreen)
+                              Visible: =varUserPermissions.CanViewPersonalLeaves
+                              OnClick: =Navigate(ReportsScreen)
                               
-                        # Debug navigation button
-                        - 'Dashboard.Activity.TestNav':
-                            Control: CanvasComponent
-                            ComponentName: ButtonComponent
-                            Properties:
-                              X: =Parent.Width * 0.8
-                              Y: =(Parent.Height - Self.Height) / 2
-                              Width: =Parent.Width * 0.18
-                              Height: =Parent.Height * 0.55
-                              Text: ="Test Nav"
-                              Variant: ="Secondary"
-                              Size: ="Small"
-                              OnClick: |
-                                =Set(varActiveScreen, "MyLeaves");
-                                Navigate(MyLeavesScreen)
-                              
-                  - 'Dashboard.Activity.Gallery':
-                      Control: Gallery
-                      Variant: Vertical
+                  - 'Dashboard.LeaveStats.Chart':
+                      Control: LineChart
                       Properties:
                         X: =Parent.Width * 0.015
                         Y: =Parent.Height * 0.18
                         Width: =Parent.Width * 0.97
                         Height: =Parent.Height * 0.79
-                        Items: =varMyRecentLeaves
-                        TemplateSize: =Self.Height / 3.5
-                      Children:
-                        - 'Gallery.Item.Background':
-                            Control: Rectangle
-                            Properties:
-                              X: =0
-                              Y: =0
-                              Width: =Parent.TemplateWidth
-                              Height: =Parent.TemplateHeight * 0.94
-                              Fill: =RGBA(249, 250, 251, 1)
-                              BorderColor: =RGBA(229, 231, 235, 1)
-                              BorderThickness: =1
-                              
-                        - 'Gallery.Item.StatusBar':
-                            Control: Rectangle
-                            Properties:
-                              X: =0
-                              Y: =0
-                              Width: =2
-                              Height: =Parent.TemplateHeight * 0.94
-                              Fill: =Switch(ThisItem.TrangThai,
-                                "DaDuyet", RGBA(34, 197, 94, 1),
-                                "ChoDuyetCap1", RGBA(251, 191, 36, 1),
-                                "TuChoi", RGBA(239, 68, 68, 1),
-                                RGBA(156, 163, 175, 1))
-                              BorderColor: =RGBA(255, 255, 255, 0)
-                              BorderThickness: =0
-                              
-                        - 'Gallery.Item.Content':
-                            Control: GroupContainer
-                            Variant: ManualLayout
-                            Properties:
-                              X: =6
-                              Y: =Parent.TemplateHeight * 0.06
-                              Width: =Parent.TemplateWidth - 12
-                              Height: =Parent.TemplateHeight * 0.82
-                            Children:
-                              - 'Gallery.Item.DateIcon':
-                                  Control: Classic/Icon
-                                  Properties:
-                                    X: =0
-                                    Y: =0
-                                    Width: =Parent.Height * 0.25
-                                    Height: =Parent.Height * 0.25
-                                    Icon: =Icon.CalendarBlank
-                                    Color: =RGBA(75, 85, 99, 1)
-                                    
-                              - 'Gallery.Item.DateRange':
-                                  Control: Label
-                                  Properties:
-                                    X: ='Gallery.Item.DateIcon'.Width + Parent.Width * 0.02
-                                    Y: =0
-                                    Width: =Parent.Width * 0.5
-                                    Height: =Parent.Height * 0.45
-                                    Text: =Text(ThisItem.NgayBatDau, "dd/mm/yyyy") & " - " & Text(ThisItem.NgayKetThuc, "dd/mm/yyyy")
-                                    Color: =RGBA(17, 24, 39, 1)
-                                    Font: =Font.'Open Sans'
-                                    FontWeight: =FontWeight.Semibold
-                                    Size: =FontSizes.Small
-                                    
-                              - 'Gallery.Item.Days':
-                                  Control: Label
-                                  Properties:
-                                    X: =Parent.Width * 0.65
-                                    Y: =0
-                                    Width: =Parent.Width * 0.35
-                                    Height: =Parent.Height * 0.45
-                                    Text: =Text(ThisItem.SoNgayNghi) & " ngày"
-                                    Color: =RGBA(59, 130, 246, 1)
-                                    Font: =Font.'Open Sans'
-                                    FontWeight: =FontWeight.Bold
-                                    Size: =FontSizes.Small
-                                    Align: =Align.Right
-                                    
-                              - 'Gallery.Item.Status':
-                                  Control: Label
-                                  Properties:
-                                    X: ='Gallery.Item.DateIcon'.Width + Parent.Width * 0.02
-                                    Y: =Parent.Height * 0.5
-                                    Width: =Parent.Width * 0.65
-                                    Height: =Parent.Height * 0.45
-                                    Text: =Switch(ThisItem.TrangThai,
-                                      "DaDuyet", "Đã được duyệt",
-                                      "ChoDuyetCap1", "Đang chờ duyệt",
-                                      "TuChoi", "Bị từ chối",
-                                      "Không xác định")
-                                    Color: =Switch(ThisItem.TrangThai,
-                                      "DaDuyet", RGBA(21, 128, 61, 1),
-                                      "ChoDuyetCap1", RGBA(180, 83, 9, 1),
-                                      "TuChoi", RGBA(220, 38, 38, 1),
-                                      RGBA(107, 114, 128, 1))
-                                    Font: =Font.'Open Sans'
-                                    FontWeight: =FontWeight.Normal
-                                    Size: =FontSizes.Small
+                        Items: =[
+                          { Month: "T1", Approved: 5, Pending: 2, Rejected: 1 },
+                          { Month: "T2", Approved: 4, Pending: 3, Rejected: 0 },
+                          { Month: "T3", Approved: 6, Pending: 1, Rejected: 2 },
+                          { Month: "T4", Approved: 3, Pending: 2, Rejected: 1 },
+                          { Month: "T5", Approved: 5, Pending: 1, Rejected: 0 },
+                          { Month: "T6", Approved: 4, Pending: 3, Rejected: 1 }
+                        ]
+                        Series: =[
+                          { Name: "Đã duyệt", Value: "Approved", Color: RGBA(34, 197, 94, 1) },
+                          { Name: "Chờ duyệt", Value: "Pending", Color: RGBA(251, 191, 36, 1) },
+                          { Name: "Từ chối", Value: "Rejected", Color: RGBA(239, 68, 68, 1) }
+                        ]
+                        XAxis: ={ Field: "Month", Title: "Tháng" }
+                        YAxis: ={ Title: "Số đơn" }
+                        Visible: =varUserPermissions.CanViewPersonalLeaves
 

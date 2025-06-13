@@ -4,6 +4,17 @@
       Fill: =RGBA(248, 250, 252, 1)
       OnVisible: |
         =Set(varActiveScreen, "Management"); 
+        //Permission checks using inline bitwise expressions  
+        Set(varUserPermissions, {
+          ManageUsers: UserCanManageUsers,
+          ManageRoles: UserCanManageRoles,
+          ManageLeaveQuota: UserCanManageLeaveQuota,
+          ManageHolidays: UserCanManageHolidays,
+          ManageApprovalProcess: UserCanManageApprovalProcess,
+          ExportReports: UserCanExportReports,
+          SystemAdmin: UserCanSystemAdmin,
+          ViewDashboard: UserCanViewDashboard
+        });
         Set(varSelectedManagementTab, "Users");
         Set(varIsUserFormOpen, false);
         Set(varSelectedUser, Blank());
@@ -26,9 +37,11 @@
           {Title: "EMP002", HoTen: "Trần Thị Bình", Email: "binh.tran@company.com", 
            MatKhau: "123456", MaDonVi: "HR", MaVaiTro: "Manager", TrangThai: "HoatDong"},
           {Title: "EMP003", HoTen: "Lê Hoàng Cường", Email: "cuong.le@company.com", 
-           MatKhau: "123456", MaDonVi: "Finance", MaVaiTro: "Employee", TrangThai: "HoatDong"},
+           MatKhau: "123456", MaDonVi: "Finance", MaVaiTro: "Director", TrangThai: "HoatDong"},
           {Title: "EMP004", HoTen: "Phạm Thị Dung", Email: "dung.pham@company.com", 
-           MatKhau: "123456", MaDonVi: "Marketing", MaVaiTro: "Director", TrangThai: "HoatDong"}
+           MatKhau: "123456", MaDonVi: "Marketing", MaVaiTro: "Director", TrangThai: "HoatDong"},
+          {Title: "EMP005", HoTen: "Võ Minh Tuấn", Email: "tuan.vo@company.com", 
+           MatKhau: "123456", MaDonVi: "IT", MaVaiTro: "Manager", TrangThai: "HoatDong"}
         );
         ClearCollect(colAllDepartments, 
           {MaDonVi: "IT", TenDonVi: "Phòng Công nghệ thông tin"},
@@ -64,9 +77,18 @@
           {MaNguoiDung: "EMP003", Nam: 2024, TongNgayDuocPhep: 12, SoNgayDaNghi: 2, SoNgayConLai: 10}
         );
         ClearCollect(colWorkflowData, 
-          {MaDonVi: "IT", Cap: "1", MaVaiTro: "Manager", NguoiDuyetMacDinh: "EMP002", DangHoatDong: true},
-          {MaDonVi: "IT", Cap: "2", MaVaiTro: "Director", NguoiDuyetMacDinh: "EMP003", DangHoatDong: true},
-          {MaDonVi: "HR", Cap: "1", MaVaiTro: "Manager", NguoiDuyetMacDinh: "EMP002", DangHoatDong: true}
+          {MaDonVi: "IT", Cap: "1", MaVaiTro: "Manager", NguoiDuyetMacDinh: "EMP005", DangHoatDong: true},
+          {MaDonVi: "IT", Cap: "2", MaVaiTro: "Director", NguoiDuyetMacDinh: "EMP004", DangHoatDong: true},
+          {MaDonVi: "IT", Cap: "3", MaVaiTro: "Director", NguoiDuyetMacDinh: "EMP003", DangHoatDong: true},
+          {MaDonVi: "HR", Cap: "1", MaVaiTro: "Manager", NguoiDuyetMacDinh: "EMP002", DangHoatDong: true},
+          {MaDonVi: "HR", Cap: "2", MaVaiTro: "Director", NguoiDuyetMacDinh: "EMP004", DangHoatDong: true},
+          {MaDonVi: "HR", Cap: "3", MaVaiTro: "Director", NguoiDuyetMacDinh: "EMP003", DangHoatDong: true},
+          {MaDonVi: "Finance", Cap: "1", MaVaiTro: "Manager", NguoiDuyetMacDinh: "EMP002", DangHoatDong: true},
+          {MaDonVi: "Finance", Cap: "2", MaVaiTro: "Director", NguoiDuyetMacDinh: "EMP004", DangHoatDong: true},
+          {MaDonVi: "Finance", Cap: "3", MaVaiTro: "Director", NguoiDuyetMacDinh: "EMP003", DangHoatDong: true},
+          {MaDonVi: "Marketing", Cap: "1", MaVaiTro: "Manager", NguoiDuyetMacDinh: "EMP002", DangHoatDong: true},
+          {MaDonVi: "Marketing", Cap: "2", MaVaiTro: "Director", NguoiDuyetMacDinh: "EMP004", DangHoatDong: true},
+          {MaDonVi: "Marketing", Cap: "3", MaVaiTro: "Director", NguoiDuyetMacDinh: "EMP003", DangHoatDong: true}
         );
         Set(varShowImportModal, false);
         Set(varIsHolidayFormOpen, false);
@@ -249,7 +271,9 @@
                               Variant: =If(varSelectedManagementTab = "Users", "Primary", "Outline")
                               Size: =FontSizes.Small
                               OnClick: |
-                                =Set(varSelectedManagementTab, "Users")
+                                =Set(varSelectedManagementTab, "Users");
+                                Set(varRecordSelected, false);
+                                Set(varSelectedUserRecord, Blank())
                                       
                         - 'Management.Tabs.LeaveBalance':
                             Control: CanvasComponent
@@ -263,7 +287,9 @@
                               Variant: =If(varSelectedManagementTab = "LeaveBalance", "Primary", "Outline")
                               Size: =FontSizes.Small
                               OnClick: |
-                                =Set(varSelectedManagementTab, "LeaveBalance")
+                                =Set(varSelectedManagementTab, "LeaveBalance");
+                                Set(varRecordSelected, false);
+                                Set(varSelectedUserRecord, Blank())
                                       
                         - 'Management.Tabs.Holidays':
                             Control: CanvasComponent
@@ -277,7 +303,9 @@
                               Variant: =If(varSelectedManagementTab = "Holidays", "Primary", "Outline")
                               Size: =FontSizes.Small
                               OnClick: |
-                                =Set(varSelectedManagementTab, "Holidays")
+                                =Set(varSelectedManagementTab, "Holidays");
+                                Set(varRecordSelected, false);
+                                Set(varSelectedUserRecord, Blank())
                                       
                         - 'Management.Tabs.Workflow':
                             Control: CanvasComponent
@@ -291,7 +319,9 @@
                               Variant: =If(varSelectedManagementTab = "Workflow", "Primary", "Outline")
                               Size: =FontSizes.Small
                               OnClick: |
-                                =Set(varSelectedManagementTab, "Workflow")
+                                =Set(varSelectedManagementTab, "Workflow");
+                                Set(varRecordSelected, false);
+                                Set(varSelectedUserRecord, Blank())
 
                   # Tab Content Container
                   - 'Management.TabContent.Container':
@@ -348,15 +378,30 @@
                                           FontWeight: =FontWeight.Semibold
                                           Size: =FontSizes.Large
 
+                                    - 'Management.Users.Header.SelectedInfo':
+                                        Control: Label
+                                        Properties:
+                                          X: =Parent.Width * 0.02
+                                          Y: =Parent.Height * 0.7
+                                          Width: =Parent.Width * 0.5
+                                          Height: =Parent.Height * 0.25
+                                          Text: =If(varRecordSelected, 
+                                            "Đã chọn:" & varSelectedUserRecord.HoTen & " (" & varSelectedUserRecord.Email & ")",
+                                            "Chưa chọn người dùng nào")
+                                          Color: =If(varRecordSelected, RGBA(59, 130, 246, 1), RGBA(107, 114, 128, 1))
+                                          Font: =Font.'Open Sans'
+                                          FontWeight: =If(varRecordSelected, FontWeight.Semibold, FontWeight.Normal)
+                                          Size: =FontSizes.Small
+
                                     - 'Management.Users.AddButton':
                                         Control: CanvasComponent
                                         ComponentName: ButtonComponent
                                         Properties:
                                           X: =Parent.Width * 0.54
                                           Y: =(Parent.Height - Self.Height) / 2
-                                          Width: =Parent.Width * 0.22
+                                          Width: =Parent.Width * 0.12
                                           Height: =Parent.Height * 0.6
-                                          Text: =" Thêm người dùng"
+                                          Text: ="Thêm"
                                           Variant: ="Primary"
                                           Size: =FontSizes.Medium
                                           OnClick: |
@@ -368,15 +413,64 @@
                                             Set(varUserFormRole, "");
                                             Set(varUserFormDepartment, "");
                                             Set(varUserFormStatus, "HoatDong");
+                                            Set(varRecordSelected, false);
+                                            Set(varSelectedUserRecord, Blank());
                                             Set(varIsUserFormOpen, true)
 
-                                    - 'Management.Users.RefreshButton':
+                                    - 'Management.Users.EditButton':
+                                        Control: CanvasComponent
+                                        ComponentName: ButtonComponent
+                                        Properties:
+                                          X: =Parent.Width * 0.67
+                                          Y: =(Parent.Height - Self.Height) / 2
+                                          Width: =Parent.Width * 0.1
+                                          Height: =Parent.Height * 0.6
+                                          Text: ="Sửa"
+                                          Variant: =If(varRecordSelected, "Primary", "Disabled")
+                                          Size: =FontSizes.Medium
+                                          OnClick: |
+                                            =If(varRecordSelected,
+                                              Set(varIsEditingUser, true);
+                                              Set(varSelectedUser, varSelectedUserRecord);
+                                              Set(varUserFormName, varSelectedUserRecord.HoTen);
+                                              Set(varUserFormEmail, varSelectedUserRecord.Email);
+                                              Set(varUserFormDepartment, "");
+                                              Set(varUserFormRole, "");
+                                              Set(varUserFormStatus, If(Not(IsBlank(varSelectedUserRecord.TrangThai.Value)), varSelectedUserRecord.TrangThai.Value, "HoatDong"));
+                                              Set(varIsUserFormOpen, true),
+                                              Notify("Vui lòng chọn một người dùng để chỉnh sửa", NotificationType.Warning)
+                                            )
+
+                                    - 'Management.Users.DeleteButton':
                                         Control: CanvasComponent
                                         ComponentName: ButtonComponent
                                         Properties:
                                           X: =Parent.Width * 0.78
                                           Y: =(Parent.Height - Self.Height) / 2
-                                          Width: =Parent.Width * 0.2
+                                          Width: =Parent.Width * 0.09
+                                          Height: =Parent.Height * 0.6
+                                          Text: ="Xóa"
+                                          Variant: =If(varRecordSelected, "Outline", "Disabled")
+                                          Size: =FontSizes.Medium
+                                          OnClick: |
+                                            =If(varRecordSelected,
+                                              If(varSelectedUserRecord.Title = UserSession.Id,
+                                                Notify("Không thể xóa tài khoản của chính mình", NotificationType.Error),
+                                                ClearCollect(colAllUsers, Filter(colAllUsers, Title <> varSelectedUserRecord.Title));
+                                                Set(varRecordSelected, false);
+                                                Set(varSelectedUserRecord, Blank());
+                                                Notify("Đã xóa người dùng thành công", NotificationType.Success)
+                                              ),
+                                              Notify("Vui lòng chọn một người dùng để xóa", NotificationType.Warning)
+                                            )
+
+                                    - 'Management.Users.RefreshButton':
+                                        Control: CanvasComponent
+                                        ComponentName: ButtonComponent
+                                        Properties:
+                                          X: =Parent.Width * 0.88
+                                          Y: =(Parent.Height - Self.Height) / 2
+                                          Width: =Parent.Width * 0.1
                                           Height: =Parent.Height * 0.6
                                           Text: ="Làm mới"
                                           Variant: ="Outline"
@@ -385,6 +479,8 @@
                                             =Refresh(NguoiDung);
                                             Refresh(DonVi);
                                             Refresh(VaiTro);
+                                            Set(varRecordSelected, false);
+                                            Set(varSelectedUserRecord, Blank());
                                             Notify("Đã làm mới dữ liệu", NotificationType.Success)
 
                         # ===== TAB SỐ NGÀY PHÉP =====
@@ -814,13 +910,9 @@
                                                 Size: =FontSizes.Small
                                                 Align: =Align.Center
 
-                              # Workflow DataTable đã được di chuyển ra làm direct children của Screen
-                              # Xóa bỏ phần này để tránh duplicate
-
       # Users DataTable
       - 'Management.Users.DataTable':
           Control: DataTable
-          Variant: DataTable
           Properties:
             BorderColor: =RGBA(203, 213, 225, 1)
             BorderThickness: =2
@@ -850,18 +942,10 @@
                   FieldName: ="HoTen"
                   Order: =1
                   Text: =ThisItem.HoTen
-                  Width: =200
+                  Width: =Parent.Width * 0.18
                   OnSelect: |
                     =Set(varSelectedUserRecord, Parent.Selected);
-                    Set(varRecordSelected, true);
-                    Set(varSelectedUser, Parent.Selected);
-                    Set(varIsEditingUser, true);
-                    Set(varUserFormName, Parent.Selected.HoTen);
-                    Set(varUserFormEmail, Parent.Selected.Email);
-                    Set(varUserFormDepartment, "");
-                    Set(varUserFormRole, "");
-                    Set(varUserFormStatus, If(Not(IsBlank(Parent.Selected.TrangThai.Value)), Parent.Selected.TrangThai.Value, "HoatDong"));
-                    Set(varIsUserFormOpen, true)
+                    Set(varRecordSelected, true)
 
             - UserEmail_Column:
                 Control: DataTableColumn
@@ -871,7 +955,7 @@
                   FieldName: ="Email"
                   Order: =2
                   Text: =ThisItem.Email
-                  Width: =250
+                  Width: =Parent.Width * 0.22
                   OnSelect: |
                     =Set(varSelectedUserRecord, Parent.Selected);
                     Set(varRecordSelected, true)
@@ -887,7 +971,7 @@
                   Order: =3
                   Text: |-
                     =ThisItem.'MaDonVi: TenDonVi'.Value
-                  Width: =180
+                  Width: =Parent.Width * 0.16
                   OnSelect: |
                     =Set(varSelectedUserRecord, Parent.Selected);
                     Set(varRecordSelected, true)
@@ -908,7 +992,7 @@
                       "Trưởng phòng", "Trưởng phòng",
                       ThisItem.ChucDanh.Value),
                     "Chưa cập nhật")
-                  Width: =150
+                  Width: =Parent.Width * 0.14
                   OnSelect: |
                     =Set(varSelectedUserRecord, Parent.Selected);
                     Set(varRecordSelected, true)
@@ -918,13 +1002,12 @@
                 Variant: Textual
                 IsLocked: true
                 Properties:
-                  FieldDisplayName: |-
-                    ="MaVaiTro: TenVaiTro"
+                  FieldDisplayName: ="Vai trò"
                   FieldName: ="MaVaiTro_x003a__x0020_TenVaiTro"
                   Order: =5
                   Text: |-
                     =ThisItem.'MaVaiTro: TenVaiTro'.Value
-                  Width: =130
+                  Width: =Parent.Width * 0.12
                   OnSelect: |
                     =Set(varSelectedUserRecord, Parent.Selected);
                     Set(varRecordSelected, true)
@@ -942,7 +1025,7 @@
                       "KhongHoatDong", "Không hoạt động",
                       ThisItem.TrangThai.Value),
                     "Chưa cập nhật")
-                  Width: =120
+                  Width: =Parent.Width * 0.11
                   OnSelect: |
                     =Set(varSelectedUserRecord, Parent.Selected);
                     Set(varRecordSelected, true)
@@ -950,7 +1033,6 @@
       # LeaveBalance DataTable
       - 'Management.LeaveBalance.DataTable':
           Control: DataTable
-          Variant: DataTable
           Properties:
             BorderColor: =RGBA(203, 213, 225, 1)
             BorderThickness: =2
@@ -983,7 +1065,7 @@
                   Order: =1
                   Text: |
                     =ThisItem.'MaNguoiDung: HoTen'.Value
-                  Width: =200
+                  Width: =Parent.Width * 0.25
 
             - Nam_Column:
                 Control: DataTableColumn
@@ -994,7 +1076,7 @@
                   FieldName: ="Nam"
                   Order: =2
                   Text: =ThisItem.Nam
-                  Width: =80
+                  Width: =Parent.Width * 0.08
 
             - TongNgayDuocPhep_Column:
                 Control: DataTableColumn
@@ -1005,7 +1087,7 @@
                   FieldName: ="TongNgayDuocPhep"
                   Order: =3
                   Text: =ThisItem.TongNgayDuocPhep
-                  Width: =120
+                  Width: =Parent.Width * 0.15
 
             - SoNgayDaNghi_Column:
                 Control: DataTableColumn
@@ -1016,7 +1098,7 @@
                   FieldName: ="SoNgayDaNghi"
                   Order: =4
                   Text: =ThisItem.SoNgayDaNghi
-                  Width: =100
+                  Width: =Parent.Width * 0.12
 
             - SoNgayConLai_Column:
                 Control: DataTableColumn
@@ -1027,7 +1109,7 @@
                   FieldName: ="SoNgayConLai"
                   Order: =5
                   Text: =ThisItem.SoNgayConLai
-                  Width: =100
+                  Width: =Parent.Width * 0.12
 
             - SoNgayKhongLuong_Column:
                 Control: DataTableColumn
@@ -1038,12 +1120,11 @@
                   FieldName: ="SoNgayKhongLuong"
                   Order: =6
                   Text: =ThisItem.SoNgayKhongLuong
-                  Width: =110
+                  Width: =Parent.Width * 0.13
 
       # Holidays DataTable
       - 'Management.Holidays.DataTable':
-          Control: DataTable@1.0.3
-          Variant: DataTable
+          Control: DataTable
           Properties:
             BorderColor: =RGBA(203, 213, 225, 1)
             BorderThickness: =2
@@ -1065,7 +1146,7 @@
             Y: ='Management.Content.Container'.Y + 'Management.Content.Padded'.Y + 'Management.TabContent.Container'.Y + 'Management.Holidays.Header'.Height
           Children:
             - Ngay_Column2:
-                Control: DataTableColumn@1.0.1
+                Control: DataTableColumn
                 Variant: Textual
                 IsLocked: true
                 Properties:
@@ -1074,7 +1155,7 @@
                   Order: =2
                   Text: =ThisItem.Ngay
             - Buoi_Column2:
-                Control: DataTableColumn@1.0.1
+                Control: DataTableColumn
                 Variant: Textual
                 IsLocked: true
                 Properties:
@@ -1083,7 +1164,7 @@
                   Order: =3
                   Text: =ThisItem.Buoi.Value
             - Nam_Column3:
-                Control: DataTableColumn@1.0.1
+                Control: DataTableColumn
                 Variant: Number
                 IsLocked: true
                 Properties:
@@ -1092,7 +1173,7 @@
                   Order: =4
                   Text: ="20" & ThisItem.Nam
             - MaNgayLe_Column2:
-                Control: DataTableColumn@1.0.1
+                Control: DataTableColumn
                 Variant: Number
                 IsLocked: true
                 Properties:
@@ -1102,7 +1183,7 @@
                   Order: =1
                   Text: =ThisItem.MaNgayLe
             - TenNgayLe_Column2:
-                Control: DataTableColumn@1.0.1
+                Control: DataTableColumn
                 Variant: Textual
                 IsLocked: true
                 Properties:
@@ -1116,7 +1197,6 @@
       # Workflow DataTable
       - 'Management.Workflow.DataTable':
           Control: DataTable
-          Variant: DataTable
           Properties:
             BorderColor: =RGBA(203, 213, 225, 1)
             BorderThickness: =2
@@ -1149,7 +1229,7 @@
                   Order: =1
                   Text: |
                     =ThisItem.'MaDonVi: TenDonVi'.Value
-                  Width: =180
+                  Width: =Parent.Width * 0.22
 
             - Cap_Column:
                 Control: DataTableColumn
@@ -1165,7 +1245,7 @@
                       "2", "Cấp 2", 
                       "3", "Cấp 3",
                       "Không xác định")
-                  Width: =100
+                  Width: =Parent.Width * 0.15
 
             - 'Workflow.MaVaiTro: TenVaiTro_Column':
                 Control: DataTableColumn
@@ -1177,7 +1257,7 @@
                   Order: =3
                   Text: |
                     =ThisItem.'MaVaiTro: TenVaiTro'.Value
-                  Width: =140
+                  Width: =Parent.Width * 0.18
 
             - 'NguoiDuyetMacDinh: HoTen_Column':
                 Control: DataTableColumn
@@ -1185,11 +1265,11 @@
                 IsLocked: true
                 Properties:
                   FieldDisplayName: ="Người duyệt mặc định"
-                  FieldName: ="NguoiDuyetMacDinh_x003a__x0020_HoTen"
+                  FieldName: ="NguoiDuyetMacDinh_x003a__x0020_H"
                   Order: =4
                   Text: |
-                    =ThisItem.'NguoiDuyetMacDinh: HoTen'.Value
-                  Width: =200
+                    =ThisItem.'NguoiDuyetMacDinh_x003a__x0020_H'.Value
+                  Width: =Parent.Width * 0.25
 
             - DangHoatDong_Column:
                 Control: DataTableColumn
@@ -1201,7 +1281,7 @@
                   Order: =5
                   Text: |
                     =If(ThisItem.DangHoatDong, "Hoạt động", "Không hoạt động")
-                  Width: =120
+                  Width: =Parent.Width * 0.15
 
       # ===== MODAL FORMS (TOP LAYER - Z-INDEX) =====
       

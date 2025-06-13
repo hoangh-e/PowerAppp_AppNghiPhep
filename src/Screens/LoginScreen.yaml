@@ -1,7 +1,7 @@
 Screens:
   LoginScreen:
     Properties:
-      Fill: =RGBA(248, 250, 252, 1)
+      Fill: =RGBA(241, 245, 249, 1)
       OnVisible: |
         =Set(varLoginError, ""); Set(varIsTraditionalLoading, false); Set(varShowLoginForm, true);
         Set(varLoginSuccess, false); Set(varLoggedInUserEmail, ""); Set(varSessionValid, false); Set(varIsUserAuthenticated, false);
@@ -20,18 +20,28 @@ Screens:
         });
         Set(varLocalLoginReset, true)
     Children:
-      # ===== MAIN CONTAINER =====
-      - 'Login.Container':
+      # ===== BACKGROUND GRADIENT =====
+      - 'Login.Background.Primary':
+          Control: Rectangle
+          Properties:
+            X: =0
+            Y: =0
+            Width: =Parent.Width
+            Height: =Parent.Height
+            Fill: =RGBA(241, 245, 249, 1)
+
+      # ===== MAIN LOGIN CARD =====
+      - 'Login.Card.Container':
           Control: GroupContainer
           Variant: ManualLayout
           Properties:
             X: =(Parent.Width - Self.Width) / 2
             Y: =(Parent.Height - Self.Height) / 2
-            Width: =Parent.Width * 0.35
-            Height: =Parent.Height * 0.75
+            Width: =Parent.Width * 0.32
+            Height: =Parent.Height * 0.7
           Children:
-            # White Background for form
-            - 'Login.Form.Background':
+            # Card Background with shadow effect
+            - 'Login.Card.Background':
                 Control: Rectangle
                 Properties:
                   X: =0
@@ -39,336 +49,449 @@ Screens:
                   Width: =Parent.Width
                   Height: =Parent.Height
                   Fill: =RGBA(255, 255, 255, 1)
-                  BorderColor: =RGBA(224, 224, 224, 1)
-                  BorderThickness: =1
+                  BorderColor: =RGBA(226, 232, 240, 1)
+                  BorderThickness: =2
 
-            # ===== HEADER SECTION =====
-            # Logo Icon
-            - 'Login.Logo.Icon':
-                Control: Classic/Icon
-                Properties:
-                  X: =(Parent.Width - Self.Width) / 2
-                  Y: =Parent.Height * 0.08
-                  Width: =Parent.Height * 0.08
-                  Height: =Parent.Height * 0.08
-                  Icon: =Icon.CalendarBlank
-                  Color: =RGBA(33, 150, 243, 1)
-
-            # Title
-            - 'Login.Title':
-                Control: Label
-                Properties:
-                  X: =0
-                  Y: ='Login.Logo.Icon'.Y + 'Login.Logo.Icon'.Height + Parent.Height * 0.02
-                  Width: =Parent.Width
-                  Height: =Parent.Height * 0.06
-                  Text: ="ASIASHME LEAVE"
-                  Color: =RGBA(55, 65, 81, 1)
-                  Font: =Font.'Open Sans'
-                  FontWeight: =FontWeight.Bold
-                  Size: =FontSizes.XLarge
-                  Align: =Align.Center
-
-            # Subtitle
-            - 'Login.Subtitle':
-                Control: Label
-                Properties:
-                  X: =0
-                  Y: ='Login.Title'.Y + 'Login.Title'.Height + Parent.Height * 0.01
-                  Width: =Parent.Width
-                  Height: =Parent.Height * 0.04
-                  Text: ="Hệ thống quản lý nghỉ phép doanh nghiệp"
-                  Color: =RGBA(107, 114, 128, 1)
-                  Font: =Font.'Open Sans'
-                  Size: =FontSizes.Base
-                  Align: =Align.Center
-
-            # ===== FORM SECTION =====
-            # Email Label
-            - 'Login.Email.Label':
-                Control: Label
-                Properties:
-                  X: =Parent.Width * 0.08
-                  Y: ='Login.Subtitle'.Y + 'Login.Subtitle'.Height + Parent.Height * 0.04
-                  Width: =Parent.Width * 0.84
-                  Height: =Parent.Height * 0.04
-                  Text: ="Email"
-                  Color: =RGBA(55, 65, 81, 1)
-                  Font: =Font.'Open Sans'
-                  FontWeight: =FontWeight.Semibold
-                  Size: =FontSizes.Medium
-
-            # Email Input
-            - 'Login.Email.Input':
-                Control: Classic/TextInput
-                Properties:
-                  X: =Parent.Width * 0.08
-                  Y: ='Login.Email.Label'.Y + 'Login.Email.Label'.Height + Parent.Height * 0.01
-                  Width: =Parent.Width * 0.84
-                  Height: =Parent.Height * 0.06
-                  HintText: ="Nhập email của bạn"
-                  Color: =RGBA(55, 65, 81, 1)
-                  Fill: =RGBA(255, 255, 255, 1)
-                  BorderColor: =RGBA(224, 224, 224, 1)
-                  BorderThickness: =1
-                  Font: =Font.'Open Sans'
-                  Size: =FontSizes.Medium
-
-            # Password Label
-            - 'Login.Password.Label':
-                Control: Label
-                Properties:
-                  X: =Parent.Width * 0.08
-                  Y: ='Login.Email.Input'.Y + 'Login.Email.Input'.Height + Parent.Height * 0.025
-                  Width: =Parent.Width * 0.84
-                  Height: =Parent.Height * 0.04
-                  Text: ="Mật khẩu"
-                  Color: =RGBA(55, 65, 81, 1)
-                  Font: =Font.'Open Sans'
-                  FontWeight: =FontWeight.Semibold
-                  Size: =FontSizes.Medium
-
-            # Password Input
-            - 'Login.Password.Input':
-                Control: Classic/TextInput
-                Properties:
-                  X: =Parent.Width * 0.08
-                  Y: ='Login.Password.Label'.Y + 'Login.Password.Label'.Height + Parent.Height * 0.01
-                  Width: =Parent.Width * 0.84
-                  Height: =Parent.Height * 0.06
-                  Mode: =TextMode.Password
-                  HintText: ="Nhập mật khẩu"
-                  Color: =RGBA(55, 65, 81, 1)
-                  Fill: =RGBA(255, 255, 255, 1)
-                  BorderColor: =RGBA(224, 224, 224, 1)
-                  BorderThickness: =1
-                  Font: =Font.'Open Sans'
-                  Size: =FontSizes.Medium
-
-            # Error Message
-            - 'Login.Error.Message':
-                Control: Label
-                Properties:
-                  X: =Parent.Width * 0.08
-                  Y: ='Login.Password.Input'.Y + 'Login.Password.Input'.Height + Parent.Height * 0.02
-                  Width: =Parent.Width * 0.84
-                  Height: =Parent.Height * 0.04
-                  Text: =varLoginError
-                  Color: =RGBA(244, 67, 54, 1)
-                  Font: =Font.'Open Sans'
-                  Size: =FontSizes.Base
-                  Align: =Align.Center
-                  Visible: =Not(IsBlank(varLoginError))
-
-            # Login Button
-            - 'Login.Button':
-                Control: Classic/Button
-                Properties:
-                  X: =Parent.Width * 0.08
-                  Y: ='Login.Error.Message'.Y + 'Login.Error.Message'.Height + Parent.Height * 0.02
-                  Width: =Parent.Width * 0.84
-                  Height: =Parent.Height * 0.07
-                  Text: =If(varIsTraditionalLoading, "Đang đăng nhập...", "Đăng nhập")
-                  Fill: =If(varIsTraditionalLoading, RGBA(158, 158, 158, 1), RGBA(33, 150, 243, 1))
-                  Color: =RGBA(255, 255, 255, 1)
-                  BorderColor: =If(varIsTraditionalLoading, RGBA(158, 158, 158, 1), RGBA(33, 150, 243, 1))
-                  BorderThickness: =1
-                  Font: =Font.'Open Sans'
-                  FontWeight: =FontWeight.Semibold
-                  Size: =FontSizes.Medium
-                  HoverFill: =If(varIsTraditionalLoading, RGBA(158, 158, 158, 1), RGBA(25, 118, 210, 1))
-                  HoverBorderColor: =If(varIsTraditionalLoading, RGBA(158, 158, 158, 1), RGBA(25, 118, 210, 1))
-                  HoverColor: =RGBA(255, 255, 255, 1)
-                  PressedFill: =If(varIsTraditionalLoading, RGBA(158, 158, 158, 1), RGBA(21, 101, 192, 1))
-                  PressedColor: =RGBA(255, 255, 255, 1)
-                  DisplayMode: =If(Or(IsBlank('Login.Email.Input'.Text), IsBlank('Login.Password.Input'.Text), varIsTraditionalLoading), DisplayMode.Disabled, DisplayMode.Edit)
-                  OnSelect: |
-                    =Set(varIsTraditionalLoading, true); Set(varLoginError, "");
-                    With(LookUp(NguoiDung, And(Email = 'Login.Email.Input'.Text, MatKhau = 'Login.Password.Input'.Text)),
-                      If(IsBlank(ThisRecord),
-                        Set(varLoginError, "Email hoặc mật khẩu không đúng"); Set(varIsTraditionalLoading, false),
-                        If(ThisRecord.TrangThai.Value = "HoatDong",
-                          Set(varLoginSuccess, true); Set(varSessionValid, true); Set(varIsUserAuthenticated, true);
-                          Set(varLoggedInUserEmail, 'Login.Email.Input'.Text);
-                          Set(UserSession, {
-                            Name: ThisRecord.HoTen,
-                            Id: ThisRecord.Title,
-                            Email: ThisRecord.Email,
-                            Role: Text(ThisRecord.ChucDanh.Value),
-                            Permission: 7,
-                            NguoiQuanLyId: If(IsBlank(ThisRecord.MaQuanLy), "", Text(ThisRecord.MaQuanLy.Value)),
-                            HoTen: ThisRecord.HoTen,
-                            MaVaiTro: Text(ThisRecord.MaVaiTro.Value),
-                            ChucDanh: Text(ThisRecord.ChucDanh.Value),
-                            MaDonVi: Text(ThisRecord.MaDonVi.Value),
-                            TrangThai: Text(ThisRecord.TrangThai.Value)
-                          });
-                          Set(varIsTraditionalLoading, false);
-                          Navigate(DashboardScreen),
-                          Set(varLoginError, "Tài khoản đã bị khóa. Vui lòng liên hệ quản trị viên"); Set(varIsTraditionalLoading, false))))
-
-            # Divider
-            - 'Login.Divider':
-                Control: Rectangle
-                Properties:
-                  X: =Parent.Width * 0.15
-                  Y: ='Login.Button'.Y + 'Login.Button'.Height + Parent.Height * 0.03
-                  Width: =Parent.Width * 0.7
-                  Height: =1
-                  Fill: =RGBA(224, 224, 224, 1)
-
-            # Demo Section Title
-            - 'Login.Demo.Title':
-                Control: Label
-                Properties:
-                  X: =Parent.Width * 0.08
-                  Y: ='Login.Divider'.Y + 'Login.Divider'.Height + Parent.Height * 0.02
-                  Width: =Parent.Width * 0.84
-                  Height: =Parent.Height * 0.04
-                  Text: ="DEMO LOGIN"
-                  Color: =RGBA(107, 114, 128, 1)
-                  Font: =Font.'Open Sans'
-                  FontWeight: =FontWeight.Semibold
-                  Size: =FontSizes.Small
-                  Align: =Align.Center
-
-            # Demo Buttons Container
-            - 'Login.Demo.Container':
+            # ===== HEADER WITH BRAND =====
+            - 'Login.Header.Section':
                 Control: GroupContainer
                 Variant: ManualLayout
                 Properties:
-                  X: =Parent.Width * 0.08
-                  Y: ='Login.Demo.Title'.Y + 'Login.Demo.Title'.Height + Parent.Height * 0.015
-                  Width: =Parent.Width * 0.84
-                  Height: =Parent.Height * 0.18
+                  X: =0
+                  Y: =0
+                  Width: =Parent.Width
+                  Height: =Parent.Height * 0.25
                 Children:
-                  # Demo Admin Button
-                  - 'Login.Demo.Admin':
-                      Control: Classic/Button
+                  # Header background with gradient
+                  - 'Login.Header.Background':
+                      Control: Rectangle
                       Properties:
                         X: =0
                         Y: =0
                         Width: =Parent.Width
-                        Height: =Parent.Height * 0.3
-                        Text: ="Demo Admin - Toàn quyền"
-                        Fill: =RGBA(248, 250, 252, 1)
-                        Color: =RGBA(55, 65, 81, 1)
-                        BorderColor: =RGBA(224, 224, 224, 1)
-                        BorderThickness: =1
+                        Height: =Parent.Height
+                        Fill: =RGBA(59, 130, 246, 1)
+
+                  # Logo and Brand Container
+                  - 'Login.Brand.Container':
+                      Control: GroupContainer
+                      Variant: ManualLayout
+                      Properties:
+                        X: =0
+                        Y: =0
+                        Width: =Parent.Width
+                        Height: =Parent.Height
+                      Children:
+                        # Brand Icon
+                        - 'Login.Brand.Icon':
+                            Control: Classic/Icon
+                            Properties:
+                              X: =(Parent.Width - Self.Width) / 2
+                              Y: =Parent.Height * 0.15
+                              Width: =Parent.Height * 0.25
+                              Height: =Parent.Height * 0.25
+                              Icon: =Icon.CalendarBlank
+                              Color: =RGBA(255, 255, 255, 1)
+
+                        # Brand Title
+                        - 'Login.Brand.Title':
+                            Control: Label
+                            Properties:
+                              X: =0
+                              Y: ='Login.Brand.Icon'.Y + 'Login.Brand.Icon'.Height + Parent.Height * 0.08
+                              Width: =Parent.Width
+                              Height: =Parent.Height * 0.2
+                              Text: ="ASIASHME LEAVE"
+                              Color: =RGBA(255, 255, 255, 1)
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Bold
+                              Size: =FontSizes.Large
+                              Align: =Align.Center
+
+                        # Brand Subtitle
+                        - 'Login.Brand.Subtitle':
+                            Control: Label
+                            Properties:
+                              X: =0
+                              Y: ='Login.Brand.Title'.Y + 'Login.Brand.Title'.Height + Parent.Height * 0.02
+                              Width: =Parent.Width
+                              Height: =Parent.Height * 0.15
+                              Text: ="Hệ thống quản lý nghỉ phép"
+                              Color: =RGBA(219, 234, 254, 1)
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Normal
+                              Size: =FontSizes.Small
+                              Align: =Align.Center
+
+            # ===== LOGIN FORM SECTION =====
+            - 'Login.Form.Section':
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =Parent.Width * 0.08
+                  Y: ='Login.Header.Section'.Height + Parent.Height * 0.04
+                  Width: =Parent.Width * 0.84
+                  Height: =Parent.Height * 0.45
+                Children:
+                  # Welcome Text
+                  - 'Login.Welcome.Text':
+                      Control: Label
+                      Properties:
+                        X: =0
+                        Y: =0
+                        Width: =Parent.Width
+                        Height: =Parent.Height * 0.12
+                        Text: ="Chào mừng bạn trở lại"
+                        Color: =RGBA(51, 65, 85, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Semibold
+                        Size: =FontSizes.Medium
+                        Align: =Align.Center
+
+                  # Email Field
+                  - 'Login.Email.Container':
+                      Control: GroupContainer
+                      Variant: ManualLayout
+                      Properties:
+                        X: =0
+                        Y: =Parent.Height * 0.18
+                        Width: =Parent.Width
+                        Height: =Parent.Height * 0.25
+                      Children:
+                        # Email Label
+                        - 'Login.Email.Label':
+                            Control: Label
+                            Properties:
+                              X: =0
+                              Y: =0
+                              Width: =Parent.Width
+                              Height: =Parent.Height * 0.3
+                              Text: ="Địa chỉ email"
+                              Color: =RGBA(71, 85, 105, 1)
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Normal
+                              Size: =FontSizes.Small
+
+                        # Email Input with modern design
+                        - 'Login.Email.Input':
+                            Control: Classic/TextInput
+                            Properties:
+                              X: =0
+                              Y: =Parent.Height * 0.35
+                              Width: =Parent.Width
+                              Height: =Parent.Height * 0.6
+                              HintText: ="Nhập email của bạn"
+                              Default: =""
+                              Color: =RGBA(51, 65, 85, 1)
+                              Fill: =RGBA(248, 250, 252, 1)
+                              BorderColor: =RGBA(203, 213, 225, 1)
+                              BorderThickness: =1
+                              Font: =Font.'Open Sans'
+                              Size: =FontSizes.Small
+
+                  # Password Field
+                  - 'Login.Password.Container':
+                      Control: GroupContainer
+                      Variant: ManualLayout
+                      Properties:
+                        X: =0
+                        Y: =Parent.Height * 0.48
+                        Width: =Parent.Width
+                        Height: =Parent.Height * 0.25
+                      Children:
+                        # Password Label
+                        - 'Login.Password.Label':
+                            Control: Label
+                            Properties:
+                              X: =0
+                              Y: =0
+                              Width: =Parent.Width
+                              Height: =Parent.Height * 0.3
+                              Text: ="Mật khẩu"
+                              Color: =RGBA(71, 85, 105, 1)
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Normal
+                              Size: =FontSizes.Small
+
+                        # Password Input with modern design
+                        - 'Login.Password.Input':
+                            Control: Classic/TextInput
+                            Properties:
+                              X: =0
+                              Y: =Parent.Height * 0.35
+                              Width: =Parent.Width
+                              Height: =Parent.Height * 0.6
+                              Mode: =TextMode.Password
+                              HintText: ="Nhập mật khẩu"
+                              Default: =""
+                              Color: =RGBA(51, 65, 85, 1)
+                              Fill: =RGBA(248, 250, 252, 1)
+                              BorderColor: =RGBA(203, 213, 225, 1)
+                              BorderThickness: =1
+                              Font: =Font.'Open Sans'
+                              Size: =FontSizes.Small
+
+                  # Error Message
+                  - 'Login.Error.Message':
+                      Control: Label
+                      Properties:
+                        X: =0
+                        Y: =Parent.Height * 0.78
+                        Width: =Parent.Width
+                        Height: =Parent.Height * 0.12
+                        Text: =varLoginError
+                        Color: =RGBA(239, 68, 68, 1)
                         Font: =Font.'Open Sans'
                         FontWeight: =FontWeight.Normal
-                        Size: =FontSizes.Medium
-                        HoverFill: =RGBA(237, 242, 247, 1)
-                        HoverBorderColor: =RGBA(187, 222, 251, 1)
-                        HoverColor: =RGBA(17, 24, 39, 1)
-                        PressedFill: =RGBA(227, 242, 253, 1)
-                        PressedColor: =RGBA(0, 0, 0, 1)
-                        OnSelect: |
-                          =Set(varLoginSuccess, true); Set(varSessionValid, true); Set(varIsUserAuthenticated, true);
-                          Set(varLoggedInUserEmail, "admin@demo.com");
-                          Set(UserSession, {
-                            Name: "Quản trị viên Demo",
-                            Id: "ADMIN001",
-                            Email: "admin@demo.com",
-                            Role: "ADMIN",
-                            Permission: 31,
-                            NguoiQuanLyId: "",
-                            HoTen: "Quản trị viên Demo",
-                            MaVaiTro: "ADMIN",
-                            ChucDanh: "Quản trị hệ thống",
-                            MaDonVi: "IT",
-                            TrangThai: "HoatDong"
-                          });
-                          Navigate(DashboardScreen)
+                        Size: =FontSizes.Small
+                        Align: =Align.Center
+                        Visible: =Not(IsBlank(varLoginError))
 
-                  # Demo Employee Button
-                  - 'Login.Demo.Employee':
+                  # Login Button with modern design
+                  - 'Login.Button.Main':
                       Control: Classic/Button
                       Properties:
                         X: =0
-                        Y: =Parent.Height * 0.35
+                        Y: =Parent.Height * 0.85
                         Width: =Parent.Width
-                        Height: =Parent.Height * 0.3
-                        Text: ="Demo Nhân viên - Quyền cơ bản"
-                        Fill: =RGBA(248, 250, 252, 1)
-                        Color: =RGBA(55, 65, 81, 1)
-                        BorderColor: =RGBA(224, 224, 224, 1)
-                        BorderThickness: =1
+                        Height: =Parent.Height * 0.15
+                        Text: =If(varIsTraditionalLoading, "Đang đăng nhập...", "Đăng nhập")
+                        Fill: =If(varIsTraditionalLoading, RGBA(156, 163, 175, 1), RGBA(59, 130, 246, 1))
+                        Color: =RGBA(255, 255, 255, 1)
+                        BorderColor: =If(varIsTraditionalLoading, RGBA(156, 163, 175, 1), RGBA(59, 130, 246, 1))
+                        BorderThickness: =0
                         Font: =Font.'Open Sans'
-                        FontWeight: =FontWeight.Normal
-                        Size: =FontSizes.Medium
-                        HoverFill: =RGBA(237, 242, 247, 1)
-                        HoverBorderColor: =RGBA(187, 222, 251, 1)
-                        HoverColor: =RGBA(17, 24, 39, 1)
-                        PressedFill: =RGBA(227, 242, 253, 1)
-                        PressedColor: =RGBA(0, 0, 0, 1)
+                        FontWeight: =FontWeight.Semibold
+                        Size: =FontSizes.Small
+                        HoverFill: =If(varIsTraditionalLoading, RGBA(156, 163, 175, 1), RGBA(37, 99, 235, 1))
+                        HoverBorderColor: =If(varIsTraditionalLoading, RGBA(156, 163, 175, 1), RGBA(37, 99, 235, 1))
+                        PressedFill: =If(varIsTraditionalLoading, RGBA(156, 163, 175, 1), RGBA(29, 78, 216, 1))
+                        DisplayMode: =If(Or(IsBlank('Login.Email.Input'.Text), IsBlank('Login.Password.Input'.Text), varIsTraditionalLoading), DisplayMode.Disabled, DisplayMode.Edit)
                         OnSelect: |
-                          =Set(varLoginSuccess, true); Set(varSessionValid, true); Set(varIsUserAuthenticated, true);
-                          Set(varLoggedInUserEmail, "employee@demo.com");
-                          Set(UserSession, {
-                            Name: "Nguyễn Văn An",
-                            Id: "EMP001",
-                            Email: "employee@demo.com",
-                            Role: "Employee",
-                            Permission: 3,
-                            NguoiQuanLyId: "MGR001",
-                            HoTen: "Nguyễn Văn An",
-                            MaVaiTro: "Employee",
-                            ChucDanh: "Nhân viên",
-                            MaDonVi: "IT",
-                            TrangThai: "HoatDong"
-                          });
-                          Navigate(DashboardScreen)
+                          =Set(varIsTraditionalLoading, true); Set(varLoginError, "");
+                          With(LookUp(NguoiDung, And(Email = 'Login.Email.Input'.Text, MatKhau = 'Login.Password.Input'.Text)),
+                            If(IsBlank(ThisRecord),
+                              Set(varLoginError, "Email hoặc mật khẩu không đúng"); Set(varIsTraditionalLoading, false),
+                              If(ThisRecord.TrangThai.Value = "HoatDong",
+                                Set(varLoginSuccess, true); Set(varSessionValid, true); Set(varIsUserAuthenticated, true);
+                                Set(varLoggedInUserEmail, 'Login.Email.Input'.Text);
+                                Set(UserSession, {
+                                  Name: ThisRecord.HoTen,
+                                  Id: ThisRecord.Title,
+                                  Email: ThisRecord.Email,
+                                  Role: Text(ThisRecord.ChucDanh.Value),
+                                  Permission: 1671,
+                                  NguoiQuanLyId: If(IsBlank(ThisRecord.MaQuanLy), "", Text(ThisRecord.MaQuanLy.Value)),
+                                  HoTen: ThisRecord.HoTen,
+                                  MaVaiTro: Text(ThisRecord.MaVaiTro.Value),
+                                  ChucDanh: Text(ThisRecord.ChucDanh.Value),
+                                  MaDonVi: Text(ThisRecord.MaDonVi.Value),
+                                  TrangThai: Text(ThisRecord.TrangThai.Value)
+                                });
+                                Set(varIsTraditionalLoading, false);
+                                Navigate(DashboardScreen),
+                                Set(varLoginError, "Tài khoản đã bị khóa. Vui lòng liên hệ quản trị viên"); Set(varIsTraditionalLoading, false))))
 
-                  # Demo Manager Button  
-                  - 'Login.Demo.Manager':
-                      Control: Classic/Button
+            # ===== DEMO SECTION =====
+            - 'Login.Demo.Section':
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =Parent.Width * 0.08
+                  Y: ='Login.Form.Section'.Y + 'Login.Form.Section'.Height + Parent.Height * 0.02
+                  Width: =Parent.Width * 0.84
+                  Height: =Parent.Height * 0.22
+                Children:
+                  # Demo Divider
+                  - 'Login.Demo.Divider':
+                      Control: Rectangle
                       Properties:
                         X: =0
-                        Y: =Parent.Height * 0.7
+                        Y: =0
                         Width: =Parent.Width
-                        Height: =Parent.Height * 0.3
-                        Text: ="Demo Quản lý - Quyền duyệt đơn"
-                        Fill: =RGBA(248, 250, 252, 1)
-                        Color: =RGBA(55, 65, 81, 1)
-                        BorderColor: =RGBA(224, 224, 224, 1)
-                        BorderThickness: =1
+                        Height: =1
+                        Fill: =RGBA(226, 232, 240, 1)
+
+                  # Demo Title
+                  - 'Login.Demo.Title':
+                      Control: Label
+                      Properties:
+                        X: =0
+                        Y: =Parent.Height * 0.08
+                        Width: =Parent.Width
+                        Height: =Parent.Height * 0.15
+                        Text: ="Hoặc thử nghiệm với tài khoản demo"
+                        Color: =RGBA(100, 116, 139, 1)
                         Font: =Font.'Open Sans'
                         FontWeight: =FontWeight.Normal
-                        Size: =FontSizes.Medium
-                        HoverFill: =RGBA(237, 242, 247, 1)
-                        HoverBorderColor: =RGBA(187, 222, 251, 1)
-                        HoverColor: =RGBA(17, 24, 39, 1)
-                        PressedFill: =RGBA(227, 242, 253, 1)
-                        PressedColor: =RGBA(0, 0, 0, 1)
-                        OnSelect: |
-                          =Set(varLoginSuccess, true); Set(varSessionValid, true); Set(varIsUserAuthenticated, true);
-                          Set(varLoggedInUserEmail, "manager@demo.com");
-                          Set(UserSession, {
-                            Name: "Trần Thị Bích",
-                            Id: "MGR001",
-                            Email: "manager@demo.com",
-                            Role: "Manager",
-                            Permission: 15,
-                            NguoiQuanLyId: "DIR001",
-                            HoTen: "Trần Thị Bích",
-                            MaVaiTro: "Manager",
-                            ChucDanh: "Trưởng phòng",
-                            MaDonVi: "IT",
-                            TrangThai: "HoatDong"
-                          });
-                          Navigate(DashboardScreen)
+                        Size: =FontSizes.Small
+                        Align: =Align.Center
 
-      # Footer Info
+                  # Demo Buttons in 2x2 Grid
+                  - 'Login.Demo.Grid':
+                      Control: GroupContainer
+                      Variant: ManualLayout
+                      Properties:
+                        X: =0
+                        Y: =Parent.Height * 0.28
+                        Width: =Parent.Width
+                        Height: =Parent.Height * 0.68
+                      Children:
+                        # Admin Demo Button
+                        - 'Login.Demo.Admin':
+                            Control: Classic/Button
+                            Properties:
+                              X: =0
+                              Y: =0
+                              Width: =Parent.Width * 0.48
+                              Height: =Parent.Height * 0.42
+                              Text: ="Admin"
+                              Fill: =RGBA(254, 242, 242, 1)
+                              Color: =RGBA(185, 28, 28, 1)
+                              BorderColor: =RGBA(252, 165, 165, 1)
+                              BorderThickness: =1
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Normal
+                              Size: =FontSizes.Small
+                              HoverFill: =RGBA(253, 226, 226, 1)
+                              HoverBorderColor: =RGBA(248, 113, 113, 1)
+                              OnSelect: |
+                                =Set(varLoginSuccess, true); Set(varSessionValid, true); Set(varIsUserAuthenticated, true);
+                                Set(varLoggedInUserEmail, "admin@demo.com");
+                                Set(UserSession, {
+                                  Name: "Quản trị viên Demo",
+                                  Id: "ADMIN001",
+                                  Email: "admin@demo.com",
+                                  Role: "Admin",
+                                  Permission: 32767,
+                                  NguoiQuanLyId: "",
+                                  HoTen: "Quản trị viên Demo",
+                                  MaVaiTro: "Admin",
+                                  ChucDanh: "Quản trị hệ thống",
+                                  MaDonVi: "IT",
+                                  TrangThai: "HoatDong"
+                                });
+                                Navigate(DashboardScreen)
+
+                        # Employee Demo Button
+                        - 'Login.Demo.Employee':
+                            Control: Classic/Button
+                            Properties:
+                              X: =Parent.Width * 0.52
+                              Y: =0
+                              Width: =Parent.Width * 0.48
+                              Height: =Parent.Height * 0.42
+                              Text: ="Nhân viên"
+                              Fill: =RGBA(240, 253, 244, 1)
+                              Color: =RGBA(22, 163, 74, 1)
+                              BorderColor: =RGBA(134, 239, 172, 1)
+                              BorderThickness: =1
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Normal
+                              Size: =FontSizes.Small
+                              HoverFill: =RGBA(220, 252, 231, 1)
+                              HoverBorderColor: =RGBA(74, 222, 128, 1)
+                              OnSelect: |
+                                =Set(varLoginSuccess, true); Set(varSessionValid, true); Set(varIsUserAuthenticated, true);
+                                Set(varLoggedInUserEmail, "employee@demo.com");
+                                Set(UserSession, {
+                                  Name: "Nguyễn Văn An",
+                                  Id: "EMP001",
+                                  Email: "employee@demo.com",
+                                  Role: "Employee",
+                                  Permission: 3,
+                                  NguoiQuanLyId: "MGR001",
+                                  HoTen: "Nguyễn Văn An",
+                                  MaVaiTro: "Employee",
+                                  ChucDanh: "Nhân viên",
+                                  MaDonVi: "IT",
+                                  TrangThai: "HoatDong"
+                                });
+                                Navigate(DashboardScreen)
+
+                        # Manager Demo Button
+                        - 'Login.Demo.Manager':
+                            Control: Classic/Button
+                            Properties:
+                              X: =0
+                              Y: =Parent.Height * 0.58
+                              Width: =Parent.Width * 0.48
+                              Height: =Parent.Height * 0.42
+                              Text: ="Quản lý"
+                              Fill: =RGBA(239, 246, 255, 1)
+                              Color: =RGBA(37, 99, 235, 1)
+                              BorderColor: =RGBA(147, 197, 253, 1)
+                              BorderThickness: =1
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Normal
+                              Size: =FontSizes.Small
+                              HoverFill: =RGBA(219, 234, 254, 1)
+                              HoverBorderColor: =RGBA(96, 165, 250, 1)
+                              OnSelect: |
+                                =Set(varLoginSuccess, true); Set(varSessionValid, true); Set(varIsUserAuthenticated, true);
+                                Set(varLoggedInUserEmail, "manager@demo.com");
+                                Set(UserSession, {
+                                  Name: "Trần Thị Bình",
+                                  Id: "MGR001",
+                                  Email: "manager@demo.com",
+                                  Role: "Manager",
+                                  Permission: 19,
+                                  NguoiQuanLyId: "DIR001",
+                                  HoTen: "Trần Thị Bình",
+                                  MaVaiTro: "Manager",
+                                  ChucDanh: "Trưởng phòng",
+                                  MaDonVi: "HR",
+                                  TrangThai: "HoatDong"
+                                });
+                                Navigate(DashboardScreen)
+
+                        # Director Demo Button
+                        - 'Login.Demo.Director':
+                            Control: Classic/Button
+                            Properties:
+                              X: =Parent.Width * 0.52
+                              Y: =Parent.Height * 0.58
+                              Width: =Parent.Width * 0.48
+                              Height: =Parent.Height * 0.42
+                              Text: ="Giám đốc"
+                              Fill: =RGBA(250, 245, 255, 1)
+                              Color: =RGBA(147, 51, 234, 1)
+                              BorderColor: =RGBA(196, 181, 253, 1)
+                              BorderThickness: =1
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Normal
+                              Size: =FontSizes.Small
+                              HoverFill: =RGBA(243, 232, 255, 1)
+                              HoverBorderColor: =RGBA(167, 139, 250, 1)
+                              OnSelect: |
+                                =Set(varLoginSuccess, true); Set(varSessionValid, true); Set(varIsUserAuthenticated, true);
+                                Set(varLoggedInUserEmail, "director@demo.com");
+                                Set(UserSession, {
+                                  Name: "Lê Hoàng Cường",
+                                  Id: "DIR001",
+                                  Email: "director@demo.com",
+                                  Role: "Director",
+                                  Permission: 2147,
+                                  NguoiQuanLyId: "",
+                                  HoTen: "Lê Hoàng Cường",
+                                  MaVaiTro: "Director",
+                                  ChucDanh: "Giám đốc",
+                                  MaDonVi: "Management",
+                                  TrangThai: "HoatDong"
+                                });
+                                Navigate(DashboardScreen)
+
+      # ===== FOOTER =====
       - 'Login.Footer':
           Control: Label
           Properties:
             X: =0
-            Y: =Parent.Height * 0.95
+            Y: =Parent.Height - Self.Height - Parent.Height * 0.02
             Width: =Parent.Width
-            Height: =Parent.Height * 0.05
-            Text: ="Version 2.0.0 SharePoint | Powered by Microsoft Power Platform"
-            Color: =RGBA(107, 114, 128, 1)
+            Height: =Parent.Height * 0.03
+            Text: ="Version 2.0.0 | Powered by Microsoft Power Platform"
+            Color: =RGBA(148, 163, 184, 1)
             Font: =Font.'Open Sans'
+            FontWeight: =FontWeight.Normal
             Size: =FontSizes.Small
             Align: =Align.Center

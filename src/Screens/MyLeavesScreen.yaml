@@ -4,12 +4,31 @@
         Fill: =RGBA(248, 250, 252, 1)
         OnVisible: |
           =Set(varActiveScreen, "MyLeaves");
+        //Permission checks using inline bitwise expressions
+        Set(varUserPermissions, {
+          CanViewPersonalLeaves: UserCanViewPersonalLeaves,
+          CanCreatePersonalLeaves: UserCanViewPersonalLeaves,
+          CanViewTeamLeaves: UserCanViewTeamLeaves,
+          CanViewAllLeaves: UserCanViewAllLeaves,
+          CanExportReports: UserCanExportReports,
+          CanRecordLeave: UserCanRecordLeaves
+        });
           Set(varSelectedStatus, "");
           Set(varFilterDateFrom, Blank());
           Set(varFilterDateTo, Blank());
           Set(varSelectedLeave, Blank());
           Set(varRecordSelected, false);
-          Set(varCurrentUserLeaves, Filter(DonNghiPhep, And(Not(IsBlank(MaNguoiDung.Value)), MaNguoiDung.Value = UserSession.Id)));
+        //Load user leaves with demo fallback
+        Set(varCurrentUserLeaves, 
+          If(IsUserAuthenticated,
+            Filter(DonNghiPhep, And(Not(IsBlank(MaNguoiDung.Value)), MaNguoiDung.Value = UserSession.Id)),
+            Table(
+              {MaDon: "LR001", NgayBatDau: Date(2024,12,20), NgayKetThuc: Date(2024,12,22), SoNgayNghi: 3, LyDo: "Nghỉ phép thường niên", TrangThai: "ChoDuyetCap1", BuoiNghi: "CaNgay"},
+              {MaDon: "LR002", NgayBatDau: Date(2024,11,15), NgayKetThuc: Date(2024,11,15), SoNgayNghi: 1, LyDo: "Nghỉ ốm", TrangThai: "DaDuyet", BuoiNghi: "Sang"},
+              {MaDon: "LR003", NgayBatDau: Date(2024,10,10), NgayKetThuc: Date(2024,10,12), SoNgayNghi: 3, LyDo: "Công việc gia đình", TrangThai: "TuChoi", BuoiNghi: "CaNgay"}
+            )
+          )
+        );
           Set(varShowDetails, false);
           Set(varShowCancelConfirm, false);
           Set(varCancelMessage, "")
@@ -519,7 +538,7 @@
 
         # DataTable - Direct Screen child following rules
         - 'MyLeaves.DataTable':
-            Control: DataTable@1.0.3
+            Control: DataTable
             Variant: DataTable
             Properties:
               X: ='MyLeaves.Navigation'.Width + 'MyLeaves.Content.Container'.Width * 0.02
@@ -540,7 +559,7 @@
               NoDataText: ="Không có đơn nghỉ phép nào"
             Children:
               - NgayBatDau_Column:
-                  Control: DataTableColumn@1.0.1
+                  Control: DataTableColumn
                   Variant: Textual
                   IsLocked: true
                   Properties:
@@ -552,7 +571,7 @@
                       =Set(varSelectedLeave, Parent.Selected);
                       Set(varRecordSelected, true)
               - NgayKetThuc_Column:
-                  Control: DataTableColumn@1.0.1
+                  Control: DataTableColumn
                   Variant: Textual
                   IsLocked: true
                   Properties:
@@ -564,7 +583,7 @@
                       =Set(varSelectedLeave, Parent.Selected);
                       Set(varRecordSelected, true)
               - SoNgayNghi_Column:
-                  Control: DataTableColumn@1.0.1
+                  Control: DataTableColumn
                   Variant: Number
                   IsLocked: true
                   Properties:
@@ -576,7 +595,7 @@
                       =Set(varSelectedLeave, Parent.Selected);
                       Set(varRecordSelected, true)
               - LoaiNghi_Column:
-                  Control: DataTableColumn@1.0.1
+                  Control: DataTableColumn
                   Variant: Textual
                   IsLocked: true
                   Properties:
@@ -588,7 +607,7 @@
                       =Set(varSelectedLeave, Parent.Selected);
                       Set(varRecordSelected, true)
               - LyDo_Column:
-                  Control: DataTableColumn@1.0.1
+                  Control: DataTableColumn
                   Variant: Textual
                   IsLocked: true
                   Properties:
@@ -600,7 +619,7 @@
                       =Set(varSelectedLeave, Parent.Selected);
                       Set(varRecordSelected, true)
               - TrangThai_Column:
-                  Control: DataTableColumn@1.0.1
+                  Control: DataTableColumn
                   Variant: Textual
                   IsLocked: true
                   Properties:

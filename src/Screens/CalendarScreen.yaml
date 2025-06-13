@@ -1,9 +1,19 @@
-﻿Screens:
-  CalendarScreen:
+Screens:
+    CalendarScreen:
     Properties:
-      Fill: =RGBA(248, 250, 252, 1)
+            Fill: =RGBA(248, 250, 252, 1)
       OnVisible: |
         =Set(varActiveScreen, "Calendar");
+        //Permission checks using inline bitwise expressions
+        Set(varUserPermissions, {
+          CanViewPersonalLeaves: UserCanViewPersonalLeaves,
+          CanViewTeamLeaves: UserCanViewTeamLeaves,
+          CanViewAllLeaves: UserCanViewAllLeaves,
+          CanManageHolidays: UserCanManageHolidays,
+          CanViewDashboard: UserCanViewDashboard
+        });
+        Set(varNetworkError, false);
+        Set(varDataLoading, true);
         Set(varCurrentDate, Today());
         Set(varSelectedMonth, Month(Today()));
         Set(varSelectedYear, Year(Today()));
@@ -11,51 +21,92 @@
         Set(varViewFormat, "Calendar");
         Set(varShowCalendarDetails, false);
         Set(varSelectedDateLeaves, Blank());
-        If(IsBlank(UserSession.Id),
-          Set(varPersonalLeaves, Table()),
-          Set(varPersonalLeaves, Filter(DonNghiPhep, MaNguoiDung.Value = UserSession.Id))
-        );
-        Set(varAllLeaves, DonNghiPhep);
-        If(IsBlank(UserSession.Id),
-          Set(varDepartmentLeaves, Table()),
-          If(IsBlank(First(NguoiDung).Title),
-            Set(varDepartmentLeaves, Table()),
-            With({userDept: LookUp(NguoiDung, Title = UserSession.Id)},
-              If(IsBlank(userDept),
-                Set(varDepartmentLeaves, Table()),
-                Set(varDepartmentLeaves, Filter(DonNghiPhep, 
-                  With({reqUser: LookUp(NguoiDung, Title = MaNguoiDung)}, 
-                    Not(IsBlank(reqUser)) && reqUser.MaDonVi.Value = userDept.MaDonVi.Value
-                  )
-                ))
-              )
-            )
-          )
-        );
-        Set(varHolidays, NgayLe);
-        Set(varMonthStart, DateAdd(Date(varSelectedYear, varSelectedMonth, 1), -(Weekday(Date(varSelectedYear, varSelectedMonth, 1), StartOfWeek.Sunday) - 1), TimeUnit.Days));
-        Set(varCalendarDays, Table());
-        ForAll(Sequence(35), 
-          Collect(varCalendarDays, {
-            Date: DateAdd(varMonthStart, Value - 1, TimeUnit.Days),
-            IsCurrentMonth: Month(DateAdd(varMonthStart, Value - 1, TimeUnit.Days)) = varSelectedMonth,
-            IsToday: DateAdd(varMonthStart, Value - 1, TimeUnit.Days) = Today(),
-            IsWeekend: Weekday(DateAdd(varMonthStart, Value - 1, TimeUnit.Days), StartOfWeek.Sunday) in [1, 7]
-          })
-        );
-        Set(UserSession, {
-          Id: "EMP001", 
-          Name: "Nguyễn Văn An", 
-          Email: "an.nguyen@company.com", 
-          Role: "Employee", 
-          Permission: 7,
-          NguoiQuanLyId: "MGR001", 
-          HoTen: "Nguyễn Văn An", 
-          MaVaiTro: "Employee", 
-          ChucDanh: "Nhân viên", 
-          MaDonVi: "IT", 
-          TrangThai: "HoatDong"
-        })
+         //Load personal leaves from SharePoint
+         ClearCollect(varPersonalLeaves, 
+           Filter(DonNghiPhep, 
+             And(
+               MaNguoiDung.Value = UserSession.Id,
+               NgayBatDau >= DateAdd(Today(), -90, TimeUnit.Days),
+               NgayKetThuc <= DateAdd(Today(), 90, TimeUnit.Days)
+             )
+           )
+         );
+         
+         //Load department leaves from SharePoint (if user has permission)
+         ClearCollect(varDepartmentLeaves,
+           If(UserCanViewDepartmentLeaves,
+             Filter(DonNghiPhep, 
+               And(
+                 LookUp(NguoiDung, Title = MaNguoiDung.Value).MaDonVi.Value = UserSession.MaDonVi,
+                 NgayBatDau >= DateAdd(Today(), -30, TimeUnit.Days),
+                 NgayKetThuc <= DateAdd(Today(), 90, TimeUnit.Days)
+               )
+             ),
+             []
+           )
+         );
+         
+         //Load all leaves from SharePoint (if user has permission)  
+         ClearCollect(varAllLeaves,
+           If(UserCanViewAllLeaves,
+             Filter(DonNghiPhep,
+               And(
+                 NgayBatDau >= DateAdd(Today(), -30, TimeUnit.Days),
+                 NgayKetThuc <= DateAdd(Today(), 90, TimeUnit.Days)
+               )
+             ),
+             varPersonalLeaves
+           )
+         );
+         //Load holidays from SharePoint NgayLe list
+         ClearCollect(varHolidays,
+           If(IsConnected(),
+             AddColumns(
+               Filter(NgayLe, 
+                 And(
+                   Nam = Year(Today()),
+                   Not(IsBlank(Ngay))
+                 )
+               ),
+               "FormattedDate", Text(DateValue(Ngay), "yyyy-mm-dd")
+             ),
+             []
+           )
+         );
+                 Set(varFirstDayOfMonth, Date(varSelectedYear, varSelectedMonth, 1));
+         Set(varLastDayOfMonth, DateAdd(Date(varSelectedYear, varSelectedMonth + 1, 1), -1, TimeUnit.Days));
+         Set(varFirstWeekday, Weekday(varFirstDayOfMonth, StartOfWeek.Sunday));
+         Set(varDaysInMonth, Day(varLastDayOfMonth));
+         Set(varStartDate, DateAdd(varFirstDayOfMonth, -(varFirstWeekday - 1), TimeUnit.Days));
+         ClearCollect(varCalendarDays,
+           ForAll(
+             Sequence(42),
+             With(
+               {currentDate: DateAdd(varStartDate, Value - 1, TimeUnit.Days)},
+               {
+                 Date: currentDate,
+                 IsCurrentMonth: Month(currentDate) = varSelectedMonth,
+                 IsToday: currentDate = Today(),
+                 IsWeekend: Weekday(currentDate, StartOfWeek.Sunday) In [1, 7]
+               }
+             )
+           )
+         );
+                 Set(UserSession, {
+           Id: "EMP001", 
+           Name: "Nguyễn Văn An", 
+           Email: "an.nguyen@company.com", 
+           Role: "Employee", 
+           Permission: 7,
+           NguoiQuanLyId: "MGR001", 
+           HoTen: "Nguyễn Văn An", 
+           MaVaiTro: "Employee", 
+           ChucDanh: "Nhân viên", 
+           MaDonVi: "IT", 
+           TrangThai: "HoatDong"
+         });
+         Set(varDataLoading, false);
+         Set(varNetworkError, false)
     Children:
       # Header Component
       - 'Calendar.Header':
@@ -72,19 +123,6 @@
             NotificationCount: =0
             OnLogout: |
               =Set(varIsUserAuthenticated, false);
-              Set(UserSession, {
-                Id: "", 
-                Name: "", 
-                Email: "", 
-                Role: "", 
-                Permission: 0,
-                NguoiQuanLyId: "", 
-                HoTen: "", 
-                MaVaiTro: "", 
-                ChucDanh: "", 
-                MaDonVi: "", 
-                TrangThai: ""
-              });
               Navigate(LoginScreen)
 
       # Navigation Component
@@ -187,15 +225,22 @@
                                         Set(varSelectedMonth, 12); Set(varSelectedYear, varSelectedYear - 1),
                                         Set(varSelectedMonth, varSelectedMonth - 1)
                                       );
-                                      Set(varMonthStart, DateAdd(Date(varSelectedYear, varSelectedMonth, 1), -(Weekday(Date(varSelectedYear, varSelectedMonth, 1), StartOfWeek.Sunday) - 1), TimeUnit.Days));
-                                      Clear(varCalendarDays);
-                                      ForAll(Sequence(35), 
-                                        Collect(varCalendarDays, {
-                                          Date: DateAdd(varMonthStart, Value - 1, TimeUnit.Days),
-                                          IsCurrentMonth: Month(DateAdd(varMonthStart, Value - 1, TimeUnit.Days)) = varSelectedMonth,
-                                          IsToday: DateAdd(varMonthStart, Value - 1, TimeUnit.Days) = Today(),
-                                          IsWeekend: Weekday(DateAdd(varMonthStart, Value - 1, TimeUnit.Days), StartOfWeek.Sunday) in [1, 7]
-                                        })
+                                      Set(varFirstDayOfMonth, Date(varSelectedYear, varSelectedMonth, 1));
+                                      Set(varFirstWeekday, Weekday(varFirstDayOfMonth, StartOfWeek.Sunday));
+                                      Set(varStartDate, DateAdd(varFirstDayOfMonth, -(varFirstWeekday - 1), TimeUnit.Days));
+                                      ClearCollect(varCalendarDays,
+                                        ForAll(
+                                          Sequence(42),
+                                          With(
+                                            {currentDate: DateAdd(varStartDate, Value - 1, TimeUnit.Days)},
+                                            {
+                                              Date: currentDate,
+                                              IsCurrentMonth: Month(currentDate) = varSelectedMonth,
+                                              IsToday: currentDate = Today(),
+                                              IsWeekend: Weekday(currentDate, StartOfWeek.Sunday) In [1, 7]
+                                            }
+                                          )
+                                        )
                                       )
                                       
                               - 'Calendar.Nav.MonthYear':
@@ -229,15 +274,22 @@
                                         Set(varSelectedMonth, 1); Set(varSelectedYear, varSelectedYear + 1),
                                         Set(varSelectedMonth, varSelectedMonth + 1)
                                       );
-                                      Set(varMonthStart, DateAdd(Date(varSelectedYear, varSelectedMonth, 1), -(Weekday(Date(varSelectedYear, varSelectedMonth, 1), StartOfWeek.Sunday) - 1), TimeUnit.Days));
-                                      Clear(varCalendarDays);
-                                      ForAll(Sequence(35), 
-                                        Collect(varCalendarDays, {
-                                          Date: DateAdd(varMonthStart, Value - 1, TimeUnit.Days),
-                                          IsCurrentMonth: Month(DateAdd(varMonthStart, Value - 1, TimeUnit.Days)) = varSelectedMonth,
-                                          IsToday: DateAdd(varMonthStart, Value - 1, TimeUnit.Days) = Today(),
-                                          IsWeekend: Weekday(DateAdd(varMonthStart, Value - 1, TimeUnit.Days), StartOfWeek.Sunday) in [1, 7]
-                                        })
+                                      Set(varFirstDayOfMonth, Date(varSelectedYear, varSelectedMonth, 1));
+                                      Set(varFirstWeekday, Weekday(varFirstDayOfMonth, StartOfWeek.Sunday));
+                                      Set(varStartDate, DateAdd(varFirstDayOfMonth, -(varFirstWeekday - 1), TimeUnit.Days));
+                                      ClearCollect(varCalendarDays,
+                                        ForAll(
+                                          Sequence(42),
+                                          With(
+                                            {currentDate: DateAdd(varStartDate, Value - 1, TimeUnit.Days)},
+                                            {
+                                              Date: currentDate,
+                                              IsCurrentMonth: Month(currentDate) = varSelectedMonth,
+                                              IsToday: currentDate = Today(),
+                                              IsWeekend: Weekday(currentDate, StartOfWeek.Sunday) In [1, 7]
+                                            }
+                                          )
+                                        )
                                       )
                                       
                         # View Toggle Controls
@@ -275,7 +327,7 @@
                                     Text: ="CN"
                                     Variant: =If(varCalendarView = "Personal", "Primary", "Outline")
                                     Size: =FontSizes.Small
-                                    OnClick: =Set(varCalendarView, "Personal")
+                                                                         OnClick: =Set(varCalendarView, "Personal")
                                     
                               - 'Calendar.ViewToggle.Department':
                                   Control: CanvasComponent
@@ -564,7 +616,6 @@
                                     Align: =Align.Center
                                     VerticalAlign: =VerticalAlign.Middle
                                     
-                              # Holiday Indicator - Fixed Height
                               - 'Calendar.Day.Holiday':
                                   Control: Classic/Icon
                                   Properties:
@@ -576,21 +627,20 @@
                                     Color: =RGBA(251, 191, 36, 1)
                                     Visible: =CountRows(Filter(varHolidays, Ngay = Text(ThisItem.Date, "yyyy-mm-dd"))) > 0
                                     
-                              # Personal Leave Indicator
                               - 'Calendar.Day.PersonalLeave':
-                                  Control: Rectangle
-                                  Properties:
-                                    X: =(Parent.Width / 7) * 0.05
-                                    Y: =(Parent.Height / 5) * 0.45
-                                    Width: =(Parent.Width / 7) * 0.9
-                                    Height: =(Parent.Height / 5) * 0.2
-                                    Fill: =RGBA(34, 197, 94, 0.7)
-                                    BorderColor: =RGBA(34, 197, 94, 1)
-                                    BorderThickness: =1
-                                    Visible: =And(
-                                      varCalendarView = "Personal",
-                                      CountRows(Filter(varPersonalLeaves, And(NgayBatDau <= ThisItem.Date, NgayKetThuc >= ThisItem.Date))) > 0
-                                      )
+                                   Control: Rectangle
+                                   Properties:
+                                     X: =(Parent.Width / 7) * 0.05
+                                     Y: =(Parent.Height / 5) * 0.45
+                                     Width: =(Parent.Width / 7) * 0.9
+                                     Height: =(Parent.Height / 5) * 0.2
+                                     Fill: =RGBA(34, 197, 94, 0.7)
+                                     BorderColor: =RGBA(34, 197, 94, 1)
+                                     BorderThickness: =1
+                                     Visible: =And(
+                                       varCalendarView = "Personal",
+                                       CountRows(Filter(varPersonalLeaves, And(NgayBatDau <= ThisItem.Date, NgayKetThuc >= ThisItem.Date))) > 0
+                                       )
                                       
                               # Department Leave Count
                               - 'Calendar.Day.DepartmentCount':
@@ -805,8 +855,64 @@
                                           Size: =FontSizes.Base
                                           Wrap: =true
 
-      # Calendar Details Modal
-      - 'Calendar.Details.Modal':
+             # Loading Indicator
+       - 'Calendar.Loading.Overlay':
+           Control: Rectangle
+           Properties:
+             X: =0
+             Y: =0
+             Width: =Parent.Width
+             Height: =Parent.Height
+             Fill: =RGBA(255, 255, 255, 0.8)
+             Visible: =varDataLoading
+           
+       - 'Calendar.Loading.Text':
+           Control: Label
+           Properties:
+             X: =(Parent.Width - Self.Width) / 2
+             Y: =(Parent.Height - Self.Height) / 2
+             Width: =Parent.Width * 0.15
+             Height: =Parent.Height * 0.06
+             Text: ="Đang tải dữ liệu..."
+             Color: =RGBA(59, 130, 246, 1)
+             Font: =Font.'Open Sans'
+             FontWeight: =FontWeight.Semibold
+             Size: =FontSizes.Large
+             Align: =Align.Center
+             VerticalAlign: =VerticalAlign.Middle
+             Visible: =varDataLoading
+             
+       # Network Error Message
+       - 'Calendar.Error.Message':
+           Control: Rectangle
+           Properties:
+             X: =(Parent.Width - Parent.Width * 0.4) / 2
+             Y: =Parent.Height * 0.1
+             Width: =Parent.Width * 0.4
+             Height: =Parent.Height * 0.08
+             Fill: =RGBA(254, 242, 242, 1)
+             BorderColor: =RGBA(239, 68, 68, 1)
+             BorderThickness: =2
+             Visible: =varNetworkError
+             
+       - 'Calendar.Error.Text':
+           Control: Label
+           Properties:
+             X: =(Parent.Width - Parent.Width * 0.38) / 2
+             Y: =Parent.Height * 0.1 + 10
+             Width: =Parent.Width * 0.38
+             Height: =40
+             Text: ="⚠️ Lỗi kết nối mạng. Không thể tải dữ liệu từ SharePoint."
+             Color: =RGBA(239, 68, 68, 1)
+             Font: =Font.'Open Sans'
+             FontWeight: =FontWeight.Semibold
+             Size: =FontSizes.Base
+             Align: =Align.Center
+             VerticalAlign: =VerticalAlign.Middle
+             Visible: =varNetworkError
+
+       # Calendar Details Modal
+       - 'Calendar.Details.Modal':
           Control: GroupContainer
           Variant: ManualLayout
           Properties:

@@ -4,6 +4,13 @@ Screens:
       Fill: =RGBA(248, 250, 252, 1)
       OnVisible: |
         =Set(varActiveScreen, "LeaveRequest");
+        //Permission checks using inline bitwise expressions
+        Set(varUserPermissions, {
+          CanCreatePersonalLeaves: UserCanViewPersonalLeaves,
+          CanCreateSpecialLeaves: UserCanCreateSpecialLeaves,
+          CanViewDashboard: UserCanViewDashboard,
+          CanApprove: Or(UserCanApproveLevel1, UserCanApproveLevel2)
+        });
         Set(varSelectedFromDate, Blank());
         Set(varSelectedToDate, Blank());
         Set(varSelectedLeaveType, Blank());
@@ -14,11 +21,47 @@ Screens:
         Set(varValidationErrors, Blank());
         Set(varIsSubmitting, false);
         Set(varShowSuccessModal, false);
-        Set(varUserLeaveBalance, LookUp(SoNgayPhep, And(MaNhanVien.Value = UserSession.Id, Nam = Year(Today()))));
-        Set(varAvailableLeaveTypes, Filter(LoaiNghi, DangHoatDong = true));
-        Set(varPotentialHandovers, Filter(NguoiDung, And(TrangThai.Value = "HoatDong", Title <> UserSession.Id)));
-        Set(varCurrentUser, LookUp(NguoiDung, Title = UserSession.Id));
-        Set(varUserManager, If(Not(IsBlank(varCurrentUser.MaQuanLy)), LookUp(NguoiDung, Title = varCurrentUser.MaQuanLy.Value), Blank()))
+        //Load user data with fallback demo data
+        Set(varUserLeaveBalance, 
+          If(IsUserAuthenticated,
+            LookUp(SoNgayPhep, And(MaNhanVien.Value = UserSession.Id, Nam = Year(Today()))),
+            {MaNhanVien: UserSession.Id, Nam: Year(Today()), TongNgayDuocPhep: 12, SoNgayDaNghi: 3, SoNgayConLai: 9}
+          )
+        );
+        Set(varAvailableLeaveTypes, 
+          If(IsUserAuthenticated,
+            Filter(LoaiNghi, DangHoatDong = true),
+            Table(
+              {MaLoai: "AL", TenLoai: "Phép năm", CoLuong: true},
+              {MaLoai: "SL", TenLoai: "Nghỉ ốm", CoLuong: true},
+              {MaLoai: "PL", TenLoai: "Nghỉ việc riêng", CoLuong: false}
+            )
+          )
+        );
+        Set(varPotentialHandovers, 
+          If(IsUserAuthenticated,
+            Filter(NguoiDung, And(TrangThai.Value = "HoatDong", Title <> UserSession.Id)),
+            Table(
+              {Title: "EMP002", HoTen: "Trần Thị Bình", MaDonVi: "HR"},
+              {Title: "EMP003", HoTen: "Lê Hoàng Cường", MaDonVi: "Finance"},
+              {Title: "EMP004", HoTen: "Phạm Thị Dung", MaDonVi: "Marketing"}
+            )
+          )
+        );
+        Set(varCurrentUser, 
+          If(IsUserAuthenticated,
+            LookUp(NguoiDung, Title = UserSession.Id),
+            {Title: UserSession.Id, HoTen: UserSession.HoTen, MaQuanLy: "MGR001"}
+          )
+        );
+        Set(varUserManager, 
+          If(Not(IsBlank(varCurrentUser.MaQuanLy)), 
+            If(IsUserAuthenticated,
+              LookUp(NguoiDung, Title = varCurrentUser.MaQuanLy.Value),
+              {Title: "MGR001", HoTen: "Quản lý Demo"}
+            ),
+            Blank())
+        )
     Children:
       # Header Component
       - 'LeaveRequest.Header':

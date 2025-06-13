@@ -4,18 +4,37 @@ Screens:
       Fill: =RGBA(248, 250, 252, 1)
       OnVisible: |
         =Set(varActiveScreen, "Approval"); 
+        //Permission checks using inline bitwise expressions
+        Set(varUserPermissions, {
+          CanApproveLevel1: UserCanApproveLevel1,
+          CanApproveLevel2: UserCanApproveLevel2,
+          CanApproveLevel3: UserCanApproveLevel3,
+          CanViewTeamLeaves: UserCanViewTeamLeaves,
+          CanViewAllLeaves: UserCanViewAllLeaves,
+          CanRecordLeave: UserCanRecordLeaves,
+          CanManageUsers: UserCanManageUsers
+        });
         Set(varSelectedApprovalLeave, Blank());
         Set(varShowApprovalDetails, false);
         Set(varShowApprovalConfirm, false);
         Set(varApprovalAction, "");
           Set(varApprovalComment, ""); 
-        Set(varPendingApprovals, Filter(DonNghiPhep, Or(TrangThai.Value = "ChoDuyetCap1", TrangThai.Value = "ChoDuyetCap2", TrangThai.Value = "ChoDuyetCap3")));
-        Set(varMyLevelApprovals, Filter(varPendingApprovals, 
-          Switch(UserSession.MaVaiTro,
-            "Manager", TrangThai.Value = "ChoDuyetCap1",
-            "Director", Or(TrangThai.Value = "ChoDuyetCap2", And(TrangThai.Value = "ChoDuyetCap3", CountRows(Filter(DonNghiPhep, And(MaDon = ThisItem.MaDon, SoNgayNghi > 12))) > 0)),
-            "HR", TrangThai.Value = "ChoDuyetCap3",
-            false)))
+        //Load pending approvals from SharePoint 
+        Set(varPendingApprovals, 
+          Filter(DonNghiPhep, 
+            Or(TrangThai.Value = "ChoDuyetCap1", TrangThai.Value = "ChoDuyetCap2", TrangThai.Value = "ChoDuyetCap3")
+          )
+        );
+        //Filter my level approvals based on permissions
+        Set(varMyLevelApprovals, 
+          Filter(varPendingApprovals, 
+            Or(
+              And(varUserPermissions.CanApproveLevel1, TrangThai = "ChoDuyetCap1"),
+              And(varUserPermissions.CanApproveLevel2, TrangThai = "ChoDuyetCap2"),
+              And(varUserPermissions.CanApproveLevel3, TrangThai = "ChoDuyetCap3")
+            )
+          )
+        )
     Children:
       - Approval.Header:
           Control: CanvasComponent
@@ -78,7 +97,7 @@ Screens:
             OnToggleCollapse: |
               =Set(varNavCollapsed, !varNavCollapsed)
       - Approval.Content.Container:
-          Control: GroupContainer@1.3.0
+          Control: GroupContainer
           Variant: ManualLayout
           Properties:
             Height: =Parent.Height - 'Approval.Header'.Height
@@ -87,7 +106,7 @@ Screens:
             Y: ='Approval.Header'.Height
           Children:
             - Approval.Content.Padded:
-                Control: GroupContainer@1.3.0
+                Control: GroupContainer
                 Variant: ManualLayout
                 Properties:
                   Height: =Parent.Height * 0.98
@@ -96,14 +115,14 @@ Screens:
                   Y: =Parent.Height * 0.01
                 Children:
                   - Approval.PageHeader.Container:
-                      Control: GroupContainer@1.3.0
+                      Control: GroupContainer
                       Variant: ManualLayout
                       Properties:
                         Height: =Parent.Height * 0.1
                         Width: =Parent.Width
                       Children:
                         - Approval.PageHeader.Background:
-                            Control: Rectangle@2.3.0
+                            Control: Rectangle
                             Properties:
                               BorderColor: =RGBA(226, 232, 240, 1)
                               BorderThickness: =1
@@ -111,7 +130,7 @@ Screens:
                               Height: =Parent.Height
                               Width: =Parent.Width
                         - Approval.PageHeader.Icon:
-                            Control: Classic/Icon@2.5.0
+                            Control: Classic/Icon
                             Properties:
                               Color: =RGBA(59, 130, 246, 1)
                               Height: =Parent.Height * 0.2
@@ -120,7 +139,7 @@ Screens:
                               X: =Parent.Width * 0.015
                               Y: =Parent.Height * 0.25
                         - Approval.PageHeader.Title:
-                            Control: Label@2.5.1
+                            Control: Label
                             Properties:
                               Color: =RGBA(17, 24, 39, 1)
                               Font: =Font.'Open Sans'
@@ -132,7 +151,7 @@ Screens:
                               X: =Parent.Width * 0.015 + 'Approval.PageHeader.Icon'.Width + Parent.Width * 0.01
                               Y: =Parent.Height * 0.2
                         - Approval.PageHeader.Stats:
-                            Control: Label@2.5.1
+                            Control: Label
                             Properties:
                               Color: =RGBA(75, 85, 99, 1)
                               Font: =Font.'Open Sans'
@@ -143,7 +162,7 @@ Screens:
                               X: =Parent.Width * 0.015 + 'Approval.PageHeader.Icon'.Width + Parent.Width * 0.01
                               Y: =Parent.Height * 0.6
                   - Approval.Stats.Container:
-                      Control: GroupContainer@1.3.0
+                      Control: GroupContainer
                       Variant: ManualLayout
                       Properties:
                         Height: =Parent.Height * 0.15
@@ -151,7 +170,7 @@ Screens:
                         Y: ='Approval.PageHeader.Container'.Y + 'Approval.PageHeader.Container'.Height + Parent.Height * 0.015
                       Children:
                         - Approval.Stats.Background:
-                            Control: Rectangle@2.3.0
+                            Control: Rectangle
                             Properties:
                               BorderColor: =RGBA(226, 232, 240, 1)
                               BorderThickness: =1
@@ -159,7 +178,7 @@ Screens:
                               Height: =Parent.Height
                               Width: =Parent.Width
                         - Approval.Stats.Header:
-                            Control: Label@2.5.1
+                            Control: Label
                             Properties:
                               Color: =RGBA(17, 24, 39, 1)
                               Font: =Font.'Open Sans'
@@ -171,7 +190,7 @@ Screens:
                               X: =Parent.Width * 0.015
                               Y: =Parent.Height * 0.05
                         - Approval.Stats.Cards.Container:
-                            Control: GroupContainer@1.3.0
+                            Control: GroupContainer
                             Variant: ManualLayout
                             Properties:
                               Height: =Parent.Height * 0.65
@@ -255,7 +274,7 @@ Screens:
                                     Width: =(Parent.Width - Parent.Width * 0.03) / 4
                                     X: =(Parent.Width + Parent.Width * 0.01) * 3 / 4
       - Approval.DataTable:
-          Control: DataTable@1.0.3
+          Control: DataTable
           Variant: DataTable
           Properties:
             BorderColor: =RGBA(229, 231, 235, 1)
@@ -276,7 +295,7 @@ Screens:
             Y: ='Approval.Header'.Height + 'Approval.Content.Container'.Height * 0.32
           Children:
             - NguoiTao_Column:
-                Control: DataTableColumn@1.0.1
+                Control: DataTableColumn
                 Variant: Textual
                 Properties:
                   FieldDisplayName: ="Người tạo"
@@ -287,7 +306,7 @@ Screens:
                   Order: =1
                   Text: =LookUp(NguoiDung, Title = 'Approval.DataTable'.Selected.MaNguoiDung.Value).HoTen
             - NgayBatDau_Column_1:
-                Control: DataTableColumn@1.0.1
+                Control: DataTableColumn
                 Variant: Textual
                 Properties:
                   FieldDisplayName: ="Ngày bắt đầu"
@@ -298,7 +317,7 @@ Screens:
                   Order: =2
                   Text: =Text('Approval.DataTable'.Selected.NgayBatDau, "dd/mm/yyyy")
             - NgayKetThuc_Column_1:
-                Control: DataTableColumn@1.0.1
+                Control: DataTableColumn
                 Variant: Textual
                 Properties:
                   FieldDisplayName: ="Ngày kết thúc"
@@ -309,7 +328,7 @@ Screens:
                   Order: =3
                   Text: =Text('Approval.DataTable'.Selected.NgayKetThuc, "dd/mm/yyyy")
             - SoNgayNghi_Column_1:
-                Control: DataTableColumn@1.0.1
+                Control: DataTableColumn
                 Variant: Number
                 Properties:
                   FieldDisplayName: ="Số ngày"
@@ -320,7 +339,7 @@ Screens:
                   Order: =4
                   Text: =Text('Approval.DataTable'.Selected.SoNgayNghi) & " ngày"
             - LoaiNghi_Column_1:
-                Control: DataTableColumn@1.0.1
+                Control: DataTableColumn
                 Variant: Textual
                 Properties:
                   FieldDisplayName: ="Loại nghỉ"
@@ -331,7 +350,7 @@ Screens:
                   Order: =5
                   Text: =LookUp(LoaiNghi, MaLoai = 'Approval.DataTable'.Selected.MaLoai.Value).TenLoai
             - TrangThai_Column_1:
-                Control: DataTableColumn@1.0.1
+                Control: DataTableColumn
                 Variant: Textual
                 Properties:
                   FieldDisplayName: ="Trạng thái"
@@ -343,7 +362,7 @@ Screens:
                   Text: |
                     =Switch('Approval.DataTable'.Selected.TrangThai.Value, "ChoDuyetCap1", "Chờ duyệt cấp 1", "ChoDuyetCap2", "Chờ duyệt cấp 2", "ChoDuyetCap3", "Chờ duyệt cấp 3", "Không xác định")
       - Approval.Details.Modal:
-          Control: GroupContainer@1.3.0
+          Control: GroupContainer
           Variant: ManualLayout
           Properties:
             BorderColor: =RGBA(226, 232, 240, 1)
@@ -356,7 +375,7 @@ Screens:
             Y: =(Parent.Height - Parent.Height * 0.9) / 2
           Children:
             - Approval.Details.Header:
-                Control: GroupContainer@1.3.0
+                Control: GroupContainer
                 Variant: ManualLayout
                 Properties:
                   BorderColor: =RGBA(37, 99, 235, 1)
@@ -368,7 +387,7 @@ Screens:
                   Y: =Parent.Height * 0.02
                 Children:
                   - Approval.Details.Title:
-                      Control: Label@2.5.1
+                      Control: Label
                       Properties:
                         Color: =RGBA(255, 255, 255, 1)
                         Font: =Font.'Open Sans'
@@ -399,7 +418,7 @@ Screens:
                         X: =Parent.Width * 0.84
                         Y: =(Parent.Height - Self.Height) / 2
             - Approval.Details.Content:
-                Control: GroupContainer@1.3.0
+                Control: GroupContainer
                 Variant: ManualLayout
                 Properties:
                   BorderColor: =RGBA(226, 232, 240, 1)
@@ -411,7 +430,7 @@ Screens:
                   Y: ='Approval.Details.Header'.Y + 'Approval.Details.Header'.Height + Parent.Height * 0.02
                 Children:
                   - Approval.Details.Employee.Label:
-                      Control: Label@2.5.1
+                      Control: Label
                       Properties:
                         Color: =RGBA(17, 24, 39, 1)
                         Font: =Font.'Open Sans'
@@ -423,7 +442,7 @@ Screens:
                         X: =Parent.Width * 0.03
                         Y: =Parent.Height * 0.05
                   - Approval.Details.Employee.Value:
-                      Control: Label@2.5.1
+                      Control: Label
                       Properties:
                         Color: =RGBA(55, 65, 81, 1)
                         Font: =Font.'Open Sans'
@@ -434,7 +453,7 @@ Screens:
                         X: =Parent.Width * 0.25
                         Y: =Parent.Height * 0.05
                   - Approval.Details.Period.Label:
-                      Control: Label@2.5.1
+                      Control: Label
                       Properties:
                         Color: =RGBA(17, 24, 39, 1)
                         Font: =Font.'Open Sans'
@@ -446,7 +465,7 @@ Screens:
                         X: =Parent.Width * 0.03
                         Y: =Parent.Height * 0.15
                   - Approval.Details.Period.Value:
-                      Control: Label@2.5.1
+                      Control: Label
                       Properties:
                         Color: =RGBA(55, 65, 81, 1)
                         Font: =Font.'Open Sans'
@@ -457,7 +476,7 @@ Screens:
                         X: =Parent.Width * 0.25
                         Y: =Parent.Height * 0.15
                   - Approval.Details.Type.Label:
-                      Control: Label@2.5.1
+                      Control: Label
                       Properties:
                         Color: =RGBA(17, 24, 39, 1)
                         Font: =Font.'Open Sans'
@@ -469,7 +488,7 @@ Screens:
                         X: =Parent.Width * 0.03
                         Y: =Parent.Height * 0.25
                   - Approval.Details.Type.Value:
-                      Control: Label@2.5.1
+                      Control: Label
                       Properties:
                         Color: =RGBA(55, 65, 81, 1)
                         Font: =Font.'Open Sans'
@@ -480,7 +499,7 @@ Screens:
                         X: =Parent.Width * 0.25
                         Y: =Parent.Height * 0.25
                   - Approval.Details.Reason.Label:
-                      Control: Label@2.5.1
+                      Control: Label
                       Properties:
                         Color: =RGBA(17, 24, 39, 1)
                         Font: =Font.'Open Sans'
@@ -492,7 +511,7 @@ Screens:
                         X: =Parent.Width * 0.03
                         Y: =Parent.Height * 0.35
                   - Approval.Details.Reason.Value:
-                      Control: Label@2.5.1
+                      Control: Label
                       Properties:
                         Color: =RGBA(55, 65, 81, 1)
                         Font: =Font.'Open Sans'
@@ -503,7 +522,7 @@ Screens:
                         X: =Parent.Width * 0.25
                         Y: =Parent.Height * 0.35
                   - Approval.Details.Handover.Label:
-                      Control: Label@2.5.1
+                      Control: Label
                       Properties:
                         Color: =RGBA(17, 24, 39, 1)
                         Font: =Font.'Open Sans'
@@ -515,7 +534,7 @@ Screens:
                         X: =Parent.Width * 0.03
                         Y: =Parent.Height * 0.55
                   - Approval.Details.Handover.Value:
-                      Control: Label@2.5.1
+                      Control: Label
                       Properties:
                         Color: =RGBA(55, 65, 81, 1)
                         Font: =Font.'Open Sans'
@@ -526,7 +545,7 @@ Screens:
                         X: =Parent.Width * 0.25
                         Y: =Parent.Height * 0.55
             - Approval.Details.Actions:
-                Control: GroupContainer@1.3.0
+                Control: GroupContainer
                 Variant: ManualLayout
                 Properties:
                   Height: =Parent.Height * 0.2
@@ -535,7 +554,7 @@ Screens:
                   Y: ='Approval.Details.Content'.Y + 'Approval.Details.Content'.Height + Parent.Height * 0.02
                 Children:
                   - Approval.Comment.Label:
-                      Control: Label@2.5.1
+                      Control: Label
                       Properties:
                         Color: =RGBA(17, 24, 39, 1)
                         Font: =Font.'Open Sans'
@@ -547,7 +566,7 @@ Screens:
                         X: =Parent.Width * 0.03
                         Y: =Parent.Height * 0.05
                   - Approval.Comment.Input:
-                      Control: Classic/TextInput@2.3.2
+                      Control: Classic/TextInput
                       Properties:
                         BorderColor: =RGBA(224, 224, 224, 1)
                         BorderThickness: =1
@@ -602,7 +621,7 @@ Screens:
                         X: =Parent.Width * 0.5
                         Y: =Parent.Height * 0.45
       - Approval.Confirm.Modal:
-          Control: GroupContainer@1.3.0
+          Control: GroupContainer
           Variant: ManualLayout
           Properties:
             BorderColor: =RGBA(226, 232, 240, 1)
@@ -615,7 +634,7 @@ Screens:
             Y: =(Parent.Height - Parent.Height * 0.3) / 2
           Children:
             - Approval.Confirm.Header:
-                Control: GroupContainer@1.3.0
+                Control: GroupContainer
                 Variant: ManualLayout
                 Properties:
                   BorderColor: =If(varApprovalAction = "Approve", RGBA(21, 128, 61, 1), RGBA(220, 38, 38, 1))
@@ -627,7 +646,7 @@ Screens:
                   Y: =Parent.Height * 0.04
                 Children:
                   - Approval.Confirm.Title:
-                      Control: Label@2.5.1
+                      Control: Label
                       Properties:
                         Align: =Align.Center
                         Color: =RGBA(255, 255, 255, 1)
@@ -640,7 +659,7 @@ Screens:
                         X: =Parent.Width * 0.05
                         Y: =(Parent.Height - Parent.Height * 0.7) / 2
             - Approval.Confirm.Content:
-                Control: GroupContainer@1.3.0
+                Control: GroupContainer
                 Variant: ManualLayout
                 Properties:
                   Height: =Parent.Height * 0.4
@@ -649,7 +668,7 @@ Screens:
                   Y: ='Approval.Confirm.Header'.Y + 'Approval.Confirm.Header'.Height + Parent.Height * 0.03
                 Children:
                   - Approval.Confirm.Message:
-                      Control: Label@2.5.1
+                      Control: Label
                       Properties:
                         Align: =Align.Center
                         Color: =RGBA(55, 65, 81, 1)
@@ -659,7 +678,7 @@ Screens:
                         Text: =If(varApprovalAction = "Approve", Concatenate("Bạn có chắc chắn muốn phê duyệt đơn nghỉ phép từ ngày ", If(Not(IsBlank(varSelectedApprovalLeave)), Text(varSelectedApprovalLeave.NgayBatDau, "dd/mm/yyyy"), ""), " đến ", If(Not(IsBlank(varSelectedApprovalLeave)), Text(varSelectedApprovalLeave.NgayKetThuc, "dd/mm/yyyy"), ""), "?"), Concatenate("Bạn có chắc chắn muốn từ chối đơn nghỉ phép từ ngày ", If(Not(IsBlank(varSelectedApprovalLeave)), Text(varSelectedApprovalLeave.NgayBatDau, "dd/mm/yyyy"), ""), " đến ", If(Not(IsBlank(varSelectedApprovalLeave)), Text(varSelectedApprovalLeave.NgayKetThuc, "dd/mm/yyyy"), ""), "?"))
                         Width: =Parent.Width
             - Approval.Confirm.Actions:
-                Control: GroupContainer@1.3.0
+                Control: GroupContainer
                 Variant: ManualLayout
                 Properties:
                   Height: =Parent.Height * 0.25

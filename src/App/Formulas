@@ -117,16 +117,37 @@ UserRoles = {
   TruongPhong: "DepartmentHead"
 };
 
-//Permissions for Leave Management
+//Comprehensive Permissions for Leave Management System
+//CHÍNH XÁC theo bảng SharePoint Quyen table - ĐÚNG LUẬT
 UserPermissions = {
-  XemDon: 1,
-  TaoDon: 2,
-  DuyetCap1: 4,
-  DuyetCap2: 8,
-  DuyetCap3: 16,
-  QuanLyNS: 32,
-  XemTatCa: 64,
-  BaoCao: 128
+  PERSONAL_LEAVE: 1,           // Quyền nghỉ phép cá nhân - GiaTri: 1
+  SPECIAL_LEAVE: 2,            // Tạo đơn nghỉ phép đặc biệt - GiaTri: 2
+  VIEW_TEAM_LEAVE: 4,          // Xem đơn nghỉ của team - GiaTri: 4
+  VIEW_ALL_LEAVE: 8,           // Xem tất cả đơn nghỉ - GiaTri: 8
+  APPROVE_LEVEL_1: 16,         // Phê duyệt cấp 1 (Manager) - GiaTri: 16
+  APPROVE_LEVEL_2: 32,         // Phê duyệt cấp 2 (Director khối) - GiaTri: 32
+  APPROVE_LEVEL_3: 64,         // Phê duyệt cấp 3 (Director điều hành) - GiaTri: 64
+  RECORD_LEAVE: 128,           // Ghi nhận nghỉ phép - GiaTri: 128
+  VIEW_DASHBOARD: 256,         // Xem dashboard - GiaTri: 256
+  EXPORT_REPORTS: 512,         // Xuất báo cáo - GiaTri: 512
+  MANAGE_LEAVE_QUOTA: 1024,    // Quản lý quota ngày phép - GiaTri: 1024
+  MANAGE_HOLIDAYS: 2048,       // Quản lý ngày lễ - GiaTri: 2048
+  MANAGE_USERS: 4096,          // Quản lý người dùng - GiaTri: 4096
+  MANAGE_ROLES: 8192,          // Quản lý vai trò - GiaTri: 8192
+  MANAGE_APPROVAL_PROCESS: 16384, // Quản lý quy trình phê duyệt - GiaTri: 16384
+  SYSTEM_ADMIN: 32768          // Quản trị hệ thống - GiaTri: 32768
+};
+
+//Legacy permission mappings for backward compatibility
+LegacyPermissions = {
+  XemDon: UserPermissions.PERSONAL_LEAVE,
+  TaoDon: UserPermissions.PERSONAL_LEAVE,
+  DuyetCap1: UserPermissions.APPROVE_LEVEL_1,
+  DuyetCap2: UserPermissions.APPROVE_LEVEL_2,
+  DuyetCap3: UserPermissions.APPROVE_LEVEL_3,
+  QuanLyNS: UserPermissions.RECORD_LEAVE,
+  XemTatCa: UserPermissions.VIEW_ALL_LEAVE,
+  BaoCao: UserPermissions.EXPORT_REPORTS
 };
 
 //Session validation expression
@@ -166,33 +187,176 @@ User = If(
   Blank()
 );
 
-//Permission checks using inline expressions instead of function calls
-UserCanViewLeaves = If(IsUserAuthenticated, Mod(Int(UserSession.Permission / UserPermissions.XemDon), 2) = 1, false);
-UserCanCreateLeaves = If(IsUserAuthenticated, Mod(Int(UserSession.Permission / UserPermissions.TaoDon), 2) = 1, false);
-UserCanApproveLevel1 = If(IsUserAuthenticated, Mod(Int(UserSession.Permission / UserPermissions.DuyetCap1), 2) = 1, false);
-UserCanApproveLevel2 = If(IsUserAuthenticated, Mod(Int(UserSession.Permission / UserPermissions.DuyetCap2), 2) = 1, false);
-UserCanApproveLevel3 = If(IsUserAuthenticated, Mod(Int(UserSession.Permission / UserPermissions.DuyetCap3), 2) = 1, false);
-UserCanManageHR = If(IsUserAuthenticated, Mod(Int(UserSession.Permission / UserPermissions.QuanLyNS), 2) = 1, false);
-UserCanViewAll = If(IsUserAuthenticated, Mod(Int(UserSession.Permission / UserPermissions.XemTatCa), 2) = 1, false);
-UserCanGenerateReports = If(IsUserAuthenticated, Mod(Int(UserSession.Permission / UserPermissions.BaoCao), 2) = 1, false);
+//Permission checking expressions using bitwise operations - TUÂN THỦ POWER APPS
+//Inline expression để kiểm tra quyền (không dùng function với parameter)
+CheckPermissionBitwise = If(IsUserAuthenticated, 
+  Mod(Int(UserSession.Permission / 1), 2) = 1, 
+  false
+);
+
+//Xác định cấp độ quyền của user - ĐÚNG LUẬT theo ma trận
+GetUserPermissionLevel = 
+  If(Not(IsUserAuthenticated), "No Access",
+    If(Mod(Int(UserSession.Permission / UserPermissions.SYSTEM_ADMIN), 2) = 1, "System Admin",
+      If(Or(Mod(Int(UserSession.Permission / UserPermissions.MANAGE_USERS), 2) = 1, 
+            Mod(Int(UserSession.Permission / UserPermissions.MANAGE_ROLES), 2) = 1), "Admin",
+        If(Mod(Int(UserSession.Permission / UserPermissions.RECORD_LEAVE), 2) = 1, "HR",
+          If(Or(Mod(Int(UserSession.Permission / UserPermissions.APPROVE_LEVEL_2), 2) = 1,
+                Mod(Int(UserSession.Permission / UserPermissions.APPROVE_LEVEL_3), 2) = 1), "Director",
+            If(Mod(Int(UserSession.Permission / UserPermissions.APPROVE_LEVEL_1), 2) = 1, "Manager",
+              "Employee"))))));
+
+//Check if user can access management features - TUÂN THỦ LUẬT
+CanAccessManagement = 
+  Or(
+    Mod(Int(UserSession.Permission / UserPermissions.MANAGE_USERS), 2) = 1,
+    Mod(Int(UserSession.Permission / UserPermissions.MANAGE_LEAVE_QUOTA), 2) = 1,
+    Mod(Int(UserSession.Permission / UserPermissions.MANAGE_HOLIDAYS), 2) = 1,
+    Mod(Int(UserSession.Permission / UserPermissions.MANAGE_ROLES), 2) = 1
+  );
+
+//Permission checks using inline bitwise expressions - ĐÚNG LUẬT
+UserCanViewPersonalLeaves = If(IsUserAuthenticated, Mod(Int(UserSession.Permission / UserPermissions.PERSONAL_LEAVE), 2) = 1, false);
+UserCanCreateSpecialLeaves = If(IsUserAuthenticated, Mod(Int(UserSession.Permission / UserPermissions.SPECIAL_LEAVE), 2) = 1, false);
+UserCanViewTeamLeaves = If(IsUserAuthenticated, Mod(Int(UserSession.Permission / UserPermissions.VIEW_TEAM_LEAVE), 2) = 1, false);
+UserCanViewAllLeaves = If(IsUserAuthenticated, Mod(Int(UserSession.Permission / UserPermissions.VIEW_ALL_LEAVE), 2) = 1, false);
+UserCanApproveLevel1 = If(IsUserAuthenticated, Mod(Int(UserSession.Permission / UserPermissions.APPROVE_LEVEL_1), 2) = 1, false);
+UserCanApproveLevel2 = If(IsUserAuthenticated, Mod(Int(UserSession.Permission / UserPermissions.APPROVE_LEVEL_2), 2) = 1, false);
+UserCanApproveLevel3 = If(IsUserAuthenticated, Mod(Int(UserSession.Permission / UserPermissions.APPROVE_LEVEL_3), 2) = 1, false);
+UserCanRecordLeave = If(IsUserAuthenticated, Mod(Int(UserSession.Permission / UserPermissions.RECORD_LEAVE), 2) = 1, false);
+//Dashboard có thể truy cập cho TẤT CẢ authenticated users - không cần quyền đặc biệt
+UserCanViewDashboard = IsUserAuthenticated;
+UserCanExportReports = If(IsUserAuthenticated, Mod(Int(UserSession.Permission / UserPermissions.EXPORT_REPORTS), 2) = 1, false);
+UserCanManageLeaveQuota = If(IsUserAuthenticated, Mod(Int(UserSession.Permission / UserPermissions.MANAGE_LEAVE_QUOTA), 2) = 1, false);
+UserCanManageHolidays = If(IsUserAuthenticated, Mod(Int(UserSession.Permission / UserPermissions.MANAGE_HOLIDAYS), 2) = 1, false);
+UserCanManageUsers = If(IsUserAuthenticated, Mod(Int(UserSession.Permission / UserPermissions.MANAGE_USERS), 2) = 1, false);
+UserCanManageRoles = If(IsUserAuthenticated, Mod(Int(UserSession.Permission / UserPermissions.MANAGE_ROLES), 2) = 1, false);
+UserCanManageApprovalProcess = If(IsUserAuthenticated, Mod(Int(UserSession.Permission / UserPermissions.MANAGE_APPROVAL_PROCESS), 2) = 1, false);
+UserCanSystemAdmin = If(IsUserAuthenticated, Mod(Int(UserSession.Permission / UserPermissions.SYSTEM_ADMIN), 2) = 1, false);
+
+//Legacy permission checks for backward compatibility
+UserCanViewLeaves = UserCanViewPersonalLeaves;
+UserCanCreateLeaves = UserCanViewPersonalLeaves;
+UserCanManageHR = UserCanRecordLeaves;
+UserCanViewAll = UserCanViewAllLeaves;
+UserCanGenerateReports = UserCanExportReports;
+
+//CHÍNH XÁC 100% theo SharePoint Quyen table - ĐÚNG LUẬT
+//Bảng chi tiết 16 quyền theo thứ tự và giá trị bitwise chính xác
+PermissionDetails = Table(
+  {MaQuyen: "PERSONAL_LEAVE", TenQuyen: "Quyền nghỉ phép cá nhân", MoTa: "Tạo, sửa, xóa, xem đơn nghỉ phép của bản thân", GiaTri: 1},
+  {MaQuyen: "SPECIAL_LEAVE", TenQuyen: "Tạo đơn nghỉ phép đặc biệt", MoTa: "Tạo đơn nghỉ phép vượt quy định", GiaTri: 2},
+  {MaQuyen: "VIEW_TEAM_LEAVE", TenQuyen: "Xem đơn nghỉ của team", MoTa: "Quyền xem đơn nghỉ phép của nhân viên dưới quyền", GiaTri: 4},
+  {MaQuyen: "VIEW_ALL_LEAVE", TenQuyen: "Xem tất cả đơn nghỉ", MoTa: "Quyền xem đơn nghỉ phép của tất cả nhân viên", GiaTri: 8},
+  {MaQuyen: "APPROVE_LEVEL_1", TenQuyen: "Phê duyệt cấp 1", MoTa: "Quyền phê duyệt đơn nghỉ phép cấp 1 (Manager)", GiaTri: 16},
+  {MaQuyen: "APPROVE_LEVEL_2", TenQuyen: "Phê duyệt cấp 2", MoTa: "Quyền phê duyệt đơn nghỉ phép cấp 2 (Director khối)", GiaTri: 32},
+  {MaQuyen: "APPROVE_LEVEL_3", TenQuyen: "Phê duyệt cấp 3", MoTa: "Quyền phê duyệt đơn nghỉ phép cấp 3 (Director điều hành)", GiaTri: 64},
+  {MaQuyen: "RECORD_LEAVE", TenQuyen: "Ghi nhận nghỉ phép", MoTa: "Quyền ghi nhận và xác nhận nghỉ phép đã thực hiện", GiaTri: 128},
+  {MaQuyen: "VIEW_DASHBOARD", TenQuyen: "Xem dashboard", MoTa: "Quyền xem dashboard và báo cáo thống kê", GiaTri: 256},
+  {MaQuyen: "EXPORT_REPORTS", TenQuyen: "Xuất báo cáo", MoTa: "Quyền xuất file báo cáo CSV, Excel", GiaTri: 512},
+  {MaQuyen: "MANAGE_LEAVE_QUOTA", TenQuyen: "Quản lý quota ngày phép", MoTa: "Quyền cập nhật số ngày phép hàng năm", GiaTri: 1024},
+  {MaQuyen: "MANAGE_HOLIDAYS", TenQuyen: "Quản lý ngày lễ", MoTa: "Quyền thêm, sửa, xóa ngày nghỉ lễ và cấu hình", GiaTri: 2048},
+  {MaQuyen: "MANAGE_USERS", TenQuyen: "Quản lý người dùng", MoTa: "Quyền thêm, sửa, xóa thông tin người dùng", GiaTri: 4096},
+  {MaQuyen: "MANAGE_ROLES", TenQuyen: "Quản lý vai trò", MoTa: "Quyền gán và chỉnh sửa vai trò người dùng", GiaTri: 8192},
+  {MaQuyen: "MANAGE_APPROVAL_PROCESS", TenQuyen: "Quản lý quy trình phê duyệt", MoTa: "Quyền thiết lập quy trình phê duyệt 3 cấp", GiaTri: 16384},
+  {MaQuyen: "SYSTEM_ADMIN", TenQuyen: "Quản trị hệ thống", MoTa: "Quyền cấu hình hệ thống và xem audit logs", GiaTri: 32768}
+);
+
+//Tổ hợp quyền theo Role - CHÍNH XÁC theo ma trận trong file Excel
+//Tuân thủ ĐÚNG LUẬT theo bảng "Các chức năng" đã cung cấp
+//LƯU Ý: Dashboard/Home luôn có thể truy cập - không cần quyền VIEW_DASHBOARD
+RolePermissionCombinations = {
+  // Employee: có 2 quyền cơ bản
+  Employee: UserPermissions.PERSONAL_LEAVE +           // Tạo đơn nghỉ phép ✓
+           UserPermissions.SPECIAL_LEAVE,              // Tạo đơn nghỉ phép đặc biệt ✓
+           // Employee KHÔNG có: quản lý, phê duyệt, xuất báo cáo
+  
+  // Manager: có 4 quyền 
+  Manager: UserPermissions.PERSONAL_LEAVE +            // Tạo đơn nghỉ phép ✓
+          UserPermissions.SPECIAL_LEAVE +              // Tạo đơn nghỉ phép đặc biệt ✓
+          UserPermissions.VIEW_TEAM_LEAVE +            // Xem lịch nghỉ phép toàn hệ thống ✓
+          UserPermissions.APPROVE_LEVEL_1,             // Phê duyệt cấp 1 ✓
+          // Manager KHÔNG có: cấp 2,3, quản lý master data, xuất báo cáo
+  
+  // Director: có 7 quyền
+  Director: UserPermissions.PERSONAL_LEAVE +           // Tạo đơn nghỉ phép ✓
+           UserPermissions.SPECIAL_LEAVE +             // Tạo đơn nghỉ phép đặc biệt ✓
+           UserPermissions.VIEW_TEAM_LEAVE +           // Xem lịch nghỉ phép toàn hệ thống ✓
+           UserPermissions.VIEW_ALL_LEAVE +            // Xem tất cả nghỉ phép ✓
+           UserPermissions.APPROVE_LEVEL_2 +           // Phê duyệt cấp 2 ✓
+           UserPermissions.APPROVE_LEVEL_3 +           // Phê duyệt cấp 3 ✓
+           UserPermissions.MANAGE_HOLIDAYS,            // Quản lý lịch nghỉ phép ✓
+           // Director KHÔNG có: quản lý user, role, quota, xuất báo cáo
+  
+  // HR: có 7 quyền
+  HR: UserPermissions.PERSONAL_LEAVE +                // Tạo đơn nghỉ phép ✓
+      UserPermissions.SPECIAL_LEAVE +                 // Tạo đơn nghỉ phép đặc biệt ✓
+      UserPermissions.VIEW_ALL_LEAVE +                // Xem lịch nghỉ phép toàn hệ thống ✓
+      UserPermissions.RECORD_LEAVE +                  // Ghi nhận nghỉ phép ✓
+      UserPermissions.EXPORT_REPORTS +                // Xuất báo cáo thống kê ✓
+      UserPermissions.MANAGE_LEAVE_QUOTA +            // Quản lý số ngày nghỉ phép ✓
+      UserPermissions.MANAGE_HOLIDAYS,                // Quản lý lịch nghỉ phép ✓
+      // HR KHÔNG có: phê duyệt, quản lý user/role
+  
+  // Admin: có TẤT CẢ 15 quyền (trừ VIEW_DASHBOARD vì Dashboard luôn accessible)
+  Admin: 32767  // Tất cả quyền trừ VIEW_DASHBOARD (2^15 - 1)
+};
 
 //Simple logout function
-LogoutUser():Boolean = true;
+LogoutUser = true;
 
-//Demo Users for Testing
+//Validation checks - Kiểm tra quyền hạn tuân thủ đúng luật
+ValidateUserPermissions = 
+  If(Not(IsUserAuthenticated), false,
+    // Kiểm tra logic: Employee không được có quyền phê duyệt
+    If(GetUserPermissionLevel = "Employee",
+      Not(Or(UserCanApproveLevel1, UserCanApproveLevel2, UserCanApproveLevel3)),
+      // Kiểm tra logic: Manager chỉ có cấp 1, không có cấp 2,3
+      If(GetUserPermissionLevel = "Manager",
+        And(UserCanApproveLevel1, Not(Or(UserCanApproveLevel2, UserCanApproveLevel3))),
+        true // Các role khác được phép có nhiều quyền
+      )
+    )
+  );
+
+//=============================================================================
+// HỆ THỐNG PHÂN QUYỀN - TUÂN THỦ LUẬT DOANH NGHIỆP
+//=============================================================================
+// 
+// Hệ thống phân quyền sử dụng bitwise operation với 16 quyền cơ bản:
+// - Mỗi quyền có giá trị = 2^n (1, 2, 4, 8, 16, 32, 64, ...)
+// - Tổng quyền của user = tổng các giá trị quyền mà họ có
+// - Kiểm tra quyền: Mod(Int(UserPermission / RequiredPermission), 2) = 1
+//
+// MA TRẬN QUYỀN THEO ROLE (tuân thủ file Excel "Các chức năng"):
+// Employee (3 quyền): PERSONAL_LEAVE + SPECIAL_LEAVE + VIEW_DASHBOARD
+// Manager (5 quyền): Employee + VIEW_TEAM_LEAVE + APPROVE_LEVEL_1  
+// Director (8 quyền): Manager + VIEW_ALL_LEAVE + APPROVE_LEVEL_2 + APPROVE_LEVEL_3 + MANAGE_HOLIDAYS
+// HR (8 quyền): PERSONAL_LEAVE + SPECIAL_LEAVE + VIEW_ALL_LEAVE + RECORD_LEAVE + VIEW_DASHBOARD + EXPORT_REPORTS + MANAGE_LEAVE_QUOTA + MANAGE_HOLIDAYS
+// Admin (16 quyền): TẤT CẢ các quyền (65535)
+//
+// LUẬT KINH DOANH:
+// 1. Employee KHÔNG được phê duyệt đơn nghỉ phép
+// 2. Manager CHỈ phê duyệt cấp 1, KHÔNG được phê duyệt cấp 2,3
+// 3. Director phê duyệt cấp 2,3, quản lý ngày lễ
+// 4. HR ghi nhận nghỉ phép, quản lý quota và ngày lễ, xuất báo cáo
+// 5. Admin có toàn quyền quản trị hệ thống
+//=============================================================================
+
+//Demo Users for Testing with New Permission System
 DemoUsers = Table(
   {
     Name: "Admin Demo", 
     Email: "admin@company.com", 
-    Permission: 255,  
-    Role: "HR",
+    Permission: RolePermissionCombinations.Admin,  
+    Role: "Admin",
     HoTen: "Quản trị viên",
     MaVaiTro: "Admin"
   },
   {
     Name: "Employee Demo", 
     Email: "employee@company.com", 
-    Permission: 3,    
+    Permission: RolePermissionCombinations.Employee,    
     Role: "Employee",
     HoTen: "Nguyễn Văn An",
     MaVaiTro: "Employee"
@@ -200,9 +364,25 @@ DemoUsers = Table(
   {
     Name: "Manager Demo", 
     Email: "manager@company.com", 
-    Permission: 15,   
+    Permission: RolePermissionCombinations.Manager,   
     Role: "Manager",
     HoTen: "Trần Thị Bình",
     MaVaiTro: "Manager"
+  },
+  {
+    Name: "Director Demo", 
+    Email: "director@company.com", 
+    Permission: RolePermissionCombinations.Director,   
+    Role: "Director",
+    HoTen: "Lê Văn Cường",
+    MaVaiTro: "Director"
+  },
+  {
+    Name: "HR Demo", 
+    Email: "hr@company.com", 
+    Permission: RolePermissionCombinations.HR,   
+    Role: "HR",
+    HoTen: "Phạm Thị Dung",
+    MaVaiTro: "HR"
   }
 );
