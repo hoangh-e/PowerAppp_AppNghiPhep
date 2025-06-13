@@ -211,7 +211,8 @@
               =Set(varNavCollapsed, !varNavCollapsed)
             
       - 'Dashboard.Content.Container':    
-          Control: Container
+          Control: GroupContainer
+          Variant: ManualLayout
           Properties:
             X: ='Dashboard.Navigation'.Width
             Y: ='Dashboard.Header'.Height
@@ -219,7 +220,8 @@
             Height: =Parent.Height - 'Dashboard.Header'.Height
           Children:
             - 'Dashboard.Content.Padded':
-                Control: Container
+                Control: GroupContainer
+                Variant: ManualLayout
                 Properties:
                   X: =Parent.Width * 0.01
                   Y: =Parent.Height * 0.01
@@ -227,7 +229,8 @@
                   Height: =Parent.Height * 0.98
                 Children:
                   - 'Dashboard.Content.Welcome':
-                      Control: Container
+                      Control: GroupContainer
+                      Variant: ManualLayout
                       Properties:
                         X: =0
                         Y: =0
@@ -281,7 +284,8 @@
                               Size: =FontSizes.Small
             
             - 'Dashboard.Stats.Container':
-                Control: Container
+                Control: GroupContainer
+                Variant: ManualLayout
                 Properties:
                   X: =0
                   Y: ='Dashboard.Content.Welcome'.Y + 'Dashboard.Content.Welcome'.Height + Parent.Height * 0.015
@@ -314,7 +318,8 @@
                         Size: =FontSizes.Medium
                         
                   - 'Dashboard.Stats.LeaveBalance.Container':
-                      Control: Container
+                      Control: GroupContainer
+                      Variant: ManualLayout
                       Properties:
                         X: =Parent.Width * 0.015
                         Y: =Parent.Height * 0.18
@@ -365,7 +370,8 @@
                               ShowTrend: =false
                               
                   - 'Dashboard.Stats.RequestStatus.Container':
-                      Control: Container
+                      Control: GroupContainer
+                      Variant: ManualLayout
                       Properties:
                         X: =Parent.Width * 0.015
                         Y: =Parent.Height * 0.58
@@ -416,7 +422,8 @@
             
             # Limited Permission Message - hiển thị khi user có ít quyền
             - 'Dashboard.LimitedPermission.Container':
-                Control: Container
+                Control: GroupContainer
+                Variant: ManualLayout
                 Properties:
                   X: =0
                   Y: ='Dashboard.Stats.Container'.Y + 'Dashboard.Stats.Container'.Height + Parent.Height * 0.015
@@ -461,7 +468,8 @@
                         Wrap: =true
             
             - 'Dashboard.LeaveStats.Container':
-                Control: Container
+                Control: GroupContainer
+                Variant: ManualLayout
                 Properties:
                   X: =0
                   Y: ='Dashboard.LimitedPermission.Container'.Y + 'Dashboard.LimitedPermission.Container'.Height + Parent.Height * 0.015
@@ -481,7 +489,8 @@
                         BorderThickness: =1
                         
                   - 'Dashboard.LeaveStats.Header.Container':
-                      Control: Container
+                      Control: GroupContainer
+                      Variant: ManualLayout
                       Properties:
                         X: =Parent.Width * 0.015
                         Y: =Parent.Height * 0.03
@@ -510,7 +519,6 @@
                               Width: =Parent.Width * 0.18
                               Height: =Parent.Height * 0.55
                               Text: ="Xem chi tiết"
-                              Variant: ="Outline"
                               Size: ="Small"
                               Visible: =varUserPermissions.CanViewPersonalLeaves
                               OnClick: =Navigate(ReportsScreen)
@@ -522,20 +530,7 @@
                         Y: =Parent.Height * 0.18
                         Width: =Parent.Width * 0.97
                         Height: =Parent.Height * 0.79
-                        Items: =[
-                          { Month: "T1", Approved: 5, Pending: 2, Rejected: 1 },
-                          { Month: "T2", Approved: 4, Pending: 3, Rejected: 0 },
-                          { Month: "T3", Approved: 6, Pending: 1, Rejected: 2 },
-                          { Month: "T4", Approved: 3, Pending: 2, Rejected: 1 },
-                          { Month: "T5", Approved: 5, Pending: 1, Rejected: 0 },
-                          { Month: "T6", Approved: 4, Pending: 3, Rejected: 1 }
-                        ]
-                        Series: =[
-                          { Name: "Đã duyệt", Value: "Approved", Color: RGBA(34, 197, 94, 1) },
-                          { Name: "Chờ duyệt", Value: "Pending", Color: RGBA(251, 191, 36, 1) },
-                          { Name: "Từ chối", Value: "Rejected", Color: RGBA(239, 68, 68, 1) }
-                        ]
-                        XAxis: ={ Field: "Month", Title: "Tháng" }
-                        YAxis: ={ Title: "Số đơn" }
+                        Items: |
+                          =[ { Month: "T1", Approved: 5, Pending: 2, Rejected: 1 }, { Month: "T2", Approved: 4, Pending: 3, Rejected: 0 }, { Month: "T3", Approved: 6, Pending: 1, Rejected: 2 }, { Month: "T4", Approved: 3, Pending: 2, Rejected: 1 }, { Month: "T5", Approved: 5, Pending: 1, Rejected: 0 }, { Month: "T6", Approved: 4, Pending: 3, Rejected: 1 } ]
                         Visible: =varUserPermissions.CanViewPersonalLeaves
 

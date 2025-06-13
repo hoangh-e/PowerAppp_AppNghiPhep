@@ -223,7 +223,7 @@ UserCanViewAllLeaves = If(IsUserAuthenticated, Mod(Int(UserSession.Permission / 
 UserCanApproveLevel1 = If(IsUserAuthenticated, Mod(Int(UserSession.Permission / UserPermissions.APPROVE_LEVEL_1), 2) = 1, false);
 UserCanApproveLevel2 = If(IsUserAuthenticated, Mod(Int(UserSession.Permission / UserPermissions.APPROVE_LEVEL_2), 2) = 1, false);
 UserCanApproveLevel3 = If(IsUserAuthenticated, Mod(Int(UserSession.Permission / UserPermissions.APPROVE_LEVEL_3), 2) = 1, false);
-UserCanRecordLeave = If(IsUserAuthenticated, Mod(Int(UserSession.Permission / UserPermissions.RECORD_LEAVE), 2) = 1, false);
+UserCanRecordLeaves = If(IsUserAuthenticated, Mod(Int(UserSession.Permission / UserPermissions.RECORD_LEAVE), 2) = 1, false);
 //Dashboard có thể truy cập cho TẤT CẢ authenticated users - không cần quyền đặc biệt
 UserCanViewDashboard = IsUserAuthenticated;
 UserCanExportReports = If(IsUserAuthenticated, Mod(Int(UserSession.Permission / UserPermissions.EXPORT_REPORTS), 2) = 1, false);

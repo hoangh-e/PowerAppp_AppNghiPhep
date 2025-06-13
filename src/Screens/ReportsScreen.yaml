@@ -466,7 +466,6 @@
                               Width: =Parent.Width * 0.22
                               Height: =Parent.Height * 0.5
                               Text: =If(varIsGenerating, "Đang tạo...", "Tạo báo cáo")
-                              Variant: ="Primary"
                               Size: ="Medium"
                               IsDisabled: =varIsGenerating
                               OnClick: |
@@ -785,7 +784,6 @@
                         Width: =Parent.Width * 0.3
                         Height: =Parent.Height * 0.08
                         Text: ="Quay lại Dashboard"
-                        Variant: ="Primary"
                         Size: ="Medium"
                         OnClick: =Navigate(DashboardScreen)
 
@@ -925,7 +923,6 @@
                         Width: =Parent.Width * 0.45
                         Height: =Parent.Height
                         Text: ="Hủy"
-                        Variant: ="Outline"
                         Size: ="Medium"
                         OnClick: =Set(varShowExportOptions, false)
 

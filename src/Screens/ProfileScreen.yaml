@@ -4,7 +4,6 @@ Screens:
       Fill: =RGBA(248, 250, 252, 1)
       OnVisible: |
         =Set(varActiveScreen, "Profile");
-        //Permission checks using inline bitwise expressions
         Set(varUserPermissions, {
           CanViewPersonalLeaves: UserCanViewPersonalLeaves,
           CanCreatePersonalLeaves: UserCanViewPersonalLeaves,
@@ -15,8 +14,7 @@ Screens:
         Set(varEditedName, UserSession.HoTen);
         Set(varEditedEmail, UserSession.Email);
         Set(varEditedPhone, "");
-            Set(varIsSaving, false);
-        //Load user data with fallback demo data
+        Set(varIsSaving, false);
         Set(varCurrentUser, 
           If(IsUserAuthenticated,
             LookUp(NguoiDung, Title = UserSession.Id),
@@ -31,10 +29,11 @@ Screens:
         );
         Set(varUserLeaveHistory, 
           If(IsUserAuthenticated,
-            Filter(DonNghiPhep, MaNguoiDung.Value = UserSession.Id),
+            Filter(DonNghiPhep, MaNhanVien.Value = UserSession.Id),
             Table(
-              {MaDon: "LR001", NgayBatDau: Date(2024,11,15), NgayKetThuc: Date(2024,11,15), SoNgayNghi: 1, LyDo: "Nghỉ ốm", TrangThai: "DaDuyet"},
-              {MaDon: "LR002", NgayBatDau: Date(2024,10,10), NgayKetThuc: Date(2024,10,12), SoNgayNghi: 3, LyDo: "Nghỉ phép", TrangThai: "DaDuyet"}
+              {MaDon: "LR001", NgayBatDau: Date(2024,11,15), NgayKetThuc: Date(2024,11,15), SoNgayNghi: 1, LyDo: "Nghỉ ốm", TrangThai: {Value: "DaDuyet"}, MaLoai: {Value: "ANNUAL_LEAVE"}, BuoiNghi: {Value: "CaNgay"}},
+              {MaDon: "LR002", NgayBatDau: Date(2024,10,10), NgayKetThuc: Date(2024,10,12), SoNgayNghi: 3, LyDo: "Nghỉ phép", TrangThai: {Value: "DaDuyet"}, MaLoai: {Value: "ANNUAL_LEAVE"}, BuoiNghi: {Value: "CaNgay"}},
+              {MaDon: "LR003", NgayBatDau: Date(2024,9,5), NgayKetThuc: Date(2024,9,5), SoNgayNghi: 1, LyDo: "Việc gia đình", TrangThai: {Value: "ChoDuyetCap1"}, MaLoai: {Value: "PERSONAL_LEAVE"}, BuoiNghi: {Value: "BuoiSang"}}
             )
           )
         );
@@ -209,7 +208,6 @@ Screens:
                               Width: =Parent.Width * 0.15
                               Height: =Parent.Height * 0.7
                               Text: ="Thông tin"
-                              Variant: =If(varSelectedTab = "Info", "Primary", "Outline")
                               Size: ="Small"
                               OnClick: |
                                 =Set(varSelectedTab, "Info")
@@ -223,7 +221,6 @@ Screens:
                               Width: =Parent.Width * 0.15
                               Height: =Parent.Height * 0.7
                               Text: ="Số ngày phép"
-                              Variant: =If(varSelectedTab = "LeaveBalance", "Primary", "Outline")
                               Size: ="Small"
                               OnClick: |
                                 =Set(varSelectedTab, "LeaveBalance")
@@ -237,7 +234,6 @@ Screens:
                               Width: =Parent.Width * 0.15
                               Height: =Parent.Height * 0.7
                               Text: ="Lịch sử nghỉ phép"
-                              Variant: =If(varSelectedTab = "History", "Primary", "Outline")
                               Size: ="Small"
                               OnClick: |
                                 =Set(varSelectedTab, "History")
@@ -331,7 +327,6 @@ Screens:
                                           Width: =Parent.Width * 0.17
                                           Height: =Parent.Height * 0.5
                                           Text: =If(varIsEditing, "Hủy", "Chỉnh sửa")
-                                          Variant: =If(varIsEditing, "Outline", "Primary")
                                           Size: ="Small"
                                           OnClick: |
                                             =If(varIsEditing,
@@ -535,7 +530,6 @@ Screens:
                                           Width: =Parent.Width * 0.23
                                           Height: =Parent.Height * 0.1
                                           Text: =If(varIsSaving, "Đang lưu...", "Lưu thay đổi")
-                                          Variant: ="Primary"
                                           Size: ="Medium"
                                           Visible: =varIsEditing
                                           IsDisabled: =Or(varIsSaving, IsBlank(varEditedName), IsBlank(varEditedEmail))
@@ -640,7 +634,7 @@ Screens:
                                     Width: =Parent.Width * 0.44
                                     Height: =Parent.Height * 0.25
                                     Title: ="Đang chờ duyệt"
-                                    Value: =Sum(Filter(varUserLeaveHistory, TrangThai.Value in ["ChoDuyetCap1", "ChoDuyetCap2", "ChoDuyetCap3"]), SoNgayNghi)
+                                    Value: =Sum(Filter(varUserLeaveHistory, Or(TrangThai.Value = "ChoDuyetCap1", TrangThai.Value = "ChoDuyetCap2", TrangThai.Value = "ChoDuyetCap3")), SoNgayNghi)
                                     Icon: ="Clock"
                                     Color: =RGBA(251, 191, 36, 1)
                                     ShowTrend: =false
@@ -787,7 +781,7 @@ Screens:
                                                 Y: =Parent.Height * 0.1
                                                 Width: =Parent.Width * 0.2
                                                 Height: =Parent.Height * 0.4
-                                                Text: =LookUp(LoaiNghi, MaLoai = ThisItem.MaLoai.Value).TenLoai
+                                                Text: =If(IsUserAuthenticated, LookUp(LoaiNghi, MaLoai = ThisItem.MaLoai.Value).TenLoai, Switch(ThisItem.MaLoai.Value, "ANNUAL_LEAVE", "Nghỉ phép năm", "PERSONAL_LEAVE", "Nghỉ việc riêng", "SICK_LEAVE", "Nghỉ ốm", "Không xác định"))
                                                 Color: =RGBA(17, 24, 39, 1)
                                                 Font: =Font.'Open Sans'
                                                 Size: =FontSizes.Small

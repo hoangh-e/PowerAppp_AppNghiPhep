@@ -211,7 +211,6 @@ Screens:
                               Width: =Parent.Width * 0.22
                               Height: =Parent.Height * 0.6
                               Text: ="Xem đơn của tôi"
-                              Variant: ="Outline"
                               Size: ="Medium"
                               OnClick: |
                                 =Navigate(MyLeavesScreen)
@@ -581,7 +580,6 @@ Screens:
                                     Width: =Parent.Width * 0.48
                                     Height: =Parent.Height * 0.7
                                     Text: =If(varIsSubmitting, "Đang gửi...", "Gửi đơn")
-                                    Variant: ="Primary"
                                     Size: ="Medium"
                                     IsDisabled: =Or(
                                       varIsSubmitting,
@@ -627,7 +625,6 @@ Screens:
                                     Width: =Parent.Width * 0.48
                                     Height: =Parent.Height * 0.7
                                     Text: ="Làm mới"
-                                    Variant: ="Outline"
                                     Size: ="Medium"
                                     OnClick: |
                                       =Set(varSelectedFromDate, Blank());
@@ -734,7 +731,6 @@ Screens:
                         Width: =Parent.Width * 0.45
                         Height: =Parent.Height * 0.8
                         Text: ="Tạo đơn mới"
-                        Variant: ="Primary"
                         Size: ="Medium"
                         OnClick: |
                           =Set(varShowSuccessModal, false);
@@ -761,7 +757,6 @@ Screens:
                         Width: =Parent.Width * 0.45
                         Height: =Parent.Height * 0.8
                         Text: ="Xem đơn của tôi"
-                        Variant: ="Outline"
                         Size: ="Medium"
                         OnClick: |
                           =Set(varShowSuccessModal, false);
