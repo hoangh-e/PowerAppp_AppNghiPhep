@@ -1,30 +1,47 @@
-//Lightweight app initialization with COMPLETE session clearing
+//Lightweight app initialization with session preservation
 Set(varAppVersion, "1.0.0");
 Set(varAppInitialized, true);
 
-//FORCE CLEAR ALL authentication state - NO EXCEPTIONS
-Set(varLoginSuccess, false);
-Set(varSessionValid, false);  
-Set(varIsUserAuthenticated, false);
-Set(varLoggedInUserEmail, "");
+//Check if we have a valid existing session (either Id is not blank/empty OR Permission > 0)
+Set(varHasValidSession, And(
+  Not(IsBlank(UserSessionANP.Id)),
+  UserSessionANP.Id <> "",
+  UserSessionANP.Permission > 0
+));
 
-//Initialize empty UserSessionANP (Record initialization with ALL fields)
-Set(UserSessionANP, {
-  Id: "",
-  HoTen: "",
-  Email: "",
-  MaVaiTro: "",
-  Permission: 0,
-  NguoiQuanLyId: "",
-  ChucDanh: "",
-  MaDonVi: "",
-  TrangThai: "",
-  Name: "",
-  Role: ""
-});
+//Initialize authentication state - preserve existing session if valid
+If(varHasValidSession,
+  //Existing valid session found - preserve it
+  Set(varLoginSuccess, true);
+  Set(varSessionValid, true);  
+  Set(varIsUserAuthenticated, true);
+  Set(varLoggedInUserEmail, UserSessionANP.Email),
+  //No existing session - clear all
+  Set(varLoginSuccess, false);
+  Set(varSessionValid, false);  
+  Set(varIsUserAuthenticated, false);
+  Set(varLoggedInUserEmail, "")
+);
+
+//Initialize empty UserSessionANP ONLY if no valid session exists
+If(Not(varHasValidSession),
+  Set(UserSessionANP, {
+    Id: "",
+    HoTen: "",
+    Email: "",
+    MaVaiTro: "",
+    Permission: 0,
+    NguoiQuanLyId: "",
+    ChucDanh: "",
+    MaDonVi: "",
+    TrangThai: "",
+    Name: "",
+    Role: ""
+  })
+);
 
 //Initialize session state tracking
-Set(varSessionState, "CLEAN_START");
+Set(varSessionState, If(varHasValidSession, "EXISTING_SESSION", "CLEAN_START"));
 
-//Security flag to ensure fresh login required
-Set(varRequiresAuthentication, true);
+//Security flag to ensure fresh login required only if no valid session
+Set(varRequiresAuthentication, Not(varHasValidSession));
