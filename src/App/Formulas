@@ -159,10 +159,10 @@ UserPermissions = {
 
 //Role permission combinations
 RolePermissionCombinations = {
-  Employee: UserPermissions.PERSONAL_LEAVE + UserPermissions.SPECIAL_LEAVE,
-  Manager: UserPermissions.PERSONAL_LEAVE + UserPermissions.SPECIAL_LEAVE + UserPermissions.VIEW_TEAM_LEAVE + UserPermissions.APPROVE_LEVEL_1,
-  Director: UserPermissions.PERSONAL_LEAVE + UserPermissions.SPECIAL_LEAVE + UserPermissions.VIEW_TEAM_LEAVE + UserPermissions.VIEW_ALL_LEAVE + UserPermissions.APPROVE_LEVEL_2 + UserPermissions.APPROVE_LEVEL_3 + UserPermissions.MANAGE_HOLIDAYS,
-  HR: UserPermissions.PERSONAL_LEAVE + UserPermissions.SPECIAL_LEAVE + UserPermissions.VIEW_ALL_LEAVE + UserPermissions.RECORD_LEAVE + UserPermissions.EXPORT_REPORTS + UserPermissions.MANAGE_LEAVE_QUOTA + UserPermissions.MANAGE_HOLIDAYS,
+  Employee: UserPermissions.PERSONAL_LEAVE + UserPermissions.SPECIAL_LEAVE + UserPermissions.VIEW_DASHBOARD,
+  Manager: UserPermissions.PERSONAL_LEAVE + UserPermissions.SPECIAL_LEAVE + UserPermissions.VIEW_TEAM_LEAVE + UserPermissions.APPROVE_LEVEL_1 + UserPermissions.VIEW_DASHBOARD + UserPermissions.EXPORT_REPORTS,
+  Director: UserPermissions.PERSONAL_LEAVE + UserPermissions.SPECIAL_LEAVE + UserPermissions.VIEW_TEAM_LEAVE + UserPermissions.VIEW_ALL_LEAVE + UserPermissions.APPROVE_LEVEL_2 + UserPermissions.APPROVE_LEVEL_3 + UserPermissions.MANAGE_HOLIDAYS + UserPermissions.VIEW_DASHBOARD + UserPermissions.EXPORT_REPORTS,
+  HR: UserPermissions.PERSONAL_LEAVE + UserPermissions.SPECIAL_LEAVE + UserPermissions.VIEW_ALL_LEAVE + UserPermissions.RECORD_LEAVE + UserPermissions.EXPORT_REPORTS + UserPermissions.MANAGE_LEAVE_QUOTA + UserPermissions.MANAGE_HOLIDAYS + UserPermissions.VIEW_DASHBOARD,
   Admin: 65535  // All permissions
 };
 

@@ -18,11 +18,21 @@
           CanApproveLevel1: CheckPermission(UserSessionANP.Permission, UserPermissions.APPROVE_LEVEL_1),
           CanApproveLevel2: CheckPermission(UserSessionANP.Permission, UserPermissions.APPROVE_LEVEL_2),
           CanApproveLevel3: CheckPermission(UserSessionANP.Permission, UserPermissions.APPROVE_LEVEL_3),
+          CanViewDashboard: CheckPermission(UserSessionANP.Permission, UserPermissions.VIEW_DASHBOARD),
           CanExportReports: CheckPermission(UserSessionANP.Permission, UserPermissions.EXPORT_REPORTS),
           CanManageUsers: CheckPermission(UserSessionANP.Permission, UserPermissions.MANAGE_USERS),
           UserPermissionLevel: GetUserPermissionLevel(UserSessionANP.Permission),
           CanAccessManagement: CanAccessManagement(UserSessionANP.Permission)
         });
+        
+        //CRITICAL: Check if user can access dashboard
+        Set(varCanAccessDashboard, Or(varUserPermissions.CanViewDashboard, varUserPermissions.CanViewPersonalLeaves, varUserPermissions.CanViewAllLeaves));
+        
+        //If no dashboard permission, redirect to Profile with notification
+        If(Not(varCanAccessDashboard),
+          Notify("Bạn không có quyền truy cập trang Dashboard", NotificationType.Error);
+          Navigate(ProfileScreen)
+        );
         
         //Use UserSessionANP data directly
         Set(varUser, {
@@ -39,18 +49,18 @@
         
         //Load dashboard data - Admin và HR xem tất cả, user khác xem theo quyền
         Set(varDashboardStats, {
-          TotalLeave: If(Or(varUserPermissions.CanViewPersonalLeaves, varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers), 
-            If(varUserPermissions.CanViewAllLeaves, 120, 12), 0), 
-          UsedLeave: If(Or(varUserPermissions.CanViewPersonalLeaves, varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers), 
-            If(varUserPermissions.CanViewAllLeaves, 35, 3), 0), 
-          RemainingLeave: If(Or(varUserPermissions.CanViewPersonalLeaves, varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers), 
-            If(varUserPermissions.CanViewAllLeaves, 85, 9), 0), 
-          PendingRequests: If(Or(varUserPermissions.CanViewPersonalLeaves, varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers), 
-            If(varUserPermissions.CanViewAllLeaves, 15, 1), 0), 
-          ApprovedRequests: If(Or(varUserPermissions.CanViewPersonalLeaves, varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers), 
-            If(varUserPermissions.CanViewAllLeaves, 28, 2), 0), 
-          RejectedRequests: If(Or(varUserPermissions.CanViewPersonalLeaves, varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers), 
-            If(varUserPermissions.CanViewAllLeaves, 7, 0), 0)
+          TotalLeave: If(varCanAccessDashboard, 
+            If(Or(varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers), 120, 12), 0), 
+          UsedLeave: If(varCanAccessDashboard, 
+            If(Or(varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers), 35, 3), 0), 
+          RemainingLeave: If(varCanAccessDashboard, 
+            If(Or(varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers), 85, 9), 0), 
+          PendingRequests: If(varCanAccessDashboard, 
+            If(Or(varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers), 15, 1), 0), 
+          ApprovedRequests: If(varCanAccessDashboard, 
+            If(Or(varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers), 28, 2), 0), 
+          RejectedRequests: If(varCanAccessDashboard, 
+            If(Or(varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers), 7, 0), 0)
         }); 
         
         //Load pending approvals count from SharePoint based on user permissions
@@ -70,9 +80,9 @@
         );
         
         //Initialize recent leaves collection - Admin xem tất cả, user khác xem theo quyền
-        If(And(Or(varUserPermissions.CanViewPersonalLeaves, varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers), Not(IsBlank(UserSessionANP.Id))),
+        If(And(varCanAccessDashboard, Not(IsBlank(UserSessionANP.Id))),
           //Load from SharePoint - use direct data
-          If(varUserPermissions.CanViewAllLeaves,
+          If(Or(varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers),
             //Admin/HR - Load all recent leaves
             ClearCollect(colMyRecentLeaves,
               Sort(
@@ -97,9 +107,9 @@
               )
             )
           ),
-          If(Or(varUserPermissions.CanViewPersonalLeaves, varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers),
+          If(varCanAccessDashboard,
             // Test data với cấu trúc flat tương thích với SharePoint
-            If(varUserPermissions.CanViewAllLeaves,
+            If(Or(varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers),
               //Admin/HR demo data - more comprehensive
               ClearCollect(colMyRecentLeaves,
                 {
@@ -297,6 +307,7 @@
             Y: ='Dashboard.Header'.Height
             Width: =Parent.Width - 'Dashboard.Navigation'.Width
             Height: =Parent.Height - 'Dashboard.Header'.Height
+            Visible: =varCanAccessDashboard
           Children:
             - 'Dashboard.Content.Padded':
                 Control: GroupContainer
@@ -608,4 +619,85 @@
                             [ { Month: "T1", Approved: 25, Pending: 8, Rejected: 3 }, { Month: "T2", Approved: 22, Pending: 12, Rejected: 2 }, { Month: "T3", Approved: 28, Pending: 5, Rejected: 7 }, { Month: "T4", Approved: 18, Pending: 9, Rejected: 4 }, { Month: "T5", Approved: 24, Pending: 6, Rejected: 2 }, { Month: "T6", Approved: 20, Pending: 11, Rejected: 5 } ],
                             [ { Month: "T1", Approved: 5, Pending: 2, Rejected: 1 }, { Month: "T2", Approved: 4, Pending: 3, Rejected: 0 }, { Month: "T3", Approved: 6, Pending: 1, Rejected: 2 }, { Month: "T4", Approved: 3, Pending: 2, Rejected: 1 }, { Month: "T5", Approved: 5, Pending: 1, Rejected: 0 }, { Month: "T6", Approved: 4, Pending: 3, Rejected: 1 } ])
                         Visible: =Or(varUserPermissions.CanViewPersonalLeaves, varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers)
+
+      - 'Dashboard.AccessDenied.Container':
+          Control: GroupContainer
+          Variant: ManualLayout
+          Properties:
+            X: ='Dashboard.Navigation'.Width
+            Y: ='Dashboard.Header'.Height
+            Width: =Parent.Width - 'Dashboard.Navigation'.Width
+            Height: =Parent.Height - 'Dashboard.Header'.Height
+            Visible: =Not(varCanAccessDashboard)
+          Children:
+            - 'Dashboard.AccessDenied.Background':
+                Control: Rectangle
+                Properties:
+                  X: =0
+                  Y: =0
+                  Width: =Parent.Width
+                  Height: =Parent.Height
+                  Fill: =RGBA(255, 255, 255, 1)
+                  BorderColor: =RGBA(226, 232, 240, 1)
+                  BorderThickness: =1
+
+            - 'Dashboard.AccessDenied.Content':
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =Parent.Width * 0.2
+                  Y: =Parent.Height * 0.3
+                  Width: =Parent.Width * 0.6
+                  Height: =Parent.Height * 0.4
+                Children:
+                  - 'Dashboard.AccessDenied.Icon':
+                      Control: Classic/Icon
+                      Properties:
+                        X: =(Parent.Width - Self.Width) / 2
+                        Y: =0
+                        Width: =Parent.Width * 0.08
+                        Height: =Parent.Width * 0.08
+                        Icon: =Icon.Lock
+                        Color: =RGBA(239, 68, 68, 1)
+                      
+                  - 'Dashboard.AccessDenied.Title':
+                      Control: Label
+                      Properties:
+                        X: =0
+                        Y: =Parent.Height * 0.12
+                        Width: =Parent.Width
+                        Height: =Parent.Height * 0.08
+                        Text: ="Không có quyền truy cập"
+                        Color: =RGBA(17, 24, 39, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Bold
+                        Size: =FontSizes.XLarge
+                        Align: =Align.Center
+                  
+                  - 'Dashboard.AccessDenied.Message':
+                      Control: Label
+                      Properties:
+                        X: =0
+                        Y: =Parent.Height * 0.22
+                        Width: =Parent.Width
+                        Height: =Parent.Height * 0.15
+                        Text: ="Bạn không có quyền truy cập vào Dashboard. Vui lòng liên hệ quản trị viên để được cấp quyền."
+                        Color: =RGBA(107, 114, 128, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Normal
+                        Size: =FontSizes.Medium
+                        Align: =Align.Center
+                        Wrap: =true
+
+                  - 'Dashboard.AccessDenied.BackButton':
+                      Control: CanvasComponent
+                      ComponentName: ButtonComponent
+                      Properties:
+                        X: =(Parent.Width - Self.Width) / 2
+                        Y: =Parent.Height * 0.4
+                        Width: =Parent.Width * 0.3
+                        Height: =Parent.Height * 0.08
+                        Text: ="Đi tới Hồ sơ"
+                        Size: ="Medium"
+                        OnClick: =Navigate(ProfileScreen)
 

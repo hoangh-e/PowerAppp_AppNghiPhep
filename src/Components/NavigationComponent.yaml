@@ -475,7 +475,7 @@ ComponentDefinitions:
                         RGBA(196, 181, 253, 1), 
                         RGBA(255, 255, 255, 0))
                       BorderThickness: =If(NavigationComponent.ActiveScreen = "Management", 1, 0)
-                      Visible: =Or(NavigationComponent.UserRole = "Manager", NavigationComponent.UserRole = "Admin", NavigationComponent.UserRole = "ADMIN")
+                      Visible: =Or(NavigationComponent.UserRole = "Manager", NavigationComponent.UserRole = "Admin", NavigationComponent.UserRole = "Admin")
 
                 - 'Navigation.Menu.Management':
                     Control: Classic/Button
@@ -496,7 +496,7 @@ ComponentDefinitions:
                         FontWeight.Semibold, 
                         FontWeight.Normal)
                       Size: =10
-                      Visible: =Or(NavigationComponent.UserRole = "Manager", NavigationComponent.UserRole = "Admin", NavigationComponent.UserRole = "ADMIN")
+                      Visible: =Or(NavigationComponent.UserRole = "Manager", NavigationComponent.UserRole = "Admin", NavigationComponent.UserRole = "Admin")
                       HoverFill: =If(NavigationComponent.ActiveScreen = "Management",
                         RGBA(237, 233, 254, 1),
                         RGBA(249, 250, 251, 1))
@@ -527,14 +527,14 @@ ComponentDefinitions:
                       Color: =If(NavigationComponent.ActiveScreen = "Management", 
                         RGBA(147, 51, 234, 1), 
                         RGBA(75, 85, 99, 1))
-                      Visible: =Or(NavigationComponent.UserRole = "Manager", NavigationComponent.UserRole = "Admin", NavigationComponent.UserRole = "ADMIN")
+                      Visible: =Or(NavigationComponent.UserRole = "Manager", NavigationComponent.UserRole = "Admin", NavigationComponent.UserRole = "Admin")
 
                 # Approval Menu Item (visible for managers, directors, HR)
                 - 'Navigation.Menu.Approval.Background':
                     Control: Rectangle
                     Properties:
                       X: =Parent.Width * 0.04
-                      Y: =If(Or(NavigationComponent.UserRole = "Manager", NavigationComponent.UserRole = "Admin", NavigationComponent.UserRole = "ADMIN"),
+                      Y: =If(Or(NavigationComponent.UserRole = "Manager", NavigationComponent.UserRole = "Admin", NavigationComponent.UserRole = "Admin"),
                         'Navigation.Menu.Management'.Y + 'Navigation.Menu.Management'.Height + Parent.Height * 0.004,
                         'Navigation.Menu.Calendar'.Y + 'Navigation.Menu.Calendar'.Height + Parent.Height * 0.004)
                       Width: =Parent.Width * 0.92
@@ -546,13 +546,13 @@ ComponentDefinitions:
                         RGBA(248, 113, 113, 1), 
                         RGBA(255, 255, 255, 0))
                       BorderThickness: =If(NavigationComponent.ActiveScreen = "Approval", 1, 0)
-                      Visible: =Or(NavigationComponent.UserRole = "Manager", NavigationComponent.UserRole = "Director", NavigationComponent.UserRole = "HR", NavigationComponent.UserRole = "ADMIN")
+                      Visible: =Or(NavigationComponent.UserRole = "Manager", NavigationComponent.UserRole = "Director", NavigationComponent.UserRole = "HR", NavigationComponent.UserRole = "Admin")
 
                 - 'Navigation.Menu.Approval':
                     Control: Classic/Button
                     Properties:
                       X: =Parent.Width * 0.04
-                      Y: =If(Or(NavigationComponent.UserRole = "Manager", NavigationComponent.UserRole = "Admin", NavigationComponent.UserRole = "ADMIN"),
+                      Y: =If(Or(NavigationComponent.UserRole = "Manager", NavigationComponent.UserRole = "Admin", NavigationComponent.UserRole = "Admin"),
                         'Navigation.Menu.Management'.Y + 'Navigation.Menu.Management'.Height + Parent.Height * 0.004,
                         'Navigation.Menu.Calendar'.Y + 'Navigation.Menu.Calendar'.Height + Parent.Height * 0.004)
                       Width: =Parent.Width * 0.92
@@ -569,7 +569,7 @@ ComponentDefinitions:
                         FontWeight.Semibold, 
                         FontWeight.Normal)
                       Size: =10
-                      Visible: =Or(NavigationComponent.UserRole = "Manager", NavigationComponent.UserRole = "Director", NavigationComponent.UserRole = "HR", NavigationComponent.UserRole = "ADMIN")
+                      Visible: =Or(NavigationComponent.UserRole = "Manager", NavigationComponent.UserRole = "Director", NavigationComponent.UserRole = "HR", NavigationComponent.UserRole = "Admin")
                       HoverFill: =If(NavigationComponent.ActiveScreen = "Approval",
                         RGBA(254, 226, 226, 1),
                         RGBA(249, 250, 251, 1))
@@ -591,7 +591,7 @@ ComponentDefinitions:
                     Control: Classic/Icon
                     Properties:
                       X: =Parent.Width * 0.08
-                      Y: =If(Or(NavigationComponent.UserRole = "Manager", NavigationComponent.UserRole = "Admin", NavigationComponent.UserRole = "ADMIN"),
+                      Y: =If(Or(NavigationComponent.UserRole = "Manager", NavigationComponent.UserRole = "Admin", NavigationComponent.UserRole = "Admin"),
                         'Navigation.Menu.Management'.Y + 'Navigation.Menu.Management'.Height + Parent.Height * 0.02,
                         'Navigation.Menu.Calendar'.Y + 'Navigation.Menu.Calendar'.Height + Parent.Height * 0.02)
                       Width: =Parent.Height * 0.03
@@ -600,7 +600,7 @@ ComponentDefinitions:
                       Color: =If(NavigationComponent.ActiveScreen = "Approval", 
                         RGBA(220, 38, 38, 1), 
                         RGBA(75, 85, 99, 1))
-                      Visible: =Or(NavigationComponent.UserRole = "Manager", NavigationComponent.UserRole = "Director", NavigationComponent.UserRole = "HR", NavigationComponent.UserRole = "ADMIN")
+                      Visible: =Or(NavigationComponent.UserRole = "Manager", NavigationComponent.UserRole = "Director", NavigationComponent.UserRole = "HR", NavigationComponent.UserRole = "Admin")
 
                 # Reports Menu Item (visible for managers, directors, HR)
                 - 'Navigation.Menu.Reports.Background':
@@ -617,7 +617,7 @@ ComponentDefinitions:
                         RGBA(110, 231, 183, 1), 
                         RGBA(255, 255, 255, 0))
                       BorderThickness: =If(NavigationComponent.ActiveScreen = "Reports", 1, 0)
-                      Visible: =Or(NavigationComponent.UserRole = "Manager", NavigationComponent.UserRole = "Director", NavigationComponent.UserRole = "HR", NavigationComponent.UserRole = "ADMIN")
+                      Visible: =Or(NavigationComponent.UserRole = "Manager", NavigationComponent.UserRole = "Director", NavigationComponent.UserRole = "HR", NavigationComponent.UserRole = "Admin")
 
                 - 'Navigation.Menu.Reports':
                     Control: Classic/Button
@@ -638,7 +638,7 @@ ComponentDefinitions:
                         FontWeight.Semibold, 
                         FontWeight.Normal)
                       Size: =10
-                      Visible: =Or(NavigationComponent.UserRole = "Manager", NavigationComponent.UserRole = "Director", NavigationComponent.UserRole = "HR", NavigationComponent.UserRole = "ADMIN")
+                      Visible: =Or(NavigationComponent.UserRole = "Manager", NavigationComponent.UserRole = "Director", NavigationComponent.UserRole = "HR", NavigationComponent.UserRole = "Admin")
                       HoverFill: =If(NavigationComponent.ActiveScreen = "Reports",
                         RGBA(209, 250, 229, 1),
                         RGBA(249, 250, 251, 1))
@@ -669,16 +669,16 @@ ComponentDefinitions:
                       Color: =If(NavigationComponent.ActiveScreen = "Reports", 
                         RGBA(5, 150, 105, 1), 
                         RGBA(75, 85, 99, 1))
-                      Visible: =Or(NavigationComponent.UserRole = "Manager", NavigationComponent.UserRole = "Director", NavigationComponent.UserRole = "HR", NavigationComponent.UserRole = "ADMIN")
+                      Visible: =Or(NavigationComponent.UserRole = "Manager", NavigationComponent.UserRole = "Director", NavigationComponent.UserRole = "HR", NavigationComponent.UserRole = "Admin")
 
                 # Profile Menu Item (always visible, at bottom)
                 - 'Navigation.Menu.Profile.Background':
                     Control: Rectangle
                     Properties:
                       X: =Parent.Width * 0.04
-                      Y: =If(Or(NavigationComponent.UserRole = "Manager", NavigationComponent.UserRole = "Director", NavigationComponent.UserRole = "HR", NavigationComponent.UserRole = "ADMIN"),
+                      Y: =If(Or(NavigationComponent.UserRole = "Manager", NavigationComponent.UserRole = "Director", NavigationComponent.UserRole = "HR", NavigationComponent.UserRole = "Admin"),
                         'Navigation.Menu.Reports'.Y + 'Navigation.Menu.Reports'.Height + Parent.Height * 0.004,
-                        If(Or(NavigationComponent.UserRole = "Manager", NavigationComponent.UserRole = "Admin", NavigationComponent.UserRole = "ADMIN"),
+                        If(Or(NavigationComponent.UserRole = "Manager", NavigationComponent.UserRole = "Admin", NavigationComponent.UserRole = "Admin"),
                           'Navigation.Menu.Management'.Y + 'Navigation.Menu.Management'.Height + Parent.Height * 0.004,
                           'Navigation.Menu.Calendar'.Y + 'Navigation.Menu.Calendar'.Height + Parent.Height * 0.004))
                       Width: =Parent.Width * 0.92
@@ -695,9 +695,9 @@ ComponentDefinitions:
                     Control: Classic/Button
                     Properties:
                       X: =Parent.Width * 0.04
-                      Y: =If(Or(NavigationComponent.UserRole = "Manager", NavigationComponent.UserRole = "Director", NavigationComponent.UserRole = "HR", NavigationComponent.UserRole = "ADMIN"),
+                      Y: =If(Or(NavigationComponent.UserRole = "Manager", NavigationComponent.UserRole = "Director", NavigationComponent.UserRole = "HR", NavigationComponent.UserRole = "Admin"),
                         'Navigation.Menu.Reports'.Y + 'Navigation.Menu.Reports'.Height + Parent.Height * 0.004,
-                        If(Or(NavigationComponent.UserRole = "Manager", NavigationComponent.UserRole = "Admin", NavigationComponent.UserRole = "ADMIN"),
+                        If(Or(NavigationComponent.UserRole = "Manager", NavigationComponent.UserRole = "Admin", NavigationComponent.UserRole = "Admin"),
                           'Navigation.Menu.Management'.Y + 'Navigation.Menu.Management'.Height + Parent.Height * 0.004,
                           'Navigation.Menu.Calendar'.Y + 'Navigation.Menu.Calendar'.Height + Parent.Height * 0.004))
                       Width: =Parent.Width * 0.92
@@ -737,9 +737,9 @@ ComponentDefinitions:
                     Control: Classic/Icon
                     Properties:
                       X: =Parent.Width * 0.08
-                      Y: =If(Or(NavigationComponent.UserRole = "Manager", NavigationComponent.UserRole = "Director", NavigationComponent.UserRole = "HR", NavigationComponent.UserRole = "ADMIN"),
+                      Y: =If(Or(NavigationComponent.UserRole = "Manager", NavigationComponent.UserRole = "Director", NavigationComponent.UserRole = "HR", NavigationComponent.UserRole = "Admin"),
                         'Navigation.Menu.Reports'.Y + 'Navigation.Menu.Reports'.Height + Parent.Height * 0.02,
-                        If(Or(NavigationComponent.UserRole = "Manager", NavigationComponent.UserRole = "Admin", NavigationComponent.UserRole = "ADMIN"),
+                        If(Or(NavigationComponent.UserRole = "Manager", NavigationComponent.UserRole = "Admin", NavigationComponent.UserRole = "Admin"),
                           'Navigation.Menu.Management'.Y + 'Navigation.Menu.Management'.Height + Parent.Height * 0.02,
                           'Navigation.Menu.Calendar'.Y + 'Navigation.Menu.Calendar'.Height + Parent.Height * 0.02))
                       Width: =Parent.Height * 0.03
