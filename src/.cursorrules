@@ -267,18 +267,18 @@ Formulas: |
   
   //Current user object
   User = {
-    Name: UserSession.Name,
-    Id: UserSession.Id,
-    Role: UserSession.Role,
-    Permission: UserSession.Permission,
-    NguoiQuanLyId: UserSession.NguoiQuanLyId
+    Name: UserSessionANP.Name,
+    Id: UserSessionANP.Id,
+    Role: UserSessionANP.Role,
+    Permission: UserSessionANP.Permission,
+    NguoiQuanLyId: UserSessionANP.NguoiQuanLyId
   };
   
   //Permission checks
-  UserHasGDPerm = CheckPermission(UserSession.Permission, Quyền.GĐ);
-  UserHasQLPerm = CheckPermission(UserSession.Permission, Quyền.QL);
-  UserHasKTTPerm = CheckPermission(UserSession.Permission, Quyền.YeuCauBoSung);
-  UserHasKTPerm = CheckPermission(UserSession.Permission, Quyền.TamUng)
+  UserHasGDPerm = CheckPermission(UserSessionANP.Permission, Quyền.GĐ);
+  UserHasQLPerm = CheckPermission(UserSessionANP.Permission, Quyền.QL);
+  UserHasKTTPerm = CheckPermission(UserSessionANP.Permission, Quyền.YeuCauBoSung);
+  UserHasKTPerm = CheckPermission(UserSessionANP.Permission, Quyền.TamUng)
 
 # Theme - App theme settings
 Theme: =Theme.Default
@@ -315,11 +315,11 @@ CheckPermission(UserPerm:Number, RequiredPerm:Number):Boolean = (
 
 //Current user object
 User = {
-  Name: UserSession.Name,
-  Id: UserSession.Id,
-  Role: UserSession.Role,
-  Permission: UserSession.Permission,
-  NguoiQuanLyId: UserSession.NguoiQuanLyId
+  Name: UserSessionANP.Name,
+  Id: UserSessionANP.Id,
+  Role: UserSessionANP.Role,
+  Permission: UserSessionANP.Permission,
+  NguoiQuanLyId: UserSessionANP.NguoiQuanLyId
 };
 ```
 
@@ -3321,14 +3321,14 @@ CheckPermission(userPerm:Number, requiredPerm:Number):Boolean = (
 );
 
 LogoutUser():Boolean = (
-  Clear(UserSession); Set(varLoginSuccess, false); true
+  Clear(UserSessionANP); Set(varLoginSuccess, false); true
 );
 
 # ✅ CORRECT - Use simple expressions instead of function definitions
 NavigateToScreen = true;  // Simple boolean for navigation state
 
 //Permission checks using inline expressions
-UserCanViewLeaves = If(IsUserAuthenticated, Mod(Int(UserSession.Permission / UserPermissions.XemDon), 2) = 1, false);
+UserCanViewLeaves = If(IsUserAuthenticated, Mod(Int(UserSessionANP.Permission / UserPermissions.XemDon), 2) = 1, false);
 
 //Simple logout expression
 LogoutUser():Boolean = true;  // Return true to indicate logout should happen
@@ -3917,3 +3917,110 @@ ComponentDefinitions:
       TitleSize: =FontSizes.XLarge      # Pass App font size
       SubtitleSize: =FontSizes.Base     # Pass App font size
 ```
+
+---
+
+## 🚨 GLOBAL VARIABLE STRUCTURE CONSISTENCY RULE
+
+### Rule 70: Global Variable Structure Consistency
+**CRITICAL**: When using Set() for global variables, the variable structure must remain consistent between App/Formulas definitions and Screen usage.
+
+**PROBLEM**: Changing variable structure between App/Formulas and Screen usage causes schema conflicts and type errors.
+
+```yaml
+# ❌ WRONG - Inconsistent structure between App/Formulas and Screen
+# In App/Formulas:
+User = {
+  Name: UserSessionANP.Name,
+  Id: UserSessionANP.Id,
+  Role: UserSessionANP.Role,
+  Permission: UserSessionANP.Permission
+};
+
+# In Screen OnVisible - WRONG structure change:
+OnVisible: |
+  =Set(User, {
+    FullName: "John Doe",        # Different property name (Name vs FullName)
+    UserId: 123,                 # Different property name (Id vs UserId)
+    UserRole: "Admin",           # Different property name (Role vs UserRole)
+    Permissions: [1, 2, 3]      # Different data type (Number vs Array)
+  })
+
+# ✅ CORRECT - Consistent structure between App/Formulas and Screen
+# In App/Formulas:
+User = {
+  Name: UserSessionANP.Name,
+  Id: UserSessionANP.Id,
+  Role: UserSessionANP.Role,
+  Permission: UserSessionANP.Permission
+};
+
+# In Screen OnVisible - CORRECT matching structure:
+OnVisible: |
+  =Set(User, {
+    Name: "John Doe",            # Same property name and type
+    Id: 123,                     # Same property name and type
+    Role: "Admin",               # Same property name and type
+    Permission: 15               # Same property name and type
+  })
+```
+
+**STRUCTURE CONSISTENCY RULES:**
+- **Property Names**: Must match exactly between App/Formulas and Screen usage
+- **Data Types**: Must remain consistent (Text, Number, Boolean, Record, Table)
+- **Nested Objects**: Structure must match at all levels
+- **Array Types**: Element types must remain consistent
+
+**EXAMPLES OF CONSISTENT STRUCTURES:**
+
+```yaml
+# App/Formulas Definition:
+UserSessionANP = {
+  Name: "",
+  Id: 0,
+  Role: "",
+  Permission: 0,
+  Profile: {
+    Email: "",
+    Department: "",
+    Manager: ""
+  }
+};
+
+# Screen Usage - CORRECT matching structure:
+OnVisible: |
+  =Set(UserSessionANP, {
+    Name: "Nguyen Van A",
+    Id: 123,
+    Role: "Employee", 
+    Permission: 3,
+    Profile: {
+      Email: "nguyenvana@company.com",
+      Department: "IT",
+      Manager: "Tran Thi B"
+    }
+  })
+
+# ❌ WRONG - Structure mismatch:
+OnVisible: |
+  =Set(UserSessionANP, {
+    FullName: "Nguyen Van A",    # Wrong property name
+    UserId: "123",               # Wrong data type (Text vs Number)
+    Role: "Employee",
+    Permission: 3
+    # Missing Profile object - structure incomplete
+  })
+```
+
+**VALIDATION CHECKLIST:**
+1. **Property Names**: Exact match between App/Formulas and Screen
+2. **Data Types**: Text→Text, Number→Number, Boolean→Boolean, Record→Record
+3. **Nested Structure**: All nested objects must maintain same structure
+4. **Required Properties**: All properties defined in App/Formulas must be included
+5. **Optional Properties**: Can be omitted but if included must match structure
+
+**DEBUGGING STRUCTURE MISMATCHES:**
+- **"Incompatible type" errors**: Check data type consistency
+- **"Property not found" errors**: Check property name spelling
+- **"Schema mismatch" errors**: Verify nested object structure
+- **Runtime errors**: Validate all required properties are included

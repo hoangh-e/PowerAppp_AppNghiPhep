@@ -5,18 +5,18 @@ Screens:
       OnVisible: |
         =Set(varLoginError, ""); Set(varIsTraditionalLoading, false); Set(varShowLoginForm, true);
         Set(varLoginSuccess, false); Set(varLoggedInUserEmail, ""); Set(varSessionValid, false); Set(varIsUserAuthenticated, false);
-        Set(UserSession, {
+        Set(UserSessionANP, {
           Id: "",
-          Name: "", 
+          HoTen: "",
           Email: "",
-          Role: "",
+          MaVaiTro: "",
           Permission: 0,
           NguoiQuanLyId: "",
-          HoTen: "",
-          MaVaiTro: "",
           ChucDanh: "",
           MaDonVi: "",
-          TrangThai: ""
+          TrangThai: "",
+          Name: "",
+          Role: ""
         });
         Set(varLocalLoginReset, true)
     Children:
@@ -272,21 +272,35 @@ Screens:
                           With(LookUp(NguoiDung, And(Email = 'Login.Email.Input'.Text, MatKhau = 'Login.Password.Input'.Text)),
                             If(IsBlank(ThisRecord),
                               Set(varLoginError, "Email hoặc mật khẩu không đúng"); Set(varIsTraditionalLoading, false),
-                              If(ThisRecord.TrangThai.Value = "HoatDong",
+                              If(Text(ThisRecord.TrangThai.Value) = "HoatDong",
                                 Set(varLoginSuccess, true); Set(varSessionValid, true); Set(varIsUserAuthenticated, true);
                                 Set(varLoggedInUserEmail, 'Login.Email.Input'.Text);
-                                Set(UserSession, {
-                                  Name: ThisRecord.HoTen,
+                                Set(UserSessionANP, {
                                   Id: ThisRecord.Title,
+                                  HoTen: ThisRecord.HoTen,
                                   Email: ThisRecord.Email,
-                                  Role: Text(ThisRecord.ChucDanh.Value),
+                                  MaVaiTro: Text(ThisRecord.MaVaiTro.Value),
                                   Permission: 1671,
                                   NguoiQuanLyId: If(IsBlank(ThisRecord.MaQuanLy), "", Text(ThisRecord.MaQuanLy.Value)),
-                                  HoTen: ThisRecord.HoTen,
-                                  MaVaiTro: Text(ThisRecord.MaVaiTro.Value),
                                   ChucDanh: Text(ThisRecord.ChucDanh.Value),
                                   MaDonVi: Text(ThisRecord.MaDonVi.Value),
-                                  TrangThai: Text(ThisRecord.TrangThai.Value)
+                                  TrangThai: Text(ThisRecord.TrangThai.Value),
+                                  Name: ThisRecord.HoTen,
+                                  Role: Text(ThisRecord.ChucDanh.Value)
+                                });
+                                Set(varUserPermissions, {
+                                  CanViewPersonalLeaves: UserCanViewPersonalLeaves,
+                                  CanCreateSpecialLeaves: UserCanCreateSpecialLeaves,
+                                  CanViewTeamLeaves: UserCanViewTeamLeaves,
+                                  CanViewAllLeaves: UserCanViewAllLeaves,
+                                  CanApproveLevel1: UserCanApproveLevel1,
+                                  CanApproveLevel2: UserCanApproveLevel2,
+                                  CanApproveLevel3: UserCanApproveLevel3,
+                                  CanRecordLeave: UserCanRecordLeaves,
+                                  CanManageUsers: UserCanManageUsers,
+                                  CanExportReports: UserCanExportReports,
+                                  UserPermissionLevel: GetUserPermissionLevel,
+                                  CanAccessManagement: CanAccessManagement
                                 });
                                 Set(varIsTraditionalLoading, false);
                                 Navigate(DashboardScreen),
@@ -358,18 +372,32 @@ Screens:
                               OnSelect: |
                                 =Set(varLoginSuccess, true); Set(varSessionValid, true); Set(varIsUserAuthenticated, true);
                                 Set(varLoggedInUserEmail, "admin@demo.com");
-                                Set(UserSession, {
-                                  Name: "Quản trị viên Demo",
+                                Set(UserSessionANP, {
                                   Id: "ADMIN001",
+                                  HoTen: "Quản trị viên Demo",
                                   Email: "admin@demo.com",
-                                  Role: "Admin",
+                                  MaVaiTro: "Admin",
                                   Permission: 32767,
                                   NguoiQuanLyId: "",
-                                  HoTen: "Quản trị viên Demo",
-                                  MaVaiTro: "Admin",
                                   ChucDanh: "Quản trị hệ thống",
                                   MaDonVi: "IT",
-                                  TrangThai: "HoatDong"
+                                  TrangThai: "HoatDong",
+                                  Name: "Quản trị viên Demo",
+                                  Role: "Admin"
+                                });
+                                Set(varUserPermissions, {
+                                  CanViewPersonalLeaves: UserCanViewPersonalLeaves,
+                                  CanCreateSpecialLeaves: UserCanCreateSpecialLeaves,
+                                  CanViewTeamLeaves: UserCanViewTeamLeaves,
+                                  CanViewAllLeaves: UserCanViewAllLeaves,
+                                  CanApproveLevel1: UserCanApproveLevel1,
+                                  CanApproveLevel2: UserCanApproveLevel2,
+                                  CanApproveLevel3: UserCanApproveLevel3,
+                                  CanRecordLeave: UserCanRecordLeaves,
+                                  CanManageUsers: UserCanManageUsers,
+                                  CanExportReports: UserCanExportReports,
+                                  UserPermissionLevel: GetUserPermissionLevel,
+                                  CanAccessManagement: CanAccessManagement
                                 });
                                 Navigate(DashboardScreen)
 
@@ -394,18 +422,32 @@ Screens:
                               OnSelect: |
                                 =Set(varLoginSuccess, true); Set(varSessionValid, true); Set(varIsUserAuthenticated, true);
                                 Set(varLoggedInUserEmail, "employee@demo.com");
-                                Set(UserSession, {
-                                  Name: "Nguyễn Văn An",
+                                Set(UserSessionANP, {
                                   Id: "EMP001",
+                                  HoTen: "Nguyễn Văn An",
                                   Email: "employee@demo.com",
-                                  Role: "Employee",
+                                  MaVaiTro: "Employee",
                                   Permission: 3,
                                   NguoiQuanLyId: "MGR001",
-                                  HoTen: "Nguyễn Văn An",
-                                  MaVaiTro: "Employee",
                                   ChucDanh: "Nhân viên",
                                   MaDonVi: "IT",
-                                  TrangThai: "HoatDong"
+                                  TrangThai: "HoatDong",
+                                  Name: "Nguyễn Văn An",
+                                  Role: "Employee"
+                                });
+                                Set(varUserPermissions, {
+                                  CanViewPersonalLeaves: UserCanViewPersonalLeaves,
+                                  CanCreateSpecialLeaves: UserCanCreateSpecialLeaves,
+                                  CanViewTeamLeaves: UserCanViewTeamLeaves,
+                                  CanViewAllLeaves: UserCanViewAllLeaves,
+                                  CanApproveLevel1: UserCanApproveLevel1,
+                                  CanApproveLevel2: UserCanApproveLevel2,
+                                  CanApproveLevel3: UserCanApproveLevel3,
+                                  CanRecordLeave: UserCanRecordLeaves,
+                                  CanManageUsers: UserCanManageUsers,
+                                  CanExportReports: UserCanExportReports,
+                                  UserPermissionLevel: GetUserPermissionLevel,
+                                  CanAccessManagement: CanAccessManagement
                                 });
                                 Navigate(DashboardScreen)
 
@@ -430,18 +472,32 @@ Screens:
                               OnSelect: |
                                 =Set(varLoginSuccess, true); Set(varSessionValid, true); Set(varIsUserAuthenticated, true);
                                 Set(varLoggedInUserEmail, "manager@demo.com");
-                                Set(UserSession, {
-                                  Name: "Trần Thị Bình",
+                                Set(UserSessionANP, {
                                   Id: "MGR001",
+                                  HoTen: "Trần Thị Bình",
                                   Email: "manager@demo.com",
-                                  Role: "Manager",
+                                  MaVaiTro: "Manager",
                                   Permission: 19,
                                   NguoiQuanLyId: "DIR001",
-                                  HoTen: "Trần Thị Bình",
-                                  MaVaiTro: "Manager",
                                   ChucDanh: "Trưởng phòng",
                                   MaDonVi: "HR",
-                                  TrangThai: "HoatDong"
+                                  TrangThai: "HoatDong",
+                                  Name: "Trần Thị Bình",
+                                  Role: "Manager"
+                                });
+                                Set(varUserPermissions, {
+                                  CanViewPersonalLeaves: UserCanViewPersonalLeaves,
+                                  CanCreateSpecialLeaves: UserCanCreateSpecialLeaves,
+                                  CanViewTeamLeaves: UserCanViewTeamLeaves,
+                                  CanViewAllLeaves: UserCanViewAllLeaves,
+                                  CanApproveLevel1: UserCanApproveLevel1,
+                                  CanApproveLevel2: UserCanApproveLevel2,
+                                  CanApproveLevel3: UserCanApproveLevel3,
+                                  CanRecordLeave: UserCanRecordLeaves,
+                                  CanManageUsers: UserCanManageUsers,
+                                  CanExportReports: UserCanExportReports,
+                                  UserPermissionLevel: GetUserPermissionLevel,
+                                  CanAccessManagement: CanAccessManagement
                                 });
                                 Navigate(DashboardScreen)
 
@@ -466,18 +522,32 @@ Screens:
                               OnSelect: |
                                 =Set(varLoginSuccess, true); Set(varSessionValid, true); Set(varIsUserAuthenticated, true);
                                 Set(varLoggedInUserEmail, "director@demo.com");
-                                Set(UserSession, {
-                                  Name: "Lê Hoàng Cường",
+                                Set(UserSessionANP, {
                                   Id: "DIR001",
+                                  HoTen: "Lê Hoàng Cường",
                                   Email: "director@demo.com",
-                                  Role: "Director",
+                                  MaVaiTro: "Director",
                                   Permission: 2147,
                                   NguoiQuanLyId: "",
-                                  HoTen: "Lê Hoàng Cường",
-                                  MaVaiTro: "Director",
                                   ChucDanh: "Giám đốc",
                                   MaDonVi: "Management",
-                                  TrangThai: "HoatDong"
+                                  TrangThai: "HoatDong",
+                                  Name: "Lê Hoàng Cường",
+                                  Role: "Director"
+                                });
+                                Set(varUserPermissions, {
+                                  CanViewPersonalLeaves: UserCanViewPersonalLeaves,
+                                  CanCreateSpecialLeaves: UserCanCreateSpecialLeaves,
+                                  CanViewTeamLeaves: UserCanViewTeamLeaves,
+                                  CanViewAllLeaves: UserCanViewAllLeaves,
+                                  CanApproveLevel1: UserCanApproveLevel1,
+                                  CanApproveLevel2: UserCanApproveLevel2,
+                                  CanApproveLevel3: UserCanApproveLevel3,
+                                  CanRecordLeave: UserCanRecordLeaves,
+                                  CanManageUsers: UserCanManageUsers,
+                                  CanExportReports: UserCanExportReports,
+                                  UserPermissionLevel: GetUserPermissionLevel,
+                                  CanAccessManagement: CanAccessManagement
                                 });
                                 Navigate(DashboardScreen)
 

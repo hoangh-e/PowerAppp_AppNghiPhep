@@ -13,62 +13,166 @@
         Set(varViewFormat, "Calendar");
         Set(varShowCalendarDetails, false);
         Set(varSelectedDateLeaves, Blank());
-        Set(UserSession, {
-          MaNhanVien: "EMP001", 
-          HoTen: "Nguyễn Văn An", 
-          Email: "an.nguyen@company.com", 
-          MaVaiTro: "Employee", 
-          Permission: 7,
-          MaQuanLy: "MGR001", 
-          ChucDanh: "Nhân viên", 
-          MaDonVi: "IT", 
-          TrangThai: "HoatDong"
+        
+        //Check user permissions using inline bitwise expressions
+        Set(varUserPermissions, {
+          CanViewPersonalLeaves: UserCanViewPersonalLeaves,
+          CanCreateSpecialLeaves: UserCanCreateSpecialLeaves,
+          CanViewTeamLeaves: UserCanViewTeamLeaves,
+          CanViewAllLeaves: UserCanViewAllLeaves,
+          CanApproveLevel1: UserCanApproveLevel1,
+          CanApproveLevel2: UserCanApproveLevel2,
+          CanApproveLevel3: UserCanApproveLevel3,
+          CanRecordLeave: UserCanRecordLeaves,
+          CanManageUsers: UserCanManageUsers,
+          CanExportReports: UserCanExportReports,
+          UserPermissionLevel: GetUserPermissionLevel,
+          CanAccessManagement: CanAccessManagement
         });
-        // Sử dụng demo data đơn giản như bản cũ để đảm bảo ổn định
-        ClearCollect(colPersonalLeaves, 
-          {NgayBatDau: Today(), NgayKetThuc: Today(), SoNgayNghi: 1, MaNhanVien: UserSession.MaNhanVien, TrangThai: "DaDuyet", LyDo: "Nghỉ phép cá nhân", MaLoai: "ANNUAL_LEAVE"},
-          {NgayBatDau: DateAdd(Today(), 3, TimeUnit.Days), NgayKetThuc: DateAdd(Today(), 5, TimeUnit.Days), SoNgayNghi: 3, MaNhanVien: UserSession.MaNhanVien, TrangThai: "ChoDuyetCap1", LyDo: "Nghỉ phép năm", MaLoai: "ANNUAL_LEAVE"}
-        );
-        ClearCollect(colDepartmentLeaves,
-          {NgayBatDau: Today(), NgayKetThuc: Today(), SoNgayNghi: 1, MaNhanVien: "EMP002", TrangThai: "DaDuyet", LyDo: "Nghỉ ốm", MaLoai: "SICK_LEAVE"},
-          {NgayBatDau: DateAdd(Today(), 1, TimeUnit.Days), NgayKetThuc: DateAdd(Today(), 1, TimeUnit.Days), SoNgayNghi: 1, MaNhanVien: "EMP003", TrangThai: "DaDuyet", LyDo: "Nghỉ việc riêng", MaLoai: "PERSONAL_LEAVE"},
-          {NgayBatDau: DateAdd(Today(), 7, TimeUnit.Days), NgayKetThuc: DateAdd(Today(), 9, TimeUnit.Days), SoNgayNghi: 3, MaNhanVien: "EMP004", TrangThai: "ChoDuyetCap2", LyDo: "Nghỉ phép", MaLoai: "ANNUAL_LEAVE"}
-        );
-        ClearCollect(colAllLeaves,
-          {NgayBatDau: Today(), NgayKetThuc: Today(), SoNgayNghi: 1, MaNhanVien: UserSession.MaNhanVien, TrangThai: "DaDuyet", LyDo: "Nghỉ phép cá nhân", MaLoai: "ANNUAL_LEAVE"},
-          {NgayBatDau: DateAdd(Today(), 1, TimeUnit.Days), NgayKetThuc: DateAdd(Today(), 1, TimeUnit.Days), SoNgayNghi: 1, MaNhanVien: "EMP002", TrangThai: "DaDuyet", LyDo: "Nghỉ ốm", MaLoai: "SICK_LEAVE"},
-          {NgayBatDau: DateAdd(Today(), 1, TimeUnit.Days), NgayKetThuc: DateAdd(Today(), 1, TimeUnit.Days), SoNgayNghi: 1, MaNhanVien: "EMP003", TrangThai: "DaDuyet", LyDo: "Nghỉ việc riêng", MaLoai: "PERSONAL_LEAVE"},
-          {NgayBatDau: DateAdd(Today(), 2, TimeUnit.Days), NgayKetThuc: DateAdd(Today(), 4, TimeUnit.Days), SoNgayNghi: 3, MaNhanVien: "EMP005", TrangThai: "ChoDuyetCap1", LyDo: "Nghỉ phép", MaLoai: "ANNUAL_LEAVE"},
-          {NgayBatDau: DateAdd(Today(), 7, TimeUnit.Days), NgayKetThuc: DateAdd(Today(), 9, TimeUnit.Days), SoNgayNghi: 3, MaNhanVien: "EMP006", TrangThai: "DaDuyet", LyDo: "Nghỉ thai sản", MaLoai: "MATERNITY_LEAVE"}
-        );
-        Set(varNetworkError, false);
-        ClearCollect(colHolidays,
-          {Ngay: Text(Today(), "yyyy-mm-dd"), TenNgayLe: "Ngày lễ 1"},
-          {Ngay: Text(DateAdd(Today(), 15, TimeUnit.Days), "yyyy-mm-dd"), TenNgayLe: "Ngày lễ 2"},
-          {Ngay: Text(DateAdd(Today(), 30, TimeUnit.Days), "yyyy-mm-dd"), TenNgayLe: "Ngày lễ 3"}
-        );
-        ClearCollect(colDemoUsers,
-          {MaNhanVien: UserSession.MaNhanVien, HoTen: UserSession.HoTen, MaDonVi: UserSession.MaDonVi},
-          {MaNhanVien: "EMP002", HoTen: "Trần Thị Bình", MaDonVi: "IT"},
-          {MaNhanVien: "EMP003", HoTen: "Lê Văn Cường", MaDonVi: "IT"},
-          {MaNhanVien: "EMP004", HoTen: "Phạm Thị Dung", MaDonVi: "HR"},
-          {MaNhanVien: "EMP005", HoTen: "Nguyễn Văn Em", MaDonVi: "Finance"},
-          {MaNhanVien: "EMP006", HoTen: "Hoàng Thị Phương", MaDonVi: "IT"}
-        );
-        ClearCollect(colDemoLeaveTypes,
-          {MaLoai: "ANNUAL_LEAVE", TenLoai: "Nghỉ phép năm"},
-          {MaLoai: "SICK_LEAVE", TenLoai: "Nghỉ ốm"},
-          {MaLoai: "PERSONAL_LEAVE", TenLoai: "Nghỉ việc riêng"},
-          {MaLoai: "MATERNITY_LEAVE", TenLoai: "Nghỉ thai sản"}
+        
+        // Load SharePoint data with fallback to demo data
+        If(IsEmpty(NguoiDung),
+          Set(UserSessionANP, {
+            Id: "EMP001", 
+            HoTen: "Nguyễn Văn An", 
+            Email: "an.nguyen@company.com", 
+            MaVaiTro: "Employee", 
+            Permission: 7,
+            NguoiQuanLyId: "MGR001",
+            ChucDanh: "Nhân viên", 
+            MaDonVi: "IT", 
+            TrangThai: "HoatDong",
+            Name: "Nguyễn Văn An",
+            Role: "Employee"
+          });
+          Set(varNetworkError, true);
+          // Create demo leave data for preview
+          ClearCollect(colPersonalLeaves, 
+            Table(
+              {MaNguoiDung: {Value: "EMP001"}, NgayBatDau: Date(varSelectedYear, varSelectedMonth, 5), NgayKetThuc: Date(varSelectedYear, varSelectedMonth, 7), SoNgayNghi: 3, MaLoai: {Value: "ANNUAL"}, LyDo: "Nghỉ phép năm", TrangThai: {Value: "DaDuyet"}},
+              {MaNguoiDung: {Value: "EMP001"}, NgayBatDau: Date(varSelectedYear, varSelectedMonth, 15), NgayKetThuc: Date(varSelectedYear, varSelectedMonth, 15), SoNgayNghi: 1, MaLoai: {Value: "SICK"}, LyDo: "Nghỉ ốm", TrangThai: {Value: "ChoDuyetCap1"}}
+            )
+          );
+          ClearCollect(colDepartmentLeaves,
+            Table(
+              {MaNguoiDung: {Value: "EMP002"}, NgayBatDau: Date(varSelectedYear, varSelectedMonth, 10), NgayKetThuc: Date(varSelectedYear, varSelectedMonth, 12), SoNgayNghi: 3, MaLoai: {Value: "ANNUAL"}, LyDo: "Nghỉ phép", TrangThai: {Value: "DaDuyet"}},
+              {MaNguoiDung: {Value: "EMP003"}, NgayBatDau: Date(varSelectedYear, varSelectedMonth, 20), NgayKetThuc: Date(varSelectedYear, varSelectedMonth, 22), SoNgayNghi: 3, MaLoai: {Value: "PERSONAL"}, LyDo: "Việc cá nhân", TrangThai: {Value: "DaDuyet"}}
+            )
+          );
+          ClearCollect(colAllLeaves,
+            Table(
+              {MaNguoiDung: {Value: "EMP001"}, NgayBatDau: Date(varSelectedYear, varSelectedMonth, 5), NgayKetThuc: Date(varSelectedYear, varSelectedMonth, 7), SoNgayNghi: 3, MaLoai: {Value: "ANNUAL"}, LyDo: "Nghỉ phép năm", TrangThai: {Value: "DaDuyet"}},
+              {MaNguoiDung: {Value: "EMP002"}, NgayBatDau: Date(varSelectedYear, varSelectedMonth, 10), NgayKetThuc: Date(varSelectedYear, varSelectedMonth, 12), SoNgayNghi: 3, MaLoai: {Value: "ANNUAL"}, LyDo: "Nghỉ phép", TrangThai: {Value: "DaDuyet"}},
+              {MaNguoiDung: {Value: "EMP003"}, NgayBatDau: Date(varSelectedYear, varSelectedMonth, 20), NgayKetThuc: Date(varSelectedYear, varSelectedMonth, 22), SoNgayNghi: 3, MaLoai: {Value: "PERSONAL"}, LyDo: "Việc cá nhân", TrangThai: {Value: "DaDuyet"}},
+              {MaNguoiDung: {Value: "EMP001"}, NgayBatDau: Date(varSelectedYear, varSelectedMonth, 15), NgayKetThuc: Date(varSelectedYear, varSelectedMonth, 15), SoNgayNghi: 1, MaLoai: {Value: "SICK"}, LyDo: "Nghỉ ốm", TrangThai: {Value: "ChoDuyetCap1"}}
+            )
+          );
+          // Demo holidays
+          ClearCollect(colHolidays,
+            Table(
+              {Ngay: "01/01", TenNgayLe: "Tết Dương lịch", FormattedDate: Text(Date(varSelectedYear, 1, 1), "yyyy-mm-dd")},
+              {Ngay: "30/04", TenNgayLe: "Giải phóng miền Nam", FormattedDate: Text(Date(varSelectedYear, 4, 30), "yyyy-mm-dd")},
+              {Ngay: "01/05", TenNgayLe: "Quốc tế Lao động", FormattedDate: Text(Date(varSelectedYear, 5, 1), "yyyy-mm-dd")},
+              {Ngay: "02/09", TenNgayLe: "Quốc khánh", FormattedDate: Text(Date(varSelectedYear, 9, 2), "yyyy-mm-dd")}
+            )
+          );
+          // Demo users for lookups
+          ClearCollect(colCalendarUsers,
+            Table(
+              {Title: "EMP001", HoTen: "Nguyễn Văn An", MaDonVi: {Value: "IT"}},
+              {Title: "EMP002", HoTen: "Trần Thị Bình", MaDonVi: {Value: "IT"}},
+              {Title: "EMP003", HoTen: "Lê Văn Cường", MaDonVi: {Value: "IT"}}
+            )
+          );
+          // Demo leave types
+          ClearCollect(colCalendarLeaveTypes,
+            Table(
+              {Title: "ANNUAL", TenLoai: "Nghỉ phép năm"},
+              {Title: "SICK", TenLoai: "Nghỉ ốm"},
+              {Title: "PERSONAL", TenLoai: "Việc cá nhân"}
+            )
+          ),
+          // Use actual SharePoint user data - ensure structure consistency
+          With(
+            {userRecord: LookUp(NguoiDung, Email = User().Email)},
+            Set(UserSessionANP, {
+              Id: userRecord.Title,
+              HoTen: userRecord.HoTen,
+              Email: userRecord.Email,
+              MaVaiTro: userRecord.MaVaiTro,
+              Permission: userRecord.Permission,
+              NguoiQuanLyId: If(IsBlank(userRecord.MaQuanLy), "", Text(userRecord.MaQuanLy.Value)),
+              ChucDanh: Text(userRecord.ChucDanh.Value),
+              MaDonVi: Text(userRecord.MaDonVi.Value),
+              TrangThai: Text(userRecord.TrangThai.Value),
+              Name: userRecord.HoTen,
+              Role: userRecord.MaVaiTro
+            })
+          );
+          Set(varNetworkError, false);
+          // Load Personal Leaves from SharePoint
+          ClearCollect(colPersonalLeaves, 
+            Filter(DonNghiPhep, 
+              And(
+                MaNguoiDung.Value = UserSessionANP.Id,
+                Or(
+                  Month(NgayBatDau) = varSelectedMonth,
+                  Month(NgayKetThuc) = varSelectedMonth,
+                  And(NgayBatDau <= Date(varSelectedYear, varSelectedMonth, 1), NgayKetThuc >= DateAdd(Date(varSelectedYear, varSelectedMonth + 1, 1), -1, TimeUnit.Days))
+                )
+              )
+            )
+          );
+          // Load Department Leaves from SharePoint
+          ClearCollect(colDepartmentLeaves,
+            Filter(DonNghiPhep,
+              And(
+                LookUp(NguoiDung, Title = MaNguoiDung.Value).MaDonVi.Value = UserSessionANP.MaDonVi,
+                Or(
+                  Month(NgayBatDau) = varSelectedMonth,
+                  Month(NgayKetThuc) = varSelectedMonth,
+                  And(NgayBatDau <= Date(varSelectedYear, varSelectedMonth, 1), NgayKetThuc >= DateAdd(Date(varSelectedYear, varSelectedMonth + 1, 1), -1, TimeUnit.Days))
+                )
+              )
+            )
+          );
+          // Load All Company Leaves from SharePoint
+          ClearCollect(colAllLeaves,
+            Filter(DonNghiPhep,
+              Or(
+                Month(NgayBatDau) = varSelectedMonth,
+                Month(NgayKetThuc) = varSelectedMonth,
+                And(NgayBatDau <= Date(varSelectedYear, varSelectedMonth, 1), NgayKetThuc >= DateAdd(Date(varSelectedYear, varSelectedMonth + 1, 1), -1, TimeUnit.Days))
+              )
+            )
+          );
+          // Load Holidays from SharePoint
+          ClearCollect(colHolidays,
+            ForAll(
+              Filter(NgayLe, Nam = varSelectedYear),
+              {
+                Ngay: Ngay,
+                TenNgayLe: TenNgayLe,
+                FormattedDate: Text(DateValue(Ngay & "/" & varSelectedYear), "yyyy-mm-dd")
+              }
+            )
+          );
+          // Load Users from SharePoint for lookups
+          ClearCollect(colCalendarUsers, NguoiDung);
+          // Load Leave Types from SharePoint
+          ClearCollect(colCalendarLeaveTypes, LoaiNghi)
         );
         Set(varFirstDayOfMonth, Date(varSelectedYear, varSelectedMonth, 1));
         Set(varLastDayOfMonth, DateAdd(Date(varSelectedYear, varSelectedMonth + 1, 1), -1, TimeUnit.Days));
         Set(varFirstWeekday, Weekday(varFirstDayOfMonth, StartOfWeek.Sunday));
         Set(varDaysInMonth, Day(varLastDayOfMonth));
         Set(varStartDate, DateAdd(varFirstDayOfMonth, -(varFirstWeekday - 1), TimeUnit.Days));
+        // Tính số tuần cần thiết: đảm bảo mỗi tuần có ít nhất 1 ngày của tháng
+        Set(varWeeksNeeded, Max(RoundUp((varDaysInMonth + varFirstWeekday - 1) / 7, 0), 1));
+        Set(varTotalCells, varWeeksNeeded * 7);
         ClearCollect(colCalendarDays,
           ForAll(
-            Sequence(42),
+            Sequence(varTotalCells),
             With(
               {currentDate: DateAdd(varStartDate, Value - 1, TimeUnit.Days)},
               {
@@ -77,7 +181,8 @@
                 IsToday: currentDate = Today(),
                 IsWeekend: Or(Weekday(currentDate, StartOfWeek.Sunday) = 1, Weekday(currentDate, StartOfWeek.Sunday) = 7),
                 DayNumber: Day(currentDate),
-                FormattedDate: Text(currentDate, "yyyy-mm-dd")
+                FormattedDate: Text(currentDate, "yyyy-mm-dd"),
+                WeekRow: RoundUp(Value / 7, 0)
               }
             )
           )
@@ -94,8 +199,8 @@
             Y: =0
             Width: =Parent.Width
             Height: =Parent.Height * 0.065
-            UserName: =UserSession.HoTen
-            UserRole: =UserSession.MaVaiTro
+            UserName: =UserSessionANP.HoTen
+            UserRole: =UserSessionANP.MaVaiTro
             ShowNotification: =true
             NotificationCount: =0
             OnLogout: |
@@ -111,7 +216,7 @@
             Y: ='Calendar.Header'.Height
             Width: =If(varNavCollapsed, App.Width * 0.045, App.Width * 0.14)
             Height: =Parent.Height - 'Calendar.Header'.Height
-            UserRole: =UserSession.MaVaiTro
+            UserRole: =UserSessionANP.MaVaiTro
             ActiveScreen: ="Calendar"
             IsCollapsed: =varNavCollapsed
             DashboardScreen: =DashboardScreen
@@ -203,11 +308,15 @@
                                         Set(varSelectedMonth, varSelectedMonth - 1)
                                       );
                                       Set(varFirstDayOfMonth, Date(varSelectedYear, varSelectedMonth, 1));
+                                      Set(varLastDayOfMonth, DateAdd(Date(varSelectedYear, varSelectedMonth + 1, 1), -1, TimeUnit.Days));
                                       Set(varFirstWeekday, Weekday(varFirstDayOfMonth, StartOfWeek.Sunday));
+                                      Set(varDaysInMonth, Day(varLastDayOfMonth));
                                       Set(varStartDate, DateAdd(varFirstDayOfMonth, -(varFirstWeekday - 1), TimeUnit.Days));
+                                      Set(varWeeksNeeded, Max(RoundUp((varDaysInMonth + varFirstWeekday - 1) / 7, 0), 1));
+                                      Set(varTotalCells, varWeeksNeeded * 7);
                                       ClearCollect(colCalendarDays,
                                         ForAll(
-                                          Sequence(42),
+                                          Sequence(varTotalCells),
                                           With(
                                             {currentDate: DateAdd(varStartDate, Value - 1, TimeUnit.Days)},
                                             {
@@ -216,7 +325,25 @@
                                               IsToday: currentDate = Today(),
                                               IsWeekend: Or(Weekday(currentDate, StartOfWeek.Sunday) = 1, Weekday(currentDate, StartOfWeek.Sunday) = 7),
                                               DayNumber: Day(currentDate),
-                                              FormattedDate: Text(currentDate, "yyyy-mm-dd")
+                                              FormattedDate: Text(currentDate, "yyyy-mm-dd"),
+                                              WeekRow: RoundUp(Value / 7, 0)
+                                            }
+                                          )
+                                        )
+                                      )
+                                      ClearCollect(colCalendarDays,
+                                        ForAll(
+                                          Sequence(varTotalCells),
+                                          With(
+                                            {currentDate: DateAdd(varStartDate, Value - 1, TimeUnit.Days)},
+                                            {
+                                              CalendarDate: currentDate,
+                                              IsCurrentMonth: Month(currentDate) = varSelectedMonth,
+                                              IsToday: currentDate = Today(),
+                                              IsWeekend: Or(Weekday(currentDate, StartOfWeek.Sunday) = 1, Weekday(currentDate, StartOfWeek.Sunday) = 7),
+                                              DayNumber: Day(currentDate),
+                                              FormattedDate: Text(currentDate, "yyyy-mm-dd"),
+                                              WeekRow: RoundUp(Value / 7, 0)
                                             }
                                           )
                                         )
@@ -254,11 +381,15 @@
                                         Set(varSelectedMonth, varSelectedMonth + 1)
                                       );
                                       Set(varFirstDayOfMonth, Date(varSelectedYear, varSelectedMonth, 1));
+                                      Set(varLastDayOfMonth, DateAdd(Date(varSelectedYear, varSelectedMonth + 1, 1), -1, TimeUnit.Days));
                                       Set(varFirstWeekday, Weekday(varFirstDayOfMonth, StartOfWeek.Sunday));
+                                      Set(varDaysInMonth, Day(varLastDayOfMonth));
                                       Set(varStartDate, DateAdd(varFirstDayOfMonth, -(varFirstWeekday - 1), TimeUnit.Days));
+                                      Set(varWeeksNeeded, Max(RoundUp((varDaysInMonth + varFirstWeekday - 1) / 7, 0), 1));
+                                      Set(varTotalCells, varWeeksNeeded * 7);
                                       ClearCollect(colCalendarDays,
                                         ForAll(
-                                          Sequence(42),
+                                          Sequence(varTotalCells),
                                           With(
                                             {currentDate: DateAdd(varStartDate, Value - 1, TimeUnit.Days)},
                                             {
@@ -267,7 +398,25 @@
                                               IsToday: currentDate = Today(),
                                               IsWeekend: Or(Weekday(currentDate, StartOfWeek.Sunday) = 1, Weekday(currentDate, StartOfWeek.Sunday) = 7),
                                               DayNumber: Day(currentDate),
-                                              FormattedDate: Text(currentDate, "yyyy-mm-dd")
+                                              FormattedDate: Text(currentDate, "yyyy-mm-dd"),
+                                              WeekRow: RoundUp(Value / 7, 0)
+                                            }
+                                          )
+                                        )
+                                      )
+                                      ClearCollect(colCalendarDays,
+                                        ForAll(
+                                          Sequence(varTotalCells),
+                                          With(
+                                            {currentDate: DateAdd(varStartDate, Value - 1, TimeUnit.Days)},
+                                            {
+                                              CalendarDate: currentDate,
+                                              IsCurrentMonth: Month(currentDate) = varSelectedMonth,
+                                              IsToday: currentDate = Today(),
+                                              IsWeekend: Or(Weekday(currentDate, StartOfWeek.Sunday) = 1, Weekday(currentDate, StartOfWeek.Sunday) = 7),
+                                              DayNumber: Day(currentDate),
+                                              FormattedDate: Text(currentDate, "yyyy-mm-dd"),
+                                              WeekRow: RoundUp(Value / 7, 0)
                                             }
                                           )
                                         )
@@ -547,7 +696,7 @@
                               Width: =Parent.Width * 0.96
                               Height: =Parent.Height * 0.88
                               Items: =colCalendarDays
-                              TemplateSize: =Self.Height / 5
+                              TemplateSize: =(Parent.Height * 0.88) / Max(varWeeksNeeded, 1)
                               WrapCount: =7
                               BorderThickness: =0
                               Fill: =RGBA(0, 0, 0, 0)
@@ -558,8 +707,8 @@
                                   Properties:
                                     X: =0
                                     Y: =0
-                                    Width: =Parent.Width / 7
-                                    Height: =Parent.Height / 5
+                                    Width: =Parent.TemplateWidth
+                                    Height: =Parent.TemplateHeight
                                     Fill: =If(
                                       ThisItem.IsToday, RGBA(59, 130, 246, 0.1),
                                       If(Not(ThisItem.IsCurrentMonth), RGBA(249, 250, 251, 1),
@@ -581,10 +730,10 @@
                               - 'Calendar.Day.Number':
                                   Control: Label
                                   Properties:
-                                    X: =(Parent.Width / 7) * 0.05
-                                    Y: =(Parent.Height / 5) * 0.05
-                                    Width: =(Parent.Width / 7) * 0.4
-                                    Height: =(Parent.Height / 5) * 0.4
+                                    X: =Parent.TemplateWidth * 0.05
+                                    Y: =Parent.TemplateHeight * 0.05
+                                    Width: =Parent.TemplateWidth * 0.4
+                                    Height: =Parent.TemplateHeight * 0.4
                                     Text: =ThisItem.DayNumber
                                     Color: =If(
                                       ThisItem.IsToday, RGBA(59, 130, 246, 1),
@@ -600,21 +749,21 @@
                               - 'Calendar.Day.Holiday':
                                   Control: Classic/Icon
                                   Properties:
-                                    X: =(Parent.Width / 7) * 0.7
-                                    Y: =(Parent.Height / 5) * 0.05
-                                    Width: =(Parent.Height / 5) * 0.25
-                                    Height: =(Parent.Height / 5) * 0.25
+                                    X: =Parent.TemplateWidth * 0.7
+                                    Y: =Parent.TemplateHeight * 0.05
+                                    Width: =Parent.TemplateHeight * 0.25
+                                    Height: =Parent.TemplateHeight * 0.25
                                     Icon: =Icon.CalendarBlank
                                     Color: =RGBA(251, 191, 36, 1)
-                                    Visible: =CountRows(Filter(colHolidays, Ngay = ThisItem.FormattedDate)) > 0
+                                    Visible: =CountRows(Filter(colHolidays, FormattedDate = ThisItem.FormattedDate)) > 0
                                     
                               - 'Calendar.Day.PersonalLeave':
                                   Control: Rectangle
                                   Properties:
-                                    X: =(Parent.Width / 7) * 0.05
-                                    Y: =(Parent.Height / 5) * 0.45
-                                    Width: =(Parent.Width / 7) * 0.9
-                                    Height: =(Parent.Height / 5) * 0.2
+                                    X: =Parent.TemplateWidth * 0.05
+                                    Y: =Parent.TemplateHeight * 0.45
+                                    Width: =Parent.TemplateWidth * 0.9
+                                    Height: =Parent.TemplateHeight * 0.2
                                     Fill: =RGBA(34, 197, 94, 0.7)
                                     BorderColor: =RGBA(34, 197, 94, 1)
                                     BorderThickness: =1
@@ -627,10 +776,10 @@
                               - 'Calendar.Day.DepartmentCount':
                                   Control: Label
                                   Properties:
-                                    X: =(Parent.Width / 7) * 0.05
-                                    Y: =(Parent.Height / 5) * 0.45
-                                    Width: =(Parent.Width / 7) * 0.9
-                                    Height: =(Parent.Height / 5) * 0.25
+                                    X: =Parent.TemplateWidth * 0.05
+                                    Y: =Parent.TemplateHeight * 0.45
+                                    Width: =Parent.TemplateWidth * 0.9
+                                    Height: =Parent.TemplateHeight * 0.25
                                     Text: =CountRows(Filter(colDepartmentLeaves, And(NgayBatDau <= ThisItem.CalendarDate, NgayKetThuc >= ThisItem.CalendarDate))) & " người"
                                     Color: =RGBA(59, 130, 246, 1)
                                     Fill: =RGBA(219, 234, 254, 0.8)
@@ -649,10 +798,10 @@
                               - 'Calendar.Day.AllCount':
                                   Control: Label
                                   Properties:
-                                    X: =(Parent.Width / 7) * 0.05
-                                    Y: =(Parent.Height / 5) * 0.45
-                                    Width: =(Parent.Width / 7) * 0.9
-                                    Height: =(Parent.Height / 5) * 0.25
+                                    X: =Parent.TemplateWidth * 0.05
+                                    Y: =Parent.TemplateHeight * 0.45
+                                    Width: =Parent.TemplateWidth * 0.9
+                                    Height: =Parent.TemplateHeight * 0.25
                                     Text: =CountRows(Filter(colAllLeaves, And(NgayBatDau <= ThisItem.CalendarDate, NgayKetThuc >= ThisItem.CalendarDate))) & " người"
                                     Color: =RGBA(139, 69, 19, 1)
                                     Fill: =RGBA(254, 243, 199, 0.8)
@@ -699,9 +848,9 @@
                               Width: =Parent.Width * 0.96
                               Height: =Parent.Height * 0.96
                               Items: =Switch(varCalendarView,
-                                "Personal", Filter(colPersonalLeaves, And(Month(NgayBatDau) = varSelectedMonth, Year(NgayBatDau) = varSelectedYear)),
-                                "Department", Filter(colDepartmentLeaves, And(Month(NgayBatDau) = varSelectedMonth, Year(NgayBatDau) = varSelectedYear)),
-                                "All", Filter(colAllLeaves, And(Month(NgayBatDau) = varSelectedMonth, Year(NgayBatDau) = varSelectedYear))
+                                "Personal", colPersonalLeaves,
+                                "Department", colDepartmentLeaves,
+                                "All", colAllLeaves
                                 )
                               TemplateSize: =80
                               BorderThickness: =0
@@ -727,7 +876,7 @@
                                           Y: =Parent.Height * 0.1
                                           Width: =Parent.Width * 0.2
                                           Height: =Parent.Height * 0.4
-                                          Text: =LookUp(colDemoUsers, MaNhanVien = ThisItem.MaNhanVien).HoTen
+                                          Text: =LookUp(colCalendarUsers, Title = ThisItem.MaNguoiDung.Value).HoTen
                                           Color: =RGBA(17, 24, 39, 1)
                                           Font: =Font.'Open Sans'
                                           FontWeight: =FontWeight.Semibold
@@ -740,7 +889,7 @@
                                           Y: =Parent.Height * 0.55
                                           Width: =Parent.Width * 0.2
                                           Height: =Parent.Height * 0.35
-                                          Text: =LookUp(colDemoUsers, MaNhanVien = ThisItem.MaNhanVien).MaDonVi
+                                          Text: =LookUp(colCalendarUsers, Title = ThisItem.MaNguoiDung.Value).MaDonVi.Value
                                           Color: =RGBA(75, 85, 99, 1)
                                           Font: =Font.'Open Sans'
                                           Size: =FontSizes.Base
@@ -779,7 +928,7 @@
                                           Y: =Parent.Height * 0.1
                                           Width: =Parent.Width * 0.15
                                           Height: =Parent.Height * 0.8
-                                          Text: =LookUp(colDemoLeaveTypes, MaLoai = ThisItem.MaLoai).TenLoai
+                                          Text: =LookUp(colCalendarLeaveTypes, Title = ThisItem.MaLoai.Value).TenLoai
                                           Color: =RGBA(17, 24, 39, 1)
                                           Font: =Font.'Open Sans'
                                           Size: =FontSizes.Base
@@ -792,25 +941,25 @@
                                           Y: =(Parent.Height - Self.Height) / 2
                                           Width: =Parent.Width * 0.15
                                           Height: =Parent.Height * 0.6
-                                          Text: =Switch(ThisItem.TrangThai, 
+                                          Text: =Switch(ThisItem.TrangThai.Value, 
                                             "ChoDuyetCap1", "Chờ duyệt",
                                             "ChoDuyetCap2", "Chờ duyệt", 
                                             "ChoDuyetCap3", "Chờ duyệt",
                                             "DaDuyet", "Đã duyệt",
                                             "TuChoi", "Từ chối",
                                             "Huy", "Đã hủy",
-                                            ThisItem.TrangThai)
-                                          Color: =Switch(ThisItem.TrangThai,
+                                            ThisItem.TrangThai.Value)
+                                          Color: =Switch(ThisItem.TrangThai.Value,
                                             "DaDuyet", RGBA(34, 197, 94, 1),
                                             "TuChoi", RGBA(239, 68, 68, 1),
                                             "Huy", RGBA(107, 114, 128, 1),
                                             RGBA(251, 191, 36, 1))
-                                          Fill: =Switch(ThisItem.TrangThai,
+                                          Fill: =Switch(ThisItem.TrangThai.Value,
                                             "DaDuyet", RGBA(240, 253, 244, 1),
                                             "TuChoi", RGBA(254, 242, 242, 1),
                                             "Huy", RGBA(249, 250, 251, 1),
                                             RGBA(254, 243, 199, 1))
-                                          BorderColor: =Switch(ThisItem.TrangThai,
+                                          BorderColor: =Switch(ThisItem.TrangThai.Value,
                                             "DaDuyet", RGBA(34, 197, 94, 1),
                                             "TuChoi", RGBA(239, 68, 68, 1),
                                             "Huy", RGBA(107, 114, 128, 1),
@@ -882,7 +1031,7 @@
             Y: =Parent.Height * 0.1 + 10
             Width: =Parent.Width * 0.38
             Height: =40
-            Text: ="Lỗi kết nối mạng. Hiển thị dữ liệu demo."
+            Text: ="Lỗi kết nối SharePoint. Hiển thị dữ liệu demo."
             Color: =RGBA(239, 68, 68, 1)
             Font: =Font.'Open Sans'
             FontWeight: =FontWeight.Semibold
@@ -989,7 +1138,7 @@
                                     Y: =Parent.Height * 0.1
                                     Width: =Parent.Width * 0.25
                                     Height: =Parent.Height * 0.4
-                                    Text: =LookUp(colDemoUsers, MaNhanVien = ThisItem.MaNhanVien).HoTen
+                                    Text: =LookUp(colCalendarUsers, Title = ThisItem.MaNguoiDung.Value).HoTen
                                     Color: =RGBA(17, 24, 39, 1)
                                     Font: =Font.'Open Sans'
                                     FontWeight: =FontWeight.Semibold
@@ -1016,7 +1165,7 @@
                                     Y: =Parent.Height * 0.1
                                     Width: =Parent.Width * 0.2
                                     Height: =Parent.Height * 0.4
-                                    Text: =LookUp(colDemoLeaveTypes, MaLoai = ThisItem.MaLoai).TenLoai
+                                    Text: =LookUp(colCalendarLeaveTypes, Title = ThisItem.MaLoai.Value).TenLoai
                                     Color: =RGBA(17, 24, 39, 1)
                                     Font: =Font.'Open Sans'
                                     Size: =FontSizes.Base
@@ -1042,25 +1191,25 @@
                                     Y: =(Parent.Height - Self.Height) / 2
                                     Width: =Parent.Width * 0.2
                                     Height: =Parent.Height * 0.6
-                                    Text: =Switch(ThisItem.TrangThai, 
+                                    Text: =Switch(ThisItem.TrangThai.Value, 
                                       "ChoDuyetCap1", "Chờ duyệt",
                                       "ChoDuyetCap2", "Chờ duyệt", 
                                       "ChoDuyetCap3", "Chờ duyệt",
                                       "DaDuyet", "Đã duyệt",
                                       "TuChoi", "Từ chối",
                                       "Huy", "Đã hủy",
-                                      ThisItem.TrangThai)
-                                    Color: =Switch(ThisItem.TrangThai,
+                                      ThisItem.TrangThai.Value)
+                                    Color: =Switch(ThisItem.TrangThai.Value,
                                       "DaDuyet", RGBA(34, 197, 94, 1),
                                       "TuChoi", RGBA(239, 68, 68, 1),
                                       "Huy", RGBA(107, 114, 128, 1),
                                       RGBA(251, 191, 36, 1))
-                                    Fill: =Switch(ThisItem.TrangThai,
+                                    Fill: =Switch(ThisItem.TrangThai.Value,
                                       "DaDuyet", RGBA(240, 253, 244, 1),
                                       "TuChoi", RGBA(254, 242, 242, 1),
                                       "Huy", RGBA(249, 250, 251, 1),
                                       RGBA(254, 243, 199, 1))
-                                    BorderColor: =Switch(ThisItem.TrangThai,
+                                    BorderColor: =Switch(ThisItem.TrangThai.Value,
                                       "DaDuyet", RGBA(34, 197, 94, 1),
                                       "TuChoi", RGBA(239, 68, 68, 1),
                                       "Huy", RGBA(107, 114, 128, 1),
@@ -1083,4 +1232,208 @@
                                     Color: =RGBA(75, 85, 99, 1)
                                     Font: =Font.'Open Sans'
                                     Size: =FontSizes.Base
-                                    Wrap: =true 
+                                    Wrap: =true
+
+                  # No data message
+                  - 'Calendar.Details.NoData':
+                      Control: Label
+                      Properties:
+                        X: =0
+                        Y: =(Parent.Height - Self.Height) / 2
+                        Width: =Parent.Width
+                        Height: =Parent.Height * 0.2
+                        Text: ="Không có dữ liệu nghỉ phép cho ngày này"
+                        Color: =RGBA(107, 114, 128, 1)
+                        Font: =Font.'Open Sans'
+                        Size: =FontSizes.Base
+                        Align: =Align.Center
+                        VerticalAlign: =VerticalAlign.Middle
+                        Visible: =CountRows(varSelectedDateLeaves) = 0
+
+      # List View (only show when List format)
+      - 'Calendar.ListView.Container':
+          Control: GroupContainer
+          Variant: ManualLayout
+          Properties:
+            X: =0
+            Y: ='Calendar.PageHeader.Container'.Y + 'Calendar.PageHeader.Container'.Height + Parent.Height * 0.01
+            Width: =Parent.Width
+            Height: =Parent.Height * 0.82
+            Visible: =varViewFormat = "List"
+          Children:
+            - 'Calendar.ListView.Background':
+                Control: Rectangle
+                Properties:
+                  X: =0
+                  Y: =0
+                  Width: =Parent.Width
+                  Height: =Parent.Height
+                  Fill: =RGBA(255, 255, 255, 1)
+                  BorderColor: =RGBA(226, 232, 240, 1)
+                  BorderThickness: =1
+                  
+            - 'Calendar.ListView.Gallery':
+                Control: Gallery
+                Variant: Vertical
+                Properties:
+                  X: =Parent.Width * 0.02
+                  Y: =Parent.Height * 0.02
+                  Width: =Parent.Width * 0.96
+                  Height: =Parent.Height * 0.94
+                  Items: =Switch(varCalendarView,
+                    "Personal", colPersonalLeaves,
+                    "Department", colDepartmentLeaves,
+                    "All", colAllLeaves,
+                    colPersonalLeaves)
+                  TemplateSize: =120
+                  BorderThickness: =0
+                  Fill: =RGBA(0, 0, 0, 0)
+                Children:
+                  - 'Calendar.ListView.Item':
+                      Control: GroupContainer
+                      Variant: ManualLayout
+                      Properties:
+                        X: =0
+                        Y: =0
+                        Width: =Parent.TemplateWidth
+                        Height: =120
+                        Fill: =RGBA(255, 255, 255, 1)
+                        BorderColor: =RGBA(226, 232, 240, 1)
+                        BorderThickness: =1
+                      Children:
+                        # Employee Info
+                        - 'Calendar.ListView.EmployeeName':
+                            Control: Label
+                            Properties:
+                              X: =Parent.Width * 0.02
+                              Y: =Parent.Height * 0.05
+                              Width: =Parent.Width * 0.3
+                              Height: =Parent.Height * 0.3
+                              Text: =LookUp(colCalendarUsers, Title = ThisItem.MaNguoiDung.Value).HoTen
+                              Color: =RGBA(17, 24, 39, 1)
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Bold
+                              Size: =FontSizes.Medium
+                              
+                        - 'Calendar.ListView.Department':
+                            Control: Label
+                            Properties:
+                              X: =Parent.Width * 0.02
+                              Y: =Parent.Height * 0.4
+                              Width: =Parent.Width * 0.3
+                              Height: =Parent.Height * 0.25
+                              Text: =LookUp(colCalendarDepartments, Title = LookUp(colCalendarUsers, Title = ThisItem.MaNguoiDung.Value).MaDonVi.Value).TenDonVi
+                              Color: =RGBA(75, 85, 99, 1)
+                              Font: =Font.'Open Sans'
+                              Size: =FontSizes.Base
+                              
+                        # Leave Period
+                        - 'Calendar.ListView.Period':
+                            Control: Label
+                            Properties:
+                              X: =Parent.Width * 0.35
+                              Y: =Parent.Height * 0.05
+                              Width: =Parent.Width * 0.25
+                              Height: =Parent.Height * 0.3
+                              Text: =Text(ThisItem.NgayBatDau, "dd/mm/yyyy") & " - " & Text(ThisItem.NgayKetThuc, "dd/mm/yyyy")
+                              Color: =RGBA(17, 24, 39, 1)
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Semibold
+                              Size: =FontSizes.Base
+                              
+                        - 'Calendar.ListView.Days':
+                            Control: Label
+                            Properties:
+                              X: =Parent.Width * 0.35
+                              Y: =Parent.Height * 0.4
+                              Width: =Parent.Width * 0.25
+                              Height: =Parent.Height * 0.25
+                              Text: =ThisItem.SoNgayNghi & " ngày"
+                              Color: =RGBA(75, 85, 99, 1)
+                              Font: =Font.'Open Sans'
+                              Size: =FontSizes.Base
+                              
+                        # Leave Type
+                        - 'Calendar.ListView.LeaveType':
+                            Control: Label
+                            Properties:
+                              X: =Parent.Width * 0.63
+                              Y: =Parent.Height * 0.05
+                              Width: =Parent.Width * 0.17
+                              Height: =Parent.Height * 0.3
+                              Text: =LookUp(colCalendarLeaveTypes, Title = ThisItem.MaLoai.Value).TenLoai
+                              Color: =RGBA(17, 24, 39, 1)
+                              Font: =Font.'Open Sans'
+                              Size: =FontSizes.Base
+                              
+                        # Status
+                        - 'Calendar.ListView.Status':
+                            Control: Label
+                            Properties:
+                              X: =Parent.Width * 0.82
+                              Y: =Parent.Height * 0.1
+                              Width: =Parent.Width * 0.16
+                              Height: =Parent.Height * 0.4
+                              Text: =Switch(ThisItem.TrangThai.Value, 
+                                "ChoDuyetCap1", "Chờ duyệt",
+                                "ChoDuyetCap2", "Chờ duyệt", 
+                                "ChoDuyetCap3", "Chờ duyệt",
+                                "DaDuyet", "Đã duyệt",
+                                "TuChoi", "Từ chối",
+                                "Huy", "Đã hủy",
+                                ThisItem.TrangThai.Value)
+                              Color: =Switch(ThisItem.TrangThai.Value,
+                                "DaDuyet", RGBA(34, 197, 94, 1),
+                                "TuChoi", RGBA(239, 68, 68, 1),
+                                "Huy", RGBA(107, 114, 128, 1),
+                                RGBA(251, 191, 36, 1))
+                              Fill: =Switch(ThisItem.TrangThai.Value,
+                                "DaDuyet", RGBA(240, 253, 244, 1),
+                                "TuChoi", RGBA(254, 242, 242, 1),
+                                "Huy", RGBA(249, 250, 251, 1),
+                                RGBA(254, 243, 199, 1))
+                              BorderColor: =Switch(ThisItem.TrangThai.Value,
+                                "DaDuyet", RGBA(34, 197, 94, 1),
+                                "TuChoi", RGBA(239, 68, 68, 1),
+                                "Huy", RGBA(107, 114, 128, 1),
+                                RGBA(251, 191, 36, 1))
+                              BorderThickness: =1
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Semibold
+                              Size: =FontSizes.Small
+                              Align: =Align.Center
+                              VerticalAlign: =VerticalAlign.Middle
+                              
+                        # Reason
+                        - 'Calendar.ListView.Reason':
+                            Control: Label
+                            Properties:
+                              X: =Parent.Width * 0.35
+                              Y: =Parent.Height * 0.7
+                              Width: =Parent.Width * 0.63
+                              Height: =Parent.Height * 0.25
+                              Text: =If(Len(ThisItem.LyDo) > 50, Left(ThisItem.LyDo, 47) & "...", ThisItem.LyDo)
+                              Color: =RGBA(75, 85, 99, 1)
+                              Font: =Font.'Open Sans'
+                              Size: =FontSizes.Small
+                              Wrap: =true
+                              
+            # No data for List View
+            - 'Calendar.ListView.NoData':
+                Control: Label
+                Properties:
+                  X: =0
+                  Y: =(Parent.Height - Self.Height) / 2
+                  Width: =Parent.Width
+                  Height: =Parent.Height * 0.2
+                  Text: ="Không có dữ liệu nghỉ phép trong tháng này"
+                  Color: =RGBA(107, 114, 128, 1)
+                  Font: =Font.'Open Sans'
+                  Size: =FontSizes.Large
+                  Align: =Align.Center
+                  VerticalAlign: =VerticalAlign.Middle
+                  Visible: =CountRows(Switch(varCalendarView,
+                    "Personal", colPersonalLeaves,
+                    "Department", colDepartmentLeaves,
+                    "All", colAllLeaves,
+                    colPersonalLeaves)) = 0 

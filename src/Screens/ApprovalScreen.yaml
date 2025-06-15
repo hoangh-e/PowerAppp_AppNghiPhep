@@ -26,9 +26,9 @@ Screens:
         Set(varMyLevelApprovals, 
           Filter(varPendingApprovals, 
             Or(
-              And(varUserPermissions.CanApproveLevel1, TrangThai.Value = "ChoDuyetCap1"),
-              And(varUserPermissions.CanApproveLevel2, TrangThai.Value = "ChoDuyetCap2"),
-              And(varUserPermissions.CanApproveLevel3, TrangThai.Value = "ChoDuyetCap3")
+              And(UserCanApproveLevel1, TrangThai.Value = "ChoDuyetCap1"),
+              And(UserCanApproveLevel2, TrangThai.Value = "ChoDuyetCap2"),
+              And(UserCanApproveLevel3, TrangThai.Value = "ChoDuyetCap3")
             )
           )
         )
@@ -44,25 +44,25 @@ Screens:
             NotificationCount: =CountRows(varMyLevelApprovals)
             OnLogout: |
               =Set(varIsUserAuthenticated, false);
-              Set(UserSession, {
-                Id: "", 
-                Name: "", 
-                Email: "", 
-                Role: "", 
+              Set(UserSessionANP, {
+                Id: "",
+                HoTen: "",
+                Email: "",
+                MaVaiTro: "",
                 Permission: 0,
-                NguoiQuanLyId: "", 
-                HoTen: "", 
-                MaVaiTro: "", 
-                ChucDanh: "", 
-                MaDonVi: "", 
-                TrangThai: ""
+                NguoiQuanLyId: "",
+                ChucDanh: "",
+                MaDonVi: "",
+                TrangThai: "",
+                Name: "",
+                Role: ""
               });
               Navigate(LoginScreen)
             OnSearch: =false
             ShowNotification: =true
             ShowSearch: =true
-            UserName: =UserSession.HoTen
-            UserRole: =UserSession.MaVaiTro
+            UserName: =UserSessionANP.HoTen
+            UserRole: =UserSessionANP.MaVaiTro
       - Approval.Navigation:
           Control: CanvasComponent
           ComponentName: NavigationComponent
@@ -71,7 +71,7 @@ Screens:
             Y: ='Approval.Header'.Height
             Width: =If(varNavCollapsed, App.Width * 0.045, App.Width * 0.14)
             Height: =Parent.Height - 'Approval.Header'.Height
-            UserRole: =UserSession.MaVaiTro
+            UserRole: =UserSessionANP.MaVaiTro
             ActiveScreen: ="Approval"
             IsCollapsed: =varNavCollapsed
             DashboardScreen: =DashboardScreen
@@ -326,7 +326,7 @@ Screens:
                     =Set(varSelectedApprovalLeave, Parent.Selected);
                     Set(varShowApprovalDetails, true)
                   Order: =5
-                  Text: =LookUp(LoaiNghi, MaLoai = Parent.Selected.MaLoai.Value).TenLoai
+                  Text: =LookUp(LoaiNghi, Title = Parent.Selected.MaLoai.Value).TenLoai
             - TrangThai_Column_1:
                 Control: DataTableColumn
                 Variant: Textual
@@ -390,7 +390,8 @@ Screens:
                         IsLoading: =false
                         LoadingText: ="Đang xử lý..."
                         OnClick: |
-                          =Set(varShowApprovalDetails, false)
+                          =Set(varShowApprovalDetails, false);
+                          Set(varApprovalComment, "")
                         Size: ="Small"
                         Text: ="Đóng"
                         Width: =Parent.Width * 0.13
@@ -473,7 +474,7 @@ Screens:
                         Font: =Font.'Open Sans'
                         Height: =Parent.Height * 0.06
                         Size: =FontSizes.Base
-                        Text: =If(Not(IsBlank(varSelectedApprovalLeave)), LookUp(LoaiNghi, MaLoai = varSelectedApprovalLeave.MaLoai.Value).TenLoai, "")
+                        Text: =If(Not(IsBlank(varSelectedApprovalLeave)), LookUp(LoaiNghi, Title = varSelectedApprovalLeave.MaLoai.Value).TenLoai, "")
                         Width: =Parent.Width * 0.7
                   - Approval.Details.Reason.Label:
                       Control: Label
@@ -550,6 +551,7 @@ Screens:
                         BorderColor: =RGBA(224, 224, 224, 1)
                         BorderThickness: =1
                         Color: =RGBA(55, 65, 81, 1)
+                        Default: =varApprovalComment
                         Font: =Font.'Open Sans'
                         Height: =Parent.Height * 0.25
                         HintText: ="Nhập ghi chú (tùy chọn)"
@@ -678,7 +680,8 @@ Screens:
                         LoadingText: ="Đang xử lý..."
                         OnClick: |
                           =Set(varShowApprovalConfirm, false);
-                          Set(varApprovalAction, "")
+                          Set(varApprovalAction, "");
+                          Set(varApprovalComment, "")
                         Size: ="Medium"
                         Text: ="Hủy"
                         Width: =Parent.Width * 0.45
@@ -698,37 +701,37 @@ Screens:
                         OnClick: |
                           =If(Not(IsBlank(varSelectedApprovalLeave)),
                             If(varApprovalAction = "Approve",
-                              /* Phê duyệt logic */
-                              With(varSelectedApprovalLeave.TrangThai.Value,
-                                Switch(ThisRecord,
+                              /* Phê duyệt logic - đơn giản hóa */
+                              Switch(varSelectedApprovalLeave.TrangThai.Value,
                                   "ChoDuyetCap1", 
                                     If(varSelectedApprovalLeave.SoNgayNghi <= 12,
-                                      Patch(DonNghiPhep, varSelectedApprovalLeave, {TrangThai: {Value: "DaDuyet"}}),
-                                      Patch(DonNghiPhep, varSelectedApprovalLeave, {TrangThai: {Value: "ChoDuyetCap2"}})),
+                                    Patch(DonNghiPhep, varSelectedApprovalLeave, {TrangThai: {Value: "DaDuyet"}, GhiChuHR: varApprovalComment}),
+                                    Patch(DonNghiPhep, varSelectedApprovalLeave, {TrangThai: {Value: "ChoDuyetCap2"}, GhiChuHR: varApprovalComment})),
                                   "ChoDuyetCap2",
                                     If(varSelectedApprovalLeave.SoNgayNghi <= 12,
-                                      Patch(DonNghiPhep, varSelectedApprovalLeave, {TrangThai: {Value: "DaDuyet"}}),
-                                      Patch(DonNghiPhep, varSelectedApprovalLeave, {TrangThai: {Value: "ChoDuyetCap3"}})),
+                                    Patch(DonNghiPhep, varSelectedApprovalLeave, {TrangThai: {Value: "DaDuyet"}, GhiChuHR: varApprovalComment}),
+                                    Patch(DonNghiPhep, varSelectedApprovalLeave, {TrangThai: {Value: "ChoDuyetCap3"}, GhiChuHR: varApprovalComment})),
                                   "ChoDuyetCap3",
-                                    Patch(DonNghiPhep, varSelectedApprovalLeave, {TrangThai: {Value: "DaDuyet"}})
-                                ));
+                                  Patch(DonNghiPhep, varSelectedApprovalLeave, {TrangThai: {Value: "DaDuyet"}, GhiChuHR: varApprovalComment})
+                              );
                               Notify("Đã phê duyệt đơn nghỉ phép", NotificationType.Success),
                               /* Từ chối logic */
-                              Patch(DonNghiPhep, varSelectedApprovalLeave, {TrangThai: {Value: "TuChoi"}});
+                              Patch(DonNghiPhep, varSelectedApprovalLeave, {TrangThai: {Value: "TuChoi"}, GhiChuHR: varApprovalComment});
                               Notify("Đã từ chối đơn nghỉ phép", NotificationType.Information)
                             );
                             Set(varShowApprovalConfirm, false);
                             Set(varShowApprovalDetails, false);
                             Set(varApprovalAction, "");
+                            Set(varApprovalComment, "");
                             Set(varSelectedApprovalLeave, Blank());
                             /* Refresh data */
                             Set(varPendingApprovals, Filter(DonNghiPhep, Or(TrangThai.Value = "ChoDuyetCap1", TrangThai.Value = "ChoDuyetCap2", TrangThai.Value = "ChoDuyetCap3")));
                             Set(varMyLevelApprovals, Filter(varPendingApprovals, 
-                              Switch(UserSession.MaVaiTro,
-                                "Manager", TrangThai.Value = "ChoDuyetCap1",
-                                "Director", Or(TrangThai.Value = "ChoDuyetCap2", And(TrangThai.Value = "ChoDuyetCap3", CountRows(Filter(DonNghiPhep, And(MaDon = ThisItem.MaDon, SoNgayNghi > 12))) > 0)),
-                                "HR", TrangThai.Value = "ChoDuyetCap3",
-                                false))),
+                              Or(
+                                And(UserCanApproveLevel1, TrangThai.Value = "ChoDuyetCap1"),
+                                And(UserCanApproveLevel2, TrangThai.Value = "ChoDuyetCap2"),
+                                And(UserCanApproveLevel3, TrangThai.Value = "ChoDuyetCap3")
+                              ))),
                             Notify("Có lỗi xảy ra", NotificationType.Error)
                           ) 
                         Size: ="Medium"

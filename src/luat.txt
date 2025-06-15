@@ -267,18 +267,18 @@ Formulas: |
   
   //Current user object
   User = {
-    Name: UserSession.Name,
-    Id: UserSession.Id,
-    Role: UserSession.Role,
-    Permission: UserSession.Permission,
-    NguoiQuanLyId: UserSession.NguoiQuanLyId
+    Name: UserSessionANP.Name,
+    Id: UserSessionANP.Id,
+    Role: UserSessionANP.Role,
+    Permission: UserSessionANP.Permission,
+    NguoiQuanLyId: UserSessionANP.NguoiQuanLyId
   };
   
   //Permission checks
-  UserHasGDPerm = CheckPermission(UserSession.Permission, Quyền.GĐ);
-  UserHasQLPerm = CheckPermission(UserSession.Permission, Quyền.QL);
-  UserHasKTTPerm = CheckPermission(UserSession.Permission, Quyền.YeuCauBoSung);
-  UserHasKTPerm = CheckPermission(UserSession.Permission, Quyền.TamUng)
+  UserHasGDPerm = CheckPermission(UserSessionANP.Permission, Quyền.GĐ);
+  UserHasQLPerm = CheckPermission(UserSessionANP.Permission, Quyền.QL);
+  UserHasKTTPerm = CheckPermission(UserSessionANP.Permission, Quyền.YeuCauBoSung);
+  UserHasKTPerm = CheckPermission(UserSessionANP.Permission, Quyền.TamUng)
 
 # Theme - App theme settings
 Theme: =Theme.Default
@@ -315,11 +315,11 @@ CheckPermission(UserPerm:Number, RequiredPerm:Number):Boolean = (
 
 //Current user object
 User = {
-  Name: UserSession.Name,
-  Id: UserSession.Id,
-  Role: UserSession.Role,
-  Permission: UserSession.Permission,
-  NguoiQuanLyId: UserSession.NguoiQuanLyId
+  Name: UserSessionANP.Name,
+  Id: UserSessionANP.Id,
+  Role: UserSessionANP.Role,
+  Permission: UserSessionANP.Permission,
+  NguoiQuanLyId: UserSessionANP.NguoiQuanLyId
 };
 ```
 
@@ -3321,14 +3321,14 @@ CheckPermission(userPerm:Number, requiredPerm:Number):Boolean = (
 );
 
 LogoutUser():Boolean = (
-  Clear(UserSession); Set(varLoginSuccess, false); true
+  Clear(UserSessionANP); Set(varLoginSuccess, false); true
 );
 
 # ✅ CORRECT - Use simple expressions instead of function definitions
 NavigateToScreen = true;  // Simple boolean for navigation state
 
 //Permission checks using inline expressions
-UserCanViewLeaves = If(IsUserAuthenticated, Mod(Int(UserSession.Permission / UserPermissions.XemDon), 2) = 1, false);
+UserCanViewLeaves = If(IsUserAuthenticated, Mod(Int(UserSessionANP.Permission / UserPermissions.XemDon), 2) = 1, false);
 
 //Simple logout expression
 LogoutUser():Boolean = true;  // Return true to indicate logout should happen

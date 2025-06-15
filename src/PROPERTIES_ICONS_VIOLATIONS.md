@@ -1394,7 +1394,7 @@
 - **Line 137:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
   - **Suggestion:** Text = ="ThÃ´ng tin cÃ¡ nhÃ¢n"
 - **Line 150:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
-  - **Suggestion:** Text = =Concatenate("NhÃ¢n viÃªn" & ":" & " ", UserSession.HoTen, " | ", UserSession.MaVaiTro)
+  - **Suggestion:** Text = =Concatenate("NhÃ¢n viÃªn" & ":" & " ", UserSessionANP.HoTen, " | ", UserSessionANP.MaVaiTro)
 - **Line 172:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
   - **Suggestion:** Fill = =RGBA(249, 250, 251, 1)
 - **Line 184:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
@@ -1410,15 +1410,15 @@
 - **Line 269:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
   - **Suggestion:** Fill = =RGBA(219, 234, 254, 1)
 - **Line 280:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
-  - **Suggestion:** Text = =If(Not(IsBlank(varCurrentUser)), varCurrentUser.HoTen, UserSession.HoTen)
+  - **Suggestion:** Text = =If(Not(IsBlank(varCurrentUser)), varCurrentUser.HoTen, UserSessionANP.HoTen)
 - **Line 293:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
-  - **Suggestion:** Text = =If(Not(IsBlank(varCurrentUser)), varCurrentUser.ChucDanh.Value & " - " & LookUp(DonVi, MaDonVi = varCurrentUser.MaDonVi.Value).TenDonVi, UserSession.ChucDanh)
+  - **Suggestion:** Text = =If(Not(IsBlank(varCurrentUser)), varCurrentUser.ChucDanh.Value & " - " & LookUp(DonVi, MaDonVi = varCurrentUser.MaDonVi.Value).TenDonVi, UserSessionANP.ChucDanh)
 - **Line 306:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
   - **Suggestion:** Text = =If(varIsEditing, "Há»§y", "Chá»‰nh sá»­a")
 - **Line 335:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
   - **Suggestion:** Text = ="MÃ£ nhÃ¢n viÃªn:"
 - **Line 348:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
-  - **Suggestion:** Text = =UserSession.Id
+  - **Suggestion:** Text = =UserSessionANP.Id
 - **Line 361:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
   - **Suggestion:** Text = ="Há» vÃ  tÃªn:"
 - **Line 374:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Default must start with =
@@ -1450,7 +1450,7 @@
 - **Line 483:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
   - **Suggestion:** Text = ="Chá»©c danh:"
 - **Line 496:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
-  - **Suggestion:** Text = =If(Not(IsBlank(varCurrentUser)), varCurrentUser.ChucDanh.Value, UserSession.ChucDanh)
+  - **Suggestion:** Text = =If(Not(IsBlank(varCurrentUser)), varCurrentUser.ChucDanh.Value, UserSessionANP.ChucDanh)
 - **Line 510:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
   - **Suggestion:** Text = =If(varIsSaving, "Äang lÆ°u...", "LÆ°u thay Ä‘á»•i")
 - **Line 513:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Visible must start with =
@@ -1851,9 +1851,9 @@
 - **Line 174:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
   - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
 - **Line 195:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
-  - **Suggestion:** Text = ="ChÃ o má»«ng quay trá»Ÿ láº¡i, " & UserSession.HoTen
+  - **Suggestion:** Text = ="ChÃ o má»«ng quay trá»Ÿ láº¡i, " & UserSessionANP.HoTen
 - **Line 208:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =
-  - **Suggestion:** Text = ="PhÃ²ng ban:" & " " & UserSession.MaDonVi & " â€¢ " & "Chá»©c danh:" & " " & UserSession.ChucDanh
+  - **Suggestion:** Text = ="PhÃ²ng ban:" & " " & UserSessionANP.MaDonVi & " â€¢ " & "Chá»©c danh:" & " " & UserSessionANP.ChucDanh
 - **Line 229:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Fill must start with =
   - **Suggestion:** Fill = =RGBA(255, 255, 255, 1)
 - **Line 240:** MISSING_FORMULA_PREFIX (Section 5.4) - Dynamic property Text must start with =

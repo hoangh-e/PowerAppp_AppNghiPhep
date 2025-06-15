@@ -16,7 +16,7 @@
         Set(varCanAccessReports, Or(varUserPermissions.CanViewDashboard, varUserPermissions.CanViewAllLeaves, varUserPermissions.CanExportReports));
         Set(varReportType, "Monthly"); 
         Set(varReportPeriod, "This Year"); 
-        Set(varSelectedDepartment, UserSession.MaDonVi); 
+        Set(varSelectedDepartment, UserSessionANP.MaDonVi); 
         Set(varSelectedYear, Year(Today())); 
         Set(varReportData, []); 
         Set(varIsGenerating, false); 
@@ -74,12 +74,12 @@
             Y: =0
             Width: =Parent.Width
             Height: =Parent.Height * 0.065
-            UserName: =UserSession.HoTen
-            UserRole: =UserSession.MaVaiTro
+            UserName: =UserSessionANP.HoTen
+            UserRole: =UserSessionANP.MaVaiTro
             ShowNotification: =true
             NotificationCount: =0
             OnLogout: |
-              =Set(varIsUserAuthenticated, false); Set(UserSession, {Id: "", Name: "", Email: "", Role: "", Permission: 0, NguoiQuanLyId: "", HoTen: "", MaVaiTro: "", ChucDanh: "", MaDonVi: "", TrangThai: ""}); Navigate(LoginScreen)
+              =Set(varIsUserAuthenticated, false); Set(UserSessionANP, {Id: "", HoTen: "", Email: "", MaVaiTro: "", Permission: 0, NguoiQuanLyId: "", ChucDanh: "", MaDonVi: "", TrangThai: "", Name: "", Role: ""}); Navigate(LoginScreen)
 
       - 'Reports.Navigation':
           Control: CanvasComponent
@@ -89,7 +89,7 @@
             Y: ='Reports.Header'.Height
             Width: =If(varNavCollapsed, App.Width * 0.045, App.Width * 0.14)
             Height: =Parent.Height - 'Reports.Header'.Height
-            UserRole: =UserSession.MaVaiTro
+            UserRole: =UserSessionANP.MaVaiTro
             ActiveScreen: ="Reports"
             IsCollapsed: =varNavCollapsed
             DashboardScreen: =DashboardScreen
@@ -455,7 +455,7 @@
                                     BorderColor: =RGBA(226, 232, 240, 1)
                                     BorderThickness: =1
                                     OnChange: |
-                                      =Set(varSelectedYear, Value(Self.Text))
+                                      =Set(varSelectedYear, Value(Self.Default))
 
                         - 'Reports.Filter.Generate':
                             Control: CanvasComponent
@@ -649,7 +649,6 @@
 
       - 'Reports.DataTable':
           Control: DataTable
-          Variant: DataTable
           Properties:
             X: ='Reports.Navigation'.Width + 'Reports.Content.Container'.Width * 0.02
             Y: ='Reports.Header'.Height + 'Reports.Content.Container'.Height * 0.75
@@ -673,7 +672,7 @@
                   FieldDisplayName: =Switch(varReportType, "Monthly", "Tháng", "Department", "Phòng ban", "Employee", "Nhân viên", "LeaveType", "Loại nghỉ", "Tên")
                   FieldName: ="Name"
                   Order: =1
-                  Text: =Switch(varReportType, "Department", ThisItem.TenDonVi, "Employee", ThisItem.HoTen, "LeaveType", ThisItem.TenLoai, "Monthly", ThisItem.TenThang, "N/A")
+                  Text: =Switch(varReportType, "Department", Parent.Selected.TenDonVi, "Employee", Parent.Selected.HoTen, "LeaveType", Parent.Selected.TenLoai, "Monthly", Parent.Selected.TenThang, "N/A")
                   Width: =Parent.Width * 0.25
 
             - Column2:
@@ -683,7 +682,7 @@
                   FieldDisplayName: =Switch(varReportType, "Department", "Tổng NV", "Employee", "Tổng đơn", "LeaveType", "Số lần dùng", "Monthly", "Số đơn", "Giá trị 1")
                   FieldName: ="Value1"
                   Order: =2
-                  Text: =Switch(varReportType, "Department", Text(ThisItem.TongNhanVien), "Employee", Text(ThisItem.TongDonNghi), "LeaveType", Text(ThisItem.SoLanSuDung), "Monthly", Text(ThisItem.SoDon), "0")
+                  Text: =Switch(varReportType, "Department", Text(Parent.Selected.TongNhanVien), "Employee", Text(Parent.Selected.TongDonNghi), "LeaveType", Text(Parent.Selected.SoLanSuDung), "Monthly", Text(Parent.Selected.SoDon), "0")
                   Width: =Parent.Width * 0.18
 
             - Column3:
@@ -693,7 +692,7 @@
                   FieldDisplayName: =Switch(varReportType, "Department", "Đã duyệt", "Employee", "Đã duyệt", "LeaveType", "Tổng ngày", "Monthly", "Đã duyệt", "Giá trị 2")
                   FieldName: ="Value2"
                   Order: =3
-                  Text: =Switch(varReportType, "Department", Text(ThisItem.DonDaDuyet), "Employee", Text(ThisItem.DonDaDuyet), "LeaveType", Text(ThisItem.TongNgayNghi), "Monthly", Text(ThisItem.SoDonDuyet), "0")
+                  Text: =Switch(varReportType, "Department", Text(Parent.Selected.DonDaDuyet), "Employee", Text(Parent.Selected.DonDaDuyet), "LeaveType", Text(Parent.Selected.TongNgayNghi), "Monthly", Text(Parent.Selected.SoDonDuyet), "0")
                   Width: =Parent.Width * 0.18
 
             - Column4:
@@ -703,7 +702,7 @@
                   FieldDisplayName: =Switch(varReportType, "Department", "Tổng ngày nghỉ", "Employee", "Tổng ngày nghỉ", "LeaveType", "Mô tả", "Monthly", "Tổng ngày nghỉ", "Giá trị 3")
                   FieldName: ="Value3"
                   Order: =4
-                  Text: =Switch(varReportType, "Department", Text(ThisItem.TongNgayNghi), "Employee", Text(ThisItem.TongNgayNghi), "LeaveType", "Có lương", "Monthly", Text(ThisItem.TongNgayNghi), "0")
+                  Text: =Switch(varReportType, "Department", Text(Parent.Selected.TongNgayNghi), "Employee", Text(Parent.Selected.TongNgayNghi), "LeaveType", "Có lương", "Monthly", Text(Parent.Selected.TongNgayNghi), "0")
                   Width: =Parent.Width * 0.22
 
       - 'Reports.AccessDenied.Container':
@@ -890,7 +889,7 @@
                               Default: =false
                               Font: =Font.'Open Sans'
                               Size: =FontSizes.Small
-                              Visible: =Or(UserSession.MaVaiTro = "HR", UserSession.MaVaiTro = "DIRECTOR", UserSession.MaVaiTro = "ADMIN")
+                              Visible: =Or(UserCanExportReports, UserCanViewAllLeaves, UserCanSystemAdmin)
 
                         - 'Reports.Export.Option3':
                             Control: Classic/CheckBox
@@ -903,7 +902,7 @@
                               Default: =false
                               Font: =Font.'Open Sans'
                               Size: =FontSizes.Small
-                              Visible: =Or(UserSession.MaVaiTro = "HR", UserSession.MaVaiTro = "DIRECTOR", UserSession.MaVaiTro = "ADMIN")
+                              Visible: =Or(UserCanExportReports, UserCanViewAllLeaves, UserCanSystemAdmin)
 
             - 'Reports.Export.Actions':
                 Control: GroupContainer

@@ -5,21 +5,22 @@ Set(varAppInitialized, true);
 //FORCE CLEAR ALL authentication state - NO EXCEPTIONS
 Set(varLoginSuccess, false);
 Set(varSessionValid, false);  
+Set(varIsUserAuthenticated, false);
 Set(varLoggedInUserEmail, "");
 
-//Initialize empty UserSession (Record initialization with ALL fields)
-Set(UserSession, {
+//Initialize empty UserSessionANP (Record initialization with ALL fields)
+Set(UserSessionANP, {
   Id: "",
-  Name: "", 
+  HoTen: "",
   Email: "",
-  Role: "",
+  MaVaiTro: "",
   Permission: 0,
   NguoiQuanLyId: "",
-  HoTen: "",
-  MaVaiTro: "",
   ChucDanh: "",
   MaDonVi: "",
-  TrangThai: ""
+  TrangThai: "",
+  Name: "",
+  Role: ""
 });
 
 //Initialize session state tracking

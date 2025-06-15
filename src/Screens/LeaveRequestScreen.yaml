@@ -24,23 +24,23 @@ Screens:
         //Load user data with fallback demo data
         Set(varUserLeaveBalance, 
           If(IsUserAuthenticated,
-            LookUp(SoNgayPhep, And(MaNhanVien.Value = UserSession.Id, Nam = Year(Today()))),
-            {MaNhanVien: UserSession.Id, Nam: Year(Today()), TongNgayDuocPhep: 12, SoNgayDaNghi: 3, SoNgayConLai: 9}
+            LookUp(SoNgayPhep, And(MaNhanVien.Value = UserSessionANP.Id, Nam = Year(Today()))),
+            {MaNhanVien: UserSessionANP.Id, Nam: Year(Today()), TongNgayDuocPhep: 12, SoNgayDaNghi: 3, SoNgayConLai: 9}
           )
         );
         Set(varAvailableLeaveTypes, 
           If(IsUserAuthenticated,
             Filter(LoaiNghi, DangHoatDong = true),
             Table(
-              {MaLoai: "AL", TenLoai: "Phép năm", CoLuong: true},
-              {MaLoai: "SL", TenLoai: "Nghỉ ốm", CoLuong: true},
-              {MaLoai: "PL", TenLoai: "Nghỉ việc riêng", CoLuong: false}
+              {Title: "AL", TenLoai: "Phép năm", CoLuong: true},
+              {Title: "SL", TenLoai: "Nghỉ ốm", CoLuong: true},
+              {Title: "PL", TenLoai: "Nghỉ việc riêng", CoLuong: false}
             )
           )
         );
         Set(varPotentialHandovers, 
           If(IsUserAuthenticated,
-            Filter(NguoiDung, And(TrangThai.Value = "HoatDong", Title <> UserSession.Id)),
+            Filter(NguoiDung, And(TrangThai.Value = "HoatDong", Title <> UserSessionANP.Id)),
             Table(
               {Title: "EMP002", HoTen: "Trần Thị Bình", MaDonVi: "HR"},
               {Title: "EMP003", HoTen: "Lê Hoàng Cường", MaDonVi: "Finance"},
@@ -50,14 +50,14 @@ Screens:
         );
         Set(varCurrentUser, 
           If(IsUserAuthenticated,
-            LookUp(NguoiDung, Title = UserSession.Id),
-            {Title: UserSession.Id, HoTen: UserSession.HoTen, MaQuanLy: "MGR001"}
+            LookUp(NguoiDung, Title = UserSessionANP.Id),
+            {Title: UserSessionANP.Id, HoTen: UserSessionANP.HoTen, NguoiQuanLyId: "MGR001"}
           )
         );
         Set(varUserManager, 
-          If(Not(IsBlank(varCurrentUser.MaQuanLy)), 
+          If(Not(IsBlank(UserSessionANP.NguoiQuanLyId)), 
             If(IsUserAuthenticated,
-              LookUp(NguoiDung, Title = varCurrentUser.MaQuanLy.Value),
+              LookUp(NguoiDung, Title = UserSessionANP.NguoiQuanLyId),
               {Title: "MGR001", HoTen: "Quản lý Demo"}
             ),
             Blank())
@@ -72,24 +72,24 @@ Screens:
             Y: =0
             Width: =Parent.Width
             Height: =Parent.Height * 0.065
-            UserName: =UserSession.HoTen
-            UserRole: =UserSession.MaVaiTro
+            UserName: =UserSessionANP.HoTen
+            UserRole: =UserSessionANP.MaVaiTro
             ShowNotification: =true
             NotificationCount: =0
             OnLogout: |
               =Set(varIsUserAuthenticated, false);
-              Set(UserSession, {
-                Id: "", 
-                Name: "", 
-                Email: "", 
-                Role: "", 
+              Set(UserSessionANP, {
+                Id: "",
+                HoTen: "",
+                Email: "",
+                MaVaiTro: "",
                 Permission: 0,
-                NguoiQuanLyId: "", 
-                HoTen: "", 
-                MaVaiTro: "", 
-                ChucDanh: "", 
-                MaDonVi: "", 
-                TrangThai: ""
+                NguoiQuanLyId: "",
+                ChucDanh: "",
+                MaDonVi: "",
+                TrangThai: "",
+                Name: "",
+                Role: ""
               });
               Navigate(LoginScreen)
             
@@ -102,7 +102,7 @@ Screens:
             Y: ='LeaveRequest.Header'.Height
             Width: =If(varNavCollapsed, App.Width * 0.045, App.Width * 0.14)
             Height: =Parent.Height - 'LeaveRequest.Header'.Height
-            UserRole: =UserSession.MaVaiTro
+            UserRole: =UserSessionANP.MaVaiTro
             ActiveScreen: ="LeaveRequest"
             IsCollapsed: =varNavCollapsed
             DashboardScreen: =DashboardScreen
@@ -516,25 +516,24 @@ Screens:
                                           Text: =If(
                                             And(Not(IsBlank(varSelectedFromDate)), Not(IsBlank(varCalculatedDays))),
                                             With(
-                                              DateDiff(Today(), varSelectedFromDate),
+                                              {daysAdvance: DateDiff(Today(), varSelectedFromDate)},
                                               If(
-                                                And(varCalculatedDays >= 0.5, varCalculatedDays <= 2, ThisRecord < 1),
-                                                "! Nghỉ 0.5-2 ngày cần tạo trước 1 ngày",
+                                                And(varCalculatedDays >= 1, varCalculatedDays <= 2, daysAdvance < 1),
+                                                "! Nghỉ 1-2 ngày cần tạo trước 1 ngày",
                                                 If(
-                                                  And(varCalculatedDays >= 3, varCalculatedDays <= 4, ThisRecord < 7),
+                                                  And(varCalculatedDays >= 3, varCalculatedDays <= 4, daysAdvance < 7),
                                                   "! Nghỉ 3-4 ngày cần tạo trước 7 ngày",
                                                   If(
-                                                    And(varCalculatedDays >= 5, ThisRecord < 14),
+                                                    And(varCalculatedDays >= 5, daysAdvance < 14),
                                                     "! Nghỉ từ 5 ngày cần tạo trước 14 ngày",
-                                                    "OK! Thời gian tạo đơn hợp lệ"
+                                                    "✓ Thời gian tạo đơn hợp lệ"
                                                   )
                                                 )
                                               )
                                             ),
                                             " "
                                             )
-                                          Color: |
-                                            =If(StartsWith(Self.Text, "!"), RGBA(251, 146, 60, 1), RGBA(34, 197, 94, 1))
+                                          Color: =If(StartsWith(Self.Text, "!"), RGBA(251, 146, 60, 1), RGBA(34, 197, 94, 1))
                                           Font: =Font.'Open Sans'
                                           Size: =FontSizes.Small
                                           Wrap: =true
@@ -550,13 +549,12 @@ Screens:
                                             And(Not(IsBlank(varUserLeaveBalance)), Not(IsBlank(varCalculatedDays))),
                                             If(
                                               varCalculatedDays <= varUserLeaveBalance.SoNgayConLai,
-                                              "OK! Số ngày nghỉ trong hạn mức",
+                                              "✓ Số ngày nghỉ trong hạn mức",
                                               Concatenate("! Vượt hạn mức ", varCalculatedDays - varUserLeaveBalance.SoNgayConLai, " ngày (nghỉ không lương)")
                                             ),
                                             ""
                                             )
-                                          Color: |
-                                            =If(StartsWith(Self.Text, "!"), RGBA(251, 146, 60, 1), RGBA(34, 197, 94, 1))
+                                          Color: =If(StartsWith(Self.Text, "!"), RGBA(251, 146, 60, 1), RGBA(34, 197, 94, 1))
                                           Font: =Font.'Open Sans'
                                           Size: =FontSizes.Small
                                           Wrap: =true
@@ -587,33 +585,55 @@ Screens:
                                       IsBlank(varSelectedFromDate),
                                       IsBlank(varSelectedToDate),
                                       IsBlank(varLeaveReason),
-                                      varCalculatedDays <= 0
+                                      varCalculatedDays <= 0,
+                                      varSelectedFromDate > varSelectedToDate
                                       )
                                     OnClick: |
                                       =Set(varIsSubmitting, true);
                                       With(
                                         {
                                           NewLeaveRequest: {
-                                            MaNguoiDung: {Value: UserSession.Id},
+                                            MaNguoiDung: {Value: UserSessionANP.Id},
                                             NgayBatDau: varSelectedFromDate,
                                             NgayKetThuc: varSelectedToDate,
                                             SoNgayNghi: varCalculatedDays,
-                                            MaLoai: {Value: varSelectedLeaveType.MaLoai},
+                                            MaLoai: {Value: varSelectedLeaveType.Title},
                                             LyDo: varLeaveReason,
                                             NguoiBanGiao: If(Not(IsBlank(varHandoverPerson)), {Value: varHandoverPerson.Title}, Blank()),
                                             NoiDungBanGiao: varHandoverContent,
                                             TrangThai: {Value: "ChoDuyetCap1"},
                                             BuoiNghi: {Value: "CaNgay"},
-                                            NguoiTao: {Value: UserSession.Id},
-                                            ThoiHanPheDuyet: DateAdd(Today(), 1, Days),
+                                            NguoiTao: {Value: UserSessionANP.Id},
+                                            ThoiHanPheDuyet: DateAdd(Today(), 1, TimeUnit.Days),
                                             UuTien: {Value: "BinhThuong"},
                                             MaDon: GUID()
                                           }
                                         },
-                                        Patch(DonNghiPhep, Defaults(DonNghiPhep), NewLeaveRequest);
-                                        Set(varIsSubmitting, false);
-                                        Set(varShowSuccessModal, true);
-                                        Notify("Đã gửi đơn nghỉ phép thành công!", NotificationType.Success)
+                                        If(IsUserAuthenticated,
+                                          Patch(DonNghiPhep, Defaults(DonNghiPhep), NewLeaveRequest);
+                                          Set(varIsSubmitting, false);
+                                          Set(varShowSuccessModal, true);
+                                          Notify("Đã gửi đơn nghỉ phép thành công!", NotificationType.Success);
+                                          // Reset form after successful submission
+                                          Set(varSelectedFromDate, Blank());
+                                          Set(varSelectedToDate, Blank());
+                                          Set(varSelectedLeaveType, Blank());
+                                          Set(varLeaveReason, "");
+                                          Set(varHandoverPerson, Blank());
+                                          Set(varHandoverContent, "");
+                                          Set(varCalculatedDays, 0),
+                                          // Demo mode - simulate success
+                                          Set(varIsSubmitting, false);
+                                          Set(varShowSuccessModal, true);
+                                          Notify("Demo: Đã gửi đơn nghỉ phép thành công!", NotificationType.Success);
+                                          Set(varSelectedFromDate, Blank());
+                                          Set(varSelectedToDate, Blank());
+                                          Set(varSelectedLeaveType, Blank());
+                                          Set(varLeaveReason, "");
+                                          Set(varHandoverPerson, Blank());
+                                          Set(varHandoverContent, "");
+                                          Set(varCalculatedDays, 0)
+                                        )
                                       )
                                             
                               - 'LeaveRequest.Reset.Button':
@@ -709,7 +729,7 @@ Screens:
                         Text: =Concatenate("Đơn nghỉ phép từ ngày ", Text(varSelectedFromDate, "dd/mm/yyyy"), " đến ", Text(varSelectedToDate, "dd/mm/yyyy"), " đã được gửi thành công.", Char(10), Char(10), "Đơn sẽ được chuyển đến người phê duyệt trong vòng 24 giờ.")
                         Color: =RGBA(55, 65, 81, 1)
                         Font: =Font.'Open Sans'
-                        Size: =Parent.Height * 0.12
+                        Size: =FontSizes.Base
                         Align: =Align.Center
                         Wrap: =true
                   

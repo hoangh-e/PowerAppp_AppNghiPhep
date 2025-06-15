@@ -108,24 +108,24 @@
             Y: =0
             Width: =Parent.Width
             Height: =Parent.Height * 0.065
-            UserName: =UserSession.HoTen
-            UserRole: =UserSession.MaVaiTro
+            UserName: =UserSessionANP.HoTen
+            UserRole: =UserSessionANP.MaVaiTro
             ShowNotification: =true
             NotificationCount: =0
             OnLogout: |
               =Set(varIsUserAuthenticated, false);
-              Set(UserSession, {
-                Id: "", 
-                Name: "", 
-                Email: "", 
-                Role: "", 
+              Set(UserSessionANP, {
+                Id: "",
+                HoTen: "",
+                Email: "",
+                MaVaiTro: "",
                 Permission: 0,
-                NguoiQuanLyId: "", 
-                HoTen: "", 
-                MaVaiTro: "", 
-                ChucDanh: "", 
-                MaDonVi: "", 
-                TrangThai: ""
+                NguoiQuanLyId: "",
+                ChucDanh: "",
+                MaDonVi: "",
+                TrangThai: "",
+                Name: "",
+                Role: ""
               });
               Navigate(LoginScreen)
             
@@ -138,7 +138,7 @@
             Y: ='Management.Header'.Height
             Width: =If(varNavCollapsed, App.Width * 0.045, App.Width * 0.14)
             Height: =Parent.Height - 'Management.Header'.Height
-            UserRole: =UserSession.MaVaiTro
+            UserRole: =UserSessionANP.MaVaiTro
             ActiveScreen: ="Management"
             IsCollapsed: =varNavCollapsed
             DashboardScreen: =DashboardScreen
@@ -454,7 +454,7 @@
                                           Size: =FontSizes.Medium
                                           OnClick: |
                                             =If(varRecordSelected,
-                                              If(varSelectedUserRecord.Title = UserSession.Id,
+                                              If(varSelectedUserRecord.Title = UserSessionANP.Id,
                                                 Notify("Không thể xóa tài khoản của chính mình", NotificationType.Error),
                                                 ClearCollect(colAllUsers, Filter(colAllUsers, Title <> varSelectedUserRecord.Title));
                                                 Set(varRecordSelected, false);

@@ -24,17 +24,17 @@
           CanAccessManagement: CanAccessManagement
         });
         
-        //Use UserSession data directly
+        //Use UserSessionANP data directly
         Set(varUser, {
-          Id: UserSession.Id,
-          Name: UserSession.HoTen, 
-          Email: UserSession.Email,
-          Role: UserSession.Role,
-          MaVaiTro: UserSession.MaVaiTro,
-          HoTen: UserSession.HoTen,
-          ChucDanh: UserSession.ChucDanh,
-          MaDonVi: UserSession.MaDonVi,
-          Permission: UserSession.Permission
+          Id: UserSessionANP.Id,
+          Name: UserSessionANP.HoTen, 
+          Email: UserSessionANP.Email,
+          Role: UserSessionANP.Role,
+          MaVaiTro: UserSessionANP.MaVaiTro,
+          HoTen: UserSessionANP.HoTen,
+          ChucDanh: UserSessionANP.ChucDanh,
+          MaDonVi: UserSessionANP.MaDonVi,
+          Permission: UserSessionANP.Permission
         });
         
         //Load dashboard data - Dashboard luôn hiển thị cho tất cả user đã đăng nhập
@@ -65,13 +65,13 @@
         );
         
         //Initialize recent leaves collection
-        If(And(varUserPermissions.CanViewPersonalLeaves, Not(IsBlank(UserSession.Id))),
+        If(And(varUserPermissions.CanViewPersonalLeaves, Not(IsBlank(UserSessionANP.Id))),
           //Load from SharePoint - use direct data
           ClearCollect(colMyRecentLeaves,
             Sort(
               Filter(DonNghiPhep, 
                 And(
-                  MaNguoiDung.Value = UserSession.Id,
+                  MaNguoiDung.Value = UserSessionANP.Id,
                   NgayBatDau >= DateAdd(Today(), -30, TimeUnit.Days)
                 )
               ),
@@ -80,7 +80,7 @@
             )
           ),
           If(varUserPermissions.CanViewPersonalLeaves,
-            // Test data với cấu trúc giống hệt SharePoint
+            // Test data với cấu trúc flat tương thích với SharePoint
             ClearCollect(colMyRecentLeaves,
               {
                 ID: 1,
@@ -88,9 +88,9 @@
                 NgayBatDau: DateAdd(Today(), -10, TimeUnit.Days),
                 NgayKetThuc: DateAdd(Today(), -8, TimeUnit.Days),
                 SoNgayNghi: 3,
-                TrangThai: { Value: "DaDuyet" },
+                TrangThai: "DaDuyet",
                 LyDo: "Nghỉ phép gia đình",
-                NguoiDuyet: { Value: "Admin" },
+                NguoiDuyet: "Admin",
                 NgayTao: DateAdd(Today(), -11, TimeUnit.Days)
               },
               {
@@ -99,9 +99,9 @@
                 NgayBatDau: DateAdd(Today(), -5, TimeUnit.Days),
                 NgayKetThuc: DateAdd(Today(), -3, TimeUnit.Days),
                 SoNgayNghi: 3,
-                TrangThai: { Value: "ChoDuyetCap1" },
+                TrangThai: "ChoDuyetCap1",
                 LyDo: "Nghỉ phép cá nhân",
-                NguoiDuyet: { Value: "" },
+                NguoiDuyet: "",
                 NgayTao: DateAdd(Today(), -6, TimeUnit.Days)
               },
               {
@@ -110,9 +110,9 @@
                 NgayBatDau: DateAdd(Today(), -2, TimeUnit.Days),
                 NgayKetThuc: DateAdd(Today(), -1, TimeUnit.Days),
                 SoNgayNghi: 2,
-                TrangThai: { Value: "TuChoi" },
+                TrangThai: "TuChoi",
                 LyDo: "Nghỉ phép khẩn cấp",
-                NguoiDuyet: { Value: "Manager" },
+                NguoiDuyet: "Manager",
                 NgayTao: DateAdd(Today(), -3, TimeUnit.Days)
               }
             ),
@@ -153,26 +153,26 @@
             Y: =0
             Width: =Parent.Width
             Height: =Parent.Height * 0.065
-            UserName: =UserSession.HoTen
-            UserRole: =UserSession.MaVaiTro
+            UserName: =UserSessionANP.HoTen
+            UserRole: =UserSessionANP.MaVaiTro
             ShowNotification: =true
             NotificationCount: =varPendingApprovalsCount
             OnLogout: |
               =//Clear authentication flag
               Set(varIsUserAuthenticated, false);
-              //Clear UserSession data
-              Set(UserSession, {
-                Id: "", 
-                Name: "", 
-                Email: "", 
-                Role: "", 
+              //Clear UserSessionANP data with correct structure
+              Set(UserSessionANP, {
+                Id: "",
+                HoTen: "",
+                Email: "",
+                MaVaiTro: "",
                 Permission: 0,
-                NguoiQuanLyId: "", 
-                HoTen: "", 
-                MaVaiTro: "", 
-                ChucDanh: "", 
-                MaDonVi: "", 
-                TrangThai: ""
+                NguoiQuanLyId: "",
+                ChucDanh: "",
+                MaDonVi: "",
+                TrangThai: "",
+                Name: "",
+                Role: ""
               });
               //Navigate to login
               Navigate(LoginScreen)
@@ -185,7 +185,7 @@
             Y: ='Dashboard.Header'.Height
             Width: =If(varNavCollapsed, App.Width * 0.045, App.Width * 0.14)
             Height: =Parent.Height - 'Dashboard.Header'.Height
-            UserRole: =UserSession.MaVaiTro
+            UserRole: =UserSessionANP.MaVaiTro
             ActiveScreen: =If(IsBlank(varActiveScreen), "Dashboard", varActiveScreen)
             IsCollapsed: =varNavCollapsed
             DashboardScreen: =DashboardScreen
@@ -265,7 +265,7 @@
                               Y: =Parent.Height * 0.2
                               Width: =Parent.Width * 0.8
                               Height: =Parent.Height * 0.35
-                              Text: ="Chào mừng quay trở lại, " & UserSession.HoTen
+                              Text: ="Chào mừng quay trở lại, " & UserSessionANP.HoTen
                               Color: =RGBA(17, 24, 39, 1)
                               Font: =Font.'Open Sans'
                               FontWeight: =FontWeight.Bold
@@ -278,7 +278,7 @@
                               Y: =Parent.Height * 0.6
                               Width: =Parent.Width * 0.8
                               Height: =Parent.Height * 0.25
-                              Text: ="Phòng ban:" & " " & UserSession.MaDonVi & " • " & "Chức danh:" & " " & UserSession.ChucDanh
+                              Text: ="Phòng ban:" & " " & UserSessionANP.MaDonVi & " • " & "Chức danh:" & " " & UserSessionANP.ChucDanh
                               Color: =RGBA(75, 85, 99, 1)
                               Font: =Font.'Open Sans'
                               Size: =FontSizes.Small
@@ -339,7 +339,6 @@
                               Value: =varDashboardStats.TotalLeave
                               Icon: =Icon.CalendarBlank
                               Color: =RGBA(59, 130, 246, 1)
-                              ShowTrend: =false
                               
                         - 'Dashboard.Stats.UsedLeave':
                             Control: CanvasComponent
@@ -353,7 +352,6 @@
                               Value: =varDashboardStats.UsedLeave
                               Icon: =Icon.CheckBadge
                               Color: =RGBA(34, 197, 94, 1)
-                              ShowTrend: =false
                               
                         - 'Dashboard.Stats.RemainingLeave':
                             Control: CanvasComponent
@@ -367,7 +365,6 @@
                               Value: =varDashboardStats.RemainingLeave
                               Icon: =Icon.Clock
                               Color: =RGBA(251, 191, 36, 1)
-                              ShowTrend: =false
                               
                   - 'Dashboard.Stats.RequestStatus.Container':
                       Control: GroupContainer
@@ -390,7 +387,6 @@
                               Value: =varDashboardStats.PendingRequests
                               Icon: =Icon.CalendarBlank
                               Color: =RGBA(251, 191, 36, 1)
-                              ShowTrend: =false
                               
                         - 'Dashboard.Stats.ApprovedRequests':
                             Control: CanvasComponent
@@ -404,7 +400,6 @@
                               Value: =varDashboardStats.ApprovedRequests
                               Icon: =Icon.CheckBadge
                               Color: =RGBA(34, 197, 94, 1)
-                              ShowTrend: =false
                               
                         - 'Dashboard.Stats.RejectedRequests':
                             Control: CanvasComponent
@@ -418,7 +413,6 @@
                               Value: =varDashboardStats.RejectedRequests
                               Icon: =Icon.Cancel
                               Color: =RGBA(239, 68, 68, 1)
-                              ShowTrend: =false
             
             # Limited Permission Message - hiển thị khi user có ít quyền
             - 'Dashboard.LimitedPermission.Container':
