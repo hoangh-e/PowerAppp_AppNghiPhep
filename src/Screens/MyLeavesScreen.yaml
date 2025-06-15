@@ -5,31 +5,41 @@ Screens:
       OnVisible: |
         =Set(varActiveScreen, "MyLeaves");
         Set(varUserPermissions, {
-          CanViewPersonalLeaves: UserCanViewPersonalLeaves,
-          CanCreatePersonalLeaves: UserCanViewPersonalLeaves,
-          CanViewTeamLeaves: UserCanViewTeamLeaves,
-          CanViewAllLeaves: UserCanViewAllLeaves,
-          CanExportReports: UserCanExportReports,
-          CanRecordLeave: UserCanRecordLeaves
+          CanViewPersonalLeaves: CheckPermission(UserSessionANP.Permission, UserPermissions.PERSONAL_LEAVE),
+          CanCreatePersonalLeaves: CheckPermission(UserSessionANP.Permission, UserPermissions.PERSONAL_LEAVE),
+          CanViewTeamLeaves: CheckPermission(UserSessionANP.Permission, UserPermissions.VIEW_TEAM_LEAVE),
+          CanViewAllLeaves: CheckPermission(UserSessionANP.Permission, UserPermissions.VIEW_ALL_LEAVE),
+          CanExportReports: CheckPermission(UserSessionANP.Permission, UserPermissions.EXPORT_REPORTS),
+          CanRecordLeave: CheckPermission(UserSessionANP.Permission, UserPermissions.RECORD_LEAVE)
         });
-        Set(varSelectedStatus, "");
-        Set(varFilterDateFrom, Blank());
-        Set(varFilterDateTo, Blank());
-        Set(varSelectedLeave, Blank());
-        Set(varRecordSelected, false);
-        Set(varCurrentUserLeaves, 
-          If(IsUserAuthenticated,
-            Filter(DonNghiPhep, And(Not(IsBlank(MaNguoiDung.Value)), MaNguoiDung.Value = UserSessionANP.Id)),
-            Table(
-              {MaDon: "LR001", NgayBatDau: Date(2024,12,20), NgayKetThuc: Date(2024,12,22), SoNgayNghi: 3, LyDo: "Nghỉ phép thường niên", TrangThai: "ChoDuyetCap1", BuoiNghi: "CaNgay", MaLoai: "AL"},
-              {MaDon: "LR002", NgayBatDau: Date(2024,11,15), NgayKetThuc: Date(2024,11,15), SoNgayNghi: 1, LyDo: "Nghỉ ốm", TrangThai: "DaDuyet", BuoiNghi: "Sang", MaLoai: "SL"},
-              {MaDon: "LR003", NgayBatDau: Date(2024,10,10), NgayKetThuc: Date(2024,10,12), SoNgayNghi: 3, LyDo: "Công việc gia đình", TrangThai: "TuChoi", BuoiNghi: "CaNgay", MaLoai: "PL"}
+        
+        //CRITICAL: Check if user can view personal leaves
+        Set(varCanViewMyLeaves, varUserPermissions.CanViewPersonalLeaves);
+        
+        //If no personal leave viewing permission, redirect to Dashboard with notification
+        If(Not(varCanViewMyLeaves),
+          Notify("Bạn không có quyền xem đơn nghỉ phép cá nhân", NotificationType.Error);
+          Navigate(DashboardScreen),
+          //Continue with my leaves screen initialization
+          Set(varSelectedStatus, "");
+          Set(varFilterDateFrom, Blank());
+          Set(varFilterDateTo, Blank());
+          Set(varSelectedLeave, Blank());
+          Set(varRecordSelected, false);
+          Set(varCurrentUserLeaves, 
+            If(IsUserAuthenticated,
+              Filter(DonNghiPhep, And(Not(IsBlank(MaNguoiDung.Value)), MaNguoiDung.Value = UserSessionANP.Id)),
+              Table(
+                {MaDon: "LR001", NgayBatDau: Date(2024,12,20), NgayKetThuc: Date(2024,12,22), SoNgayNghi: 3, LyDo: "Nghỉ phép thường niên", TrangThai: "ChoDuyetCap1", BuoiNghi: "CaNgay", MaLoai: "AL"},
+                {MaDon: "LR002", NgayBatDau: Date(2024,11,15), NgayKetThuc: Date(2024,11,15), SoNgayNghi: 1, LyDo: "Nghỉ ốm", TrangThai: "DaDuyet", BuoiNghi: "Sang", MaLoai: "SL"},
+                {MaDon: "LR003", NgayBatDau: Date(2024,10,10), NgayKetThuc: Date(2024,10,12), SoNgayNghi: 3, LyDo: "Công việc gia đình", TrangThai: "TuChoi", BuoiNghi: "CaNgay", MaLoai: "PL"}
+              )
             )
-          )
-        );
-        Set(varShowDetails, false);
-        Set(varShowCancelConfirm, false);
-        Set(varCancelMessage, "")
+          );
+          Set(varShowDetails, false);
+          Set(varShowCancelConfirm, false);
+          Set(varCancelMessage, "")
+        )
     Children:
       # Header Component
       - 'MyLeaves.Header':

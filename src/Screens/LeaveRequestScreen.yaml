@@ -4,63 +4,73 @@ Screens:
       Fill: =RGBA(248, 250, 252, 1)
       OnVisible: |
         =Set(varActiveScreen, "LeaveRequest");
-        //Permission checks using inline bitwise expressions
+        //Permission checks using helper functions from App/Formulas
         Set(varUserPermissions, {
-          CanCreatePersonalLeaves: UserCanViewPersonalLeaves,
-          CanCreateSpecialLeaves: UserCanCreateSpecialLeaves,
-          CanViewDashboard: UserCanViewDashboard,
-          CanApprove: Or(UserCanApproveLevel1, UserCanApproveLevel2)
+          CanCreatePersonalLeaves: CheckPermission(UserSessionANP.Permission, UserPermissions.PERSONAL_LEAVE),
+          CanCreateSpecialLeaves: CheckPermission(UserSessionANP.Permission, UserPermissions.SPECIAL_LEAVE),
+          CanViewDashboard: CheckPermission(UserSessionANP.Permission, UserPermissions.VIEW_DASHBOARD),
+          CanApprove: Or(CheckPermission(UserSessionANP.Permission, UserPermissions.APPROVE_LEVEL_1), CheckPermission(UserSessionANP.Permission, UserPermissions.APPROVE_LEVEL_2))
         });
-        Set(varSelectedFromDate, Blank());
-        Set(varSelectedToDate, Blank());
-        Set(varSelectedLeaveType, Blank());
-        Set(varLeaveReason, "");
-        Set(varHandoverPerson, Blank());
-        Set(varHandoverContent, "");
-        Set(varCalculatedDays, 0);
-        Set(varValidationErrors, Blank());
-        Set(varIsSubmitting, false);
-        Set(varShowSuccessModal, false);
-        //Load user data with fallback demo data
-        Set(varUserLeaveBalance, 
-          If(IsUserAuthenticated,
-            LookUp(SoNgayPhep, And(MaNhanVien.Value = UserSessionANP.Id, Nam = Year(Today()))),
-            {MaNhanVien: UserSessionANP.Id, Nam: Year(Today()), TongNgayDuocPhep: 12, SoNgayDaNghi: 3, SoNgayConLai: 9}
-          )
-        );
-        Set(varAvailableLeaveTypes, 
-          If(IsUserAuthenticated,
-            Filter(LoaiNghi, DangHoatDong = true),
-            Table(
-              {Title: "AL", TenLoai: "Phép năm", CoLuong: true},
-              {Title: "SL", TenLoai: "Nghỉ ốm", CoLuong: true},
-              {Title: "PL", TenLoai: "Nghỉ việc riêng", CoLuong: false}
-            )
-          )
-        );
-        Set(varPotentialHandovers, 
-          If(IsUserAuthenticated,
-            Filter(NguoiDung, And(TrangThai.Value = "HoatDong", Title <> UserSessionANP.Id)),
-            Table(
-              {Title: "EMP002", HoTen: "Trần Thị Bình", MaDonVi: "HR"},
-              {Title: "EMP003", HoTen: "Lê Hoàng Cường", MaDonVi: "Finance"},
-              {Title: "EMP004", HoTen: "Phạm Thị Dung", MaDonVi: "Marketing"}
-            )
-          )
-        );
-        Set(varCurrentUser, 
-          If(IsUserAuthenticated,
-            LookUp(NguoiDung, Title = UserSessionANP.Id),
-            {Title: UserSessionANP.Id, HoTen: UserSessionANP.HoTen, NguoiQuanLyId: "MGR001"}
-          )
-        );
-        Set(varUserManager, 
-          If(Not(IsBlank(UserSessionANP.NguoiQuanLyId)), 
+        
+        //CRITICAL: Check if user can create leave requests
+        Set(varCanCreateLeave, Or(varUserPermissions.CanCreatePersonalLeaves, varUserPermissions.CanCreateSpecialLeaves));
+        
+        //If no leave creation permission, redirect to Dashboard with notification
+        If(Not(varCanCreateLeave),
+          Notify("Bạn không có quyền tạo đơn nghỉ phép", NotificationType.Error);
+          Navigate(DashboardScreen),
+          //Continue with leave request screen initialization
+          Set(varSelectedFromDate, Blank());
+          Set(varSelectedToDate, Blank());
+          Set(varSelectedLeaveType, Blank());
+          Set(varLeaveReason, "");
+          Set(varHandoverPerson, Blank());
+          Set(varHandoverContent, "");
+          Set(varCalculatedDays, 0);
+          Set(varValidationErrors, Blank());
+          Set(varIsSubmitting, false);
+          Set(varShowSuccessModal, false);
+          //Load user data with fallback demo data
+          Set(varUserLeaveBalance, 
             If(IsUserAuthenticated,
-              LookUp(NguoiDung, Title = UserSessionANP.NguoiQuanLyId),
-              {Title: "MGR001", HoTen: "Quản lý Demo"}
-            ),
-            Blank())
+              LookUp(SoNgayPhep, And(MaNhanVien.Value = UserSessionANP.Id, Nam = Year(Today()))),
+              {MaNhanVien: UserSessionANP.Id, Nam: Year(Today()), TongNgayDuocPhep: 12, SoNgayDaNghi: 3, SoNgayConLai: 9}
+            )
+          );
+          Set(varAvailableLeaveTypes, 
+            If(IsUserAuthenticated,
+              Filter(LoaiNghi, DangHoatDong = true),
+              Table(
+                {Title: "AL", TenLoai: "Phép năm", CoLuong: true},
+                {Title: "SL", TenLoai: "Nghỉ ốm", CoLuong: true},
+                {Title: "PL", TenLoai: "Nghỉ việc riêng", CoLuong: false}
+              )
+            )
+          );
+          Set(varPotentialHandovers, 
+            If(IsUserAuthenticated,
+              Filter(NguoiDung, And(TrangThai.Value = "HoatDong", Title <> UserSessionANP.Id)),
+              Table(
+                {Title: "EMP002", HoTen: "Trần Thị Bình", MaDonVi: "HR"},
+                {Title: "EMP003", HoTen: "Lê Hoàng Cường", MaDonVi: "Finance"},
+                {Title: "EMP004", HoTen: "Phạm Thị Dung", MaDonVi: "Marketing"}
+              )
+            )
+          );
+          Set(varCurrentUser, 
+            If(IsUserAuthenticated,
+              LookUp(NguoiDung, Title = UserSessionANP.Id),
+              {Title: UserSessionANP.Id, HoTen: UserSessionANP.HoTen, NguoiQuanLyId: "MGR001"}
+            )
+          );
+          Set(varUserManager, 
+            If(Not(IsBlank(UserSessionANP.NguoiQuanLyId)), 
+              If(IsUserAuthenticated,
+                LookUp(NguoiDung, Title = UserSessionANP.NguoiQuanLyId),
+                {Title: "MGR001", HoTen: "Quản lý Demo"}
+              ),
+              Blank())
+          )
         )
     Children:
       # Header Component

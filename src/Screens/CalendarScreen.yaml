@@ -14,181 +14,190 @@
         Set(varShowCalendarDetails, false);
         Set(varSelectedDateLeaves, Blank());
         
-        //Check user permissions using inline bitwise expressions
+        //Check user permissions using helper functions from App/Formulas
         Set(varUserPermissions, {
-          CanViewPersonalLeaves: UserCanViewPersonalLeaves,
-          CanCreateSpecialLeaves: UserCanCreateSpecialLeaves,
-          CanViewTeamLeaves: UserCanViewTeamLeaves,
-          CanViewAllLeaves: UserCanViewAllLeaves,
-          CanApproveLevel1: UserCanApproveLevel1,
-          CanApproveLevel2: UserCanApproveLevel2,
-          CanApproveLevel3: UserCanApproveLevel3,
-          CanRecordLeave: UserCanRecordLeaves,
-          CanManageUsers: UserCanManageUsers,
-          CanExportReports: UserCanExportReports,
-          UserPermissionLevel: GetUserPermissionLevel,
-          CanAccessManagement: CanAccessManagement
+          CanViewPersonalLeaves: CheckPermission(UserSessionANP.Permission, UserPermissions.PERSONAL_LEAVE),
+          CanCreateSpecialLeaves: CheckPermission(UserSessionANP.Permission, UserPermissions.SPECIAL_LEAVE),
+          CanViewTeamLeaves: CheckPermission(UserSessionANP.Permission, UserPermissions.VIEW_TEAM_LEAVE),
+          CanViewAllLeaves: CheckPermission(UserSessionANP.Permission, UserPermissions.VIEW_ALL_LEAVE),
+          CanApproveLevel1: CheckPermission(UserSessionANP.Permission, UserPermissions.APPROVE_LEVEL_1),
+          CanApproveLevel2: CheckPermission(UserSessionANP.Permission, UserPermissions.APPROVE_LEVEL_2),
+          CanApproveLevel3: CheckPermission(UserSessionANP.Permission, UserPermissions.APPROVE_LEVEL_3),
+          CanRecordLeave: CheckPermission(UserSessionANP.Permission, UserPermissions.RECORD_LEAVE),
+          CanManageUsers: CheckPermission(UserSessionANP.Permission, UserPermissions.MANAGE_USERS),
+          CanExportReports: CheckPermission(UserSessionANP.Permission, UserPermissions.EXPORT_REPORTS),
+          UserPermissionLevel: GetUserPermissionLevel(UserSessionANP.Permission),
+          CanAccessManagement: CanAccessManagement(UserSessionANP.Permission)
         });
         
-        // Load SharePoint data with fallback to demo data
-        If(IsEmpty(NguoiDung),
-          Set(UserSessionANP, {
-            Id: "EMP001", 
-            HoTen: "Nguyễn Văn An", 
-            Email: "an.nguyen@company.com", 
-            MaVaiTro: "Employee", 
-            Permission: 7,
-            NguoiQuanLyId: "MGR001",
-            ChucDanh: "Nhân viên", 
-            MaDonVi: "IT", 
-            TrangThai: "HoatDong",
-            Name: "Nguyễn Văn An",
-            Role: "Employee"
-          });
-          Set(varNetworkError, true);
-          // Create demo leave data for preview
-          ClearCollect(colPersonalLeaves, 
-            Table(
-              {MaNguoiDung: {Value: "EMP001"}, NgayBatDau: Date(varSelectedYear, varSelectedMonth, 5), NgayKetThuc: Date(varSelectedYear, varSelectedMonth, 7), SoNgayNghi: 3, MaLoai: {Value: "ANNUAL"}, LyDo: "Nghỉ phép năm", TrangThai: {Value: "DaDuyet"}},
-              {MaNguoiDung: {Value: "EMP001"}, NgayBatDau: Date(varSelectedYear, varSelectedMonth, 15), NgayKetThuc: Date(varSelectedYear, varSelectedMonth, 15), SoNgayNghi: 1, MaLoai: {Value: "SICK"}, LyDo: "Nghỉ ốm", TrangThai: {Value: "ChoDuyetCap1"}}
-            )
-          );
-          ClearCollect(colDepartmentLeaves,
-            Table(
-              {MaNguoiDung: {Value: "EMP002"}, NgayBatDau: Date(varSelectedYear, varSelectedMonth, 10), NgayKetThuc: Date(varSelectedYear, varSelectedMonth, 12), SoNgayNghi: 3, MaLoai: {Value: "ANNUAL"}, LyDo: "Nghỉ phép", TrangThai: {Value: "DaDuyet"}},
-              {MaNguoiDung: {Value: "EMP003"}, NgayBatDau: Date(varSelectedYear, varSelectedMonth, 20), NgayKetThuc: Date(varSelectedYear, varSelectedMonth, 22), SoNgayNghi: 3, MaLoai: {Value: "PERSONAL"}, LyDo: "Việc cá nhân", TrangThai: {Value: "DaDuyet"}}
-            )
-          );
-          ClearCollect(colAllLeaves,
-            Table(
-              {MaNguoiDung: {Value: "EMP001"}, NgayBatDau: Date(varSelectedYear, varSelectedMonth, 5), NgayKetThuc: Date(varSelectedYear, varSelectedMonth, 7), SoNgayNghi: 3, MaLoai: {Value: "ANNUAL"}, LyDo: "Nghỉ phép năm", TrangThai: {Value: "DaDuyet"}},
-              {MaNguoiDung: {Value: "EMP002"}, NgayBatDau: Date(varSelectedYear, varSelectedMonth, 10), NgayKetThuc: Date(varSelectedYear, varSelectedMonth, 12), SoNgayNghi: 3, MaLoai: {Value: "ANNUAL"}, LyDo: "Nghỉ phép", TrangThai: {Value: "DaDuyet"}},
-              {MaNguoiDung: {Value: "EMP003"}, NgayBatDau: Date(varSelectedYear, varSelectedMonth, 20), NgayKetThuc: Date(varSelectedYear, varSelectedMonth, 22), SoNgayNghi: 3, MaLoai: {Value: "PERSONAL"}, LyDo: "Việc cá nhân", TrangThai: {Value: "DaDuyet"}},
-              {MaNguoiDung: {Value: "EMP001"}, NgayBatDau: Date(varSelectedYear, varSelectedMonth, 15), NgayKetThuc: Date(varSelectedYear, varSelectedMonth, 15), SoNgayNghi: 1, MaLoai: {Value: "SICK"}, LyDo: "Nghỉ ốm", TrangThai: {Value: "ChoDuyetCap1"}}
-            )
-          );
-          // Demo holidays
-          ClearCollect(colHolidays,
-            Table(
-              {Ngay: "01/01", TenNgayLe: "Tết Dương lịch", FormattedDate: Text(Date(varSelectedYear, 1, 1), "yyyy-mm-dd")},
-              {Ngay: "30/04", TenNgayLe: "Giải phóng miền Nam", FormattedDate: Text(Date(varSelectedYear, 4, 30), "yyyy-mm-dd")},
-              {Ngay: "01/05", TenNgayLe: "Quốc tế Lao động", FormattedDate: Text(Date(varSelectedYear, 5, 1), "yyyy-mm-dd")},
-              {Ngay: "02/09", TenNgayLe: "Quốc khánh", FormattedDate: Text(Date(varSelectedYear, 9, 2), "yyyy-mm-dd")}
-            )
-          );
-          // Demo users for lookups
-          ClearCollect(colCalendarUsers,
-            Table(
-              {Title: "EMP001", HoTen: "Nguyễn Văn An", MaDonVi: {Value: "IT"}},
-              {Title: "EMP002", HoTen: "Trần Thị Bình", MaDonVi: {Value: "IT"}},
-              {Title: "EMP003", HoTen: "Lê Văn Cường", MaDonVi: {Value: "IT"}}
-            )
-          );
-          // Demo leave types
-          ClearCollect(colCalendarLeaveTypes,
-            Table(
-              {Title: "ANNUAL", TenLoai: "Nghỉ phép năm"},
-              {Title: "SICK", TenLoai: "Nghỉ ốm"},
-              {Title: "PERSONAL", TenLoai: "Việc cá nhân"}
-            )
-          ),
-          // Use actual SharePoint user data - ensure structure consistency
-          With(
-            {userRecord: LookUp(NguoiDung, Email = User().Email)},
+        //CRITICAL: Check if user has calendar viewing permissions
+        Set(varCanViewCalendar, Or(varUserPermissions.CanViewPersonalLeaves, varUserPermissions.CanViewTeamLeaves, varUserPermissions.CanViewAllLeaves));
+        
+        //If no calendar permission, redirect to Dashboard with notification
+        If(Not(varCanViewCalendar),
+          Notify("Bạn không có quyền xem lịch nghỉ phép", NotificationType.Error);
+          Navigate(DashboardScreen),
+          //Continue with calendar screen initialization
+          // Load SharePoint data with fallback to demo data
+          If(IsEmpty(NguoiDung),
             Set(UserSessionANP, {
-              Id: userRecord.Title,
-              HoTen: userRecord.HoTen,
-              Email: userRecord.Email,
-              MaVaiTro: userRecord.MaVaiTro,
-              Permission: userRecord.Permission,
-              NguoiQuanLyId: If(IsBlank(userRecord.MaQuanLy), "", Text(userRecord.MaQuanLy.Value)),
-              ChucDanh: Text(userRecord.ChucDanh.Value),
-              MaDonVi: Text(userRecord.MaDonVi.Value),
-              TrangThai: Text(userRecord.TrangThai.Value),
-              Name: userRecord.HoTen,
-              Role: userRecord.MaVaiTro
-            })
-          );
-          Set(varNetworkError, false);
-          // Load Personal Leaves from SharePoint
-          ClearCollect(colPersonalLeaves, 
-            Filter(DonNghiPhep, 
-              And(
-                MaNguoiDung.Value = UserSessionANP.Id,
-                Or(
-                  Month(NgayBatDau) = varSelectedMonth,
-                  Month(NgayKetThuc) = varSelectedMonth,
-                  And(NgayBatDau <= Date(varSelectedYear, varSelectedMonth, 1), NgayKetThuc >= DateAdd(Date(varSelectedYear, varSelectedMonth + 1, 1), -1, TimeUnit.Days))
-                )
+              Id: "EMP001", 
+              HoTen: "Nguyễn Văn An", 
+              Email: "an.nguyen@company.com", 
+              MaVaiTro: "Employee", 
+              Permission: 7,
+              NguoiQuanLyId: "MGR001",
+              ChucDanh: "Nhân viên", 
+              MaDonVi: "IT", 
+              TrangThai: "HoatDong",
+              Name: "Nguyễn Văn An",
+              Role: "Employee"
+            });
+            Set(varNetworkError, true);
+            // Create demo leave data for preview
+            ClearCollect(colPersonalLeaves, 
+              Table(
+                {MaNguoiDung: {Value: "EMP001"}, NgayBatDau: Date(varSelectedYear, varSelectedMonth, 5), NgayKetThuc: Date(varSelectedYear, varSelectedMonth, 7), SoNgayNghi: 3, MaLoai: {Value: "ANNUAL"}, LyDo: "Nghỉ phép năm", TrangThai: {Value: "DaDuyet"}},
+                {MaNguoiDung: {Value: "EMP001"}, NgayBatDau: Date(varSelectedYear, varSelectedMonth, 15), NgayKetThuc: Date(varSelectedYear, varSelectedMonth, 15), SoNgayNghi: 1, MaLoai: {Value: "SICK"}, LyDo: "Nghỉ ốm", TrangThai: {Value: "ChoDuyetCap1"}}
               )
-            )
-          );
-          // Load Department Leaves from SharePoint
-          ClearCollect(colDepartmentLeaves,
-            Filter(DonNghiPhep,
-              And(
-                LookUp(NguoiDung, Title = MaNguoiDung.Value).MaDonVi.Value = UserSessionANP.MaDonVi,
-                Or(
-                  Month(NgayBatDau) = varSelectedMonth,
-                  Month(NgayKetThuc) = varSelectedMonth,
-                  And(NgayBatDau <= Date(varSelectedYear, varSelectedMonth, 1), NgayKetThuc >= DateAdd(Date(varSelectedYear, varSelectedMonth + 1, 1), -1, TimeUnit.Days))
-                )
+            );
+            ClearCollect(colDepartmentLeaves,
+              Table(
+                {MaNguoiDung: {Value: "EMP002"}, NgayBatDau: Date(varSelectedYear, varSelectedMonth, 10), NgayKetThuc: Date(varSelectedYear, varSelectedMonth, 12), SoNgayNghi: 3, MaLoai: {Value: "ANNUAL"}, LyDo: "Nghỉ phép", TrangThai: {Value: "DaDuyet"}},
+                {MaNguoiDung: {Value: "EMP003"}, NgayBatDau: Date(varSelectedYear, varSelectedMonth, 20), NgayKetThuc: Date(varSelectedYear, varSelectedMonth, 22), SoNgayNghi: 3, MaLoai: {Value: "PERSONAL"}, LyDo: "Việc cá nhân", TrangThai: {Value: "DaDuyet"}}
               )
-            )
-          );
-          // Load All Company Leaves from SharePoint
-          ClearCollect(colAllLeaves,
-            Filter(DonNghiPhep,
-              Or(
-                Month(NgayBatDau) = varSelectedMonth,
-                Month(NgayKetThuc) = varSelectedMonth,
-                And(NgayBatDau <= Date(varSelectedYear, varSelectedMonth, 1), NgayKetThuc >= DateAdd(Date(varSelectedYear, varSelectedMonth + 1, 1), -1, TimeUnit.Days))
+            );
+            ClearCollect(colAllLeaves,
+              Table(
+                {MaNguoiDung: {Value: "EMP001"}, NgayBatDau: Date(varSelectedYear, varSelectedMonth, 5), NgayKetThuc: Date(varSelectedYear, varSelectedMonth, 7), SoNgayNghi: 3, MaLoai: {Value: "ANNUAL"}, LyDo: "Nghỉ phép năm", TrangThai: {Value: "DaDuyet"}},
+                {MaNguoiDung: {Value: "EMP002"}, NgayBatDau: Date(varSelectedYear, varSelectedMonth, 10), NgayKetThuc: Date(varSelectedYear, varSelectedMonth, 12), SoNgayNghi: 3, MaLoai: {Value: "ANNUAL"}, LyDo: "Nghỉ phép", TrangThai: {Value: "DaDuyet"}},
+                {MaNguoiDung: {Value: "EMP003"}, NgayBatDau: Date(varSelectedYear, varSelectedMonth, 20), NgayKetThuc: Date(varSelectedYear, varSelectedMonth, 22), SoNgayNghi: 3, MaLoai: {Value: "PERSONAL"}, LyDo: "Việc cá nhân", TrangThai: {Value: "DaDuyet"}},
+                {MaNguoiDung: {Value: "EMP001"}, NgayBatDau: Date(varSelectedYear, varSelectedMonth, 15), NgayKetThuc: Date(varSelectedYear, varSelectedMonth, 15), SoNgayNghi: 1, MaLoai: {Value: "SICK"}, LyDo: "Nghỉ ốm", TrangThai: {Value: "ChoDuyetCap1"}}
               )
-            )
-          );
-          // Load Holidays from SharePoint
-          ClearCollect(colHolidays,
-            ForAll(
-              Filter(NgayLe, Nam = varSelectedYear),
-              {
-                Ngay: Ngay,
-                TenNgayLe: TenNgayLe,
-                FormattedDate: Text(DateValue(Ngay & "/" & varSelectedYear), "yyyy-mm-dd")
-              }
-            )
-          );
-          // Load Users from SharePoint for lookups
-          ClearCollect(colCalendarUsers, NguoiDung);
-          // Load Leave Types from SharePoint
-          ClearCollect(colCalendarLeaveTypes, LoaiNghi)
-        );
-        Set(varFirstDayOfMonth, Date(varSelectedYear, varSelectedMonth, 1));
-        Set(varLastDayOfMonth, DateAdd(Date(varSelectedYear, varSelectedMonth + 1, 1), -1, TimeUnit.Days));
-        Set(varFirstWeekday, Weekday(varFirstDayOfMonth, StartOfWeek.Sunday));
-        Set(varDaysInMonth, Day(varLastDayOfMonth));
-        Set(varStartDate, DateAdd(varFirstDayOfMonth, -(varFirstWeekday - 1), TimeUnit.Days));
-        // Tính số tuần cần thiết: đảm bảo mỗi tuần có ít nhất 1 ngày của tháng
-        Set(varWeeksNeeded, Max(RoundUp((varDaysInMonth + varFirstWeekday - 1) / 7, 0), 1));
-        Set(varTotalCells, varWeeksNeeded * 7);
-        ClearCollect(colCalendarDays,
-          ForAll(
-            Sequence(varTotalCells),
+            );
+            // Demo holidays
+            ClearCollect(colHolidays,
+              Table(
+                {Ngay: "01/01", TenNgayLe: "Tết Dương lịch", FormattedDate: Text(Date(varSelectedYear, 1, 1), "yyyy-mm-dd")},
+                {Ngay: "30/04", TenNgayLe: "Giải phóng miền Nam", FormattedDate: Text(Date(varSelectedYear, 4, 30), "yyyy-mm-dd")},
+                {Ngay: "01/05", TenNgayLe: "Quốc tế Lao động", FormattedDate: Text(Date(varSelectedYear, 5, 1), "yyyy-mm-dd")},
+                {Ngay: "02/09", TenNgayLe: "Quốc khánh", FormattedDate: Text(Date(varSelectedYear, 9, 2), "yyyy-mm-dd")}
+              )
+            );
+            // Demo users for lookups
+            ClearCollect(colCalendarUsers,
+              Table(
+                {Title: "EMP001", HoTen: "Nguyễn Văn An", MaDonVi: {Value: "IT"}},
+                {Title: "EMP002", HoTen: "Trần Thị Bình", MaDonVi: {Value: "IT"}},
+                {Title: "EMP003", HoTen: "Lê Văn Cường", MaDonVi: {Value: "IT"}}
+              )
+            );
+            // Demo leave types
+            ClearCollect(colCalendarLeaveTypes,
+              Table(
+                {Title: "ANNUAL", TenLoai: "Nghỉ phép năm"},
+                {Title: "SICK", TenLoai: "Nghỉ ốm"},
+                {Title: "PERSONAL", TenLoai: "Việc cá nhân"}
+              )
+            ),
+            // Use actual SharePoint user data - ensure structure consistency
             With(
-              {currentDate: DateAdd(varStartDate, Value - 1, TimeUnit.Days)},
-              {
-                CalendarDate: currentDate,
-                IsCurrentMonth: Month(currentDate) = varSelectedMonth,
-                IsToday: currentDate = Today(),
-                IsWeekend: Or(Weekday(currentDate, StartOfWeek.Sunday) = 1, Weekday(currentDate, StartOfWeek.Sunday) = 7),
-                DayNumber: Day(currentDate),
-                FormattedDate: Text(currentDate, "yyyy-mm-dd"),
-                WeekRow: RoundUp(Value / 7, 0)
-              }
+              {userRecord: LookUp(NguoiDung, Email = User().Email)},
+              Set(UserSessionANP, {
+                Id: userRecord.Title,
+                HoTen: userRecord.HoTen,
+                Email: userRecord.Email,
+                MaVaiTro: userRecord.MaVaiTro,
+                Permission: userRecord.Permission,
+                NguoiQuanLyId: If(IsBlank(userRecord.MaQuanLy), "", Text(userRecord.MaQuanLy.Value)),
+                ChucDanh: Text(userRecord.ChucDanh.Value),
+                MaDonVi: Text(userRecord.MaDonVi.Value),
+                TrangThai: Text(userRecord.TrangThai.Value),
+                Name: userRecord.HoTen,
+                Role: userRecord.MaVaiTro
+              })
+            );
+            Set(varNetworkError, false);
+            // Load Personal Leaves from SharePoint
+            ClearCollect(colPersonalLeaves, 
+              Filter(DonNghiPhep, 
+                And(
+                  MaNguoiDung.Value = UserSessionANP.Id,
+                  Or(
+                    Month(NgayBatDau) = varSelectedMonth,
+                    Month(NgayKetThuc) = varSelectedMonth,
+                    And(NgayBatDau <= Date(varSelectedYear, varSelectedMonth, 1), NgayKetThuc >= DateAdd(Date(varSelectedYear, varSelectedMonth + 1, 1), -1, TimeUnit.Days))
+                  )
+                )
+              )
+            );
+            // Load Department Leaves from SharePoint
+            ClearCollect(colDepartmentLeaves,
+              Filter(DonNghiPhep,
+                And(
+                  LookUp(NguoiDung, Title = MaNguoiDung.Value).MaDonVi.Value = UserSessionANP.MaDonVi,
+                  Or(
+                    Month(NgayBatDau) = varSelectedMonth,
+                    Month(NgayKetThuc) = varSelectedMonth,
+                    And(NgayBatDau <= Date(varSelectedYear, varSelectedMonth, 1), NgayKetThuc >= DateAdd(Date(varSelectedYear, varSelectedMonth + 1, 1), -1, TimeUnit.Days))
+                  )
+                )
+              )
+            );
+            // Load All Company Leaves from SharePoint
+            ClearCollect(colAllLeaves,
+              Filter(DonNghiPhep,
+                Or(
+                  Month(NgayBatDau) = varSelectedMonth,
+                  Month(NgayKetThuc) = varSelectedMonth,
+                  And(NgayBatDau <= Date(varSelectedYear, varSelectedMonth, 1), NgayKetThuc >= DateAdd(Date(varSelectedYear, varSelectedMonth + 1, 1), -1, TimeUnit.Days))
+                )
+              )
+            );
+            // Load Holidays from SharePoint
+            ClearCollect(colHolidays,
+              ForAll(
+                Filter(NgayLe, Nam = varSelectedYear),
+                {
+                  Ngay: Ngay,
+                  TenNgayLe: TenNgayLe,
+                  FormattedDate: Text(DateValue(Ngay & "/" & varSelectedYear), "yyyy-mm-dd")
+                }
+              )
+            );
+            // Load Users from SharePoint for lookups
+            ClearCollect(colCalendarUsers, NguoiDung);
+            // Load Leave Types from SharePoint
+            ClearCollect(colCalendarLeaveTypes, LoaiNghi)
+          );
+          Set(varFirstDayOfMonth, Date(varSelectedYear, varSelectedMonth, 1));
+          Set(varLastDayOfMonth, DateAdd(Date(varSelectedYear, varSelectedMonth + 1, 1), -1, TimeUnit.Days));
+          Set(varFirstWeekday, Weekday(varFirstDayOfMonth, StartOfWeek.Sunday));
+          Set(varDaysInMonth, Day(varLastDayOfMonth));
+          Set(varStartDate, DateAdd(varFirstDayOfMonth, -(varFirstWeekday - 1), TimeUnit.Days));
+          // Tính số tuần cần thiết: đảm bảo mỗi tuần có ít nhất 1 ngày của tháng
+          Set(varWeeksNeeded, Max(RoundUp((varDaysInMonth + varFirstWeekday - 1) / 7, 0), 1));
+          Set(varTotalCells, varWeeksNeeded * 7);
+          ClearCollect(colCalendarDays,
+            ForAll(
+              Sequence(varTotalCells),
+              With(
+                {currentDate: DateAdd(varStartDate, Value - 1, TimeUnit.Days)},
+                {
+                  CalendarDate: currentDate,
+                  IsCurrentMonth: Month(currentDate) = varSelectedMonth,
+                  IsToday: currentDate = Today(),
+                  IsWeekend: Or(Weekday(currentDate, StartOfWeek.Sunday) = 1, Weekday(currentDate, StartOfWeek.Sunday) = 7),
+                  DayNumber: Day(currentDate),
+                  FormattedDate: Text(currentDate, "yyyy-mm-dd"),
+                  WeekRow: RoundUp(Value / 7, 0)
+                }
+              )
             )
-          )
-        );
-        Set(varDataLoading, false);
-        Set(varNetworkError, false)
+          );
+          Set(varDataLoading, false);
+          Set(varNetworkError, false)
+        )
     Children:
       # Header Component
       - 'Calendar.Header':
@@ -1232,7 +1241,7 @@
                                     Color: =RGBA(75, 85, 99, 1)
                                     Font: =Font.'Open Sans'
                                     Size: =FontSizes.Base
-                                    Wrap: =true
+                                    Wrap: =true 
 
                   # No data message
                   - 'Calendar.Details.NoData':

@@ -288,20 +288,6 @@ Screens:
                                   Name: ThisRecord.HoTen,
                                   Role: Text(ThisRecord.ChucDanh.Value)
                                 });
-                                Set(varUserPermissions, {
-                                  CanViewPersonalLeaves: UserCanViewPersonalLeaves,
-                                  CanCreateSpecialLeaves: UserCanCreateSpecialLeaves,
-                                  CanViewTeamLeaves: UserCanViewTeamLeaves,
-                                  CanViewAllLeaves: UserCanViewAllLeaves,
-                                  CanApproveLevel1: UserCanApproveLevel1,
-                                  CanApproveLevel2: UserCanApproveLevel2,
-                                  CanApproveLevel3: UserCanApproveLevel3,
-                                  CanRecordLeave: UserCanRecordLeaves,
-                                  CanManageUsers: UserCanManageUsers,
-                                  CanExportReports: UserCanExportReports,
-                                  UserPermissionLevel: GetUserPermissionLevel,
-                                  CanAccessManagement: CanAccessManagement
-                                });
                                 Set(varIsTraditionalLoading, false);
                                 Navigate(DashboardScreen),
                                 Set(varLoginError, "Tài khoản đã bị khóa. Vui lòng liên hệ quản trị viên"); Set(varIsTraditionalLoading, false))))
@@ -377,27 +363,13 @@ Screens:
                                   HoTen: "Quản trị viên Demo",
                                   Email: "admin@demo.com",
                                   MaVaiTro: "Admin",
-                                  Permission: 32767,
+                                  Permission: 65535,
                                   NguoiQuanLyId: "",
                                   ChucDanh: "Quản trị hệ thống",
                                   MaDonVi: "IT",
                                   TrangThai: "HoatDong",
                                   Name: "Quản trị viên Demo",
                                   Role: "Admin"
-                                });
-                                Set(varUserPermissions, {
-                                  CanViewPersonalLeaves: UserCanViewPersonalLeaves,
-                                  CanCreateSpecialLeaves: UserCanCreateSpecialLeaves,
-                                  CanViewTeamLeaves: UserCanViewTeamLeaves,
-                                  CanViewAllLeaves: UserCanViewAllLeaves,
-                                  CanApproveLevel1: UserCanApproveLevel1,
-                                  CanApproveLevel2: UserCanApproveLevel2,
-                                  CanApproveLevel3: UserCanApproveLevel3,
-                                  CanRecordLeave: UserCanRecordLeaves,
-                                  CanManageUsers: UserCanManageUsers,
-                                  CanExportReports: UserCanExportReports,
-                                  UserPermissionLevel: GetUserPermissionLevel,
-                                  CanAccessManagement: CanAccessManagement
                                 });
                                 Navigate(DashboardScreen)
 
@@ -435,20 +407,6 @@ Screens:
                                   Name: "Nguyễn Văn An",
                                   Role: "Employee"
                                 });
-                                Set(varUserPermissions, {
-                                  CanViewPersonalLeaves: UserCanViewPersonalLeaves,
-                                  CanCreateSpecialLeaves: UserCanCreateSpecialLeaves,
-                                  CanViewTeamLeaves: UserCanViewTeamLeaves,
-                                  CanViewAllLeaves: UserCanViewAllLeaves,
-                                  CanApproveLevel1: UserCanApproveLevel1,
-                                  CanApproveLevel2: UserCanApproveLevel2,
-                                  CanApproveLevel3: UserCanApproveLevel3,
-                                  CanRecordLeave: UserCanRecordLeaves,
-                                  CanManageUsers: UserCanManageUsers,
-                                  CanExportReports: UserCanExportReports,
-                                  UserPermissionLevel: GetUserPermissionLevel,
-                                  CanAccessManagement: CanAccessManagement
-                                });
                                 Navigate(DashboardScreen)
 
                         # Manager Demo Button
@@ -477,27 +435,13 @@ Screens:
                                   HoTen: "Trần Thị Bình",
                                   Email: "manager@demo.com",
                                   MaVaiTro: "Manager",
-                                  Permission: 19,
+                                  Permission: 23,
                                   NguoiQuanLyId: "DIR001",
                                   ChucDanh: "Trưởng phòng",
                                   MaDonVi: "HR",
                                   TrangThai: "HoatDong",
                                   Name: "Trần Thị Bình",
                                   Role: "Manager"
-                                });
-                                Set(varUserPermissions, {
-                                  CanViewPersonalLeaves: UserCanViewPersonalLeaves,
-                                  CanCreateSpecialLeaves: UserCanCreateSpecialLeaves,
-                                  CanViewTeamLeaves: UserCanViewTeamLeaves,
-                                  CanViewAllLeaves: UserCanViewAllLeaves,
-                                  CanApproveLevel1: UserCanApproveLevel1,
-                                  CanApproveLevel2: UserCanApproveLevel2,
-                                  CanApproveLevel3: UserCanApproveLevel3,
-                                  CanRecordLeave: UserCanRecordLeaves,
-                                  CanManageUsers: UserCanManageUsers,
-                                  CanExportReports: UserCanExportReports,
-                                  UserPermissionLevel: GetUserPermissionLevel,
-                                  CanAccessManagement: CanAccessManagement
                                 });
                                 Navigate(DashboardScreen)
 
@@ -527,27 +471,13 @@ Screens:
                                   HoTen: "Lê Hoàng Cường",
                                   Email: "director@demo.com",
                                   MaVaiTro: "Director",
-                                  Permission: 2147,
+                                  Permission: 2159,
                                   NguoiQuanLyId: "",
                                   ChucDanh: "Giám đốc",
                                   MaDonVi: "Management",
                                   TrangThai: "HoatDong",
                                   Name: "Lê Hoàng Cường",
                                   Role: "Director"
-                                });
-                                Set(varUserPermissions, {
-                                  CanViewPersonalLeaves: UserCanViewPersonalLeaves,
-                                  CanCreateSpecialLeaves: UserCanCreateSpecialLeaves,
-                                  CanViewTeamLeaves: UserCanViewTeamLeaves,
-                                  CanViewAllLeaves: UserCanViewAllLeaves,
-                                  CanApproveLevel1: UserCanApproveLevel1,
-                                  CanApproveLevel2: UserCanApproveLevel2,
-                                  CanApproveLevel3: UserCanApproveLevel3,
-                                  CanRecordLeave: UserCanRecordLeaves,
-                                  CanManageUsers: UserCanManageUsers,
-                                  CanExportReports: UserCanExportReports,
-                                  UserPermissionLevel: GetUserPermissionLevel,
-                                  CanAccessManagement: CanAccessManagement
                                 });
                                 Navigate(DashboardScreen)
 

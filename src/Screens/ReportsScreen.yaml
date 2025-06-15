@@ -4,16 +4,24 @@
       Fill: =RGBA(248, 250, 252, 1)
       OnVisible: |
         =Set(varActiveScreen, "Reports"); 
-        //Permission checks using inline bitwise expressions
+        //Permission checks using helper functions from App/Formulas
         Set(varUserPermissions, {
-          CanViewDashboard: UserCanViewDashboard,
-          CanViewAllLeaves: UserCanViewAllLeaves,
-          CanViewTeamLeaves: UserCanViewTeamLeaves,
-          CanExportReports: UserCanExportReports,
-          CanManageUsers: UserCanManageUsers,
-          IsSystemAdmin: UserCanSystemAdmin
+          CanViewDashboard: CheckPermission(UserSessionANP.Permission, UserPermissions.VIEW_DASHBOARD),
+          CanViewAllLeaves: CheckPermission(UserSessionANP.Permission, UserPermissions.VIEW_ALL_LEAVE),
+          CanViewTeamLeaves: CheckPermission(UserSessionANP.Permission, UserPermissions.VIEW_TEAM_LEAVE),
+          CanExportReports: CheckPermission(UserSessionANP.Permission, UserPermissions.EXPORT_REPORTS),
+          CanManageUsers: CheckPermission(UserSessionANP.Permission, UserPermissions.MANAGE_USERS),
+          IsSystemAdmin: CheckPermission(UserSessionANP.Permission, UserPermissions.SYSTEM_ADMIN)
         });
+        
+        //CRITICAL: Check if user can access reports
         Set(varCanAccessReports, Or(varUserPermissions.CanViewDashboard, varUserPermissions.CanViewAllLeaves, varUserPermissions.CanExportReports));
+        
+        //If no reports permission, redirect to Dashboard with notification
+        If(Not(varCanAccessReports),
+          Notify("Bạn không có quyền truy cập trang Báo cáo", NotificationType.Error);
+          Navigate(DashboardScreen)
+        )
         Set(varReportType, "Monthly"); 
         Set(varReportPeriod, "This Year"); 
         Set(varSelectedDepartment, UserSessionANP.MaDonVi); 
@@ -23,20 +31,51 @@
         Set(varShowExportOptions, false); 
         Set(varChartType, "Column"); 
         If(varCanAccessReports, 
-          //Load data with fallback demo data
+          //Load SharePoint data with permission-based filtering
           Set(varReportStats, 
             If(IsUserAuthenticated,
-              {
-            TotalRequests: CountRows(DonNghiPhep), 
-            ApprovedRequests: CountRows(Filter(DonNghiPhep, TrangThai.Value = "DaDuyet")), 
-            PendingRequests: CountRows(Filter(DonNghiPhep, Or(TrangThai.Value = "ChoDuyetCap1", TrangThai.Value = "ChoDuyetCap2", TrangThai.Value = "ChoDuyetCap3"))), 
-            RejectedRequests: CountRows(Filter(DonNghiPhep, TrangThai.Value = "TuChoi"))
-              },
+              //Admin/HR can see all data, others see filtered data
+              If(Or(varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers),
+                //Admin/HR - All company data
+                {
+                  TotalRequests: CountRows(DonNghiPhep), 
+                  ApprovedRequests: CountRows(Filter(DonNghiPhep, TrangThai.Value = "DaDuyet")), 
+                  PendingRequests: CountRows(Filter(DonNghiPhep, Or(TrangThai.Value = "ChoDuyetCap1", TrangThai.Value = "ChoDuyetCap2", TrangThai.Value = "ChoDuyetCap3"))), 
+                  RejectedRequests: CountRows(Filter(DonNghiPhep, TrangThai.Value = "TuChoi")),
+                  CancelledRequests: CountRows(Filter(DonNghiPhep, TrangThai.Value = "Huy")),
+                  ExpiredRequests: CountRows(Filter(DonNghiPhep, TrangThai.Value = "HetHan"))
+                },
+                //Manager - Team data only
+                If(varUserPermissions.CanViewTeamLeaves,
+                  With({teamMembers: Filter(NguoiDung, MaQuanLy.Value = UserSessionANP.Id)},
+                    {
+                      TotalRequests: CountRows(Filter(DonNghiPhep, MaNguoiDung.Value in ShowColumns(teamMembers, "Title"))), 
+                      ApprovedRequests: CountRows(Filter(DonNghiPhep, And(MaNguoiDung.Value in ShowColumns(teamMembers, "Title"), TrangThai.Value = "DaDuyet"))), 
+                      PendingRequests: CountRows(Filter(DonNghiPhep, And(MaNguoiDung.Value in ShowColumns(teamMembers, "Title"), Or(TrangThai.Value = "ChoDuyetCap1", TrangThai.Value = "ChoDuyetCap2", TrangThai.Value = "ChoDuyetCap3")))), 
+                      RejectedRequests: CountRows(Filter(DonNghiPhep, And(MaNguoiDung.Value in ShowColumns(teamMembers, "Title"), TrangThai.Value = "TuChoi"))),
+                      CancelledRequests: CountRows(Filter(DonNghiPhep, And(MaNguoiDung.Value in ShowColumns(teamMembers, "Title"), TrangThai.Value = "Huy"))),
+                      ExpiredRequests: CountRows(Filter(DonNghiPhep, And(MaNguoiDung.Value in ShowColumns(teamMembers, "Title"), TrangThai.Value = "HetHan")))
+                    }
+                  ),
+                  //Employee - Personal data only
+                  {
+                    TotalRequests: CountRows(Filter(DonNghiPhep, MaNguoiDung.Value = UserSessionANP.Id)), 
+                    ApprovedRequests: CountRows(Filter(DonNghiPhep, And(MaNguoiDung.Value = UserSessionANP.Id, TrangThai.Value = "DaDuyet"))), 
+                    PendingRequests: CountRows(Filter(DonNghiPhep, And(MaNguoiDung.Value = UserSessionANP.Id, Or(TrangThai.Value = "ChoDuyetCap1", TrangThai.Value = "ChoDuyetCap2", TrangThai.Value = "ChoDuyetCap3")))), 
+                    RejectedRequests: CountRows(Filter(DonNghiPhep, And(MaNguoiDung.Value = UserSessionANP.Id, TrangThai.Value = "TuChoi"))),
+                    CancelledRequests: CountRows(Filter(DonNghiPhep, And(MaNguoiDung.Value = UserSessionANP.Id, TrangThai.Value = "Huy"))),
+                    ExpiredRequests: CountRows(Filter(DonNghiPhep, And(MaNguoiDung.Value = UserSessionANP.Id, TrangThai.Value = "HetHan")))
+                  }
+                )
+              ),
+              //Demo data fallback when not authenticated
               {
                 TotalRequests: 45,
                 ApprovedRequests: 32,
                 PendingRequests: 8,
-                RejectedRequests: 5
+                RejectedRequests: 5,
+                CancelledRequests: 0,
+                ExpiredRequests: 0
               }
             )
           ); 

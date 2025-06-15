@@ -9,19 +9,19 @@
         Set(varNavCollapsed, false); 
         Set(varMobileMenuOpen, false);
         
-        //Check user permissions using inline bitwise expressions
+        //Check user permissions using helper functions from App/Formulas
         Set(varUserPermissions, {
-          CanViewPersonalLeaves: UserCanViewPersonalLeaves,
-          CanCreateSpecialLeaves: UserCanCreateSpecialLeaves,
-          CanViewTeamLeaves: UserCanViewTeamLeaves,
-          CanViewAllLeaves: UserCanViewAllLeaves,
-          CanApproveLevel1: UserCanApproveLevel1,
-          CanApproveLevel2: UserCanApproveLevel2,
-          CanApproveLevel3: UserCanApproveLevel3,
-          CanExportReports: UserCanExportReports,
-          CanManageUsers: UserCanManageUsers,
-          UserPermissionLevel: GetUserPermissionLevel,
-          CanAccessManagement: CanAccessManagement
+          CanViewPersonalLeaves: CheckPermission(UserSessionANP.Permission, UserPermissions.PERSONAL_LEAVE),
+          CanCreateSpecialLeaves: CheckPermission(UserSessionANP.Permission, UserPermissions.SPECIAL_LEAVE),
+          CanViewTeamLeaves: CheckPermission(UserSessionANP.Permission, UserPermissions.VIEW_TEAM_LEAVE),
+          CanViewAllLeaves: CheckPermission(UserSessionANP.Permission, UserPermissions.VIEW_ALL_LEAVE),
+          CanApproveLevel1: CheckPermission(UserSessionANP.Permission, UserPermissions.APPROVE_LEVEL_1),
+          CanApproveLevel2: CheckPermission(UserSessionANP.Permission, UserPermissions.APPROVE_LEVEL_2),
+          CanApproveLevel3: CheckPermission(UserSessionANP.Permission, UserPermissions.APPROVE_LEVEL_3),
+          CanExportReports: CheckPermission(UserSessionANP.Permission, UserPermissions.EXPORT_REPORTS),
+          CanManageUsers: CheckPermission(UserSessionANP.Permission, UserPermissions.MANAGE_USERS),
+          UserPermissionLevel: GetUserPermissionLevel(UserSessionANP.Permission),
+          CanAccessManagement: CanAccessManagement(UserSessionANP.Permission)
         });
         
         //Use UserSessionANP data directly
@@ -37,26 +37,31 @@
           Permission: UserSessionANP.Permission
         });
         
-        //Load dashboard data - Dashboard luôn hiển thị cho tất cả user đã đăng nhập
-        //Chỉ điều chỉnh dữ liệu hiển thị dựa trên quyền cụ thể
+        //Load dashboard data - Admin và HR xem tất cả, user khác xem theo quyền
         Set(varDashboardStats, {
-          TotalLeave: If(varUserPermissions.CanViewPersonalLeaves, 12, 0), 
-          UsedLeave: If(varUserPermissions.CanViewPersonalLeaves, 3, 0), 
-          RemainingLeave: If(varUserPermissions.CanViewPersonalLeaves, 9, 0), 
-          PendingRequests: If(varUserPermissions.CanViewPersonalLeaves, 1, 0), 
-          ApprovedRequests: If(varUserPermissions.CanViewPersonalLeaves, 2, 0), 
-          RejectedRequests: If(varUserPermissions.CanViewPersonalLeaves, 0, 0)
+          TotalLeave: If(Or(varUserPermissions.CanViewPersonalLeaves, varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers), 
+            If(varUserPermissions.CanViewAllLeaves, 120, 12), 0), 
+          UsedLeave: If(Or(varUserPermissions.CanViewPersonalLeaves, varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers), 
+            If(varUserPermissions.CanViewAllLeaves, 35, 3), 0), 
+          RemainingLeave: If(Or(varUserPermissions.CanViewPersonalLeaves, varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers), 
+            If(varUserPermissions.CanViewAllLeaves, 85, 9), 0), 
+          PendingRequests: If(Or(varUserPermissions.CanViewPersonalLeaves, varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers), 
+            If(varUserPermissions.CanViewAllLeaves, 15, 1), 0), 
+          ApprovedRequests: If(Or(varUserPermissions.CanViewPersonalLeaves, varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers), 
+            If(varUserPermissions.CanViewAllLeaves, 28, 2), 0), 
+          RejectedRequests: If(Or(varUserPermissions.CanViewPersonalLeaves, varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers), 
+            If(varUserPermissions.CanViewAllLeaves, 7, 0), 0)
         }); 
         
         //Load pending approvals count from SharePoint based on user permissions
         Set(varPendingApprovalsCount, 
-          If(Or(UserCanApproveLevel1, UserCanApproveLevel2, UserCanApproveLevel3),
+          If(Or(varUserPermissions.CanApproveLevel1, varUserPermissions.CanApproveLevel2, varUserPermissions.CanApproveLevel3),
             CountRows(
               Filter(DonNghiPhep, 
                 Or(
-                  And(UserCanApproveLevel1, TrangThai.Value = "ChoDuyetCap1"),
-                  And(UserCanApproveLevel2, TrangThai.Value = "ChoDuyetCap2"), 
-                  And(UserCanApproveLevel3, TrangThai.Value = "ChoDuyetCap3")
+                  And(varUserPermissions.CanApproveLevel1, TrangThai.Value = "ChoDuyetCap1"),
+                  And(varUserPermissions.CanApproveLevel2, TrangThai.Value = "ChoDuyetCap2"), 
+                  And(varUserPermissions.CanApproveLevel3, TrangThai.Value = "ChoDuyetCap3")
                 )
               )
             ),
@@ -64,57 +69,131 @@
           )
         );
         
-        //Initialize recent leaves collection
-        If(And(varUserPermissions.CanViewPersonalLeaves, Not(IsBlank(UserSessionANP.Id))),
+        //Initialize recent leaves collection - Admin xem tất cả, user khác xem theo quyền
+        If(And(Or(varUserPermissions.CanViewPersonalLeaves, varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers), Not(IsBlank(UserSessionANP.Id))),
           //Load from SharePoint - use direct data
-          ClearCollect(colMyRecentLeaves,
-            Sort(
-              Filter(DonNghiPhep, 
-                And(
-                  MaNguoiDung.Value = UserSessionANP.Id,
+          If(varUserPermissions.CanViewAllLeaves,
+            //Admin/HR - Load all recent leaves
+            ClearCollect(colMyRecentLeaves,
+              Sort(
+                Filter(DonNghiPhep, 
                   NgayBatDau >= DateAdd(Today(), -30, TimeUnit.Days)
-                )
-              ),
-              NgayBatDau,
-              SortOrder.Descending
+                ),
+                NgayBatDau,
+                SortOrder.Descending
+              )
+            ),
+            //Regular user - Load only their leaves
+            ClearCollect(colMyRecentLeaves,
+              Sort(
+                Filter(DonNghiPhep, 
+                  And(
+                    MaNguoiDung.Value = UserSessionANP.Id,
+                    NgayBatDau >= DateAdd(Today(), -30, TimeUnit.Days)
+                  )
+                ),
+                NgayBatDau,
+                SortOrder.Descending
+              )
             )
           ),
-          If(varUserPermissions.CanViewPersonalLeaves,
+          If(Or(varUserPermissions.CanViewPersonalLeaves, varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers),
             // Test data với cấu trúc flat tương thích với SharePoint
-            ClearCollect(colMyRecentLeaves,
-              {
-                ID: 1,
-                Title: "Nghỉ phép tháng 1",
-                NgayBatDau: DateAdd(Today(), -10, TimeUnit.Days),
-                NgayKetThuc: DateAdd(Today(), -8, TimeUnit.Days),
-                SoNgayNghi: 3,
-                TrangThai: "DaDuyet",
-                LyDo: "Nghỉ phép gia đình",
-                NguoiDuyet: "Admin",
-                NgayTao: DateAdd(Today(), -11, TimeUnit.Days)
-              },
-              {
-                ID: 2,
-                Title: "Nghỉ phép tháng 2",
-                NgayBatDau: DateAdd(Today(), -5, TimeUnit.Days),
-                NgayKetThuc: DateAdd(Today(), -3, TimeUnit.Days),
-                SoNgayNghi: 3,
-                TrangThai: "ChoDuyetCap1",
-                LyDo: "Nghỉ phép cá nhân",
-                NguoiDuyet: "",
-                NgayTao: DateAdd(Today(), -6, TimeUnit.Days)
-              },
-              {
-                ID: 3,
-                Title: "Nghỉ phép tháng 3",
-                NgayBatDau: DateAdd(Today(), -2, TimeUnit.Days),
-                NgayKetThuc: DateAdd(Today(), -1, TimeUnit.Days),
-                SoNgayNghi: 2,
-                TrangThai: "TuChoi",
-                LyDo: "Nghỉ phép khẩn cấp",
-                NguoiDuyet: "Manager",
-                NgayTao: DateAdd(Today(), -3, TimeUnit.Days)
-              }
+            If(varUserPermissions.CanViewAllLeaves,
+              //Admin/HR demo data - more comprehensive
+              ClearCollect(colMyRecentLeaves,
+                {
+                  ID: 1,
+                  Title: "Nghỉ phép - Nguyễn Văn A",
+                  NgayBatDau: DateAdd(Today(), -10, TimeUnit.Days),
+                  NgayKetThuc: DateAdd(Today(), -8, TimeUnit.Days),
+                  SoNgayNghi: 3,
+                  TrangThai: "DaDuyet",
+                  LyDo: "Nghỉ phép gia đình",
+                  NguoiDuyet: "Admin",
+                  NgayTao: DateAdd(Today(), -11, TimeUnit.Days)
+                },
+                {
+                  ID: 2,
+                  Title: "Nghỉ phép - Trần Thị B",
+                  NgayBatDau: DateAdd(Today(), -5, TimeUnit.Days),
+                  NgayKetThuc: DateAdd(Today(), -3, TimeUnit.Days),
+                  SoNgayNghi: 3,
+                  TrangThai: "ChoDuyetCap1",
+                  LyDo: "Nghỉ phép cá nhân",
+                  NguoiDuyet: "",
+                  NgayTao: DateAdd(Today(), -6, TimeUnit.Days)
+                },
+                {
+                  ID: 3,
+                  Title: "Nghỉ phép - Lê Văn C",
+                  NgayBatDau: DateAdd(Today(), -2, TimeUnit.Days),
+                  NgayKetThuc: DateAdd(Today(), -1, TimeUnit.Days),
+                  SoNgayNghi: 2,
+                  TrangThai: "TuChoi",
+                  LyDo: "Nghỉ phép khẩn cấp",
+                  NguoiDuyet: "Manager",
+                  NgayTao: DateAdd(Today(), -3, TimeUnit.Days)
+                },
+                {
+                  ID: 4,
+                  Title: "Nghỉ phép - Phạm Thị D",
+                  NgayBatDau: DateAdd(Today(), -15, TimeUnit.Days),
+                  NgayKetThuc: DateAdd(Today(), -13, TimeUnit.Days),
+                  SoNgayNghi: 3,
+                  TrangThai: "DaDuyet",
+                  LyDo: "Nghỉ phép du lịch",
+                  NguoiDuyet: "Director",
+                  NgayTao: DateAdd(Today(), -16, TimeUnit.Days)
+                },
+                {
+                  ID: 5,
+                  Title: "Nghỉ phép - Hoàng Văn E",
+                  NgayBatDau: DateAdd(Today(), -7, TimeUnit.Days),
+                  NgayKetThuc: DateAdd(Today(), -6, TimeUnit.Days),
+                  SoNgayNghi: 2,
+                  TrangThai: "ChoDuyetCap2",
+                  LyDo: "Nghỉ phép gia đình",
+                  NguoiDuyet: "",
+                  NgayTao: DateAdd(Today(), -8, TimeUnit.Days)
+                }
+              ),
+              //Regular user demo data
+              ClearCollect(colMyRecentLeaves,
+                {
+                  ID: 1,
+                  Title: "Nghỉ phép tháng 1",
+                  NgayBatDau: DateAdd(Today(), -10, TimeUnit.Days),
+                  NgayKetThuc: DateAdd(Today(), -8, TimeUnit.Days),
+                  SoNgayNghi: 3,
+                  TrangThai: "DaDuyet",
+                  LyDo: "Nghỉ phép gia đình",
+                  NguoiDuyet: "Admin",
+                  NgayTao: DateAdd(Today(), -11, TimeUnit.Days)
+                },
+                {
+                  ID: 2,
+                  Title: "Nghỉ phép tháng 2",
+                  NgayBatDau: DateAdd(Today(), -5, TimeUnit.Days),
+                  NgayKetThuc: DateAdd(Today(), -3, TimeUnit.Days),
+                  SoNgayNghi: 3,
+                  TrangThai: "ChoDuyetCap1",
+                  LyDo: "Nghỉ phép cá nhân",
+                  NguoiDuyet: "",
+                  NgayTao: DateAdd(Today(), -6, TimeUnit.Days)
+                },
+                {
+                  ID: 3,
+                  Title: "Nghỉ phép tháng 3",
+                  NgayBatDau: DateAdd(Today(), -2, TimeUnit.Days),
+                  NgayKetThuc: DateAdd(Today(), -1, TimeUnit.Days),
+                  SoNgayNghi: 2,
+                  TrangThai: "TuChoi",
+                  LyDo: "Nghỉ phép khẩn cấp",
+                  NguoiDuyet: "Manager",
+                  NgayTao: DateAdd(Today(), -3, TimeUnit.Days)
+                }
+              )
             ),
             //No permission - empty collection
             ClearCollect(colMyRecentLeaves)
@@ -311,7 +390,7 @@
                         Y: =Parent.Height * 0.05
                         Width: =Parent.Width * 0.97
                         Height: =Parent.Height * 0.1
-                        Text: ="Tổng quan nghỉ phép"
+                        Text: =If(varUserPermissions.CanViewAllLeaves, "Tổng quan nghỉ phép toàn công ty", "Tổng quan nghỉ phép")
                         Color: =RGBA(17, 24, 39, 1)
                         Font: =Font.'Open Sans'
                         FontWeight: =FontWeight.Bold
@@ -325,7 +404,7 @@
                         Y: =Parent.Height * 0.18
                         Width: =Parent.Width * 0.97
                         Height: =Parent.Height * 0.34
-                        Visible: =varUserPermissions.CanViewPersonalLeaves
+                        Visible: =Or(varUserPermissions.CanViewPersonalLeaves, varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers)
                       Children:
                         - 'Dashboard.Stats.TotalLeave':
                             Control: CanvasComponent
@@ -335,7 +414,7 @@
                               Y: =0
                               Width: =Parent.Width / 3 - Parent.Width * 0.01
                               Height: =Parent.Height
-                              Title: ="Tổng ngày phép"
+                              Title: =If(varUserPermissions.CanViewAllLeaves, "Tổng ngày phép (Toàn CT)", "Tổng ngày phép")
                               Value: =varDashboardStats.TotalLeave
                               Icon: =Icon.CalendarBlank
                               Color: =RGBA(59, 130, 246, 1)
@@ -348,7 +427,7 @@
                               Y: =0
                               Width: =Parent.Width / 3 - Parent.Width * 0.01
                               Height: =Parent.Height
-                              Title: ="Đã sử dụng"
+                              Title: =If(varUserPermissions.CanViewAllLeaves, "Đã sử dụng (Toàn CT)", "Đã sử dụng")
                               Value: =varDashboardStats.UsedLeave
                               Icon: =Icon.CheckBadge
                               Color: =RGBA(34, 197, 94, 1)
@@ -361,7 +440,7 @@
                               Y: =0
                               Width: =Parent.Width / 3 - Parent.Width * 0.01
                               Height: =Parent.Height
-                              Title: ="Còn lại"
+                              Title: =If(varUserPermissions.CanViewAllLeaves, "Còn lại (Toàn CT)", "Còn lại")
                               Value: =varDashboardStats.RemainingLeave
                               Icon: =Icon.Clock
                               Color: =RGBA(251, 191, 36, 1)
@@ -423,7 +502,7 @@
                   Y: ='Dashboard.Stats.Container'.Y + 'Dashboard.Stats.Container'.Height + Parent.Height * 0.015
                   Width: =Parent.Width
                   Height: =Parent.Height * 0.12
-                  Visible: =Not(varUserPermissions.CanViewPersonalLeaves)
+                  Visible: =Not(Or(varUserPermissions.CanViewPersonalLeaves, varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers))
                 Children:
                   - 'Dashboard.LimitedPermission.Background':
                       Control: Rectangle
@@ -498,7 +577,7 @@
                               Y: =0
                               Width: =Parent.Width * 0.7
                               Height: =Parent.Height
-                              Text: ="Tình hình nghỉ phép 6 tháng gần đây"
+                              Text: =If(varUserPermissions.CanViewAllLeaves, "Tình hình nghỉ phép toàn công ty 6 tháng gần đây", "Tình hình nghỉ phép 6 tháng gần đây")
                               Color: =RGBA(17, 24, 39, 1)
                               Font: =Font.'Open Sans'
                               FontWeight: =FontWeight.Bold
@@ -514,7 +593,7 @@
                               Height: =Parent.Height * 0.55
                               Text: ="Xem chi tiết"
                               Size: ="Small"
-                              Visible: =varUserPermissions.CanViewPersonalLeaves
+                              Visible: =Or(varUserPermissions.CanViewPersonalLeaves, varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers)
                               OnClick: =Navigate(ReportsScreen)
                               
                   - 'Dashboard.LeaveStats.Chart':
@@ -525,6 +604,8 @@
                         Width: =Parent.Width * 0.97
                         Height: =Parent.Height * 0.79
                         Items: |
-                          =[ { Month: "T1", Approved: 5, Pending: 2, Rejected: 1 }, { Month: "T2", Approved: 4, Pending: 3, Rejected: 0 }, { Month: "T3", Approved: 6, Pending: 1, Rejected: 2 }, { Month: "T4", Approved: 3, Pending: 2, Rejected: 1 }, { Month: "T5", Approved: 5, Pending: 1, Rejected: 0 }, { Month: "T6", Approved: 4, Pending: 3, Rejected: 1 } ]
-                        Visible: =varUserPermissions.CanViewPersonalLeaves
+                          =If(varUserPermissions.CanViewAllLeaves,
+                            [ { Month: "T1", Approved: 25, Pending: 8, Rejected: 3 }, { Month: "T2", Approved: 22, Pending: 12, Rejected: 2 }, { Month: "T3", Approved: 28, Pending: 5, Rejected: 7 }, { Month: "T4", Approved: 18, Pending: 9, Rejected: 4 }, { Month: "T5", Approved: 24, Pending: 6, Rejected: 2 }, { Month: "T6", Approved: 20, Pending: 11, Rejected: 5 } ],
+                            [ { Month: "T1", Approved: 5, Pending: 2, Rejected: 1 }, { Month: "T2", Approved: 4, Pending: 3, Rejected: 0 }, { Month: "T3", Approved: 6, Pending: 1, Rejected: 2 }, { Month: "T4", Approved: 3, Pending: 2, Rejected: 1 }, { Month: "T5", Approved: 5, Pending: 1, Rejected: 0 }, { Month: "T6", Approved: 4, Pending: 3, Rejected: 1 } ])
+                        Visible: =Or(varUserPermissions.CanViewPersonalLeaves, varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers)
 

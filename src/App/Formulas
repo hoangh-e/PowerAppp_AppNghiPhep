@@ -69,6 +69,23 @@ CheckPermission(UserPerm:Number, RequiredPerm:Number):Boolean = (
   Mod(Int(UserPerm / RequiredPerm), 2) = 1
 );
 
+//Helper function to calculate user permission level
+GetUserPermissionLevel(Permission:Number):Text = (
+  If(CheckPermission(Permission, UserPermissions.SYSTEM_ADMIN), "System Admin",
+    If(Or(CheckPermission(Permission, UserPermissions.MANAGE_USERS), CheckPermission(Permission, UserPermissions.MANAGE_ROLES)), "Admin",
+      If(CheckPermission(Permission, UserPermissions.RECORD_LEAVE), "HR",
+        If(Or(CheckPermission(Permission, UserPermissions.APPROVE_LEVEL_2), CheckPermission(Permission, UserPermissions.APPROVE_LEVEL_3)), "Director",
+          If(CheckPermission(Permission, UserPermissions.APPROVE_LEVEL_1), "Manager", "Employee")))))
+);
+
+//Helper function to check management access
+CanAccessManagement(Permission:Number):Boolean = (
+  Or(CheckPermission(Permission, UserPermissions.MANAGE_USERS), 
+     CheckPermission(Permission, UserPermissions.MANAGE_ROLES), 
+     CheckPermission(Permission, UserPermissions.MANAGE_APPROVAL_PROCESS), 
+     CheckPermission(Permission, UserPermissions.SYSTEM_ADMIN))
+);
+
 //Leave Request Status value conversion functions
 LeaveStatusValue(LeaveStatus:Text): Number = (
   Switch(LeaveStatus,

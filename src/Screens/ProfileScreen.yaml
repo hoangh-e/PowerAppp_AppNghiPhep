@@ -5,11 +5,15 @@ Screens:
       OnVisible: |
         =Set(varActiveScreen, "Profile");
         Set(varUserPermissions, {
-          CanViewPersonalLeaves: UserCanViewPersonalLeaves,
-          CanCreatePersonalLeaves: UserCanViewPersonalLeaves,
-          CanViewDashboard: UserCanViewDashboard,
-          CanManageUsers: UserCanManageUsers
+          CanViewPersonalLeaves: CheckPermission(UserSessionANP.Permission, UserPermissions.PERSONAL_LEAVE),
+          CanCreatePersonalLeaves: CheckPermission(UserSessionANP.Permission, UserPermissions.PERSONAL_LEAVE),
+          CanViewDashboard: CheckPermission(UserSessionANP.Permission, UserPermissions.VIEW_DASHBOARD),
+          CanManageUsers: CheckPermission(UserSessionANP.Permission, UserPermissions.MANAGE_USERS)
         });
+        
+        //NOTE: ProfileScreen không cần kiểm tra quyền đặc biệt - mọi user đều có thể xem profile của mình
+        //Chỉ cần đảm bảo user đã đăng nhập (được kiểm tra ở App level)
+        
         Set(varIsEditing, false);
         Set(varEditedName, UserSessionANP.HoTen);
         Set(varEditedEmail, UserSessionANP.Email);

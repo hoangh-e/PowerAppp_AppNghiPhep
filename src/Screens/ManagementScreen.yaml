@@ -4,17 +4,74 @@
       Fill: =RGBA(248, 250, 252, 1)
       OnVisible: |
         =Set(varActiveScreen, "Management"); 
-        //Permission checks using inline bitwise expressions  
+        //Permission checks using helper functions from App/Formulas  
         Set(varUserPermissions, {
-          ManageUsers: UserCanManageUsers,
-          ManageRoles: UserCanManageRoles,
-          ManageLeaveQuota: UserCanManageLeaveQuota,
-          ManageHolidays: UserCanManageHolidays,
-          ManageApprovalProcess: UserCanManageApprovalProcess,
-          ExportReports: UserCanExportReports,
-          SystemAdmin: UserCanSystemAdmin,
-          ViewDashboard: UserCanViewDashboard
+          ManageUsers: CheckPermission(UserSessionANP.Permission, UserPermissions.MANAGE_USERS),
+          ManageRoles: CheckPermission(UserSessionANP.Permission, UserPermissions.MANAGE_ROLES),
+          ManageLeaveQuota: CheckPermission(UserSessionANP.Permission, UserPermissions.MANAGE_LEAVE_QUOTA),
+          ManageHolidays: CheckPermission(UserSessionANP.Permission, UserPermissions.MANAGE_HOLIDAYS),
+          ManageApprovalProcess: CheckPermission(UserSessionANP.Permission, UserPermissions.MANAGE_APPROVAL_PROCESS),
+          ExportReports: CheckPermission(UserSessionANP.Permission, UserPermissions.EXPORT_REPORTS),
+          SystemAdmin: CheckPermission(UserSessionANP.Permission, UserPermissions.SYSTEM_ADMIN),
+          ViewDashboard: CheckPermission(UserSessionANP.Permission, UserPermissions.VIEW_DASHBOARD)
         });
+        
+        //CRITICAL: Check if user has ANY management permission
+        Set(varCanAccessManagement, CanAccessManagement(UserSessionANP.Permission));
+        
+        //If no management permission, redirect to Dashboard with notification
+        If(Not(varCanAccessManagement),
+          Notify("Bạn không có quyền truy cập trang Quản lý", NotificationType.Error);
+          Navigate(DashboardScreen),
+          //Continue with management screen initialization
+          Set(varSelectedManagementTab, "Users");
+          Set(varIsUserFormOpen, false);
+          Set(varSelectedUser, Blank());
+          Set(varIsEditingUser, false);
+          Set(varUserFormName, "");
+          Set(varUserFormEmail, "");
+          Set(varUserFormPassword, "");
+          Set(varUserFormRole, "");
+          Set(varUserFormDepartment, "");
+          Set(varUserFormStatus, "HoatDong");
+          Set(varRecordSelected, false);
+          Set(varSelectedUserRecord, Blank());
+          Set(varSelectedLeaveBalanceRecord, {MaNguoiDung: "", Nam: 2024, TongNgayDuocPhep: 0, SoNgayDaNghi: 0, SoNgayConLai: 0});
+          Set(varSelectedHolidayRecord, {MaNgayLe: 0, TenNgayLe: "", Ngay: "", Nam: 2024, Buoi: "CaNgay"});
+          Set(varSelectedWorkflowRecord, {MaDonVi: "", Cap: "", MaVaiTro: "", NguoiDuyetMacDinh: "", DangHoatDong: false});
+          Set(varSelectedHoliday, {MaNgayLe: 0, TenNgayLe: "", Ngay: "", Nam: 2024, Buoi: "CaNgay"});
+          ClearCollect(colAllUsers, 
+            {Title: "EMP001", HoTen: "Nguyễn Văn An", Email: "an.nguyen@company.com", 
+             MatKhau: "123456", MaDonVi: "IT", MaVaiTro: "Employee", TrangThai: "HoatDong"},
+            {Title: "EMP002", HoTen: "Trần Thị Bình", Email: "binh.tran@company.com", 
+             MatKhau: "123456", MaDonVi: "HR", MaVaiTro: "Manager", TrangThai: "HoatDong"},
+            {Title: "EMP003", HoTen: "Lê Hoàng Cường", Email: "cuong.le@company.com", 
+             MatKhau: "123456", MaDonVi: "Finance", MaVaiTro: "Director", TrangThai: "HoatDong"},
+            {Title: "EMP004", HoTen: "Phạm Thị Dung", Email: "dung.pham@company.com", 
+             MatKhau: "123456", MaDonVi: "Marketing", MaVaiTro: "Director", TrangThai: "HoatDong"},
+            {Title: "EMP005", HoTen: "Võ Minh Tuấn", Email: "tuan.vo@company.com", 
+             MatKhau: "123456", MaDonVi: "IT", MaVaiTro: "Manager", TrangThai: "HoatDong"}
+          );
+          ClearCollect(colAllDepartments, 
+            {MaDonVi: "IT", TenDonVi: "Phòng Công nghệ thông tin"},
+            {MaDonVi: "HR", TenDonVi: "Phòng Nhân sự"},
+            {MaDonVi: "Finance", TenDonVi: "Phòng Tài chính"},
+            {MaDonVi: "Marketing", TenDonVi: "Phòng Marketing"}
+          ); 
+          ClearCollect(colAllRoles, 
+            {MaVaiTro: "Employee", TenVaiTro: "Nhân viên"},
+            {MaVaiTro: "Manager", TenVaiTro: "Quản lý"},
+            {MaVaiTro: "Director", TenVaiTro: "Giám đốc"},
+            {MaVaiTro: "HR", TenVaiTro: "Nhân sự"},
+            {MaVaiTro: "Admin", TenVaiTro: "Quản trị viên"}
+          );
+          ClearCollect(colHolidaysList, 
+            {MaNgayLe: 1, Ngay: "01/01", TenNgayLe: "Tết Dương lịch", Nam: 2024, Buoi: "CaNgay"},
+            {MaNgayLe: 2, Ngay: "08/02", TenNgayLe: "Tết Nguyên đán (28 Tết)", Nam: 2024, Buoi: "CaNgay"},
+            {MaNgayLe: 3, Ngay: "09/02", TenNgayLe: "Tết Nguyên đán (29 Tết 2024)", Nam: 2024, Buoi: "CaNgay"},
+            {MaNgayLe: 4, Ngay: "10/02", TenNgayLe: "Tết Nguyên đán (Mùng 1)", Nam: 2024, Buoi: "CaNgay"},
+            {MaNgayLe: 5, Ngay: "11/02", TenNgayLe: "Tết Nguyên đán (Mùng 2 2024)", Nam: 2024, Buoi: "CaNgay"},
+            {MaNgayLe: 6, Ngay: "12/02", TenNgayLe: "Tết Nguyên đán (Mùng 3 2024)", Nam: 2024, Buoi: "CaNgay"},
         Set(varSelectedManagementTab, "Users");
         Set(varIsUserFormOpen, false);
         Set(varSelectedUser, Blank());
