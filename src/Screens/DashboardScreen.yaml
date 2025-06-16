@@ -56,21 +56,57 @@
             Permission: UserSessionANP.Permission
           });
           
-          //Load dashboard data - Admin và HR xem tất cả, user khác xem theo quyền
+          //Load leave balance data from SharePoint SoNgayPhep
+          If(varCanAccessDashboard,
+            //Get leave balance data based on user permissions
+            If(Or(varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers),
+              //Admin/HR - view all company leave data
+              ClearCollect(colAllLeaveBalance, SoNgayPhep);
+              Set(varTotalLeaveBalance, Sum(colAllLeaveBalance, TongNgayDuocPhep));
+              Set(varUsedLeaveBalance, Sum(colAllLeaveBalance, SoNgayDaNghi));
+              Set(varRemainingLeaveBalance, Sum(colAllLeaveBalance, SoNgayConLai)),
+              //Regular user - view personal leave data only
+              ClearCollect(colUserLeaveBalance, Filter(SoNgayPhep, MaNhanVien.Value = UserSessionANP.Id));
+              Set(varTotalLeaveBalance, Sum(colUserLeaveBalance, TongNgayDuocPhep));
+              Set(varUsedLeaveBalance, Sum(colUserLeaveBalance, SoNgayDaNghi));
+              Set(varRemainingLeaveBalance, Sum(colUserLeaveBalance, SoNgayConLai))
+            ),
+            //No permission - clear data
+            Set(varTotalLeaveBalance, 0);
+            Set(varUsedLeaveBalance, 0);
+            Set(varRemainingLeaveBalance, 0)
+          );
+          
+          //Load leave request status counts from SharePoint DonNghiPhep
+          If(varCanAccessDashboard,
+            //Get leave request data based on user permissions
+            If(Or(varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers),
+              //Admin/HR - view all company leave requests
+              ClearCollect(colAllLeaveRequests, DonNghiPhep);
+              Set(varPendingRequestsCount, CountRows(Filter(colAllLeaveRequests, Or(TrangThai.Value = "ChoDuyetCap1", TrangThai.Value = "ChoDuyetCap2", TrangThai.Value = "ChoDuyetCap3"))));
+              Set(varApprovedRequestsCount, CountRows(Filter(colAllLeaveRequests, TrangThai.Value = "DaDuyet")));
+              Set(varRejectedRequestsCount, CountRows(Filter(colAllLeaveRequests, TrangThai.Value = "TuChoi"))),
+              //Regular user - view personal leave requests only
+              ClearCollect(colUserLeaveRequests, Filter(DonNghiPhep, MaNguoiDung.Value = UserSessionANP.Id));
+              Set(varPendingRequestsCount, CountRows(Filter(colUserLeaveRequests, Or(TrangThai.Value = "ChoDuyetCap1", TrangThai.Value = "ChoDuyetCap2", TrangThai.Value = "ChoDuyetCap3"))));
+              Set(varApprovedRequestsCount, CountRows(Filter(colUserLeaveRequests, TrangThai.Value = "DaDuyet")));
+              Set(varRejectedRequestsCount, CountRows(Filter(colUserLeaveRequests, TrangThai.Value = "TuChoi")))
+            ),
+            //No permission - clear data
+            Set(varPendingRequestsCount, 0);
+            Set(varApprovedRequestsCount, 0);
+            Set(varRejectedRequestsCount, 0)
+          );
+          
+          //Set dashboard statistics using SharePoint data
           Set(varDashboardStats, {
-            TotalLeave: If(varCanAccessDashboard, 
-              If(Or(varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers), 120, 12), 0), 
-            UsedLeave: If(varCanAccessDashboard, 
-              If(Or(varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers), 35, 3), 0), 
-            RemainingLeave: If(varCanAccessDashboard, 
-              If(Or(varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers), 85, 9), 0), 
-            PendingRequests: If(varCanAccessDashboard, 
-              If(Or(varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers), 15, 1), 0), 
-            ApprovedRequests: If(varCanAccessDashboard, 
-              If(Or(varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers), 28, 2), 0), 
-            RejectedRequests: If(varCanAccessDashboard, 
-              If(Or(varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers), 7, 0), 0)
-          }); 
+            TotalLeave: varTotalLeaveBalance,
+            UsedLeave: varUsedLeaveBalance,
+            RemainingLeave: varRemainingLeaveBalance,
+            PendingRequests: varPendingRequestsCount,
+            ApprovedRequests: varApprovedRequestsCount,
+            RejectedRequests: varRejectedRequestsCount
+          });
           
           //Load pending approvals count from SharePoint based on user permissions
           Set(varPendingApprovalsCount, 
@@ -88,28 +124,58 @@
             )
           );
           
-          //Initialize recent leaves collection with simplified demo data
+          //Load recent leave requests from SharePoint
           If(varCanAccessDashboard,
-            //Use demo data for preview - simplified structure
+            //Get recent leave requests based on permissions
             If(Or(varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers),
-              //Admin/HR demo data - comprehensive view
-              Set(varRecentLeavesCount, 5),
-              //Regular user demo data - personal view
-              Set(varRecentLeavesCount, 3)
+              //Admin/HR - get all recent leave requests
+              ClearCollect(colRecentLeaves, 
+                Sort(
+                  FirstN(DonNghiPhep, 20),
+                  NgayBatDau, 
+                  SortOrder.Descending
+                )
+              ),
+              //Regular user - get personal recent leave requests
+              ClearCollect(colRecentLeaves, 
+                Sort(
+                  Filter(DonNghiPhep, MaNguoiDung.Value = UserSessionANP.Id),
+                  NgayBatDau, 
+                  SortOrder.Descending
+                )
+              )
             );
-            //Set demo data counter for display
-            Set(varDemoLeaveData, {
-              TotalItems: varRecentLeavesCount,
-              LastUpdated: Now(),
-              DataSource: "Demo"
-            }),
+            Set(varRecentLeavesCount, CountRows(colRecentLeaves)),
             //No permission - clear data
-            Set(varRecentLeavesCount, 0);
-            Set(varDemoLeaveData, {
-              TotalItems: 0,
-              LastUpdated: Now(),
-              DataSource: "None"
-            })
+            ClearCollect(colRecentLeaves, Blank());
+            Set(varRecentLeavesCount, 0)
+          );
+          
+          //Load chart data from SharePoint for last 6 months
+          If(varCanAccessDashboard,
+            //Create monthly statistics from SharePoint data
+            ClearCollect(colMonthlyStats,
+              ForAll(
+                [1, 2, 3, 4, 5, 6],
+                With(
+                  {
+                    MonthNum: Value,
+                    MonthRequests: If(Or(varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers),
+                      Filter(DonNghiPhep, Month(NgayBatDau) = Value And Year(NgayBatDau) = Year(Today())),
+                      Filter(DonNghiPhep, Month(NgayBatDau) = Value And Year(NgayBatDau) = Year(Today()) And MaNguoiDung.Value = UserSessionANP.Id)
+                    )
+                  },
+                  {
+                    Month: Switch(MonthNum, 1, "T1", 2, "T2", 3, "T3", 4, "T4", 5, "T5", 6, "T6", "T" & MonthNum),
+                    Approved: CountRows(Filter(MonthRequests, TrangThai.Value = "DaDuyet")),
+                    Pending: CountRows(Filter(MonthRequests, Or(TrangThai.Value = "ChoDuyetCap1", TrangThai.Value = "ChoDuyetCap2", TrangThai.Value = "ChoDuyetCap3"))),
+                    Rejected: CountRows(Filter(MonthRequests, TrangThai.Value = "TuChoi"))
+                  }
+                )
+              )
+            ),
+            //No permission - clear chart data
+            ClearCollect(colMonthlyStats, Blank())
           );
           
           //Start authentication check
@@ -516,10 +582,7 @@
                           Y: =Parent.Height * 0.18
                           Width: =Parent.Width * 0.97
                           Height: =Parent.Height * 0.79
-                          Items: |
-                            =If(varUserPermissions.CanViewAllLeaves,
-                              [ { Month: "T1", Approved: 25, Pending: 8, Rejected: 3 }, { Month: "T2", Approved: 22, Pending: 12, Rejected: 2 }, { Month: "T3", Approved: 28, Pending: 5, Rejected: 7 }, { Month: "T4", Approved: 18, Pending: 9, Rejected: 4 }, { Month: "T5", Approved: 24, Pending: 6, Rejected: 2 }, { Month: "T6", Approved: 20, Pending: 11, Rejected: 5 } ],
-                              [ { Month: "T1", Approved: 5, Pending: 2, Rejected: 1 }, { Month: "T2", Approved: 4, Pending: 3, Rejected: 0 }, { Month: "T3", Approved: 6, Pending: 1, Rejected: 2 }, { Month: "T4", Approved: 3, Pending: 2, Rejected: 1 }, { Month: "T5", Approved: 5, Pending: 1, Rejected: 0 }, { Month: "T6", Approved: 4, Pending: 3, Rejected: 1 } ])
+                          Items: =colMonthlyStats
                           Visible: =Or(varUserPermissions.CanViewPersonalLeaves, varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers)
 
         - 'Dashboard.AccessDenied.Container':
