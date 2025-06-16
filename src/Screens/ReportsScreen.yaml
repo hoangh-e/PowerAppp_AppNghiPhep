@@ -48,16 +48,14 @@
                 },
                 //Manager - Team data only
                 If(varUserPermissions.CanViewTeamLeaves,
-                  With({teamMembers: Filter(NguoiDung, MaQuanLy.Value = UserSessionANP.Id)},
-                    {
-                      TotalRequests: CountRows(Filter(DonNghiPhep, MaNguoiDung.Value in ShowColumns(teamMembers, "Title"))), 
-                      ApprovedRequests: CountRows(Filter(DonNghiPhep, And(MaNguoiDung.Value in ShowColumns(teamMembers, "Title"), TrangThai.Value = "DaDuyet"))), 
-                      PendingRequests: CountRows(Filter(DonNghiPhep, And(MaNguoiDung.Value in ShowColumns(teamMembers, "Title"), Or(TrangThai.Value = "ChoDuyetCap1", TrangThai.Value = "ChoDuyetCap2", TrangThai.Value = "ChoDuyetCap3")))), 
-                      RejectedRequests: CountRows(Filter(DonNghiPhep, And(MaNguoiDung.Value in ShowColumns(teamMembers, "Title"), TrangThai.Value = "TuChoi"))),
-                      CancelledRequests: CountRows(Filter(DonNghiPhep, And(MaNguoiDung.Value in ShowColumns(teamMembers, "Title"), TrangThai.Value = "Huy"))),
-                      ExpiredRequests: CountRows(Filter(DonNghiPhep, And(MaNguoiDung.Value in ShowColumns(teamMembers, "Title"), TrangThai.Value = "HetHan")))
-                    }
-                  ),
+                  {
+                    TotalRequests: CountRows(Filter(DonNghiPhep, Not(IsBlank(LookUp(NguoiDung, And(Title = MaNguoiDung, MaQuanLy.Value = UserSessionANP.Id)))))), 
+                    ApprovedRequests: CountRows(Filter(DonNghiPhep, And(Not(IsBlank(LookUp(NguoiDung, And(Title = MaNguoiDung, MaQuanLy.Value = UserSessionANP.Id)))), TrangThai.Value = "DaDuyet"))), 
+                    PendingRequests: CountRows(Filter(DonNghiPhep, And(Not(IsBlank(LookUp(NguoiDung, And(Title = MaNguoiDung, MaQuanLy.Value = UserSessionANP.Id)))), Or(TrangThai.Value = "ChoDuyetCap1", TrangThai.Value = "ChoDuyetCap2", TrangThai.Value = "ChoDuyetCap3")))), 
+                    RejectedRequests: CountRows(Filter(DonNghiPhep, And(Not(IsBlank(LookUp(NguoiDung, And(Title = MaNguoiDung, MaQuanLy.Value = UserSessionANP.Id)))), TrangThai.Value = "TuChoi"))),
+                    CancelledRequests: CountRows(Filter(DonNghiPhep, And(Not(IsBlank(LookUp(NguoiDung, And(Title = MaNguoiDung, MaQuanLy.Value = UserSessionANP.Id)))), TrangThai.Value = "Huy"))),
+                    ExpiredRequests: CountRows(Filter(DonNghiPhep, And(Not(IsBlank(LookUp(NguoiDung, And(Title = MaNguoiDung, MaQuanLy.Value = UserSessionANP.Id)))), TrangThai.Value = "HetHan")))
+                  },
                   //Employee - Personal data only
                   {
                     TotalRequests: CountRows(Filter(DonNghiPhep, MaNguoiDung.Value = UserSessionANP.Id)), 
@@ -101,20 +99,18 @@
                 ),
                 //Manager - Team monthly data only
                 If(varUserPermissions.CanViewTeamLeaves,
-                  With({teamMembers: Filter(NguoiDung, MaQuanLy.Value = UserSessionANP.Id)},
-                    ForAll(Sequence(12), 
-                      With({currentMonth: Value}, {
-                        Thang: currentMonth, 
-                        TenThang: Switch(currentMonth, 
-                          1, "Tháng 1", 2, "Tháng 2", 3, "Tháng 3", 4, "Tháng 4", 
-                          5, "Tháng 5", 6, "Tháng 6", 7, "Tháng 7", 8, "Tháng 8", 
-                          9, "Tháng 9", 10, "Tháng 10", 11, "Tháng 11", 12, "Tháng 12"), 
-                        SoDon: CountRows(Filter(DonNghiPhep, And(Year(NgayBatDau) = varSelectedYear, Month(NgayBatDau) = currentMonth, MaNguoiDung.Value in ShowColumns(teamMembers, "Title")))),
-                        SoDonDuyet: CountRows(Filter(DonNghiPhep, And(Year(NgayBatDau) = varSelectedYear, Month(NgayBatDau) = currentMonth, MaNguoiDung.Value in ShowColumns(teamMembers, "Title"), TrangThai.Value = "DaDuyet"))), 
-                        SoDonTuChoi: CountRows(Filter(DonNghiPhep, And(Year(NgayBatDau) = varSelectedYear, Month(NgayBatDau) = currentMonth, MaNguoiDung.Value in ShowColumns(teamMembers, "Title"), TrangThai.Value = "TuChoi"))),
-                        TongNgayNghi: Sum(Filter(DonNghiPhep, And(Year(NgayBatDau) = varSelectedYear, Month(NgayBatDau) = currentMonth, MaNguoiDung.Value in ShowColumns(teamMembers, "Title"), TrangThai.Value = "DaDuyet")), SoNgayNghi)
-                      })
-                    )
+                  ForAll(Sequence(12), 
+                    With({currentMonth: Value}, {
+                      Thang: currentMonth, 
+                      TenThang: Switch(currentMonth, 
+                        1, "Tháng 1", 2, "Tháng 2", 3, "Tháng 3", 4, "Tháng 4", 
+                        5, "Tháng 5", 6, "Tháng 6", 7, "Tháng 7", 8, "Tháng 8", 
+                        9, "Tháng 9", 10, "Tháng 10", 11, "Tháng 11", 12, "Tháng 12"), 
+                      SoDon: CountRows(Filter(DonNghiPhep, And(Year(NgayBatDau) = varSelectedYear, Month(NgayBatDau) = currentMonth, Not(IsBlank(LookUp(NguoiDung, And(Title = MaNguoiDung, MaQuanLy.Value = UserSessionANP.Id))))))),
+                      SoDonDuyet: CountRows(Filter(DonNghiPhep, And(Year(NgayBatDau) = varSelectedYear, Month(NgayBatDau) = currentMonth, Not(IsBlank(LookUp(NguoiDung, And(Title = MaNguoiDung, MaQuanLy.Value = UserSessionANP.Id)))), TrangThai.Value = "DaDuyet"))), 
+                      SoDonTuChoi: CountRows(Filter(DonNghiPhep, And(Year(NgayBatDau) = varSelectedYear, Month(NgayBatDau) = currentMonth, Not(IsBlank(LookUp(NguoiDung, And(Title = MaNguoiDung, MaQuanLy.Value = UserSessionANP.Id)))), TrangThai.Value = "TuChoi"))),
+                      TongNgayNghi: Sum(Filter(DonNghiPhep, And(Year(NgayBatDau) = varSelectedYear, Month(NgayBatDau) = currentMonth, Not(IsBlank(LookUp(NguoiDung, And(Title = MaNguoiDung, MaQuanLy.Value = UserSessionANP.Id)))), TrangThai.Value = "DaDuyet")), SoNgayNghi)
+                    })
                   ),
                   //Employee - Personal monthly data only
                   ForAll(Sequence(12), 
@@ -209,7 +205,7 @@
                         X: =0
                         Y: =0
                         Width: =Parent.Width
-                        Height: =Parent.Height * 0.25
+                        Height: =Parent.Height * 0.2
                       Children:
                         - 'Reports.Header.Background':
                             Control: Rectangle
@@ -233,7 +229,7 @@
                               Color: =RGBA(17, 24, 39, 1)
                               Font: =Font.'Open Sans'
                               FontWeight: =FontWeight.Bold
-                              Size: =FontSizes.XLarge
+                              Size: =FontSizes.Large
 
                         - 'Reports.Header.Subtitle':
                             Control: Label
@@ -252,7 +248,7 @@
                               Color: =RGBA(107, 114, 128, 1)
                               Font: =Font.'Open Sans'
                               FontWeight: =FontWeight.Normal
-                              Size: =FontSizes.Medium
+                              Size: =FontSizes.Small
 
                         - 'Reports.Export.Button':
                             Control: Export
@@ -267,7 +263,7 @@
                               Color: =RGBA(255, 255, 255, 1)
                               Fill: =RGBA(59, 130, 246, 1)
                               Font: =Font.'Open Sans'
-                              Size: =FontSizes.Medium
+                              Size: =FontSizes.Small
                               FontWeight: =FontWeight.Semibold
                               HoverBorderColor: =ColorFade(RGBA(59, 130, 246, 1), 20%)
                               HoverColor: =RGBA(255, 255, 255, 1)
@@ -310,7 +306,7 @@
                                     Color: =RGBA(17, 24, 39, 1)
                                     Font: =Font.'Open Sans'
                                     FontWeight: =FontWeight.Semibold
-                                    Size: =FontSizes.Large
+                                    Size: =FontSizes.Medium
 
                               - 'Reports.Stats.TotalCard':
                                   Control: CanvasComponent
@@ -395,9 +391,9 @@
                       Variant: ManualLayout
                       Properties:
                         X: =0
-                        Y: ='Reports.Header.Container'.Y + 'Reports.Header.Container'.Height + Parent.Height * 0.015
+                        Y: ='Reports.Header.Container'.Y + 'Reports.Header.Container'.Height + Parent.Height * 0.01
                         Width: =Parent.Width
-                        Height: =Parent.Height * 0.12
+                        Height: =Parent.Height * 0.1
                       Children:
                         - 'Reports.Filter.Background':
                             Control: Rectangle
@@ -421,7 +417,7 @@
                               Color: =RGBA(17, 24, 39, 1)
                               Font: =Font.'Open Sans'
                               FontWeight: =FontWeight.Semibold
-                              Size: =FontSizes.Large
+                              Size: =FontSizes.Medium
 
                         - 'Reports.Filter.Type.Container':
                             Control: GroupContainer
@@ -443,7 +439,7 @@
                                     Color: =RGBA(55, 65, 81, 1)
                                     Font: =Font.'Open Sans'
                                     FontWeight: =FontWeight.Semibold
-                                    Size: =FontSizes.Base
+                                    Size: =FontSizes.Small
 
                               - 'Reports.Filter.Type.Dropdown':
                                   Control: Classic/DropDown
@@ -455,7 +451,7 @@
                                     Items: =["Monthly", "Department", "Employee", "LeaveType"]
                                     Default: =varReportType
                                     Font: =Font.'Open Sans'
-                                    Size: =FontSizes.Base
+                                    Size: =FontSizes.Small
                                     Fill: =RGBA(255, 255, 255, 1)
                                     BorderColor: =RGBA(226, 232, 240, 1)
                                     BorderThickness: =1
@@ -553,7 +549,7 @@
                                             "LeaveType", 
                                             //Leave type report - available for all users
                                             AddColumns(
-                                              LoaiNghi,
+                                              ShowColumns(LoaiNghi, "TenLoai", "CoLuong", "MaLoai"),
                                               "SoLanSuDung", 
                                               If(Or(varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers),
                                                 CountRows(Filter(DonNghiPhep, MaLoai.Value = ThisRecord.MaLoai)),
@@ -577,8 +573,189 @@
                                             ),
                                             []
                                           ),
-                                          //Demo data fallback
-                                          []
+                                          //Demo data fallback when not authenticated
+                                          Switch(varReportType,
+                                            "Monthly", 
+                                            ForAll(Sequence(12), 
+                                              With({currentMonth: Value}, {
+                                                Thang: currentMonth, 
+                                                TenThang: Switch(currentMonth, 1, "Tháng 1", 2, "Tháng 2", 3, "Tháng 3", 4, "Tháng 4", 5, "Tháng 5", 6, "Tháng 6", 7, "Tháng 7", 8, "Tháng 8", 9, "Tháng 9", 10, "Tháng 10", 11, "Tháng 11", 12, "Tháng 12"), 
+                                                SoDon: Rand() * 10 + 5,
+                                                SoDonDuyet: Rand() * 5 + 2, 
+                                                SoDonTuChoi: Rand() * 3 + 1,
+                                                TongNgayNghi: Rand() * 20 + 10
+                                              })
+                                            ),
+                                            "Department",
+                                            Table(
+                                              {TenDonVi: "Phòng IT", TongNhanVien: 15, TongDonNghi: 8, DonDaDuyet: 6, DonTuChoi: 2, TongNgayNghi: 45},
+                                              {TenDonVi: "Phòng HR", TongNhanVien: 8, TongDonNghi: 5, DonDaDuyet: 4, DonTuChoi: 1, TongNgayNghi: 28},
+                                              {TenDonVi: "Phòng Kế toán", TongNhanVien: 12, TongDonNghi: 7, DonDaDuyet: 5, DonTuChoi: 2, TongNgayNghi: 35}
+                                            ),
+                                            "Employee",
+                                            Table(
+                                              {HoTen: "Nguyễn Văn A", TongDonNghi: 3, DonDaDuyet: 2, DonTuChoi: 1, TongNgayNghi: 15},
+                                              {HoTen: "Trần Thị B", TongDonNghi: 2, DonDaDuyet: 2, DonTuChoi: 0, TongNgayNghi: 12},
+                                              {HoTen: "Lê Văn C", TongDonNghi: 4, DonDaDuyet: 3, DonTuChoi: 1, TongNgayNghi: 20}
+                                            ),
+                                            "LeaveType",
+                                            Table(
+                                              {TenLoai: "Nghỉ phép năm", SoLanSuDung: 25, TongNgayNghi: 180, CoLuong: true},
+                                              {TenLoai: "Nghỉ ốm", SoLanSuDung: 12, TongNgayNghi: 45, CoLuong: true},
+                                              {TenLoai: "Nghỉ không lương", SoLanSuDung: 8, TongNgayNghi: 32, CoLuong: false}
+                                            ),
+                                            []
+                                          )
+                                        )
+                                      );
+                                      Set(varReportData, 
+                                        If(IsUserAuthenticated,
+                                          Switch(varReportType, 
+                                            "Monthly", 
+                                            //Monthly report with permission filtering
+                                            If(Or(varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers),
+                                              //Admin/HR - All company monthly data
+                                              ForAll(Sequence(12), 
+                                                With({currentMonth: Value}, {
+                                                  Thang: currentMonth, 
+                                                  TenThang: Switch(currentMonth, 1, "Tháng 1", 2, "Tháng 2", 3, "Tháng 3", 4, "Tháng 4", 5, "Tháng 5", 6, "Tháng 6", 7, "Tháng 7", 8, "Tháng 8", 9, "Tháng 9", 10, "Tháng 10", 11, "Tháng 11", 12, "Tháng 12"), 
+                                                  SoDon: CountRows(Filter(DonNghiPhep, And(Year(NgayBatDau) = varSelectedYear, Month(NgayBatDau) = currentMonth))),
+                                                  SoDonDuyet: CountRows(Filter(DonNghiPhep, And(Year(NgayBatDau) = varSelectedYear, Month(NgayBatDau) = currentMonth, TrangThai.Value = "DaDuyet"))), 
+                                                  SoDonTuChoi: CountRows(Filter(DonNghiPhep, And(Year(NgayBatDau) = varSelectedYear, Month(NgayBatDau) = currentMonth, TrangThai.Value = "TuChoi"))),
+                                                  TongNgayNghi: Sum(Filter(DonNghiPhep, And(Year(NgayBatDau) = varSelectedYear, Month(NgayBatDau) = currentMonth, TrangThai.Value = "DaDuyet")), SoNgayNghi)
+                                                })
+                                              ),
+                                              //Manager/Employee - Filtered monthly data
+                                              If(varUserPermissions.CanViewTeamLeaves,
+                                                With({teamMembers: Filter(NguoiDung, MaQuanLy.Value = UserSessionANP.Id)},
+                                                  ForAll(Sequence(12), 
+                                                    With({currentMonth: Value}, {
+                                                      Thang: currentMonth, 
+                                                      TenThang: Switch(currentMonth, 1, "Tháng 1", 2, "Tháng 2", 3, "Tháng 3", 4, "Tháng 4", 5, "Tháng 5", 6, "Tháng 6", 7, "Tháng 7", 8, "Tháng 8", 9, "Tháng 9", 10, "Tháng 10", 11, "Tháng 11", 12, "Tháng 12"), 
+                                                      SoDon: CountRows(Filter(DonNghiPhep, And(Year(NgayBatDau) = varSelectedYear, Month(NgayBatDau) = currentMonth, MaNguoiDung.Value in ShowColumns(teamMembers, "Title")))),
+                                                      SoDonDuyet: CountRows(Filter(DonNghiPhep, And(Year(NgayBatDau) = varSelectedYear, Month(NgayBatDau) = currentMonth, MaNguoiDung.Value in ShowColumns(teamMembers, "Title"), TrangThai.Value = "DaDuyet"))), 
+                                                      SoDonTuChoi: CountRows(Filter(DonNghiPhep, And(Year(NgayBatDau) = varSelectedYear, Month(NgayBatDau) = currentMonth, MaNguoiDung.Value in ShowColumns(teamMembers, "Title"), TrangThai.Value = "TuChoi"))),
+                                                      TongNgayNghi: Sum(Filter(DonNghiPhep, And(Year(NgayBatDau) = varSelectedYear, Month(NgayBatDau) = currentMonth, MaNguoiDung.Value in ShowColumns(teamMembers, "Title"), TrangThai.Value = "DaDuyet")), SoNgayNghi)
+                                                    })
+                                                  )
+                                                ),
+                                                ForAll(Sequence(12), 
+                                                  With({currentMonth: Value}, {
+                                                    Thang: currentMonth, 
+                                                    TenThang: Switch(currentMonth, 1, "Tháng 1", 2, "Tháng 2", 3, "Tháng 3", 4, "Tháng 4", 5, "Tháng 5", 6, "Tháng 6", 7, "Tháng 7", 8, "Tháng 8", 9, "Tháng 9", 10, "Tháng 10", 11, "Tháng 11", 12, "Tháng 12"), 
+                                                    SoDon: CountRows(Filter(DonNghiPhep, And(Year(NgayBatDau) = varSelectedYear, Month(NgayBatDau) = currentMonth, MaNguoiDung.Value = UserSessionANP.Id))),
+                                                    SoDonDuyet: CountRows(Filter(DonNghiPhep, And(Year(NgayBatDau) = varSelectedYear, Month(NgayBatDau) = currentMonth, MaNguoiDung.Value = UserSessionANP.Id, TrangThai.Value = "DaDuyet"))), 
+                                                    SoDonTuChoi: CountRows(Filter(DonNghiPhep, And(Year(NgayBatDau) = varSelectedYear, Month(NgayBatDau) = currentMonth, MaNguoiDung.Value = UserSessionANP.Id, TrangThai.Value = "TuChoi"))),
+                                                    TongNgayNghi: Sum(Filter(DonNghiPhep, And(Year(NgayBatDau) = varSelectedYear, Month(NgayBatDau) = currentMonth, MaNguoiDung.Value = UserSessionANP.Id, TrangThai.Value = "DaDuyet")), SoNgayNghi)
+                                                  })
+                                                )
+                                              )
+                                            ), 
+                                            "Department", 
+                                            //Department report - only for Admin/HR
+                                            If(Or(varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers),
+                                              AddColumns(
+                                                ShowColumns(DonVi, "TenDonVi", "Title"),
+                                                "TongNhanVien", CountRows(Filter(NguoiDung, MaDonVi.Value = ThisRecord.Title)),
+                                                "TongDonNghi", CountRows(Filter(DonNghiPhep, LookUp(NguoiDung, Title = MaNguoiDung.Value).MaDonVi.Value = ThisRecord.Title)),
+                                                "DonDaDuyet", CountRows(Filter(DonNghiPhep, And(TrangThai.Value = "DaDuyet", LookUp(NguoiDung, Title = MaNguoiDung.Value).MaDonVi.Value = ThisRecord.Title))),
+                                                "DonTuChoi", CountRows(Filter(DonNghiPhep, And(TrangThai.Value = "TuChoi", LookUp(NguoiDung, Title = MaNguoiDung.Value).MaDonVi.Value = ThisRecord.Title))),
+                                                "TongNgayNghi", Sum(Filter(DonNghiPhep, And(TrangThai.Value = "DaDuyet", LookUp(NguoiDung, Title = MaNguoiDung.Value).MaDonVi.Value = ThisRecord.Title)), SoNgayNghi)
+                                              ),
+                                              []
+                                            ),
+                                            "Employee", 
+                                            //Employee report with permission filtering
+                                            If(Or(varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers),
+                                              //Admin/HR - All employees
+                                              AddColumns(
+                                                ShowColumns(Filter(NguoiDung, TrangThai.Value = "HoatDong"), "HoTen", "Title", "ChucDanh"),
+                                                "TongDonNghi", CountRows(Filter(DonNghiPhep, MaNguoiDung.Value = ThisRecord.Title)),
+                                                "DonDaDuyet", CountRows(Filter(DonNghiPhep, And(MaNguoiDung.Value = ThisRecord.Title, TrangThai.Value = "DaDuyet"))),
+                                                "DonTuChoi", CountRows(Filter(DonNghiPhep, And(MaNguoiDung.Value = ThisRecord.Title, TrangThai.Value = "TuChoi"))),
+                                                "TongNgayNghi", Sum(Filter(DonNghiPhep, And(MaNguoiDung.Value = ThisRecord.Title, TrangThai.Value = "DaDuyet")), SoNgayNghi)
+                                              ),
+                                              //Manager - Team members only
+                                              If(varUserPermissions.CanViewTeamLeaves,
+                                                With({teamMembers: Filter(NguoiDung, MaQuanLy.Value = UserSessionANP.Id)},
+                                                  AddColumns(
+                                                    ShowColumns(teamMembers, "HoTen", "Title", "ChucDanh"),
+                                                    "TongDonNghi", CountRows(Filter(DonNghiPhep, MaNguoiDung.Value = ThisRecord.Title)),
+                                                    "DonDaDuyet", CountRows(Filter(DonNghiPhep, And(MaNguoiDung.Value = ThisRecord.Title, TrangThai.Value = "DaDuyet"))),
+                                                    "DonTuChoi", CountRows(Filter(DonNghiPhep, And(MaNguoiDung.Value = ThisRecord.Title, TrangThai.Value = "TuChoi"))),
+                                                    "TongNgayNghi", Sum(Filter(DonNghiPhep, And(MaNguoiDung.Value = ThisRecord.Title, TrangThai.Value = "DaDuyet")), SoNgayNghi)
+                                                  )
+                                                ),
+                                                //Employee - Personal data only
+                                                AddColumns(
+                                                  ShowColumns(Filter(NguoiDung, Title = UserSessionANP.Id), "HoTen", "Title", "ChucDanh"),
+                                                  "TongDonNghi", CountRows(Filter(DonNghiPhep, MaNguoiDung.Value = ThisRecord.Title)),
+                                                  "DonDaDuyet", CountRows(Filter(DonNghiPhep, And(MaNguoiDung.Value = ThisRecord.Title, TrangThai.Value = "DaDuyet"))),
+                                                  "DonTuChoi", CountRows(Filter(DonNghiPhep, And(MaNguoiDung.Value = ThisRecord.Title, TrangThai.Value = "TuChoi"))),
+                                                  "TongNgayNghi", Sum(Filter(DonNghiPhep, And(MaNguoiDung.Value = ThisRecord.Title, TrangThai.Value = "DaDuyet")), SoNgayNghi)
+                                                )
+                                              )
+                                            ),
+                                            "LeaveType", 
+                                            //Leave type report - available for all users
+                                            AddColumns(
+                                              ShowColumns(LoaiNghi, "TenLoai", "CoLuong", "MaLoai"),
+                                              "SoLanSuDung", 
+                                              If(Or(varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers),
+                                                CountRows(Filter(DonNghiPhep, MaLoai.Value = ThisRecord.MaLoai)),
+                                                If(varUserPermissions.CanViewTeamLeaves,
+                                                  With({teamMembers: Filter(NguoiDung, MaQuanLy.Value = UserSessionANP.Id)},
+                                                    CountRows(Filter(DonNghiPhep, And(MaLoai.Value = ThisRecord.MaLoai, MaNguoiDung.Value in ShowColumns(teamMembers, "Title"))))
+                                                  ),
+                                                  CountRows(Filter(DonNghiPhep, And(MaLoai.Value = ThisRecord.MaLoai, MaNguoiDung.Value = UserSessionANP.Id)))
+                                                )
+                                              ),
+                                              "TongNgayNghi", 
+                                              If(Or(varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers),
+                                                Sum(Filter(DonNghiPhep, And(MaLoai.Value = ThisRecord.MaLoai, TrangThai.Value = "DaDuyet")), SoNgayNghi),
+                                                If(varUserPermissions.CanViewTeamLeaves,
+                                                  With({teamMembers: Filter(NguoiDung, MaQuanLy.Value = UserSessionANP.Id)},
+                                                    Sum(Filter(DonNghiPhep, And(MaLoai.Value = ThisRecord.MaLoai, TrangThai.Value = "DaDuyet", MaNguoiDung.Value in ShowColumns(teamMembers, "Title"))), SoNgayNghi)
+                                                  ),
+                                                  Sum(Filter(DonNghiPhep, And(MaLoai.Value = ThisRecord.MaLoai, TrangThai.Value = "DaDuyet", MaNguoiDung.Value = UserSessionANP.Id)), SoNgayNghi)
+                                                )
+                                              )
+                                            ),
+                                            []
+                                          ),
+                                          //Demo data fallback when not authenticated
+                                          Switch(varReportType,
+                                            "Monthly", 
+                                            ForAll(Sequence(12), 
+                                              With({currentMonth: Value}, {
+                                                Thang: currentMonth, 
+                                                TenThang: Switch(currentMonth, 1, "Tháng 1", 2, "Tháng 2", 3, "Tháng 3", 4, "Tháng 4", 5, "Tháng 5", 6, "Tháng 6", 7, "Tháng 7", 8, "Tháng 8", 9, "Tháng 9", 10, "Tháng 10", 11, "Tháng 11", 12, "Tháng 12"), 
+                                                SoDon: Rand() * 10 + 5,
+                                                SoDonDuyet: Rand() * 5 + 2, 
+                                                SoDonTuChoi: Rand() * 3 + 1,
+                                                TongNgayNghi: Rand() * 20 + 10
+                                              })
+                                            ),
+                                            "Department",
+                                            Table(
+                                              {TenDonVi: "Phòng IT", TongNhanVien: 15, TongDonNghi: 8, DonDaDuyet: 6, DonTuChoi: 2, TongNgayNghi: 45},
+                                              {TenDonVi: "Phòng HR", TongNhanVien: 8, TongDonNghi: 5, DonDaDuyet: 4, DonTuChoi: 1, TongNgayNghi: 28},
+                                              {TenDonVi: "Phòng Kế toán", TongNhanVien: 12, TongDonNghi: 7, DonDaDuyet: 5, DonTuChoi: 2, TongNgayNghi: 35}
+                                            ),
+                                            "Employee",
+                                            Table(
+                                              {HoTen: "Nguyễn Văn A", TongDonNghi: 3, DonDaDuyet: 2, DonTuChoi: 1, TongNgayNghi: 15},
+                                              {HoTen: "Trần Thị B", TongDonNghi: 2, DonDaDuyet: 2, DonTuChoi: 0, TongNgayNghi: 12},
+                                              {HoTen: "Lê Văn C", TongDonNghi: 4, DonDaDuyet: 3, DonTuChoi: 1, TongNgayNghi: 20}
+                                            ),
+                                            "LeaveType",
+                                            Table(
+                                              {TenLoai: "Nghỉ phép năm", SoLanSuDung: 25, TongNgayNghi: 180, CoLuong: true},
+                                              {TenLoai: "Nghỉ ốm", SoLanSuDung: 12, TongNgayNghi: 45, CoLuong: true},
+                                              {TenLoai: "Nghỉ không lương", SoLanSuDung: 8, TongNgayNghi: 32, CoLuong: false}
+                                            ),
+                                            []
+                                          )
                                         )
                                       )
 
@@ -602,7 +779,7 @@
                                     Color: =RGBA(55, 65, 81, 1)
                                     Font: =Font.'Open Sans'
                                     FontWeight: =FontWeight.Semibold
-                                    Size: =FontSizes.Base
+                                    Size: =FontSizes.Small
                         
                               - 'Reports.Filter.Period.Dropdown':
                                   Control: Classic/DropDown
@@ -614,7 +791,7 @@
                                     Items: =["This Month", "Last Month", "This Quarter", "This Year", "Last Year"]
                                     Default: =varReportPeriod
                                     Font: =Font.'Open Sans'
-                                    Size: =FontSizes.Base
+                                    Size: =FontSizes.Small
                                     Fill: =RGBA(255, 255, 255, 1)
                                     BorderColor: =RGBA(226, 232, 240, 1)
                                     BorderThickness: =1
@@ -641,7 +818,7 @@
                                     Color: =RGBA(55, 65, 81, 1)
                                     Font: =Font.'Open Sans'
                                     FontWeight: =FontWeight.Semibold
-                                    Size: =FontSizes.Base
+                                    Size: =FontSizes.Small
 
                               - 'Reports.Filter.Year.Input':
                                   Control: Classic/TextInput
@@ -653,12 +830,12 @@
                                     Default: =Text(varSelectedYear)
                                     Format: =TextFormat.Number
                                     Font: =Font.'Open Sans'
-                                    Size: =FontSizes.Base
+                                    Size: =FontSizes.Small
                                     Fill: =RGBA(255, 255, 255, 1)
                                     BorderColor: =RGBA(226, 232, 240, 1)
                                     BorderThickness: =1
                                     OnChange: |
-                                      =Set(varSelectedYear, Value(Self.Default))
+                                      =Set(varSelectedYear, Value(Self.Text))
 
                         - 'Reports.Filter.Generate':
                             Control: CanvasComponent
@@ -815,7 +992,7 @@
                               Color: =RGBA(107, 114, 128, 1)
                               Font: =Font.'Open Sans'
                               FontWeight: =FontWeight.Normal
-                              Size: =FontSizes.Base
+                              Size: =FontSizes.Small
                               Align: =Align.Left
 
                   - 'Reports.Chart.Container':
@@ -823,9 +1000,9 @@
                       Variant: ManualLayout
                       Properties:
                         X: =0
-                        Y: ='Reports.Filter.Container'.Y + 'Reports.Filter.Container'.Height + Parent.Height * 0.015
+                        Y: ='Reports.Filter.Container'.Y + 'Reports.Filter.Container'.Height + Parent.Height * 0.01
                         Width: =Parent.Width
-                        Height: =Parent.Height * 0.35
+                        Height: =Parent.Height * 0.4
                         Visible: =CountRows(varReportData) > 0
                       Children:
                         - 'Reports.Chart.Background':
@@ -855,7 +1032,7 @@
                               Color: =RGBA(17, 24, 39, 1)
                               Font: =Font.'Open Sans'
                               FontWeight: =FontWeight.Semibold
-                              Size: =FontSizes.Large
+                              Size: =FontSizes.Medium
 
                         - 'Reports.Chart.TypeSelector':
                             Control: GroupContainer
@@ -877,7 +1054,7 @@
                                     Color: =RGBA(55, 65, 81, 1)
                                     Font: =Font.'Open Sans'
                                     FontWeight: =FontWeight.Normal
-                                    Size: =FontSizes.Base
+                                    Size: =FontSizes.Small
                                     Align: =Align.Center
 
                               - 'Reports.Chart.Type.Dropdown':
@@ -895,7 +1072,7 @@
                                       ["Column"])
                                     Default: ="Column"
                                     Font: =Font.'Open Sans'
-                                    Size: =FontSizes.Base
+                                    Size: =FontSizes.Small
                                     BorderColor: =RGBA(226, 232, 240, 1)
                                     BorderThickness: =1
                                     OnChange: |
@@ -950,21 +1127,21 @@
                               Color: =RGBA(59, 130, 246, 1)
                               Font: =Font.'Open Sans'
                               FontWeight: =FontWeight.Semibold
-                              Size: =FontSizes.Base
+                              Size: =FontSizes.Small
                               Align: =Align.Center
 
       - 'Reports.DataTable':
           Control: DataTable
           Properties:
             X: ='Reports.Navigation'.Width + 'Reports.Content.Container'.Width * 0.02
-            Y: ='Reports.Header'.Height + 'Reports.Content.Container'.Height * 0.75
+            Y: ='Reports.Header'.Height + 'Reports.Content.Container'.Height * 0.72
             Width: ='Reports.Content.Container'.Width * 0.96
-            Height: ='Reports.Content.Container'.Width * 0.22
+            Height: ='Reports.Content.Container'.Width * 0.25
             Items: =varReportData
             BorderColor: =RGBA(229, 231, 235, 1)
             BorderThickness: =1
             Font: =Font.'Open Sans'
-            Size: =FontSizes.Base
+            Size: =FontSizes.Small
             Color: =RGBA(55, 65, 81, 1)
             HeadingColor: =RGBA(255, 255, 255, 1)
             HeadingFill: =RGBA(59, 130, 246, 1)
@@ -978,7 +1155,12 @@
                   FieldDisplayName: =Switch(varReportType, "Monthly", "Tháng", "Department", "Phòng ban", "Employee", "Nhân viên", "LeaveType", "Loại nghỉ", "Tên")
                   FieldName: ="Name"
                   Order: =1
-                  Text: =Switch(varReportType, "Department", Parent.Selected.TenDonVi, "Employee", Parent.Selected.HoTen, "LeaveType", Parent.Selected.TenLoai, "Monthly", Parent.Selected.TenThang, "N/A")
+                  Text: =Switch(varReportType, 
+                    "Department", If(Not(IsBlank(Parent.Selected.TenDonVi)), Parent.Selected.TenDonVi, "N/A"), 
+                    "Employee", If(Not(IsBlank(Parent.Selected.HoTen)), Parent.Selected.HoTen, "N/A"), 
+                    "LeaveType", If(Not(IsBlank(Parent.Selected.TenLoai)), Parent.Selected.TenLoai, "N/A"), 
+                    "Monthly", If(Not(IsBlank(Parent.Selected.TenThang)), Parent.Selected.TenThang, "N/A"), 
+                    "N/A")
                   Width: =Parent.Width * 0.25
 
             - Column2:
@@ -988,7 +1170,12 @@
                   FieldDisplayName: =Switch(varReportType, "Department", "Tổng NV", "Employee", "Tổng đơn", "LeaveType", "Số lần dùng", "Monthly", "Số đơn", "Giá trị 1")
                   FieldName: ="Value1"
                   Order: =2
-                  Text: =Switch(varReportType, "Department", Text(Parent.Selected.TongNhanVien), "Employee", Text(Parent.Selected.TongDonNghi), "LeaveType", Text(Parent.Selected.SoLanSuDung), "Monthly", Text(Parent.Selected.SoDon), "0")
+                  Text: =Switch(varReportType, 
+                    "Department", If(Not(IsBlank(Parent.Selected.TongNhanVien)), Text(Parent.Selected.TongNhanVien), "0"), 
+                    "Employee", If(Not(IsBlank(Parent.Selected.TongDonNghi)), Text(Parent.Selected.TongDonNghi), "0"), 
+                    "LeaveType", If(Not(IsBlank(Parent.Selected.SoLanSuDung)), Text(Parent.Selected.SoLanSuDung), "0"), 
+                    "Monthly", If(Not(IsBlank(Parent.Selected.SoDon)), Text(Parent.Selected.SoDon), "0"), 
+                    "0")
                   Width: =Parent.Width * 0.18
 
             - Column3:
@@ -998,7 +1185,12 @@
                   FieldDisplayName: =Switch(varReportType, "Department", "Đã duyệt", "Employee", "Đã duyệt", "LeaveType", "Tổng ngày", "Monthly", "Đã duyệt", "Giá trị 2")
                   FieldName: ="Value2"
                   Order: =3
-                  Text: =Switch(varReportType, "Department", Text(Parent.Selected.DonDaDuyet), "Employee", Text(Parent.Selected.DonDaDuyet), "LeaveType", Text(Parent.Selected.TongNgayNghi), "Monthly", Text(Parent.Selected.SoDonDuyet), "0")
+                  Text: =Switch(varReportType, 
+                    "Department", If(Not(IsBlank(Parent.Selected.DonDaDuyet)), Text(Parent.Selected.DonDaDuyet), "0"), 
+                    "Employee", If(Not(IsBlank(Parent.Selected.DonDaDuyet)), Text(Parent.Selected.DonDaDuyet), "0"), 
+                    "LeaveType", If(Not(IsBlank(Parent.Selected.TongNgayNghi)), Text(Parent.Selected.TongNgayNghi), "0"), 
+                    "Monthly", If(Not(IsBlank(Parent.Selected.SoDonDuyet)), Text(Parent.Selected.SoDonDuyet), "0"), 
+                    "0")
                   Width: =Parent.Width * 0.18
 
             - Column4:
@@ -1008,7 +1200,12 @@
                   FieldDisplayName: =Switch(varReportType, "Department", "Tổng ngày nghỉ", "Employee", "Tổng ngày nghỉ", "LeaveType", "Mô tả", "Monthly", "Tổng ngày nghỉ", "Giá trị 3")
                   FieldName: ="Value3"
                   Order: =4
-                  Text: =Switch(varReportType, "Department", Text(Parent.Selected.TongNgayNghi), "Employee", Text(Parent.Selected.TongNgayNghi), "LeaveType", "Có lương", "Monthly", Text(Parent.Selected.TongNgayNghi), "0")
+                  Text: =Switch(varReportType, 
+                    "Department", If(Not(IsBlank(Parent.Selected.TongNgayNghi)), Text(Parent.Selected.TongNgayNghi), "0"), 
+                    "Employee", If(Not(IsBlank(Parent.Selected.TongNgayNghi)), Text(Parent.Selected.TongNgayNghi), "0"), 
+                    "LeaveType", If(And(Not(IsBlank(Parent.Selected.CoLuong)), IsType(Parent.Selected.CoLuong, Boolean)), If(Parent.Selected.CoLuong, "Có lương", "Không lương"), "Có lương"), 
+                    "Monthly", If(Not(IsBlank(Parent.Selected.TongNgayNghi)), Text(Parent.Selected.TongNgayNghi), "0"), 
+                    "0")
                   Width: =Parent.Width * 0.22
 
       - 'Reports.Export.Overlay':
