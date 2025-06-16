@@ -3,8 +3,13 @@
     Properties:
       Fill: =RGBA(248, 250, 252, 1)
       OnVisible: |
-        =Set(varActiveScreen, "Management"); 
-        //Permission checks using helper functions from App/Formulas  
+        =Set(varActiveScreen, "Management");
+        Set(varNavCollapsed, false);
+        Set(varMobileMenuOpen, false);
+        Set(varDataLoading, true);
+        Set(varNetworkError, false);
+        
+        //Check user permissions using CheckPermission function from App/Formulas  
         Set(varUserPermissions, {
           ManageUsers: CheckPermission(UserSessionANP.Permission, UserPermissions.MANAGE_USERS),
           ManageRoles: CheckPermission(UserSessionANP.Permission, UserPermissions.MANAGE_ROLES),
@@ -13,65 +18,24 @@
           ManageApprovalProcess: CheckPermission(UserSessionANP.Permission, UserPermissions.MANAGE_APPROVAL_PROCESS),
           ExportReports: CheckPermission(UserSessionANP.Permission, UserPermissions.EXPORT_REPORTS),
           SystemAdmin: CheckPermission(UserSessionANP.Permission, UserPermissions.SYSTEM_ADMIN),
-          ViewDashboard: CheckPermission(UserSessionANP.Permission, UserPermissions.VIEW_DASHBOARD)
+          ViewDashboard: CheckPermission(UserSessionANP.Permission, UserPermissions.VIEW_DASHBOARD),
+          CanViewAllLeaves: CheckPermission(UserSessionANP.Permission, UserPermissions.VIEW_ALL_LEAVE),
+          CanManageUsers: CheckPermission(UserSessionANP.Permission, UserPermissions.MANAGE_USERS)
         });
         
-        //CRITICAL: Check if user has ANY management permission
-        Set(varCanAccessManagement, CanAccessManagement(UserSessionANP.Permission));
+        //CRITICAL: Check if user has ANY management permission using existing permission variables
+        Set(varCanAccessManagement, Or(
+          varUserPermissions.CanManageUsers,
+          varUserPermissions.CanViewAllLeaves,
+          varUserPermissions.ManageUsers,
+          varUserPermissions.ManageHolidays,
+          varUserPermissions.ManageLeaveQuota,
+          varUserPermissions.ManageApprovalProcess,
+          varUserPermissions.SystemAdmin,
+          UserSessionANP.MaVaiTro = "Admin"
+        ));
         
-        //If no management permission, redirect to Dashboard with notification
-        If(Not(varCanAccessManagement),
-          Notify("Bạn không có quyền truy cập trang Quản lý", NotificationType.Error);
-          Navigate(DashboardScreen),
-          //Continue with management screen initialization
-          Set(varSelectedManagementTab, "Users");
-          Set(varIsUserFormOpen, false);
-          Set(varSelectedUser, Blank());
-          Set(varIsEditingUser, false);
-          Set(varUserFormName, "");
-          Set(varUserFormEmail, "");
-          Set(varUserFormPassword, "");
-          Set(varUserFormRole, "");
-          Set(varUserFormDepartment, "");
-          Set(varUserFormStatus, "HoatDong");
-          Set(varRecordSelected, false);
-          Set(varSelectedUserRecord, Blank());
-          Set(varSelectedLeaveBalanceRecord, {MaNguoiDung: "", Nam: 2024, TongNgayDuocPhep: 0, SoNgayDaNghi: 0, SoNgayConLai: 0});
-          Set(varSelectedHolidayRecord, {MaNgayLe: 0, TenNgayLe: "", Ngay: "", Nam: 2024, Buoi: "CaNgay"});
-          Set(varSelectedWorkflowRecord, {MaDonVi: "", Cap: "", MaVaiTro: "", NguoiDuyetMacDinh: "", DangHoatDong: false});
-          Set(varSelectedHoliday, {MaNgayLe: 0, TenNgayLe: "", Ngay: "", Nam: 2024, Buoi: "CaNgay"});
-          ClearCollect(colAllUsers, 
-            {Title: "EMP001", HoTen: "Nguyễn Văn An", Email: "an.nguyen@company.com", 
-             MatKhau: "123456", MaDonVi: "IT", MaVaiTro: "Employee", TrangThai: "HoatDong"},
-            {Title: "EMP002", HoTen: "Trần Thị Bình", Email: "binh.tran@company.com", 
-             MatKhau: "123456", MaDonVi: "HR", MaVaiTro: "Manager", TrangThai: "HoatDong"},
-            {Title: "EMP003", HoTen: "Lê Hoàng Cường", Email: "cuong.le@company.com", 
-             MatKhau: "123456", MaDonVi: "Finance", MaVaiTro: "Director", TrangThai: "HoatDong"},
-            {Title: "EMP004", HoTen: "Phạm Thị Dung", Email: "dung.pham@company.com", 
-             MatKhau: "123456", MaDonVi: "Marketing", MaVaiTro: "Director", TrangThai: "HoatDong"},
-            {Title: "EMP005", HoTen: "Võ Minh Tuấn", Email: "tuan.vo@company.com", 
-             MatKhau: "123456", MaDonVi: "IT", MaVaiTro: "Manager", TrangThai: "HoatDong"}
-          );
-          ClearCollect(colAllDepartments, 
-            {MaDonVi: "IT", TenDonVi: "Phòng Công nghệ thông tin"},
-            {MaDonVi: "HR", TenDonVi: "Phòng Nhân sự"},
-            {MaDonVi: "Finance", TenDonVi: "Phòng Tài chính"},
-            {MaDonVi: "Marketing", TenDonVi: "Phòng Marketing"}
-          ); 
-          ClearCollect(colAllRoles, 
-            {MaVaiTro: "Employee", TenVaiTro: "Nhân viên"},
-            {MaVaiTro: "Manager", TenVaiTro: "Quản lý"},
-            {MaVaiTro: "Director", TenVaiTro: "Giám đốc"},
-            {MaVaiTro: "HR", TenVaiTro: "Nhân sự"},
-            {MaVaiTro: "Admin", TenVaiTro: "Quản trị viên"}
-          );
-          ClearCollect(colHolidaysList, 
-            {MaNgayLe: 1, Ngay: "01/01", TenNgayLe: "Tết Dương lịch", Nam: 2024, Buoi: "CaNgay"},
-            {MaNgayLe: 2, Ngay: "08/02", TenNgayLe: "Tết Nguyên đán (28 Tết)", Nam: 2024, Buoi: "CaNgay"},
-            {MaNgayLe: 3, Ngay: "09/02", TenNgayLe: "Tết Nguyên đán (29 Tết 2024)", Nam: 2024, Buoi: "CaNgay"},
-            {MaNgayLe: 4, Ngay: "10/02", TenNgayLe: "Tết Nguyên đán (Mùng 1)", Nam: 2024, Buoi: "CaNgay"},
-            {MaNgayLe: 5, Ngay: "11/02", TenNgayLe: "Tết Nguyên đán (Mùng 2 2024)", Nam: 2024, Buoi: "CaNgay"},
-            {MaNgayLe: 6, Ngay: "12/02", TenNgayLe: "Tết Nguyên đán (Mùng 3 2024)", Nam: 2024, Buoi: "CaNgay"},
+        //Initialize management screen variables
         Set(varSelectedManagementTab, "Users");
         Set(varIsUserFormOpen, false);
         Set(varSelectedUser, Blank());
@@ -88,65 +52,6 @@
         Set(varSelectedHolidayRecord, {MaNgayLe: 0, TenNgayLe: "", Ngay: "", Nam: 2024, Buoi: "CaNgay"});
         Set(varSelectedWorkflowRecord, {MaDonVi: "", Cap: "", MaVaiTro: "", NguoiDuyetMacDinh: "", DangHoatDong: false});
         Set(varSelectedHoliday, {MaNgayLe: 0, TenNgayLe: "", Ngay: "", Nam: 2024, Buoi: "CaNgay"});
-        ClearCollect(colAllUsers, 
-          {Title: "EMP001", HoTen: "Nguyễn Văn An", Email: "an.nguyen@company.com", 
-           MatKhau: "123456", MaDonVi: "IT", MaVaiTro: "Employee", TrangThai: "HoatDong"},
-          {Title: "EMP002", HoTen: "Trần Thị Bình", Email: "binh.tran@company.com", 
-           MatKhau: "123456", MaDonVi: "HR", MaVaiTro: "Manager", TrangThai: "HoatDong"},
-          {Title: "EMP003", HoTen: "Lê Hoàng Cường", Email: "cuong.le@company.com", 
-           MatKhau: "123456", MaDonVi: "Finance", MaVaiTro: "Director", TrangThai: "HoatDong"},
-          {Title: "EMP004", HoTen: "Phạm Thị Dung", Email: "dung.pham@company.com", 
-           MatKhau: "123456", MaDonVi: "Marketing", MaVaiTro: "Director", TrangThai: "HoatDong"},
-          {Title: "EMP005", HoTen: "Võ Minh Tuấn", Email: "tuan.vo@company.com", 
-           MatKhau: "123456", MaDonVi: "IT", MaVaiTro: "Manager", TrangThai: "HoatDong"}
-        );
-        ClearCollect(colAllDepartments, 
-          {MaDonVi: "IT", TenDonVi: "Phòng Công nghệ thông tin"},
-          {MaDonVi: "HR", TenDonVi: "Phòng Nhân sự"},
-          {MaDonVi: "Finance", TenDonVi: "Phòng Tài chính"},
-          {MaDonVi: "Marketing", TenDonVi: "Phòng Marketing"}
-        ); 
-        ClearCollect(colAllRoles, 
-          {MaVaiTro: "Employee", TenVaiTro: "Nhân viên"},
-          {MaVaiTro: "Manager", TenVaiTro: "Quản lý"},
-          {MaVaiTro: "Director", TenVaiTro: "Giám đốc"},
-          {MaVaiTro: "HR", TenVaiTro: "Nhân sự"},
-          {MaVaiTro: "Admin", TenVaiTro: "Quản trị viên"}
-        );
-        ClearCollect(colHolidaysList, 
-          {MaNgayLe: 1, Ngay: "01/01", TenNgayLe: "Tết Dương lịch", Nam: 2024, Buoi: "CaNgay"},
-          {MaNgayLe: 2, Ngay: "08/02", TenNgayLe: "Tết Nguyên đán (28 Tết)", Nam: 2024, Buoi: "CaNgay"},
-          {MaNgayLe: 3, Ngay: "09/02", TenNgayLe: "Tết Nguyên đán (29 Tết 2024)", Nam: 2024, Buoi: "CaNgay"},
-          {MaNgayLe: 4, Ngay: "10/02", TenNgayLe: "Tết Nguyên đán (Mùng 1)", Nam: 2024, Buoi: "CaNgay"},
-          {MaNgayLe: 5, Ngay: "11/02", TenNgayLe: "Tết Nguyên đán (Mùng 2 2024)", Nam: 2024, Buoi: "CaNgay"},
-          {MaNgayLe: 6, Ngay: "12/02", TenNgayLe: "Tết Nguyên đán (Mùng 3 2024)", Nam: 2024, Buoi: "CaNgay"},
-          {MaNgayLe: 7, Ngay: "13/02", TenNgayLe: "Tết Nguyên đán (Mùng 4 2024)", Nam: 2024, Buoi: "CaNgay"},
-          {MaNgayLe: 8, Ngay: "14/02", TenNgayLe: "Tết Nguyên đán (Mùng 5 2024)", Nam: 2024, Buoi: "CaNgay"},
-          {MaNgayLe: 9, Ngay: "18/04", TenNgayLe: "Giỗ tổ Hùng Vương 2024", Nam: 2024, Buoi: "CaNgay"},
-          {MaNgayLe: 10, Ngay: "30/04", TenNgayLe: "Ngày Giải phóng miền Nam", Nam: 2024, Buoi: "CaNgay"},
-          {MaNgayLe: 11, Ngay: "01/05", TenNgayLe: "Ngày Quốc tế Lao động", Nam: 2024, Buoi: "CaNgay"},
-          {MaNgayLe: 12, Ngay: "02/09", TenNgayLe: "Ngày Quốc khánh", Nam: 2024, Buoi: "CaNgay"},
-          {MaNgayLe: 13, Ngay: "03/09", TenNgayLe: "Ngày nghỉ bù Quốc khánh 2024", Nam: 2024, Buoi: "CaNgay"}
-        );
-        ClearCollect(colLeaveBalanceData, 
-          {MaNguoiDung: "EMP001", Nam: 2024, TongNgayDuocPhep: 12, SoNgayDaNghi: 3, SoNgayConLai: 9},
-          {MaNguoiDung: "EMP002", Nam: 2024, TongNgayDuocPhep: 15, SoNgayDaNghi: 5, SoNgayConLai: 10},
-          {MaNguoiDung: "EMP003", Nam: 2024, TongNgayDuocPhep: 12, SoNgayDaNghi: 2, SoNgayConLai: 10}
-        );
-        ClearCollect(colWorkflowData, 
-          {MaDonVi: "IT", Cap: "1", MaVaiTro: "Manager", NguoiDuyetMacDinh: "EMP005", DangHoatDong: true},
-          {MaDonVi: "IT", Cap: "2", MaVaiTro: "Director", NguoiDuyetMacDinh: "EMP004", DangHoatDong: true},
-          {MaDonVi: "IT", Cap: "3", MaVaiTro: "Director", NguoiDuyetMacDinh: "EMP003", DangHoatDong: true},
-          {MaDonVi: "HR", Cap: "1", MaVaiTro: "Manager", NguoiDuyetMacDinh: "EMP002", DangHoatDong: true},
-          {MaDonVi: "HR", Cap: "2", MaVaiTro: "Director", NguoiDuyetMacDinh: "EMP004", DangHoatDong: true},
-          {MaDonVi: "HR", Cap: "3", MaVaiTro: "Director", NguoiDuyetMacDinh: "EMP003", DangHoatDong: true},
-          {MaDonVi: "Finance", Cap: "1", MaVaiTro: "Manager", NguoiDuyetMacDinh: "EMP002", DangHoatDong: true},
-          {MaDonVi: "Finance", Cap: "2", MaVaiTro: "Director", NguoiDuyetMacDinh: "EMP004", DangHoatDong: true},
-          {MaDonVi: "Finance", Cap: "3", MaVaiTro: "Director", NguoiDuyetMacDinh: "EMP003", DangHoatDong: true},
-          {MaDonVi: "Marketing", Cap: "1", MaVaiTro: "Manager", NguoiDuyetMacDinh: "EMP002", DangHoatDong: true},
-          {MaDonVi: "Marketing", Cap: "2", MaVaiTro: "Director", NguoiDuyetMacDinh: "EMP004", DangHoatDong: true},
-          {MaDonVi: "Marketing", Cap: "3", MaVaiTro: "Director", NguoiDuyetMacDinh: "EMP003", DangHoatDong: true}
-        );
         Set(varShowImportModal, false);
         Set(varIsHolidayFormOpen, false);
         Set(varHolidayFormDate, Today());
@@ -154,8 +59,140 @@
         Set(varHolidayFormSession, "CaNgay");
         Set(varHolidayFormYear, Year(Today()));
         Set(varIsImporting, false);
-        Set(varImportedDataCount, 0)
+        Set(varImportedDataCount, 0);
+        
+        //Load SharePoint data with authentication check
+        If(varIsUserAuthenticated,
+          //Load Users from SharePoint NguoiDung based on permissions
+          If(varUserPermissions.ManageUsers,
+            ClearCollect(colAllUsers, NguoiDung);
+            Set(varNetworkError, false),
+            //No permission - clear data
+            ClearCollect(colAllUsers, Blank())
+          );
+          
+          //Load Departments from SharePoint DonVi
+          If(Or(varUserPermissions.ManageUsers, varUserPermissions.SystemAdmin),
+            ClearCollect(colAllDepartments, DonVi),
+            //Limited permission - only current user's department
+            ClearCollect(colAllDepartments, Filter(DonVi, Title = UserSessionANP.MaDonVi))
+          );
+          
+          //Load Roles from SharePoint VaiTro  
+          If(Or(varUserPermissions.ManageRoles, varUserPermissions.SystemAdmin),
+            ClearCollect(colAllRoles, VaiTro),
+            //Limited permission - only current user's role
+            ClearCollect(colAllRoles, Filter(VaiTro, Title = UserSessionANP.MaVaiTro))
+          );
+          
+          //Load Holidays from SharePoint NgayLe
+          If(varUserPermissions.ManageHolidays,
+            ClearCollect(colHolidaysList, NgayLe),
+            //No permission - clear data
+            ClearCollect(colHolidaysList, Blank())
+          );
+          
+          //Load Leave Balance from SharePoint SoNgayPhep
+          If(varUserPermissions.ManageLeaveQuota,
+            ClearCollect(colLeaveBalanceData, SoNgayPhep),
+            //No permission - clear data
+            ClearCollect(colLeaveBalanceData, Blank())
+          );
+          
+          //Load Workflow from SharePoint QuyTrinhDuyet
+          If(varUserPermissions.ManageApprovalProcess,
+            ClearCollect(colWorkflowData, QuyTrinhDuyet),
+            //No permission - clear data
+            ClearCollect(colWorkflowData, Blank())
+          );
+          
+          Set(varNetworkError, false),
+          
+          //No authentication - use demo data for preview
+          Set(varNetworkError, true);
+          ClearCollect(colAllUsers, 
+            Table(
+              {Title: "EMP001", HoTen: "Nguyễn Văn An", Email: "an.nguyen@company.com", 
+               MatKhau: "123456", MaDonVi: {Value: "IT"}, MaVaiTro: {Value: "Employee"}, TrangThai: {Value: "HoatDong"}},
+              {Title: "EMP002", HoTen: "Trần Thị Bình", Email: "binh.tran@company.com", 
+               MatKhau: "123456", MaDonVi: {Value: "HR"}, MaVaiTro: {Value: "Manager"}, TrangThai: {Value: "HoatDong"}},
+              {Title: "EMP003", HoTen: "Lê Hoàng Cường", Email: "cuong.le@company.com", 
+               MatKhau: "123456", MaDonVi: {Value: "Finance"}, MaVaiTro: {Value: "Director"}, TrangThai: {Value: "HoatDong"}}
+            )
+          );
+          
+          ClearCollect(colAllDepartments, 
+            Table(
+              {Title: "IT", TenDonVi: "Phòng Công nghệ thông tin"},
+              {Title: "HR", TenDonVi: "Phòng Nhân sự"},
+              {Title: "Finance", TenDonVi: "Phòng Tài chính"}
+            )
+          );
+          
+          ClearCollect(colAllRoles, 
+            Table(
+              {Title: "Employee", TenVaiTro: "Nhân viên"},
+              {Title: "Manager", TenVaiTro: "Quản lý"},
+              {Title: "Director", TenVaiTro: "Giám đốc"}
+            )
+          );
+          
+          //Demo holidays with SharePoint structure
+          ClearCollect(colHolidaysList, 
+            Table(
+              {MaNgayLe: 1, Ngay: "01/01", TenNgayLe: "Tết Dương lịch", Nam: 2024, Buoi: {Value: "CaNgay"}},
+              {MaNgayLe: 2, Ngay: "10/02", TenNgayLe: "Tết Nguyên đán", Nam: 2024, Buoi: {Value: "CaNgay"}}
+            )
+          );
+          
+          //Demo leave balance with SharePoint structure
+          ClearCollect(colLeaveBalanceData, 
+            Table(
+              {MaNhanVien: {Value: "EMP001"}, Nam: 2024, TongNgayDuocPhep: 12, SoNgayDaNghi: 3, SoNgayConLai: 9},
+              {MaNhanVien: {Value: "EMP002"}, Nam: 2024, TongNgayDuocPhep: 15, SoNgayDaNghi: 5, SoNgayConLai: 10}
+            )
+          );
+          
+          //Demo workflow with SharePoint structure
+          ClearCollect(colWorkflowData, 
+            Table(
+              {MaDonVi: {Value: "IT"}, Cap: {Value: "1"}, MaVaiTro: {Value: "Manager"}, NguoiDuyetMacDinh: {Value: "EMP002"}, DangHoatDong: true},
+              {MaDonVi: {Value: "IT"}, Cap: {Value: "2"}, MaVaiTro: {Value: "Director"}, NguoiDuyetMacDinh: {Value: "EMP003"}, DangHoatDong: true}
+            )
+          )
+        );
+        
+        Set(varDataLoading, false);
+        
+        //Start authentication check
+        Set(varAuthTimerStart, true)
     Children:
+      # Authentication Check Timer
+      - 'Management.AuthTimer':
+          Control: Timer
+          Properties:
+            X: =0
+            Y: =0
+            Width: =1
+            Height: =1
+            Duration: =100
+            AutoStart: =varAuthTimerStart
+            Visible: =false
+            OnTimerEnd: |
+              =//Reset timer flag
+              Set(varAuthTimerStart, false);
+              //Check authentication: If not logged in, redirect to login
+              If(Not(varIsUserAuthenticated),
+                Navigate(LoginScreen),
+                //Check management permissions after authentication
+                If(Not(varCanAccessManagement),
+                  Notify("Bạn không có quyền truy cập trang Quản lý", NotificationType.Error);
+                  Navigate(DashboardScreen),
+                  //Continue with management - user is authenticated and has permission
+                  Set(varAuthenticationValid, true)
+                )
+              )
+      
       # Header Component
       - 'Management.Header':
           Control: CanvasComponent
@@ -170,7 +207,9 @@
             ShowNotification: =true
             NotificationCount: =0
             OnLogout: |
-              =Set(varIsUserAuthenticated, false);
+              =//Clear authentication flag
+              Set(varIsUserAuthenticated, false);
+              //Clear UserSessionANP data with correct structure
               Set(UserSessionANP, {
                 Id: "",
                 HoTen: "",
@@ -184,6 +223,7 @@
                 Name: "",
                 Role: ""
               });
+              //Navigate to login
               Navigate(LoginScreen)
             
       # Navigation Component
@@ -429,7 +469,7 @@
                                           Y: =(Parent.Height - Self.Height) / 2
                                           Width: =Parent.Width * 0.5
                                           Height: =Parent.Height * 0.5
-                                          Text: ="Danh sách người dùng (" & Text(CountRows(NguoiDung)) & " người)"
+                                          Text: ="Danh sách người dùng (" & Text(If(varIsUserAuthenticated, CountRows(NguoiDung), CountRows(colAllUsers))) & " người)"
                                           Color: =RGBA(17, 24, 39, 1)
                                           Font: =Font.'Open Sans'
                                           FontWeight: =FontWeight.Semibold
@@ -493,7 +533,7 @@
                                               Set(varUserFormEmail, varSelectedUserRecord.Email);
                                               Set(varUserFormDepartment, "");
                                               Set(varUserFormRole, "");
-                                              Set(varUserFormStatus, If(Not(IsBlank(varSelectedUserRecord.TrangThai)), varSelectedUserRecord.TrangThai, "HoatDong"));
+                                              Set(varUserFormStatus, If(Not(IsBlank(varSelectedUserRecord.TrangThai.Value)), varSelectedUserRecord.TrangThai.Value, "HoatDong"));
                                               Set(varIsUserFormOpen, true),
                                               Notify("Vui lòng chọn một người dùng để chỉnh sửa", NotificationType.Warning)
                                             )
@@ -595,7 +635,7 @@
                                           Y: =Parent.Height * 0.7
                                           Width: =Parent.Width * 0.35
                                           Height: =Parent.Height * 0.25
-                                          Text: =Concatenate("Năm ", Year(Today()), " - ", CountRows(SoNgayPhep), " nhân viên")
+                                          Text: =Concatenate("Năm ", Year(Today()), " - ", If(varIsUserAuthenticated, CountRows(SoNgayPhep), CountRows(colLeaveBalanceData)), " nhân viên")
                                           Color: =RGBA(107, 114, 128, 1)
                                           Font: =Font.'Open Sans'
                                           Size: =FontSizes.Small
@@ -699,7 +739,7 @@
                                           Y: =(Parent.Height - Self.Height) / 2
                                           Width: =Parent.Width * 0.6
                                           Height: =Parent.Height * 0.5
-                                          Text: ="Danh sách ngày nghỉ lễ (" & Text(CountRows(NgayLe)) & " ngày)"
+                                          Text: ="Danh sách ngày nghỉ lễ (" & Text(If(varIsUserAuthenticated, CountRows(NgayLe), CountRows(colHolidaysList))) & " ngày)"
                                           Color: =RGBA(17, 24, 39, 1)
                                           Font: =Font.'Open Sans'
                                           FontWeight: =FontWeight.Bold
@@ -983,7 +1023,7 @@
             HeadingSize: =FontSizes.Small
             Height: ='Management.Users.Container'.Height + ('Management.Content.Padded'.Height - Self.Y - 'Management.Users.Container'.Height)
             HoverFill: =RGBA(241, 245, 249, 1)
-            Items: =NguoiDung
+            Items: =If(varIsUserAuthenticated, NguoiDung, colAllUsers)
             NoDataText: ="Không có dữ liệu người dùng"
             Size: =FontSizes.Base
             Visible: =varSelectedManagementTab = "Users"
@@ -1076,11 +1116,11 @@
                   FieldDisplayName: ="Trạng thái"
                   FieldName: ="TrangThai"
                   Order: =6
-                  Text: =If(Not(IsBlank(ThisItem.TrangThai)),
-                    Switch(ThisItem.TrangThai,
+                  Text: =If(Not(IsBlank(ThisItem.TrangThai.Value)),
+                    Switch(ThisItem.TrangThai.Value,
                       "HoatDong", "Hoạt động",
                       "KhongHoatDong", "Không hoạt động",
-                      ThisItem.TrangThai),
+                      ThisItem.TrangThai.Value),
                     "Chưa cập nhật")
                   Width: =Parent.Width * 0.11
                   OnSelect: |
@@ -1103,7 +1143,7 @@
             HeadingSize: =FontSizes.Small
             Height: ='Management.LeaveBalance.Container'.Height + ('Management.Content.Padded'.Height - Self.Y - 'Management.LeaveBalance.Container'.Height)
             HoverFill: =RGBA(240, 253, 244, 1)
-            Items: =SoNgayPhep
+            Items: =If(varIsUserAuthenticated, SoNgayPhep, colLeaveBalanceData)
             NoDataText: ="Không có dữ liệu số ngày phép"
             Size: =FontSizes.Base
             Visible: =varSelectedManagementTab = "LeaveBalance"
@@ -1194,7 +1234,7 @@
             HeadingFontWeight: =FontWeight.Bold
             Height: ='Management.Holidays.Container'.Height + ('Management.Content.Padded'.Height - Self.Y - 'Management.Holidays.Container'.Height)
             HoverFill: =RGBA(255, 251, 235, 1)
-            Items: =NgayLe
+            Items: =If(varIsUserAuthenticated, NgayLe, colHolidaysList)
             NoDataText: ="Không có dữ liệu ngày nghỉ lễ. Vui lòng thêm ngày lễ mới."
             Size: =FontSizes.Base
             Visible: =varSelectedManagementTab = "Holidays"
@@ -1267,7 +1307,7 @@
             HeadingSize: =FontSizes.Small
             Height: ='Management.Workflow.Container'.Height + ('Management.Content.Padded'.Height - Self.Y - 'Management.Workflow.Container'.Height)
             HoverFill: =RGBA(250, 245, 255, 1)
-            Items: =QuyTrinhDuyet
+            Items: =If(varIsUserAuthenticated, QuyTrinhDuyet, colWorkflowData)
             NoDataText: ="Không có dữ liệu quy trình duyệt"
             Size: =FontSizes.Base
             Visible: =varSelectedManagementTab = "Workflow"
@@ -2013,3 +2053,131 @@
                         Size: =FontSizes.Medium
                         OnClick: |
                           =Set(varIsHolidayFormOpen, false)
+
+      # Loading Indicator
+      - 'Management.Loading.Overlay':
+          Control: Rectangle
+          Properties:
+            X: =0
+            Y: =0
+            Width: =Parent.Width
+            Height: =Parent.Height
+            Fill: =RGBA(0, 0, 0, 0.3)
+            Visible: =varDataLoading
+            
+      # Loading Message Container
+      - 'Management.Loading.Container':
+          Control: GroupContainer
+          Variant: ManualLayout
+          Properties:
+            X: =(Parent.Width - Parent.Width * 0.3) / 2
+            Y: =(Parent.Height - Parent.Height * 0.2) / 2
+            Width: =Parent.Width * 0.3
+            Height: =Parent.Height * 0.2
+            Fill: =RGBA(255, 255, 255, 1)
+            BorderColor: =RGBA(226, 232, 240, 1)
+            BorderThickness: =2
+            Visible: =varDataLoading
+          Children:
+            - 'Management.Loading.Icon':
+                Control: Classic/Icon
+                Properties:
+                  X: =(Parent.Width - Self.Width) / 2
+                  Y: =Parent.Height * 0.2
+                  Width: =Parent.Height * 0.3
+                  Height: =Parent.Height * 0.3
+                  Icon: =Icon.Sync
+                  Color: =RGBA(59, 130, 246, 1)
+                  
+            - 'Management.Loading.Text':
+                Control: Label
+                Properties:
+                  X: =0
+                  Y: =Parent.Height * 0.6
+                  Width: =Parent.Width
+                  Height: =Parent.Height * 0.3
+                  Text: ="Đang tải dữ liệu..."
+                  Color: =RGBA(75, 85, 99, 1)
+                  Font: =Font.'Open Sans'
+                  Size: =FontSizes.Medium
+                  Align: =Align.Center
+                  
+      # Network Error Overlay
+      - 'Management.NetworkError.Overlay':
+          Control: Rectangle
+          Properties:
+            X: =0
+            Y: =0
+            Width: =Parent.Width
+            Height: =Parent.Height
+            Fill: =RGBA(0, 0, 0, 0.3)
+            Visible: =varNetworkError
+            
+      # Network Error Message Container
+      - 'Management.NetworkError.Container':
+          Control: GroupContainer
+          Variant: ManualLayout
+          Properties:
+            X: =(Parent.Width - Parent.Width * 0.4) / 2
+            Y: =(Parent.Height - Parent.Height * 0.3) / 2
+            Width: =Parent.Width * 0.4
+            Height: =Parent.Height * 0.3
+            Fill: =RGBA(255, 255, 255, 1)
+            BorderColor: =RGBA(239, 68, 68, 1)
+            BorderThickness: =2
+            Visible: =varNetworkError
+          Children:
+            - 'Management.NetworkError.Icon':
+                Control: Classic/Icon
+                Properties:
+                  X: =(Parent.Width - Self.Width) / 2
+                  Y: =Parent.Height * 0.15
+                  Width: =Parent.Height * 0.2
+                  Height: =Parent.Height * 0.2
+                  Icon: =Icon.Warning
+                  Color: =RGBA(239, 68, 68, 1)
+                  
+            - 'Management.NetworkError.Title':
+                Control: Label
+                Properties:
+                  X: =0
+                  Y: =Parent.Height * 0.4
+                  Width: =Parent.Width
+                  Height: =Parent.Height * 0.15
+                  Text: ="Lỗi kết nối"
+                  Color: =RGBA(239, 68, 68, 1)
+                  Font: =Font.'Open Sans'
+                  FontWeight: =FontWeight.Bold
+                  Size: =FontSizes.Medium
+                  Align: =Align.Center
+                  
+            - 'Management.NetworkError.Message':
+                Control: Label
+                Properties:
+                  X: =Parent.Width * 0.05
+                  Y: =Parent.Height * 0.55
+                  Width: =Parent.Width * 0.9
+                  Height: =Parent.Height * 0.25
+                  Text: ="Không thể kết nối đến SharePoint. Vui lòng kiểm tra kết nối mạng và thử lại."
+                  Color: =RGBA(75, 85, 99, 1)
+                  Font: =Font.'Open Sans'
+                  Size: =FontSizes.Base
+                  Align: =Align.Center
+                  Wrap: =true
+                  
+            - 'Management.NetworkError.RetryButton':
+                Control: CanvasComponent
+                ComponentName: ButtonComponent
+                Properties:
+                  X: =(Parent.Width - Self.Width) / 2
+                  Y: =Parent.Height * 0.82
+                  Width: =Parent.Width * 0.3
+                  Height: =Parent.Height * 0.12
+                  Text: ="Thử lại"
+                  Variant: ="Primary"
+                  Size: =FontSizes.Small
+                  OnClick: |
+                    =Set(varNetworkError, false);
+                    Set(varDataLoading, true);
+                    //Simulate retry
+                    Set(varAuthTimerStart, true)

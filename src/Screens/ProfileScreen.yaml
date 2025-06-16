@@ -4,45 +4,135 @@ Screens:
       Fill: =RGBA(248, 250, 252, 1)
       OnVisible: |
         =Set(varActiveScreen, "Profile");
+        Set(varNetworkError, false);
+        Set(varDataLoading, true);
+        
+        //Check user permissions using CheckPermission function from App/Formulas
         Set(varUserPermissions, {
           CanViewPersonalLeaves: CheckPermission(UserSessionANP.Permission, UserPermissions.PERSONAL_LEAVE),
           CanCreatePersonalLeaves: CheckPermission(UserSessionANP.Permission, UserPermissions.PERSONAL_LEAVE),
           CanViewDashboard: CheckPermission(UserSessionANP.Permission, UserPermissions.VIEW_DASHBOARD),
-          CanManageUsers: CheckPermission(UserSessionANP.Permission, UserPermissions.MANAGE_USERS)
+          CanManageUsers: CheckPermission(UserSessionANP.Permission, UserPermissions.MANAGE_USERS),
+          CanViewTeamLeaves: CheckPermission(UserSessionANP.Permission, UserPermissions.VIEW_TEAM_LEAVE),
+          CanViewAllLeaves: CheckPermission(UserSessionANP.Permission, UserPermissions.VIEW_ALL_LEAVE),
+          CanExportReports: CheckPermission(UserSessionANP.Permission, UserPermissions.EXPORT_REPORTS)
         });
         
-        //NOTE: ProfileScreen không cần kiểm tra quyền đặc biệt - mọi user đều có thể xem profile của mình
-        //Chỉ cần đảm bảo user đã đăng nhập (được kiểm tra ở App level)
+        //NOTE: ProfileScreen is accessible to all authenticated users
+        //Only need to ensure user is logged in (checked at App level)
         
         Set(varIsEditing, false);
         Set(varEditedName, UserSessionANP.HoTen);
         Set(varEditedEmail, UserSessionANP.Email);
         Set(varEditedPhone, "");
         Set(varIsSaving, false);
-        Set(varCurrentUser, 
-          If(IsUserAuthenticated,
-            LookUp(NguoiDung, Title = UserSessionANP.Id),
-            {Title: UserSessionANP.Id, HoTen: UserSessionANP.HoTen, Email: UserSessionANP.Email, MaDonVi: UserSessionANP.MaDonVi, ChucDanh: UserSessionANP.ChucDanh, TrangThai: "HoatDong"}
-          )
-        );
-        Set(varUserLeaveBalance, 
-          If(IsUserAuthenticated,
-            LookUp(SoNgayPhep, And(MaNguoiDung.Value = UserSessionANP.Id, Nam = Year(Today()))),
-            {MaNguoiDung: UserSessionANP.Id, Nam: Year(Today()), TongNgayDuocPhep: 12, SoNgayDaNghi: 3, SoNgayConLai: 9}
-          )
-        );
-        Set(varUserLeaveHistory, 
-          If(IsUserAuthenticated,
-            Filter(DonNghiPhep, MaNguoiDung.Value = UserSessionANP.Id),
-            Table(
-              {MaDon: "LR001", NgayBatDau: Date(2024,11,15), NgayKetThuc: Date(2024,11,15), SoNgayNghi: 1, LyDo: "Nghỉ ốm", TrangThai: "DaDuyet", MaLoai: "ANNUAL_LEAVE", BuoiNghi: "CaNgay"},
-              {MaDon: "LR002", NgayBatDau: Date(2024,10,10), NgayKetThuc: Date(2024,10,12), SoNgayNghi: 3, LyDo: "Nghỉ phép", TrangThai: "DaDuyet", MaLoai: "ANNUAL_LEAVE", BuoiNghi: "CaNgay"},
-              {MaDon: "LR003", NgayBatDau: Date(2024,9,5), NgayKetThuc: Date(2024,9,5), SoNgayNghi: 1, LyDo: "Việc gia đình", TrangThai: "ChoDuyetCap1", MaLoai: "PERSONAL_LEAVE", BuoiNghi: "BuoiSang"}
+        
+        //Load SharePoint data with authentication check
+        If(varIsUserAuthenticated,
+          //Load current user data from SharePoint NguoiDung
+          Set(varCurrentUser, LookUp(NguoiDung, Title = UserSessionANP.Id));
+          
+          //Load user leave balance from SharePoint SoNgayPhep - CORRECTED field name
+          Set(varUserLeaveBalance, LookUp(SoNgayPhep, And(MaNhanVien.Value = UserSessionANP.Id, Nam = Year(Today()))));
+          
+          //Load user leave history from SharePoint DonNghiPhep
+          ClearCollect(colUserLeaveHistory, 
+            Sort(
+              Filter(DonNghiPhep, MaNguoiDung.Value = UserSessionANP.Id),
+              NgayBatDau, 
+              SortOrder.Descending
             )
-          )
+          );
+          
+          //Load user department info from SharePoint DonVi
+          Set(varUserDepartment, LookUp(DonVi, Title = varCurrentUser.MaDonVi.Value));
+          
+          //Load user manager info from SharePoint NguoiDung
+          Set(varUserManager, LookUp(NguoiDung, Title = varCurrentUser.MaQuanLy.Value));
+          
+          Set(varNetworkError, false),
+          //No authentication - use demo data for preview
+          Set(varNetworkError, true);
+          
+          //Demo user data for preview - with correct SharePoint structure
+          Set(varCurrentUser, {
+            Title: "EMP001",
+            HoTen: "Nguyễn Văn An",
+            Email: "nguyenvana@company.com",
+            SoDienThoai: "0912345678",
+            ChucDanh: {Value: "Nhân viên"},
+            MaDonVi: {Value: "IT"},
+            MaVaiTro: {Value: "Employee"},
+            NgayVaoLam: Date(2023, 1, 15),
+            NgaySinh: Date(1990, 5, 20),
+            GioiTinh: {Value: "Nam"},
+            DiaChi: "123 Đường ABC, Quận 1, TP.HCM",
+            TrangThai: {Value: "HoatDong"},
+            MaQuanLy: {Value: "MGR001"}
+          });
+          
+          //Demo leave balance with correct structure
+          Set(varUserLeaveBalance, {
+            MaNhanVien: {Value: "EMP001"},
+            Nam: Year(Today()),
+            TongNgayDuocPhep: 12,
+            SoNgayDaNghi: 3,
+            SoNgayConLai: 9,
+            SoNgayKhongLuong: 0
+          });
+          
+          //Demo leave history with correct SharePoint structure
+          ClearCollect(colUserLeaveHistory,
+            Table(
+              {MaDon: "LR001", NgayBatDau: Date(2024,11,15), NgayKetThuc: Date(2024,11,15), SoNgayNghi: 1, LyDo: "Nghỉ ốm", TrangThai: {Value: "DaDuyet"}, MaLoai: {Value: "SICK"}, BuoiNghi: {Value: "CaNgay"}, MaNguoiDung: {Value: "EMP001"}},
+              {MaDon: "LR002", NgayBatDau: Date(2024,10,10), NgayKetThuc: Date(2024,10,12), SoNgayNghi: 3, LyDo: "Nghỉ phép năm", TrangThai: {Value: "DaDuyet"}, MaLoai: {Value: "ANNUAL"}, BuoiNghi: {Value: "CaNgay"}, MaNguoiDung: {Value: "EMP001"}},
+              {MaDon: "LR003", NgayBatDau: Date(2024,9,5), NgayKetThuc: Date(2024,9,5), SoNgayNghi: 1, LyDo: "Việc gia đình", TrangThai: {Value: "ChoDuyetCap1"}, MaLoai: {Value: "PERSONAL"}, BuoiNghi: {Value: "Sang"}, MaNguoiDung: {Value: "EMP001"}}
+            )
+          );
+          
+          //Demo department data
+          Set(varUserDepartment, {
+            Title: "IT",
+            TenDonVi: "Phòng Công nghệ thông tin",
+            MaDonVi: "IT"
+          });
+          
+          //Demo manager data
+          Set(varUserManager, {
+            Title: "MGR001",
+            HoTen: "Trần Thị Bình",
+            Email: "tranbi@company.com",
+            ChucDanh: {Value: "Trưởng phòng"}
+          })
         );
-        Set(varSelectedTab, "Info")
+        
+        Set(varDataLoading, false);
+        Set(varSelectedTab, "Info");
+        
+        //Start authentication check
+        Set(varAuthTimerStart, true)
     Children:
+      # Authentication Check Timer
+      - 'Profile.AuthTimer':
+          Control: Timer
+          Properties:
+            X: =0
+            Y: =0
+            Width: =1
+            Height: =1
+            Duration: =100
+            AutoStart: =varAuthTimerStart
+            Visible: =false
+            OnTimerEnd: |
+              =//Reset timer flag
+              Set(varAuthTimerStart, false);
+              //Check authentication: If not logged in, redirect to login
+              If(Not(varIsUserAuthenticated),
+                Navigate(LoginScreen),
+                //User is authenticated - continue with profile
+                Set(varAuthenticationValid, true)
+              )
+              
       # Header Component
       - 'Profile.Header':
           Control: CanvasComponent
@@ -57,7 +147,9 @@ Screens:
             ShowNotification: =true
             NotificationCount: =0
             OnLogout: |
-              =Set(varIsUserAuthenticated, false);
+              =//Clear authentication flag
+              Set(varIsUserAuthenticated, false);
+              //Clear UserSessionANP data with correct structure
               Set(UserSessionANP, {
                 Id: "",
                 HoTen: "",
@@ -71,6 +163,7 @@ Screens:
                 Name: "",
                 Role: ""
               });
+              //Navigate to login
               Navigate(LoginScreen)
             
       # Navigation Component
@@ -317,7 +410,7 @@ Screens:
                                           Y: =Parent.Height * 0.55
                                           Width: =Parent.Width * 0.6
                                           Height: =Parent.Height * 0.35
-                                          Text: =If(Not(IsBlank(varCurrentUser)), varCurrentUser.ChucDanh.Value & " - " & LookUp(DonVi, MaDonVi = varCurrentUser.MaDonVi.Value).TenDonVi, UserSessionANP.ChucDanh)
+                                          Text: =If(Not(IsBlank(varCurrentUser)), varCurrentUser.ChucDanh.Value & " - " & LookUp(DonVi, Title = varCurrentUser.MaDonVi.Value).TenDonVi, UserSessionANP.ChucDanh)
                                           Color: =RGBA(75, 85, 99, 1)
                                           Font: =Font.'Open Sans'
                                           Size: =FontSizes.Medium
@@ -493,7 +586,7 @@ Screens:
                                           Y: =Parent.Height * 0.48
                                           Width: =Parent.Width * 0.68
                                           Height: =Parent.Height * 0.08
-                                          Text: =If(Not(IsBlank(varCurrentUser)), LookUp(DonVi, MaDonVi = varCurrentUser.MaDonVi.Value).TenDonVi, "")
+                                          Text: =If(Not(IsBlank(varCurrentUser)), LookUp(DonVi, Title = varCurrentUser.MaDonVi.Value).TenDonVi, "")
                                           Color: =RGBA(17, 24, 39, 1)
                                           Font: =Font.'Open Sans'
                                           Size: =FontSizes.Base
@@ -539,7 +632,7 @@ Screens:
                                           IsDisabled: =Or(varIsSaving, IsBlank(varEditedName), IsBlank(varEditedEmail))
                                           OnClick: |
                                             =Set(varIsSaving, true);
-                                            If(IsUserAuthenticated,
+                                            If(varIsUserAuthenticated,
                                               Patch(NguoiDung, varCurrentUser, {
                                                 HoTen: varEditedName,
                                                 Email: varEditedEmail,
@@ -646,7 +739,7 @@ Screens:
                                     Width: =Parent.Width * 0.44
                                     Height: =Parent.Height * 0.25
                                     Title: ="Đang chờ duyệt"
-                                    Value: =If(IsUserAuthenticated, Sum(Filter(varUserLeaveHistory, Or(TrangThai.Value = "ChoDuyetCap1", TrangThai.Value = "ChoDuyetCap2", TrangThai.Value = "ChoDuyetCap3")), SoNgayNghi), Sum(Filter(varUserLeaveHistory, Or(TrangThai = "ChoDuyetCap1", TrangThai = "ChoDuyetCap2", TrangThai = "ChoDuyetCap3")), SoNgayNghi))
+                                    Value: =Sum(Filter(colUserLeaveHistory, Or(TrangThai.Value = "ChoDuyetCap1", TrangThai.Value = "ChoDuyetCap2", TrangThai.Value = "ChoDuyetCap3")), SoNgayNghi)
                                     Icon: ="Clock"
                                     Color: =RGBA(251, 191, 36, 1)
 
@@ -740,7 +833,7 @@ Screens:
                                     Y: =Parent.Height * 0.1
                                     Width: =Parent.Width * 0.94
                                     Height: =Parent.Height * 0.87
-                                    Items: =SortByColumns(varUserLeaveHistory, "NgayBatDau", SortOrder.Descending)
+                                    Items: =SortByColumns(colUserLeaveHistory, "NgayBatDau", SortOrder.Descending)
                                     TemplateSize: =Self.Height * 0.12
                                     BorderThickness: =0
                                     Fill: =RGBA(0, 0, 0, 0)
@@ -792,7 +885,7 @@ Screens:
                                                 Y: =Parent.Height * 0.1
                                                 Width: =Parent.Width * 0.2
                                                 Height: =Parent.Height * 0.4
-                                                Text: =If(IsUserAuthenticated, LookUp(LoaiNghi, MaLoai = ThisItem.MaLoai.Value).TenLoai, Switch(ThisItem.MaLoai, "ANNUAL_LEAVE", "Nghỉ phép năm", "PERSONAL_LEAVE", "Nghỉ việc riêng", "SICK_LEAVE", "Nghỉ ốm", "Không xác định"))
+                                                Text: =If(varIsUserAuthenticated, LookUp(LoaiNghi, Title = ThisItem.MaLoai.Value).TenLoai, Switch(ThisItem.MaLoai.Value, "ANNUAL", "Nghỉ phép năm", "PERSONAL", "Nghỉ việc riêng", "SICK", "Nghỉ ốm", "Không xác định"))
                                                 Color: =RGBA(17, 24, 39, 1)
                                                 Font: =Font.'Open Sans'
                                                 Size: =FontSizes.Small
@@ -805,48 +898,29 @@ Screens:
                                                 Y: =(Parent.Height - Self.Height) / 2
                                                 Width: =Parent.Width * 0.18
                                                 Height: =Parent.Height * 0.6
-                                                Text: =If(IsUserAuthenticated, Switch(ThisItem.TrangThai.Value, 
+                                                Text: =Switch(ThisItem.TrangThai.Value, 
                                                   "ChoDuyetCap1", "Chờ duyệt",
                                                   "ChoDuyetCap2", "Chờ duyệt", 
                                                   "ChoDuyetCap3", "Chờ duyệt",
                                                   "DaDuyet", "Đã duyệt",
                                                   "TuChoi", "Từ chối",
                                                   "Huy", "Đã hủy",
-                                                  ThisItem.TrangThai.Value), Switch(ThisItem.TrangThai, 
-                                                  "ChoDuyetCap1", "Chờ duyệt",
-                                                  "ChoDuyetCap2", "Chờ duyệt", 
-                                                  "ChoDuyetCap3", "Chờ duyệt",
-                                                  "DaDuyet", "Đã duyệt",
-                                                  "TuChoi", "Từ chối",
-                                                  "Huy", "Đã hủy",
-                                                  ThisItem.TrangThai))
-                                                Color: =If(IsUserAuthenticated, Switch(ThisItem.TrangThai.Value,
+                                                  ThisItem.TrangThai.Value)
+                                                Color: =Switch(ThisItem.TrangThai.Value,
                                                   "DaDuyet", RGBA(34, 197, 94, 1),
                                                   "TuChoi", RGBA(239, 68, 68, 1),
                                                   "Huy", RGBA(107, 114, 128, 1),
-                                                  RGBA(251, 191, 36, 1)), Switch(ThisItem.TrangThai,
-                                                  "DaDuyet", RGBA(34, 197, 94, 1),
-                                                  "TuChoi", RGBA(239, 68, 68, 1),
-                                                  "Huy", RGBA(107, 114, 128, 1),
-                                                  RGBA(251, 191, 36, 1)))
-                                                Fill: =If(IsUserAuthenticated, Switch(ThisItem.TrangThai.Value,
+                                                  RGBA(251, 191, 36, 1))
+                                                Fill: =Switch(ThisItem.TrangThai.Value,
                                                   "DaDuyet", RGBA(240, 253, 244, 1),
                                                   "TuChoi", RGBA(254, 242, 242, 1),
                                                   "Huy", RGBA(249, 250, 251, 1),
-                                                  RGBA(254, 243, 199, 1)), Switch(ThisItem.TrangThai,
-                                                  "DaDuyet", RGBA(240, 253, 244, 1),
-                                                  "TuChoi", RGBA(254, 242, 242, 1),
-                                                  "Huy", RGBA(249, 250, 251, 1),
-                                                  RGBA(254, 243, 199, 1)))
-                                                BorderColor: =If(IsUserAuthenticated, Switch(ThisItem.TrangThai.Value,
+                                                  RGBA(254, 243, 199, 1))
+                                                BorderColor: =Switch(ThisItem.TrangThai.Value,
                                                   "DaDuyet", RGBA(34, 197, 94, 1),
                                                   "TuChoi", RGBA(239, 68, 68, 1),
                                                   "Huy", RGBA(107, 114, 128, 1),
-                                                  RGBA(251, 191, 36, 1)), Switch(ThisItem.TrangThai,
-                                                  "DaDuyet", RGBA(34, 197, 94, 1),
-                                                  "TuChoi", RGBA(239, 68, 68, 1),
-                                                  "Huy", RGBA(107, 114, 128, 1),
-                                                  RGBA(251, 191, 36, 1)))
+                                                  RGBA(251, 191, 36, 1))
                                                 BorderThickness: =1
                                                 Font: =Font.'Open Sans'
                                                 FontWeight: =FontWeight.Semibold

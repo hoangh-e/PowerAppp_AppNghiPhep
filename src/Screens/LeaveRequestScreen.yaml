@@ -4,75 +4,165 @@ Screens:
       Fill: =RGBA(248, 250, 252, 1)
       OnVisible: |
         =Set(varActiveScreen, "LeaveRequest");
-        //Permission checks using helper functions from App/Formulas
+        Set(varNavCollapsed, false);
+        Set(varMobileMenuOpen, false);
+        Set(varNetworkError, false);
+        Set(varDataLoading, true);
+        
+        //Check user permissions using CheckPermission function from App/Formulas
         Set(varUserPermissions, {
           CanCreatePersonalLeaves: CheckPermission(UserSessionANP.Permission, UserPermissions.PERSONAL_LEAVE),
           CanCreateSpecialLeaves: CheckPermission(UserSessionANP.Permission, UserPermissions.SPECIAL_LEAVE),
           CanViewDashboard: CheckPermission(UserSessionANP.Permission, UserPermissions.VIEW_DASHBOARD),
-          CanApprove: Or(CheckPermission(UserSessionANP.Permission, UserPermissions.APPROVE_LEVEL_1), CheckPermission(UserSessionANP.Permission, UserPermissions.APPROVE_LEVEL_2))
+          CanViewTeamLeaves: CheckPermission(UserSessionANP.Permission, UserPermissions.VIEW_TEAM_LEAVE),
+          CanViewAllLeaves: CheckPermission(UserSessionANP.Permission, UserPermissions.VIEW_ALL_LEAVE),
+          CanApproveLevel1: CheckPermission(UserSessionANP.Permission, UserPermissions.APPROVE_LEVEL_1),
+          CanApproveLevel2: CheckPermission(UserSessionANP.Permission, UserPermissions.APPROVE_LEVEL_2),
+          CanManageUsers: CheckPermission(UserSessionANP.Permission, UserPermissions.MANAGE_USERS),
+          CanExportReports: CheckPermission(UserSessionANP.Permission, UserPermissions.EXPORT_REPORTS),
+          IsSystemAdmin: CheckPermission(UserSessionANP.Permission, UserPermissions.SYSTEM_ADMIN)
         });
         
         //CRITICAL: Check if user can create leave requests
         Set(varCanCreateLeave, Or(varUserPermissions.CanCreatePersonalLeaves, varUserPermissions.CanCreateSpecialLeaves));
         
-        //If no leave creation permission, redirect to Dashboard with notification
-        If(Not(varCanCreateLeave),
-          Notify("Bạn không có quyền tạo đơn nghỉ phép", NotificationType.Error);
-          Navigate(DashboardScreen),
-          //Continue with leave request screen initialization
-          Set(varSelectedFromDate, Blank());
-          Set(varSelectedToDate, Blank());
-          Set(varSelectedLeaveType, Blank());
-          Set(varLeaveReason, "");
-          Set(varHandoverPerson, Blank());
-          Set(varHandoverContent, "");
-          Set(varCalculatedDays, 0);
-          Set(varValidationErrors, Blank());
-          Set(varIsSubmitting, false);
-          Set(varShowSuccessModal, false);
-          //Load user data with fallback demo data
-          Set(varUserLeaveBalance, 
-            If(IsUserAuthenticated,
-              LookUp(SoNgayPhep, And(MaNhanVien.Value = UserSessionANP.Id, Nam = Year(Today()))),
-              {MaNhanVien: UserSessionANP.Id, Nam: Year(Today()), TongNgayDuocPhep: 12, SoNgayDaNghi: 3, SoNgayConLai: 9}
+        //Initialize form variables
+        Set(varSelectedFromDate, Blank());
+        Set(varSelectedToDate, Blank());
+        Set(varSelectedLeaveType, Blank());
+        Set(varLeaveReason, "");
+        Set(varHandoverPerson, Blank());
+        Set(varHandoverContent, "");
+        Set(varCalculatedDays, 0);
+        Set(varValidationErrors, Blank());
+        Set(varIsSubmitting, false);
+        Set(varShowSuccessModal, false);
+        
+        //Load SharePoint data with authentication check
+        If(varIsUserAuthenticated,
+          //Load user leave balance from SharePoint SoNgayPhep
+          ClearCollect(colUserLeaveBalance, 
+            Filter(SoNgayPhep, And(MaNhanVien.Value = UserSessionANP.Id, Nam = Year(Today())))
+          );
+          Set(varUserLeaveBalance, If(CountRows(colUserLeaveBalance) > 0, First(colUserLeaveBalance), Blank()));
+          
+          //Load available leave types from SharePoint LoaiNghi
+          ClearCollect(colAvailableLeaveTypes, 
+            Filter(LoaiNghi, DangHoatDong = true)
+          );
+          
+          //Load potential handover users from SharePoint NguoiDung
+          ClearCollect(colPotentialHandovers, 
+            Filter(NguoiDung, And(TrangThai.Value = "HoatDong", Title <> UserSessionANP.Id))
+          );
+          
+          //Load current user info from SharePoint NguoiDung
+          Set(varCurrentUser, LookUp(NguoiDung, Title = UserSessionANP.Id));
+          
+          //Load user manager info from SharePoint NguoiDung
+          If(Not(IsBlank(UserSessionANP.NguoiQuanLyId)),
+            Set(varUserManager, LookUp(NguoiDung, Title = UserSessionANP.NguoiQuanLyId)),
+            Set(varUserManager, Blank())
+          );
+          
+          //Load departments for lookups
+          ClearCollect(colDepartments, DonVi);
+          
+          Set(varNetworkError, false),
+          //No authentication - use demo data for preview
+          Set(varNetworkError, true);
+          
+          //Demo leave balance with SharePoint structure
+          ClearCollect(colUserLeaveBalance,
+            Table(
+              {MaNhanVien: {Value: "EMP001"}, Nam: Year(Today()), TongNgayDuocPhep: 12, SoNgayDaNghi: 3, SoNgayConLai: 9}
             )
           );
-          Set(varAvailableLeaveTypes, 
-            If(IsUserAuthenticated,
-              Filter(LoaiNghi, DangHoatDong = true),
-              Table(
-                {Title: "AL", TenLoai: "Phép năm", CoLuong: true},
-                {Title: "SL", TenLoai: "Nghỉ ốm", CoLuong: true},
-                {Title: "PL", TenLoai: "Nghỉ việc riêng", CoLuong: false}
-              )
+          Set(varUserLeaveBalance, First(colUserLeaveBalance));
+          
+          //Demo leave types with SharePoint structure
+          ClearCollect(colAvailableLeaveTypes,
+            Table(
+              {Title: "ANNUAL", TenLoai: "Phép năm", CoLuong: true, DangHoatDong: true, MaLoai: "ANNUAL"},
+              {Title: "SICK", TenLoai: "Nghỉ ốm", CoLuong: true, DangHoatDong: true, MaLoai: "SICK"},
+              {Title: "PERSONAL", TenLoai: "Nghỉ việc riêng", CoLuong: false, DangHoatDong: true, MaLoai: "PERSONAL"}
             )
           );
-          Set(varPotentialHandovers, 
-            If(IsUserAuthenticated,
-              Filter(NguoiDung, And(TrangThai.Value = "HoatDong", Title <> UserSessionANP.Id)),
-              Table(
-                {Title: "EMP002", HoTen: "Trần Thị Bình", MaDonVi: "HR"},
-                {Title: "EMP003", HoTen: "Lê Hoàng Cường", MaDonVi: "Finance"},
-                {Title: "EMP004", HoTen: "Phạm Thị Dung", MaDonVi: "Marketing"}
-              )
+          
+          //Demo handover users with SharePoint structure
+          ClearCollect(colPotentialHandovers,
+            Table(
+              {Title: "EMP002", HoTen: "Trần Thị Bình", MaDonVi: {Value: "HR"}, TrangThai: {Value: "HoatDong"}},
+              {Title: "EMP003", HoTen: "Lê Hoàng Cường", MaDonVi: {Value: "Finance"}, TrangThai: {Value: "HoatDong"}},
+              {Title: "EMP004", HoTen: "Phạm Thị Dung", MaDonVi: {Value: "Marketing"}, TrangThai: {Value: "HoatDong"}}
             )
           );
-          Set(varCurrentUser, 
-            If(IsUserAuthenticated,
-              LookUp(NguoiDung, Title = UserSessionANP.Id),
-              {Title: UserSessionANP.Id, HoTen: UserSessionANP.HoTen, NguoiQuanLyId: "MGR001"}
-            )
+          
+          //Demo current user with SharePoint structure
+          Set(varCurrentUser, {
+            Title: "EMP001",
+            HoTen: "Nguyễn Văn An",
+            MaQuanLy: {Value: "MGR001"},
+            MaDonVi: {Value: "IT"},
+            TrangThai: {Value: "HoatDong"},
+            Email: "nguyenvana@company.com",
+            ChucDanh: {Value: "Nhân viên"}
+          });
+          
+          //Demo manager with SharePoint structure
+          If(Not(IsBlank(UserSessionANP.NguoiQuanLyId)),
+            Set(varUserManager, {
+              Title: "MGR001",
+              HoTen: "Quản lý Demo",
+              MaDonVi: {Value: "IT"},
+              TrangThai: {Value: "HoatDong"},
+              Email: "manager@company.com",
+              ChucDanh: {Value: "Trưởng phòng"}
+            }),
+            Set(varUserManager, Blank())
           );
-          Set(varUserManager, 
-            If(Not(IsBlank(UserSessionANP.NguoiQuanLyId)), 
-              If(IsUserAuthenticated,
-                LookUp(NguoiDung, Title = UserSessionANP.NguoiQuanLyId),
-                {Title: "MGR001", HoTen: "Quản lý Demo"}
-              ),
-              Blank())
+          
+          //Demo departments
+          ClearCollect(colDepartments,
+            Table(
+              {Title: "IT", TenDonVi: "Phòng Công nghệ thông tin"},
+              {Title: "HR", TenDonVi: "Phòng Nhân sự"},
+              {Title: "Finance", TenDonVi: "Phòng Tài chính"}
+            )
           )
-        )
+        );
+        
+        Set(varDataLoading, false);
+        
+        //Start authentication check
+        Set(varAuthTimerStart, true)
     Children:
+      # Authentication Check Timer
+      - 'LeaveRequest.AuthTimer':
+          Control: Timer
+          Properties:
+            X: =0
+            Y: =0
+            Width: =1
+            Height: =1
+            Duration: =100
+            AutoStart: =varAuthTimerStart
+            Visible: =false
+            OnTimerEnd: |
+              =//Reset timer flag
+              Set(varAuthTimerStart, false);
+              //Check authentication: If not logged in, redirect to login
+              If(Not(varIsUserAuthenticated),
+                Navigate(LoginScreen),
+                //Check leave creation permissions after authentication
+                If(Not(varCanCreateLeave),
+                  Notify("Bạn không có quyền tạo đơn nghỉ phép", NotificationType.Error);
+                  Navigate(DashboardScreen),
+                  //Continue with leave request - user is authenticated and has permission
+                  Set(varAuthenticationValid, true)
+                )
+              )
+      
       # Header Component
       - 'LeaveRequest.Header':
           Control: CanvasComponent
@@ -87,7 +177,9 @@ Screens:
             ShowNotification: =true
             NotificationCount: =0
             OnLogout: |
-              =Set(varIsUserAuthenticated, false);
+              =//Clear authentication flag
+              Set(varIsUserAuthenticated, false);
+              //Clear UserSessionANP data with correct structure
               Set(UserSessionANP, {
                 Id: "",
                 HoTen: "",
@@ -101,6 +193,7 @@ Screens:
                 Name: "",
                 Role: ""
               });
+              //Navigate to login
               Navigate(LoginScreen)
             
       # Navigation Component
@@ -277,7 +370,7 @@ Screens:
                                     Y: ='LeaveRequest.LeaveType.Label'.Y + 'LeaveRequest.LeaveType.Label'.Height + Parent.Height * 0.01
                                     Width: =Parent.Width
                                     Height: =Parent.Height * 0.07
-                                    Items: =varAvailableLeaveTypes
+                                    Items: =colAvailableLeaveTypes
                                     BorderColor: =RGBA(209, 213, 219, 1)
                                     BorderThickness: =1
                                     Fill: =RGBA(255, 255, 255, 1)
@@ -408,7 +501,7 @@ Screens:
                                     Y: ='LeaveRequest.Handover.Label'.Y + 'LeaveRequest.Handover.Label'.Height + Parent.Height * 0.01
                                     Width: =Parent.Width
                                     Height: =Parent.Height * 0.07
-                                    Items: =varPotentialHandovers
+                                    Items: =colPotentialHandovers
                                     Default: =If(Not(IsBlank(varUserManager)), [varUserManager], [])
                                     BorderColor: =RGBA(209, 213, 219, 1)
                                     BorderThickness: =1
@@ -619,7 +712,7 @@ Screens:
                                             MaDon: GUID()
                                           }
                                         },
-                                        If(IsUserAuthenticated,
+                                        If(varIsUserAuthenticated,
                                           Patch(DonNghiPhep, Defaults(DonNghiPhep), NewLeaveRequest);
                                           Set(varIsSubmitting, false);
                                           Set(varShowSuccessModal, true);
@@ -790,4 +883,60 @@ Screens:
                         Size: ="Medium"
                         OnClick: |
                           =Set(varShowSuccessModal, false);
-                          Navigate(MyLeavesScreen) 
+                          Navigate(MyLeavesScreen)
+
+      # Loading Indicator
+      - 'LeaveRequest.Loading.Overlay':
+          Control: Rectangle
+          Properties:
+            X: =0
+            Y: =0
+            Width: =Parent.Width
+            Height: =Parent.Height
+            Fill: =RGBA(255, 255, 255, 0.8)
+            Visible: =varDataLoading
+           
+      - 'LeaveRequest.Loading.Text':
+          Control: Label
+          Properties:
+            X: =(Parent.Width - Self.Width) / 2
+            Y: =(Parent.Height - Self.Height) / 2
+            Width: =200
+            Height: =50
+            Text: ="Đang tải dữ liệu..."
+            Color: =RGBA(59, 130, 246, 1)
+            Font: =Font.'Open Sans'
+            FontWeight: =FontWeight.Semibold
+            Size: =FontSizes.Large
+            Align: =Align.Center
+            VerticalAlign: =VerticalAlign.Middle
+            Visible: =varDataLoading
+             
+       # Network Error Message
+      - 'LeaveRequest.Error.Message':
+          Control: Rectangle
+          Properties:
+            X: =(Parent.Width - Parent.Width * 0.4) / 2
+            Y: =Parent.Height * 0.1
+            Width: =Parent.Width * 0.4
+            Height: =60
+            Fill: =RGBA(254, 242, 242, 1)
+            BorderColor: =RGBA(239, 68, 68, 1)
+            BorderThickness: =2
+            Visible: =varNetworkError
+             
+      - 'LeaveRequest.Error.Text':
+          Control: Label
+          Properties:
+            X: =(Parent.Width - Parent.Width * 0.38) / 2
+            Y: =Parent.Height * 0.1 + 10
+            Width: =Parent.Width * 0.38
+            Height: =40
+            Text: ="Lỗi kết nối SharePoint. Hiển thị dữ liệu demo."
+            Color: =RGBA(239, 68, 68, 1)
+            Font: =Font.'Open Sans'
+            FontWeight: =FontWeight.Semibold
+            Size: =FontSizes.Base
+            Align: =Align.Center
+            VerticalAlign: =VerticalAlign.Middle
+            Visible: =varNetworkError 

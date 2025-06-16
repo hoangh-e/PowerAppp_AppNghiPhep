@@ -4,43 +4,124 @@ Screens:
       Fill: =RGBA(248, 250, 252, 1)
       OnVisible: |
         =Set(varActiveScreen, "MyLeaves");
+        Set(varNavCollapsed, false);
+        Set(varMobileMenuOpen, false);
+        Set(varDataLoading, true);
+        Set(varNetworkError, false);
+        
+        //Check user permissions using CheckPermission function from App/Formulas
         Set(varUserPermissions, {
           CanViewPersonalLeaves: CheckPermission(UserSessionANP.Permission, UserPermissions.PERSONAL_LEAVE),
           CanCreatePersonalLeaves: CheckPermission(UserSessionANP.Permission, UserPermissions.PERSONAL_LEAVE),
           CanViewTeamLeaves: CheckPermission(UserSessionANP.Permission, UserPermissions.VIEW_TEAM_LEAVE),
           CanViewAllLeaves: CheckPermission(UserSessionANP.Permission, UserPermissions.VIEW_ALL_LEAVE),
           CanExportReports: CheckPermission(UserSessionANP.Permission, UserPermissions.EXPORT_REPORTS),
-          CanRecordLeave: CheckPermission(UserSessionANP.Permission, UserPermissions.RECORD_LEAVE)
+          CanRecordLeave: CheckPermission(UserSessionANP.Permission, UserPermissions.RECORD_LEAVE),
+          CanViewDashboard: CheckPermission(UserSessionANP.Permission, UserPermissions.VIEW_DASHBOARD)
         });
         
         //CRITICAL: Check if user can view personal leaves
         Set(varCanViewMyLeaves, varUserPermissions.CanViewPersonalLeaves);
         
-        //If no personal leave viewing permission, redirect to Dashboard with notification
-        If(Not(varCanViewMyLeaves),
-          Notify("Bạn không có quyền xem đơn nghỉ phép cá nhân", NotificationType.Error);
-          Navigate(DashboardScreen),
-          //Continue with my leaves screen initialization
-          Set(varSelectedStatus, "");
-          Set(varFilterDateFrom, Blank());
-          Set(varFilterDateTo, Blank());
-          Set(varSelectedLeave, Blank());
-          Set(varRecordSelected, false);
-          Set(varCurrentUserLeaves, 
-            If(IsUserAuthenticated,
-              Filter(DonNghiPhep, And(Not(IsBlank(MaNguoiDung.Value)), MaNguoiDung.Value = UserSessionANP.Id)),
-              Table(
-                {MaDon: "LR001", NgayBatDau: Date(2024,12,20), NgayKetThuc: Date(2024,12,22), SoNgayNghi: 3, LyDo: "Nghỉ phép thường niên", TrangThai: "ChoDuyetCap1", BuoiNghi: "CaNgay", MaLoai: "AL"},
-                {MaDon: "LR002", NgayBatDau: Date(2024,11,15), NgayKetThuc: Date(2024,11,15), SoNgayNghi: 1, LyDo: "Nghỉ ốm", TrangThai: "DaDuyet", BuoiNghi: "Sang", MaLoai: "SL"},
-                {MaDon: "LR003", NgayBatDau: Date(2024,10,10), NgayKetThuc: Date(2024,10,12), SoNgayNghi: 3, LyDo: "Công việc gia đình", TrangThai: "TuChoi", BuoiNghi: "CaNgay", MaLoai: "PL"}
+        //Filter and sorting controls
+        Set(varSelectedStatus, "");
+        Set(varFilterDateFrom, Blank());
+        Set(varFilterDateTo, Blank());
+        Set(varSelectedLeave, Blank());
+        Set(varRecordSelected, false);
+        Set(varShowDetails, false);
+        Set(varShowCancelConfirm, false);
+        Set(varCancelMessage, "");
+        
+        //Load SharePoint data with authentication check
+        If(varIsUserAuthenticated,
+          //Load user's leave requests from SharePoint DonNghiPhep
+          If(varCanViewMyLeaves,
+            ClearCollect(colCurrentUserLeaves, 
+              SortByColumns(
+                Filter(DonNghiPhep, MaNguoiDung.Value = UserSessionANP.Id),
+                "NgayBatDau", 
+                SortOrder.Descending
               )
+            );
+            
+            //Load leave types from SharePoint for display
+            ClearCollect(colMyLeavesTypes, LoaiNghi);
+            
+            //Load user data for display
+            ClearCollect(colMyLeavesUsers, Filter(NguoiDung, Title = UserSessionANP.Id));
+            
+            //Load leave balance data from SharePoint SoNgayPhep
+            ClearCollect(colMyLeaveBalance, Filter(SoNgayPhep, MaNhanVien.Value = UserSessionANP.Id));
+            
+            Set(varNetworkError, false),
+            //No permission - redirect to dashboard
+            Notify("Bạn không có quyền xem đơn nghỉ phép cá nhân", NotificationType.Error);
+            Navigate(DashboardScreen)
+          ),
+          //No authentication - use demo data for preview
+          Set(varNetworkError, true);
+          //Create demo leave data with correct SharePoint structure
+          ClearCollect(colCurrentUserLeaves, 
+            Table(
+              {MaDon: "LR001", MaNguoiDung: {Value: "EMP001"}, NgayBatDau: Date(2024,12,20), NgayKetThuc: Date(2024,12,22), SoNgayNghi: 3, LyDo: "Nghỉ phép thường niên", TrangThai: {Value: "ChoDuyetCap1"}, BuoiNghi: {Value: "CaNgay"}, MaLoai: {Value: "ANNUAL"}},
+              {MaDon: "LR002", MaNguoiDung: {Value: "EMP001"}, NgayBatDau: Date(2024,11,15), NgayKetThuc: Date(2024,11,15), SoNgayNghi: 1, LyDo: "Nghỉ ốm", TrangThai: {Value: "DaDuyet"}, BuoiNghi: {Value: "Sang"}, MaLoai: {Value: "SICK"}},
+              {MaDon: "LR003", MaNguoiDung: {Value: "EMP001"}, NgayBatDau: Date(2024,10,10), NgayKetThuc: Date(2024,10,12), SoNgayNghi: 3, LyDo: "Công việc gia đình", TrangThai: {Value: "TuChoi"}, BuoiNghi: {Value: "CaNgay"}, MaLoai: {Value: "PERSONAL"}}
             )
           );
-          Set(varShowDetails, false);
-          Set(varShowCancelConfirm, false);
-          Set(varCancelMessage, "")
-        )
+          //Demo leave types
+          ClearCollect(colMyLeavesTypes,
+            Table(
+              {Title: "ANNUAL", TenLoai: "Nghỉ phép năm"},
+              {Title: "SICK", TenLoai: "Nghỉ ốm"},
+              {Title: "PERSONAL", TenLoai: "Việc cá nhân"}
+            )
+          );
+          //Demo user data
+          ClearCollect(colMyLeavesUsers,
+            Table(
+              {Title: "EMP001", HoTen: "Nguyễn Văn An", MaDonVi: {Value: "IT"}}
+            )
+          );
+          //Demo leave balance
+          ClearCollect(colMyLeaveBalance,
+            Table(
+              {MaNhanVien: {Value: "EMP001"}, TongNgayDuocPhep: 12, SoNgayDaNghi: 7, SoNgayConLai: 5}
+            )
+          )
+        );
+        
+        Set(varDataLoading, false);
+        
+        //Start authentication check
+        Set(varAuthTimerStart, true)
     Children:
+      # Authentication Check Timer
+      - 'MyLeaves.AuthTimer':
+          Control: Timer
+          Properties:
+            X: =0
+            Y: =0
+            Width: =1
+            Height: =1
+            Duration: =100
+            AutoStart: =varAuthTimerStart
+            Visible: =false
+            OnTimerEnd: |
+              =//Reset timer flag
+              Set(varAuthTimerStart, false);
+              //Check authentication: If not logged in, redirect to login
+              If(Not(varIsUserAuthenticated),
+                Navigate(LoginScreen),
+                //Check personal leave permissions after authentication
+                If(Not(varCanViewMyLeaves),
+                  Notify("Bạn không có quyền xem đơn nghỉ phép cá nhân", NotificationType.Error);
+                  Navigate(DashboardScreen),
+                  //Continue with my leaves - user is authenticated and has permission
+                  Set(varAuthenticationValid, true)
+                )
+              )
+              
       # Header Component
       - 'MyLeaves.Header':
           Control: CanvasComponent
@@ -175,7 +256,7 @@ Screens:
                               Y: =Parent.Height * 0.6
                               Width: =Parent.Width * 0.6
                               Height: =Parent.Height * 0.25
-                              Text: =Concatenate("Tổng", ":" & " ", CountRows(varCurrentUserLeaves), " " & "đơn nghỉ phép")
+                              Text: =Concatenate("Tổng", ":" & " ", CountRows(colCurrentUserLeaves), " " & "đơn nghỉ phép")
                               Color: =RGBA(75, 85, 99, 1)
                               Font: =Font.'Open Sans'
                               Size: =FontSizes.Small
@@ -245,7 +326,7 @@ Screens:
                                     Width: =(Parent.Width - Parent.Width * 0.03) / 4
                                     Height: =Parent.Height
                                     Title: ="Chờ duyệt"
-                                    Value: =If(IsUserAuthenticated, CountRows(Filter(varCurrentUserLeaves, Or(TrangThai.Value = "ChoDuyetCap1", TrangThai.Value = "ChoDuyetCap2", TrangThai.Value = "ChoDuyetCap3"))), CountRows(Filter(varCurrentUserLeaves, Or(TrangThai = "ChoDuyetCap1", TrangThai = "ChoDuyetCap2", TrangThai = "ChoDuyetCap3"))))
+                                    Value: =CountRows(Filter(colCurrentUserLeaves, Or(TrangThai.Value = "ChoDuyetCap1", TrangThai.Value = "ChoDuyetCap2", TrangThai.Value = "ChoDuyetCap3")))
                                     Icon: ="Clock"
                                     Color: =RGBA(251, 191, 36, 1)
                                     
@@ -258,7 +339,7 @@ Screens:
                                     Width: =(Parent.Width - Parent.Width * 0.03) / 4
                                     Height: =Parent.Height
                                     Title: ="Đã duyệt"
-                                    Value: =If(IsUserAuthenticated, CountRows(Filter(varCurrentUserLeaves, TrangThai.Value = "DaDuyet")), CountRows(Filter(varCurrentUserLeaves, TrangThai = "DaDuyet")))
+                                    Value: =CountRows(Filter(colCurrentUserLeaves, TrangThai.Value = "DaDuyet"))
                                     Icon: ="CheckBadge"
                                     Color: =RGBA(34, 197, 94, 1)
                                     
@@ -271,7 +352,7 @@ Screens:
                                     Width: =(Parent.Width - Parent.Width * 0.03) / 4
                                     Height: =Parent.Height
                                     Title: ="Từ chối"
-                                    Value: =If(IsUserAuthenticated, CountRows(Filter(varCurrentUserLeaves, TrangThai.Value = "TuChoi")), CountRows(Filter(varCurrentUserLeaves, TrangThai = "TuChoi")))
+                                    Value: =CountRows(Filter(colCurrentUserLeaves, TrangThai.Value = "TuChoi"))
                                     Icon: ="Cancel"
                                     Color: =RGBA(239, 68, 68, 1)
 
@@ -284,7 +365,7 @@ Screens:
                                     Width: =(Parent.Width - Parent.Width * 0.03) / 4
                                     Height: =Parent.Height
                                     Title: ="Tổng cộng"
-                                    Value: =CountRows(varCurrentUserLeaves)
+                                    Value: =CountRows(colCurrentUserLeaves)
                                     Icon: ="CalendarBlank"
                                     Color: =RGBA(59, 130, 246, 1)
 
@@ -448,7 +529,7 @@ Screens:
                               Y: =Parent.Height * 0.75
                               Width: =Parent.Width * 0.97
                               Height: =Parent.Height * 0.2
-                              Text: =Concatenate("Hiển thị ", If(IsUserAuthenticated, CountRows(Filter(varCurrentUserLeaves, And(Or(IsBlank(varSelectedStatus), TrangThai.Value = varSelectedStatus), Or(IsBlank(varFilterDateFrom), NgayBatDau >= varFilterDateFrom), Or(IsBlank(varFilterDateTo), NgayKetThuc <= varFilterDateTo)))), CountRows(Filter(varCurrentUserLeaves, And(Or(IsBlank(varSelectedStatus), TrangThai = varSelectedStatus), Or(IsBlank(varFilterDateFrom), NgayBatDau >= varFilterDateFrom), Or(IsBlank(varFilterDateTo), NgayKetThuc <= varFilterDateTo))))), " " & "kết quả")
+                              Text: =Concatenate("Hiển thị ", CountRows(Filter(colCurrentUserLeaves, And(Or(IsBlank(varSelectedStatus), TrangThai.Value = varSelectedStatus), Or(IsBlank(varFilterDateFrom), NgayBatDau >= varFilterDateFrom), Or(IsBlank(varFilterDateTo), NgayKetThuc <= varFilterDateTo)))), " " & "kết quả")
                               Color: =RGBA(107, 114, 128, 1)
                               Font: =Font.'Open Sans'
                               Size: =FontSizes.Small
@@ -503,7 +584,7 @@ Screens:
                   Height: =Parent.Height * 0.7
                   Text: ="Hủy đơn"
                   Size: =FontSizes.Small
-                  IsDisabled: =If(IsUserAuthenticated, Or(IsBlank(varSelectedLeave), Not(Or(varSelectedLeave.TrangThai.Value = "ChoDuyetCap1", varSelectedLeave.TrangThai.Value = "ChoDuyetCap2", varSelectedLeave.TrangThai.Value = "ChoDuyetCap3"))), Or(IsBlank(varSelectedLeave), Not(Or(varSelectedLeave.TrangThai = "ChoDuyetCap1", varSelectedLeave.TrangThai = "ChoDuyetCap2", varSelectedLeave.TrangThai = "ChoDuyetCap3"))))
+                  IsDisabled: =Or(IsBlank(varSelectedLeave), Not(Or(varSelectedLeave.TrangThai.Value = "ChoDuyetCap1", varSelectedLeave.TrangThai.Value = "ChoDuyetCap2", varSelectedLeave.TrangThai.Value = "ChoDuyetCap3")))
                   OnClick: |
                     =Set(varShowCancelConfirm, true)
                     
@@ -544,10 +625,7 @@ Screens:
             Y: ='MyLeaves.Header'.Height + 'MyLeaves.Content.Container'.Height * 0.48
             Width: ='MyLeaves.Content.Container'.Width * 0.96
             Height: ='MyLeaves.Content.Container'.Height * 0.48
-            Items: =If(IsUserAuthenticated, 
-              SortByColumns(Filter(varCurrentUserLeaves, And(Or(IsBlank(varSelectedStatus), TrangThai.Value = varSelectedStatus), Or(IsBlank(varFilterDateFrom), NgayBatDau >= varFilterDateFrom), Or(IsBlank(varFilterDateTo), NgayKetThuc <= varFilterDateTo))), "NgayBatDau", SortOrder.Descending),
-              SortByColumns(Filter(varCurrentUserLeaves, And(Or(IsBlank(varSelectedStatus), TrangThai = varSelectedStatus), Or(IsBlank(varFilterDateFrom), NgayBatDau >= varFilterDateFrom), Or(IsBlank(varFilterDateTo), NgayKetThuc <= varFilterDateTo))), "NgayBatDau", SortOrder.Descending)
-            )
+            Items: =SortByColumns(Filter(colCurrentUserLeaves, And(Or(IsBlank(varSelectedStatus), TrangThai.Value = varSelectedStatus), Or(IsBlank(varFilterDateFrom), NgayBatDau >= varFilterDateFrom), Or(IsBlank(varFilterDateTo), NgayKetThuc <= varFilterDateTo))), "NgayBatDau", SortOrder.Descending)
             BorderColor: =RGBA(229, 231, 235, 1)
             BorderThickness: =1
             Font: =Font.'Open Sans'
@@ -604,7 +682,7 @@ Screens:
                   FieldDisplayName: ="Loại nghỉ"
                   FieldName: ="MaLoai"
                   Order: =4
-                  Text: =If(IsUserAuthenticated, LookUp(LoaiNghi, MaLoai = Parent.Selected.MaLoai.Value).TenLoai, Switch(Parent.Selected.MaLoai, "AL", "Phép năm", "SL", "Nghỉ ốm", "PL", "Phép cá nhân", Parent.Selected.MaLoai))
+                  Text: =If(varIsUserAuthenticated, LookUp(colMyLeavesTypes, Title = Parent.Selected.MaLoai.Value).TenLoai, Switch(Parent.Selected.MaLoai.Value, "ANNUAL", "Nghỉ phép năm", "SICK", "Nghỉ ốm", "PERSONAL", "Việc cá nhân", Parent.Selected.MaLoai.Value))
                   OnSelect: |
                     =Set(varSelectedLeave, Parent.Selected);
                     Set(varRecordSelected, true)
@@ -628,7 +706,7 @@ Screens:
                   FieldDisplayName: ="Trạng thái"
                   FieldName: ="TrangThai"
                   Order: =6
-                  Text: =If(IsUserAuthenticated, Switch(Parent.Selected.TrangThai.Value, "ChoDuyetCap1", "Chờ duyệt cấp 1", "ChoDuyetCap2", "Chờ duyệt cấp 2", "ChoDuyetCap3", "Chờ duyệt cấp 3", "DaDuyet", "Đã duyệt", "TuChoi", "Từ chối", "Huy", "Đã hủy", "Không xác định"), Switch(Parent.Selected.TrangThai, "ChoDuyetCap1", "Chờ duyệt cấp 1", "ChoDuyetCap2", "Chờ duyệt cấp 2", "ChoDuyetCap3", "Chờ duyệt cấp 3", "DaDuyet", "Đã duyệt", "TuChoi", "Từ chối", "Huy", "Đã hủy", "Không xác định"))
+                  Text: =Switch(Parent.Selected.TrangThai.Value, "ChoDuyetCap1", "Chờ duyệt cấp 1", "ChoDuyetCap2", "Chờ duyệt cấp 2", "ChoDuyetCap3", "Chờ duyệt cấp 3", "DaDuyet", "Đã duyệt", "TuChoi", "Từ chối", "Huy", "Đã hủy", "Không xác định")
                   OnSelect: |
                     =Set(varSelectedLeave, Parent.Selected);
                     Set(varRecordSelected, true)
@@ -744,7 +822,7 @@ Screens:
                         Y: =Parent.Height * 0.15
                         Width: =Parent.Width * 0.7
                         Height: =Parent.Height * 0.06
-                        Text: =If(Not(IsBlank(varSelectedLeave)), If(IsUserAuthenticated, LookUp(LoaiNghi, MaLoai = varSelectedLeave.MaLoai.Value).TenLoai, Switch(varSelectedLeave.MaLoai, "AL", "Phép năm", "SL", "Nghỉ ốm", "PL", "Phép cá nhân", varSelectedLeave.MaLoai)), "")
+                        Text: =If(Not(IsBlank(varSelectedLeave)), If(varIsUserAuthenticated, LookUp(colMyLeavesTypes, Title = varSelectedLeave.MaLoai.Value).TenLoai, Switch(varSelectedLeave.MaLoai.Value, "ANNUAL", "Nghỉ phép năm", "SICK", "Nghỉ ốm", "PERSONAL", "Việc cá nhân", varSelectedLeave.MaLoai.Value)), "")
                         Color: =RGBA(55, 65, 81, 1)
                         Font: =Font.'Open Sans'
                         Size: =FontSizes.Base
@@ -822,8 +900,8 @@ Screens:
                         Y: =Parent.Height * 0.45
                         Width: =Parent.Width * 0.7
                         Height: =Parent.Height * 0.06
-                        Text: =If(Not(IsBlank(varSelectedLeave)), If(IsUserAuthenticated, Switch(varSelectedLeave.TrangThai.Value, "ChoDuyetCap1", "Chờ phê duyệt cấp 1", "ChoDuyetCap2", "Chờ phê duyệt cấp 2", "ChoDuyetCap3", "Chờ phê duyệt cấp 3", "DaDuyet", "Đã phê duyệt", "TuChoi", "Bị từ chối", "Huy", "Đã hủy", varSelectedLeave.TrangThai.Value), Switch(varSelectedLeave.TrangThai, "ChoDuyetCap1", "Chờ phê duyệt cấp 1", "ChoDuyetCap2", "Chờ phê duyệt cấp 2", "ChoDuyetCap3", "Chờ phê duyệt cấp 3", "DaDuyet", "Đã phê duyệt", "TuChoi", "Bị từ chối", "Huy", "Đã hủy", varSelectedLeave.TrangThai)), "")
-                        Color: =If(And(Not(IsBlank(varSelectedLeave)), Not(IsBlank(If(IsUserAuthenticated, varSelectedLeave.TrangThai, varSelectedLeave.TrangThai)))), If(IsUserAuthenticated, Switch(varSelectedLeave.TrangThai.Value, "ChoDuyetCap1", RGBA(180, 83, 9, 1), "ChoDuyetCap2", RGBA(180, 83, 9, 1), "ChoDuyetCap3", RGBA(180, 83, 9, 1), "DaDuyet", RGBA(21, 128, 61, 1), "TuChoi", RGBA(220, 38, 38, 1), "Huy", RGBA(107, 114, 128, 1), RGBA(55, 65, 81, 1)), Switch(varSelectedLeave.TrangThai, "ChoDuyetCap1", RGBA(180, 83, 9, 1), "ChoDuyetCap2", RGBA(180, 83, 9, 1), "ChoDuyetCap3", RGBA(180, 83, 9, 1), "DaDuyet", RGBA(21, 128, 61, 1), "TuChoi", RGBA(220, 38, 38, 1), "Huy", RGBA(107, 114, 128, 1), RGBA(55, 65, 81, 1))), RGBA(55, 65, 81, 1))
+                        Text: =If(Not(IsBlank(varSelectedLeave)), Switch(varSelectedLeave.TrangThai.Value, "ChoDuyetCap1", "Chờ phê duyệt cấp 1", "ChoDuyetCap2", "Chờ phê duyệt cấp 2", "ChoDuyetCap3", "Chờ phê duyệt cấp 3", "DaDuyet", "Đã phê duyệt", "TuChoi", "Bị từ chối", "Huy", "Đã hủy", varSelectedLeave.TrangThai.Value), "")
+                        Color: =If(And(Not(IsBlank(varSelectedLeave)), Not(IsBlank(varSelectedLeave.TrangThai.Value))), Switch(varSelectedLeave.TrangThai.Value, "ChoDuyetCap1", RGBA(180, 83, 9, 1), "ChoDuyetCap2", RGBA(180, 83, 9, 1), "ChoDuyetCap3", RGBA(180, 83, 9, 1), "DaDuyet", RGBA(21, 128, 61, 1), "TuChoi", RGBA(220, 38, 38, 1), "Huy", RGBA(107, 114, 128, 1), RGBA(55, 65, 81, 1)), RGBA(55, 65, 81, 1))
                         Font: =Font.'Open Sans'
                         FontWeight: =FontWeight.Semibold
                         Size: =FontSizes.Base
@@ -849,7 +927,7 @@ Screens:
                         Y: =Parent.Height * 0.55
                         Width: =Parent.Width * 0.7
                         Height: =Parent.Height * 0.06
-                        Text: =If(Not(IsBlank(varSelectedLeave)), If(IsUserAuthenticated, Switch(varSelectedLeave.BuoiNghi.Value, "CaNgay", "Cả ngày", "Sang", "Buổi sáng", "Chieu", "Buổi chiều", varSelectedLeave.BuoiNghi.Value), Switch(varSelectedLeave.BuoiNghi, "CaNgay", "Cả ngày", "Sang", "Buổi sáng", "Chieu", "Buổi chiều", varSelectedLeave.BuoiNghi)), "")
+                        Text: =If(Not(IsBlank(varSelectedLeave)), Switch(varSelectedLeave.BuoiNghi.Value, "CaNgay", "Cả ngày", "Sang", "Buổi sáng", "Chieu", "Buổi chiều", varSelectedLeave.BuoiNghi.Value), "")
                         Color: =RGBA(55, 65, 81, 1)
                         Font: =Font.'Open Sans'
                         Size: =FontSizes.Base
@@ -880,6 +958,87 @@ Screens:
                         Font: =Font.'Open Sans'
                         Size: =FontSizes.Base
                         Wrap: =true
+
+      # Loading Indicator
+      - 'MyLeaves.Loading.Overlay':
+          Control: Rectangle
+          Properties:
+            X: =0
+            Y: =0
+            Width: =Parent.Width
+            Height: =Parent.Height
+            Fill: =RGBA(0, 0, 0, 0.3)
+            Visible: =varDataLoading
+            
+      # Loading Message Container
+      - 'MyLeaves.Loading.Container':
+          Control: GroupContainer
+          Variant: ManualLayout
+          Properties:
+            X: =(Parent.Width - Parent.Width * 0.3) / 2
+            Y: =(Parent.Height - Parent.Height * 0.2) / 2
+            Width: =Parent.Width * 0.3
+            Height: =Parent.Height * 0.2
+            Fill: =RGBA(255, 255, 255, 1)
+            BorderColor: =RGBA(59, 130, 246, 1)
+            BorderThickness: =2
+            Visible: =varDataLoading
+          Children:
+            - 'MyLeaves.Loading.Message':
+                Control: Label
+                Properties:
+                  X: =Parent.Width * 0.1
+                  Y: =(Parent.Height - Parent.Height * 0.4) / 2
+                  Width: =Parent.Width * 0.8
+                  Height: =Parent.Height * 0.4
+                  Text: ="Đang tải dữ liệu..."
+                  Color: =RGBA(59, 130, 246, 1)
+                  Font: =Font.'Open Sans'
+                  FontWeight: =FontWeight.Bold
+                  Size: =FontSizes.Medium
+                  Align: =Align.Center
+
+      # Network Error Message
+      - 'MyLeaves.NetworkError.Container':
+          Control: GroupContainer
+          Variant: ManualLayout
+          Properties:
+            X: =(Parent.Width - Parent.Width * 0.5) / 2
+            Y: =(Parent.Height - Parent.Height * 0.3) / 2
+            Width: =Parent.Width * 0.5
+            Height: =Parent.Height * 0.3
+            Fill: =RGBA(255, 255, 255, 1)
+            BorderColor: =RGBA(239, 68, 68, 1)
+            BorderThickness: =2
+            Visible: =varNetworkError
+          Children:
+            - 'MyLeaves.NetworkError.Message':
+                Control: Label
+                Properties:
+                  X: =Parent.Width * 0.1
+                  Y: =Parent.Height * 0.2
+                  Width: =Parent.Width * 0.8
+                  Height: =Parent.Height * 0.4
+                  Text: ="Không thể kết nối đến máy chủ. Vui lòng kiểm tra kết nối mạng và thử lại."
+                  Color: =RGBA(239, 68, 68, 1)
+                  Font: =Font.'Open Sans'
+                  Size: =FontSizes.Base
+                  Align: =Align.Center
+                  Wrap: =true
+                  
+            - 'MyLeaves.NetworkError.RetryButton':
+                Control: CanvasComponent
+                ComponentName: ButtonComponent
+                Properties:
+                  X: =(Parent.Width - Self.Width) / 2
+                  Y: =Parent.Height * 0.65
+                  Width: =Parent.Width * 0.3
+                  Height: =Parent.Height * 0.15
+                  Text: ="Thử lại"
+                  Size: =FontSizes.Small
+                  OnClick: |
+                    =Set(varNetworkError, false);
+                    Navigate(MyLeavesScreen)
 
       # Cancel Confirmation Modal Overlay
       - 'MyLeaves.Cancel.Overlay':
