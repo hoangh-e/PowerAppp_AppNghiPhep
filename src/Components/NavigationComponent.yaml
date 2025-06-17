@@ -62,6 +62,13 @@ ComponentDefinitions:
         Description: "Reference đến ReportsScreen"
         DataType: Screen
         Default: =
+      ApprovalScreen:
+        PropertyKind: Input
+        DisplayName: ApprovalScreen
+        Description: "Reference đến ApprovalScreen"
+        DataType: Screen
+        Default: =
+
       OnNavigate:
         PropertyKind: Event
         DisplayName: OnNavigate
@@ -585,7 +592,9 @@ ComponentDefinitions:
                       OnSelect: |
                         =Set(varDebugClick, "Approval clicked");
                         Set(varActiveScreen, "Approval");
-                        NavigationComponent.OnNavigate("Approval")
+                        If(Not(IsBlank(NavigationComponent.ApprovalScreen)), 
+                          Navigate(NavigationComponent.ApprovalScreen),
+                          NavigationComponent.OnNavigate("Approval"))
                         
                 - 'Navigation.Menu.Approval.Icon':
                     Control: Classic/Icon

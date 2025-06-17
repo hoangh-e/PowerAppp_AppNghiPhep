@@ -5,6 +5,7 @@
       OnVisible: |
         =Set(varActiveScreen, "Calendar");
         Set(varNetworkError, false);
+        Set(varDemoMode, false);
         Set(varDataLoading, true);
         Set(varCurrentDate, Today());
         Set(varSelectedMonth, Month(Today()));
@@ -15,6 +16,13 @@
         Set(varSelectedDateLeaves, Blank());
         Set(varNavCollapsed, false);
         Set(varMobileMenuOpen, false);
+        
+        //CRITICAL: Check authentication status first
+        Set(varIsUserAuthenticated, And(
+          Not(IsBlank(UserSessionANP.Id)),
+          UserSessionANP.Id <> "",
+          UserSessionANP.Permission > 0
+        ));
         
         //Check user permissions using CheckPermission function from App/Formulas
         Set(varUserPermissions, {
@@ -65,7 +73,7 @@
             ClearCollect(colDepartmentLeaves,
               Filter(DonNghiPhep,
                 And(
-                  LookUp(NguoiDung, Title = MaNguoiDung.Value).MaDonVi.Value = UserSessionANP.MaDonVi,
+                  LookUp(NguoiDung, Title = MaNguoiDung).MaDonVi.Value = UserSessionANP.MaDonVi,
                   Or(
                     Month(NgayBatDau) = varSelectedMonth,
                     Month(NgayKetThuc) = varSelectedMonth,
@@ -133,7 +141,8 @@
           
           Set(varNetworkError, false),
           //No authentication - use demo data for preview
-          Set(varNetworkError, true);
+          Set(varNetworkError, false);
+          Set(varDemoMode, true);
           //Create demo leave data for preview with correct structure
           ClearCollect(colPersonalLeaves, 
             Table(
@@ -407,23 +416,6 @@
                                           )
                                         )
                                       )
-                                      ClearCollect(colCalendarDays,
-                                        ForAll(
-                                          Sequence(varTotalCells),
-                                          With(
-                                            {currentDate: DateAdd(varStartDate, Value - 1, TimeUnit.Days)},
-                                            {
-                                              CalendarDate: currentDate,
-                                              IsCurrentMonth: Month(currentDate) = varSelectedMonth,
-                                              IsToday: currentDate = Today(),
-                                              IsWeekend: Or(Weekday(currentDate, StartOfWeek.Sunday) = 1, Weekday(currentDate, StartOfWeek.Sunday) = 7),
-                                              DayNumber: Day(currentDate),
-                                              FormattedDate: Text(currentDate, "yyyy-mm-dd"),
-                                              WeekRow: RoundUp(Value / 7, 0)
-                                            }
-                                          )
-                                        )
-                                      )
                                       
                               - 'Calendar.Nav.MonthYear':
                                   Control: Label
@@ -463,23 +455,6 @@
                                       Set(varStartDate, DateAdd(varFirstDayOfMonth, -(varFirstWeekday - 1), TimeUnit.Days));
                                       Set(varWeeksNeeded, Max(RoundUp((varDaysInMonth + varFirstWeekday - 1) / 7, 0), 1));
                                       Set(varTotalCells, varWeeksNeeded * 7);
-                                      ClearCollect(colCalendarDays,
-                                        ForAll(
-                                          Sequence(varTotalCells),
-                                          With(
-                                            {currentDate: DateAdd(varStartDate, Value - 1, TimeUnit.Days)},
-                                            {
-                                              CalendarDate: currentDate,
-                                              IsCurrentMonth: Month(currentDate) = varSelectedMonth,
-                                              IsToday: currentDate = Today(),
-                                              IsWeekend: Or(Weekday(currentDate, StartOfWeek.Sunday) = 1, Weekday(currentDate, StartOfWeek.Sunday) = 7),
-                                              DayNumber: Day(currentDate),
-                                              FormattedDate: Text(currentDate, "yyyy-mm-dd"),
-                                              WeekRow: RoundUp(Value / 7, 0)
-                                            }
-                                          )
-                                        )
-                                      )
                                       ClearCollect(colCalendarDays,
                                         ForAll(
                                           Sequence(varTotalCells),
@@ -1095,10 +1070,10 @@
             Y: =Parent.Height * 0.1
             Width: =Parent.Width * 0.4
             Height: =60
-            Fill: =RGBA(254, 242, 242, 1)
-            BorderColor: =RGBA(239, 68, 68, 1)
+            Fill: =If(varDemoMode, RGBA(254, 243, 199, 1), RGBA(254, 242, 242, 1))
+            BorderColor: =If(varDemoMode, RGBA(251, 191, 36, 1), RGBA(239, 68, 68, 1))
             BorderThickness: =2
-            Visible: =varNetworkError
+            Visible: =Or(varNetworkError, varDemoMode)
              
       - 'Calendar.Error.Text':
           Control: Label
@@ -1107,14 +1082,14 @@
             Y: =Parent.Height * 0.1 + 10
             Width: =Parent.Width * 0.38
             Height: =40
-            Text: ="Lỗi kết nối SharePoint. Hiển thị dữ liệu demo."
-            Color: =RGBA(239, 68, 68, 1)
+            Text: =If(varDemoMode, "Chế độ xem thử - Vui lòng đăng nhập để xem dữ liệu thực", "Lỗi kết nối SharePoint")
+            Color: =If(varDemoMode, RGBA(251, 191, 36, 1), RGBA(239, 68, 68, 1))
             Font: =Font.'Open Sans'
             FontWeight: =FontWeight.Semibold
             Size: =FontSizes.Base
             Align: =Align.Center
             VerticalAlign: =VerticalAlign.Middle
-            Visible: =varNetworkError
+            Visible: =Or(varNetworkError, varDemoMode)
 
       # Calendar Details Modal
       - 'Calendar.Details.Modal':

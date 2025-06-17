@@ -275,12 +275,14 @@ Screens:
                               If(Text(ThisRecord.TrangThai.Value) = "HoatDong",
                                 Set(varLoginSuccess, true); Set(varSessionValid, true); Set(varIsUserAuthenticated, true);
                                 Set(varLoggedInUserEmail, 'Login.Email.Input'.Text);
+                                Set(mvaitr, ThisRecord.MaVaiTro.Value);
+                                Set(selectedVaiTro, LookUp(VaiTro, MaVaiTro = mvaitr));
                                 Set(UserSessionANP, {
                                   Id: ThisRecord.Title,
                                   HoTen: ThisRecord.HoTen,
                                   Email: ThisRecord.Email,
                                   MaVaiTro: Text(ThisRecord.MaVaiTro.Value),
-                                  Permission: 1671,
+                                  Permission: Sum(selectedVaiTro.'CacQuyen: GiaTri', Value),
                                   NguoiQuanLyId: If(IsBlank(ThisRecord.MaQuanLy), "", Text(ThisRecord.MaQuanLy.Value)),
                                   ChucDanh: Text(ThisRecord.ChucDanh.Value),
                                   MaDonVi: Text(ThisRecord.MaDonVi.Value),

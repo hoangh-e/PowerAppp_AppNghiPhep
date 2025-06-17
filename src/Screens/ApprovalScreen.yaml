@@ -6,6 +6,7 @@ Screens:
         =Set(varActiveScreen, "Approval");
         Set(varNavCollapsed, false);
         Set(varMobileMenuOpen, false);
+        Set(varNavigateAwayFlag, false);
         
         //Check user permissions using CheckPermission function from App/Formulas
         Set(varUserPermissions, {
@@ -24,10 +25,54 @@ Screens:
         //CRITICAL: Check if user has ANY approval permission
         Set(varCanApprove, Or(varUserPermissions.CanApproveLevel1, varUserPermissions.CanApproveLevel2, varUserPermissions.CanApproveLevel3));
         
-        //If no approval permission, redirect to Dashboard with notification
+        //DEBUG: Log permission check results for troubleshooting
+        Set(varPermissionDebug, {
+          UserPermission: UserSessionANP.Permission,
+          CanApproveLevel1: varUserPermissions.CanApproveLevel1,
+          CanApproveLevel2: varUserPermissions.CanApproveLevel2, 
+          CanApproveLevel3: varUserPermissions.CanApproveLevel3,
+          CanApprove: varCanApprove,
+          UserRole: UserSessionANP.MaVaiTro,
+          UserId: UserSessionANP.Id
+        });
+        
+        //If user has no approval permission AND not authenticated, provide demo user option
+        If(And(Not(varCanApprove), Not(varIsUserAuthenticated)),
+          //Set a demo approval user for testing
+          Set(UserSessionANP, {
+            Id: "DEMO_MANAGER_001",
+            HoTen: "Quản lý Demo (Có quyền duyệt)",
+            Email: "manager.demo@company.com",
+            MaVaiTro: "Manager",
+            Permission: 787, // Manager permissions with approval rights
+            NguoiQuanLyId: "",
+            ChucDanh: "Quản lý phòng",
+            MaDonVi: "IT",
+            TrangThai: "HoatDong",
+            Name: "Quản lý Demo",
+            Role: "Manager"
+          });
+          Set(varIsUserAuthenticated, true);
+          //Recalculate permissions with demo user
+          Set(varUserPermissions, {
+            CanApproveLevel1: CheckPermission(UserSessionANP.Permission, UserPermissions.APPROVE_LEVEL_1),
+            CanApproveLevel2: CheckPermission(UserSessionANP.Permission, UserPermissions.APPROVE_LEVEL_2),
+            CanApproveLevel3: CheckPermission(UserSessionANP.Permission, UserPermissions.APPROVE_LEVEL_3),
+            CanViewTeamLeaves: CheckPermission(UserSessionANP.Permission, UserPermissions.VIEW_TEAM_LEAVE),
+            CanViewAllLeaves: CheckPermission(UserSessionANP.Permission, UserPermissions.VIEW_ALL_LEAVE),
+            CanRecordLeave: CheckPermission(UserSessionANP.Permission, UserPermissions.RECORD_LEAVE),
+            CanManageUsers: CheckPermission(UserSessionANP.Permission, UserPermissions.MANAGE_USERS),
+            CanViewDashboard: CheckPermission(UserSessionANP.Permission, UserPermissions.VIEW_DASHBOARD),
+            CanExportReports: CheckPermission(UserSessionANP.Permission, UserPermissions.EXPORT_REPORTS),
+            IsSystemAdmin: CheckPermission(UserSessionANP.Permission, UserPermissions.SYSTEM_ADMIN)
+          });
+          Set(varCanApprove, Or(varUserPermissions.CanApproveLevel1, varUserPermissions.CanApproveLevel2, varUserPermissions.CanApproveLevel3))
+        );
+        
+        //If no approval permission, set flag to navigate away after timer
         If(Not(varCanApprove),
-          Notify("Bạn không có quyền phê duyệt đơn nghỉ phép", NotificationType.Error);
-          Navigate(DashboardScreen),
+          Set(varNavigateAwayFlag, true);
+          Set(varNavigateReason, "Bạn không có quyền phê duyệt đơn nghỉ phép"),
           //Continue with approval screen initialization
           Set(varSelectedApprovalLeave, Blank());
           Set(varShowApprovalDetails, false);
@@ -95,6 +140,24 @@ Screens:
                 Set(varAuthenticationValid, true)
               )
       
+      # Permission Check Timer - Only navigate away if permission denied
+      - 'Approval.PermissionTimer':
+          Control: Timer
+          Properties:
+            X: =0
+            Y: =0
+            Width: =1
+            Height: =1
+            Duration: =500
+            AutoStart: =varNavigateAwayFlag
+            Visible: =false
+            OnTimerEnd: |
+              =//Reset timer flag
+              Set(varNavigateAwayFlag, false);
+              //Show notification and navigate to Dashboard
+              Notify(varNavigateReason, NotificationType.Error);
+              Navigate(DashboardScreen)
+      
       - Approval.Header:
           Control: CanvasComponent
           ComponentName: HeaderComponent
@@ -146,6 +209,7 @@ Screens:
             ManagementScreen: =ManagementScreen
             ReportsScreen: =ReportsScreen
             ProfileScreen: =ProfileScreen
+            ApprovalScreen: =ApprovalScreen
             OnNavigate: |
               =Set(varActiveScreen, ScreenName);
               Switch(ScreenName,
@@ -229,6 +293,20 @@ Screens:
                               Size: =FontSizes.Base
                               Text: =Concatenate("Đang chờ duyệt" & ":" & " ", CountRows(varMyLevelApprovals), " " & "đơn")
                               Width: =Parent.Width * 0.6
+                        # Debug Permission Info
+                        - Approval.PageHeader.Debug:
+                            Control: Label
+                            Properties:
+                              X: =Parent.Width * 0.65
+                              Y: =Parent.Height * 0.15
+                              Color: =RGBA(59, 130, 246, 1)
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Normal
+                              Height: =Parent.Height * 0.7
+                              Size: =FontSizes.Small
+                              Text: =Concatenate("Quyền:" & " ", If(varCanApprove, "CÓ QUYỀN DUYỆT", "KHÔNG CÓ QUYỀN"), " | ", "Role:" & " ", UserSessionANP.MaVaiTro, " | ", "Perm:" & " ", Text(UserSessionANP.Permission))
+                              Visible: =true
+                              Width: =Parent.Width * 0.32
                   - Approval.Stats.Container:
                       Control: GroupContainer
                       Variant: ManualLayout
@@ -347,7 +425,7 @@ Screens:
                     =Set(varSelectedApprovalLeave, Parent.Selected);
                     Set(varShowApprovalDetails, true)
                   Order: =1
-                  Text: =LookUp(NguoiDung, Title = Parent.Selected.MaNguoiDung).HoTen
+                  Text: =LookUp(NguoiDung, Title = Parent.Selected.MaNguoiDung.Value).HoTen
             - NgayBatDau_Column_1:
                 Control: DataTableColumn
                 Variant: Textual
@@ -493,7 +571,7 @@ Screens:
                         Font: =Font.'Open Sans'
                         Height: =Parent.Height * 0.06
                         Size: =FontSizes.Base
-                        Text: =If(Not(IsBlank(varSelectedApprovalLeave)), LookUp(NguoiDung, Title = varSelectedApprovalLeave.MaNguoiDung).HoTen & " (" & LookUp(NguoiDung, Title = varSelectedApprovalLeave.MaNguoiDung).Email & ")", "")
+                        Text: =If(Not(IsBlank(varSelectedApprovalLeave)), LookUp(NguoiDung, Title = varSelectedApprovalLeave.MaNguoiDung.Value).HoTen & " (" & LookUp(NguoiDung, Title = varSelectedApprovalLeave.MaNguoiDung.Value).Email & ")", "")
                         Width: =Parent.Width * 0.7
                   - Approval.Details.Period.Label:
                       Control: Label
