@@ -356,7 +356,8 @@ Screens:
                               HoverFill: =RGBA(253, 226, 226, 1)
                               HoverBorderColor: =RGBA(248, 113, 113, 1)
                               OnSelect: |
-                                =Set(varLoginSuccess, true); Set(varSessionValid, true); Set(varIsUserAuthenticated, true);
+                                =Set(varIsTraditionalLoading, true);
+                                Set(varLoginSuccess, true); Set(varSessionValid, true); Set(varIsUserAuthenticated, true);
                                 Set(varLoggedInUserEmail, "admin@demo.com");
                                 Set(UserSessionANP, {
                                   Id: "ADMIN001",
@@ -371,6 +372,7 @@ Screens:
                                   Name: "Quản trị viên Demo",
                                   Role: "Admin"
                                 });
+                                Set(varIsTraditionalLoading, false);
                                 Navigate(DashboardScreen)
 
                         # Employee Demo Button
@@ -392,7 +394,8 @@ Screens:
                               HoverFill: =RGBA(220, 252, 231, 1)
                               HoverBorderColor: =RGBA(74, 222, 128, 1)
                               OnSelect: |
-                                =Set(varLoginSuccess, true); Set(varSessionValid, true); Set(varIsUserAuthenticated, true);
+                                =Set(varIsTraditionalLoading, true);
+                                Set(varLoginSuccess, true); Set(varSessionValid, true); Set(varIsUserAuthenticated, true);
                                 Set(varLoggedInUserEmail, "employee@demo.com");
                                 Set(UserSessionANP, {
                                   Id: "EMP001",
@@ -407,6 +410,7 @@ Screens:
                                   Name: "Nguyễn Văn An",
                                   Role: "Employee"
                                 });
+                                Set(varIsTraditionalLoading, false);
                                 Navigate(DashboardScreen)
 
                         # Manager Demo Button
@@ -428,7 +432,8 @@ Screens:
                               HoverFill: =RGBA(219, 234, 254, 1)
                               HoverBorderColor: =RGBA(96, 165, 250, 1)
                               OnSelect: |
-                                =Set(varLoginSuccess, true); Set(varSessionValid, true); Set(varIsUserAuthenticated, true);
+                                =Set(varIsTraditionalLoading, true);
+                                Set(varLoginSuccess, true); Set(varSessionValid, true); Set(varIsUserAuthenticated, true);
                                 Set(varLoggedInUserEmail, "manager@demo.com");
                                 Set(UserSessionANP, {
                                   Id: "MGR001",
@@ -443,6 +448,7 @@ Screens:
                                   Name: "Trần Thị Bình",
                                   Role: "Manager"
                                 });
+                                Set(varIsTraditionalLoading, false);
                                 Navigate(DashboardScreen)
 
                         # Director Demo Button
@@ -464,7 +470,8 @@ Screens:
                               HoverFill: =RGBA(243, 232, 255, 1)
                               HoverBorderColor: =RGBA(167, 139, 250, 1)
                               OnSelect: |
-                                =Set(varLoginSuccess, true); Set(varSessionValid, true); Set(varIsUserAuthenticated, true);
+                                =Set(varIsTraditionalLoading, true);
+                                Set(varLoginSuccess, true); Set(varSessionValid, true); Set(varIsUserAuthenticated, true);
                                 Set(varLoggedInUserEmail, "director@demo.com");
                                 Set(UserSessionANP, {
                                   Id: "DIR001",
@@ -479,7 +486,35 @@ Screens:
                                   Name: "Lê Hoàng Cường",
                                   Role: "Director"
                                 });
+                                Set(varIsTraditionalLoading, false);
                                 Navigate(DashboardScreen)
+
+      # ===== LOADING OVERLAY =====
+      - 'Login.Loading.Overlay':
+          Control: Rectangle
+          Properties:
+            X: =0
+            Y: =0
+            Width: =Parent.Width
+            Height: =Parent.Height
+            Fill: =RGBA(255, 255, 255, 0.8)
+            Visible: =varIsTraditionalLoading
+           
+      - 'Login.Loading.Text':
+          Control: Label
+          Properties:
+            X: =(Parent.Width - Self.Width) / 2
+            Y: =(Parent.Height - Self.Height) / 2
+            Width: =250
+            Height: =50
+            Text: ="Đang đăng nhập vào hệ thống..."
+            Color: =RGBA(59, 130, 246, 1)
+            Font: =Font.'Open Sans'
+            FontWeight: =FontWeight.Semibold
+            Size: =FontSizes.Large
+            Align: =Align.Center
+            VerticalAlign: =VerticalAlign.Middle
+            Visible: =varIsTraditionalLoading
 
       # ===== FOOTER =====
       - 'Login.Footer':
