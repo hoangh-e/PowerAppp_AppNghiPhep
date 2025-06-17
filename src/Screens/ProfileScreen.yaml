@@ -185,6 +185,7 @@ Screens:
             ManagementScreen: =ManagementScreen
             ReportsScreen: =ReportsScreen
             ProfileScreen: =ProfileScreen
+            ApprovalScreen: =ApprovalScreen
             OnNavigate: |
               =Set(varActiveScreen, ScreenName);
               Switch(ScreenName,

@@ -171,6 +171,7 @@ Screens:
             ManagementScreen: =ManagementScreen
             ReportsScreen: =ReportsScreen
             ProfileScreen: =ProfileScreen
+            ApprovalScreen: =ApprovalScreen
             OnNavigate: |
               =Set(varActiveScreen, ScreenName);
               Switch(ScreenName,
@@ -619,7 +620,6 @@ Screens:
       # DataTable - Direct Screen child following rules
       - 'MyLeaves.DataTable':
           Control: DataTable
-          Variant: DataTable
           Properties:
             X: ='MyLeaves.Navigation'.Width + 'MyLeaves.Content.Container'.Width * 0.02
             Y: ='MyLeaves.Header'.Height + 'MyLeaves.Content.Container'.Height * 0.48

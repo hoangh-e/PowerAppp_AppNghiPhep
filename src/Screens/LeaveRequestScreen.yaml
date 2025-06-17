@@ -215,6 +215,7 @@
               ManagementScreen: =ManagementScreen
               ReportsScreen: =ReportsScreen
               ProfileScreen: =ProfileScreen
+              ApprovalScreen: =ApprovalScreen
               OnNavigate: |
                 =Set(varActiveScreen, ScreenName);
                 Switch(ScreenName,
@@ -927,7 +928,7 @@
             Properties:
               X: =(Parent.Width - Parent.Width * 0.38) / 2
               Y: =Parent.Height * 0.1 + 10
-              Width: =Parent.Width * 0.38
+              Width: =Parent.Width * 0.38 
               Height: =40
               Text: ="Lỗi kết nối SharePoint. Hiển thị dữ liệu demo."
               Color: =RGBA(239, 68, 68, 1)

@@ -48,6 +48,40 @@
           UserSessionANP.MaVaiTro = "Admin"
         ));
         
+        //Auto-set appropriate calendar view based on user permissions
+        If(Not(varUserPermissions.CanViewPersonalLeaves) And varCalendarView = "Personal",
+          //User doesn't have personal permission, switch to available view
+          If(varUserPermissions.CanViewTeamLeaves,
+            Set(varCalendarView, "Department"),
+            If(Or(varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers, UserSessionANP.MaVaiTro = "Admin"),
+              Set(varCalendarView, "All"),
+              Set(varCalendarView, "Personal") //Fallback - will show empty
+            )
+          )
+        );
+        
+        If(Not(varUserPermissions.CanViewTeamLeaves) And varCalendarView = "Department",
+          //User doesn't have department permission, switch to available view
+          If(varUserPermissions.CanViewPersonalLeaves,
+            Set(varCalendarView, "Personal"),
+            If(Or(varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers, UserSessionANP.MaVaiTro = "Admin"),
+              Set(varCalendarView, "All"),
+              Set(varCalendarView, "Personal") //Fallback
+            )
+          )
+        );
+        
+        If(Not(Or(varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers, UserSessionANP.MaVaiTro = "Admin")) And varCalendarView = "All",
+          //User doesn't have all company permission, switch to available view
+          If(varUserPermissions.CanViewPersonalLeaves,
+            Set(varCalendarView, "Personal"),
+            If(varUserPermissions.CanViewTeamLeaves,
+              Set(varCalendarView, "Department"),
+              Set(varCalendarView, "Personal") //Fallback
+            )
+          )
+        );
+        
         //Load SharePoint data with authentication check
         If(varIsUserAuthenticated,
           //Load Personal Leaves from SharePoint based on permissions
@@ -311,6 +345,7 @@
             ManagementScreen: =ManagementScreen
             ReportsScreen: =ReportsScreen
             ProfileScreen: =ProfileScreen
+            ApprovalScreen: =ApprovalScreen
             OnNavigate: |
               =Set(varActiveScreen, ScreenName);
               Switch(ScreenName,
@@ -482,6 +517,7 @@
                               Y: =Parent.Height * 0.1
                               Width: =Parent.Width * 0.25
                               Height: =Parent.Height * 0.8
+                              Visible: =varCanViewCalendar
                             Children:
                               - 'Calendar.ViewToggle.Label':
                                   Control: Label
@@ -508,7 +544,12 @@
                                     Text: ="CN"
                                     Variant: =If(varCalendarView = "Personal", "Primary", "Outline")
                                     Size: =FontSizes.Small
-                                    OnClick: =Set(varCalendarView, "Personal")
+                                    IsDisabled: =Not(varUserPermissions.CanViewPersonalLeaves)
+                                    OnClick: |
+                                      =If(varUserPermissions.CanViewPersonalLeaves,
+                                        Set(varCalendarView, "Personal"),
+                                        Notify("Bạn không có quyền xem lịch cá nhân", NotificationType.Warning)
+                                      )
                                     
                               - 'Calendar.ViewToggle.Department':
                                   Control: CanvasComponent
@@ -521,7 +562,12 @@
                                     Text: ="PB"
                                     Variant: =If(varCalendarView = "Department", "Primary", "Outline")
                                     Size: =FontSizes.Small
-                                    OnClick: =Set(varCalendarView, "Department")
+                                    IsDisabled: =Not(varUserPermissions.CanViewTeamLeaves)
+                                    OnClick: |
+                                      =If(varUserPermissions.CanViewTeamLeaves,
+                                        Set(varCalendarView, "Department"),
+                                        Notify("Bạn không có quyền xem lịch phòng ban", NotificationType.Warning)
+                                      )
                                     
                               - 'Calendar.ViewToggle.All':
                                   Control: CanvasComponent
@@ -534,7 +580,38 @@
                                     Text: ="CT"
                                     Variant: =If(varCalendarView = "All", "Primary", "Outline")
                                     Size: =FontSizes.Small
-                                    OnClick: =Set(varCalendarView, "All")
+                                    IsDisabled: =Not(Or(varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers, UserSessionANP.MaVaiTro = "Admin"))
+                                    OnClick: |
+                                      =If(Or(varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers, UserSessionANP.MaVaiTro = "Admin"),
+                                        Set(varCalendarView, "All"),
+                                        Notify("Bạn không có quyền xem lịch toàn công ty", NotificationType.Warning)
+                                      )
+                        
+                        # Permission Debug Info
+                        - 'Calendar.PermissionDebug.Container':
+                            Control: GroupContainer
+                            Variant: ManualLayout
+                            Properties:
+                              X: =Parent.Width * 0.02
+                              Y: =Parent.Height * 0.92
+                              Width: =Parent.Width * 0.96
+                              Height: =Parent.Height * 0.06
+                              Visible: =varCanViewCalendar
+                            Children:
+                              - 'Calendar.PermissionDebug.Info':
+                                  Control: Label
+                                  Properties:
+                                    X: =0
+                                    Y: =0
+                                    Width: =Parent.Width
+                                    Height: =Parent.Height
+                                    Text: =Concatenate("Quyền hiện tại:" & " ", If(varUserPermissions.CanViewPersonalLeaves, "CN ", ""), If(varUserPermissions.CanViewTeamLeaves, "PB ", ""), If(Or(varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers, UserSessionANP.MaVaiTro = "Admin"), "CT ", ""), "| Role:" & " ", UserSessionANP.MaVaiTro, " | Permission:" & " ", Text(UserSessionANP.Permission))
+                                    Color: =RGBA(59, 130, 246, 1)
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Normal
+                                    Size: =FontSizes.Small
+                                    Align: =Align.Left
+                                    VerticalAlign: =VerticalAlign.Middle
                                     
                         # Format Toggle Controls  
                         - 'Calendar.FormatToggle.Container':
@@ -545,6 +622,7 @@
                               Y: =Parent.Height * 0.1
                               Width: =Parent.Width * 0.26
                               Height: =Parent.Height * 0.8
+                              Visible: =varCanViewCalendar
                             Children:
                               - 'Calendar.FormatToggle.Label':
                                   Control: Label
@@ -595,7 +673,7 @@
                         Y: ='Calendar.PageHeader.Container'.Y + 'Calendar.PageHeader.Container'.Height + Parent.Height * 0.01
                         Width: =Parent.Width
                         Height: =Parent.Height * 0.82
-                        Visible: =varViewFormat = "Calendar"
+                        Visible: =And(varViewFormat = "Calendar", varCanViewCalendar)
                       Children:
                         - 'Calendar.Grid.Background':
                             Control: Rectangle
@@ -1310,7 +1388,7 @@
             Y: ='Calendar.PageHeader.Container'.Y + 'Calendar.PageHeader.Container'.Height + Parent.Height * 0.01
             Width: =Parent.Width
             Height: =Parent.Height * 0.82
-            Visible: =varViewFormat = "List"
+            Visible: =And(varViewFormat = "List", varCanViewCalendar)
           Children:
             - 'Calendar.ListView.Background':
                 Control: Rectangle
@@ -1488,3 +1566,65 @@
                     "Department", colDepartmentLeaves,
                     "All", colAllLeaves,
                     colPersonalLeaves)) = 0 
+                    
+      # Permission Access Message - Show when user has no calendar permissions
+      - 'Calendar.PermissionMessage':
+          Control: GroupContainer
+          Variant: ManualLayout
+          Properties:
+            X: =(Parent.Width - Parent.Width * 0.6) / 2
+            Y: =(Parent.Height - Parent.Height * 0.4) / 2
+            Width: =Parent.Width * 0.6
+            Height: =Parent.Height * 0.4
+            Visible: =Not(varCanViewCalendar)
+          Children:
+            - 'Calendar.PermissionMessage.Background':
+                Control: Rectangle
+                Properties:
+                  X: =0
+                  Y: =0
+                  Width: =Parent.Width
+                  Height: =Parent.Height
+                  Fill: =RGBA(254, 242, 242, 1)
+                  BorderColor: =RGBA(239, 68, 68, 1)
+                  BorderThickness: =2
+                  
+            - 'Calendar.PermissionMessage.Icon':
+                Control: Classic/Icon
+                Properties:
+                  X: =(Parent.Width - Parent.Width * 0.2) / 2
+                  Y: =Parent.Height * 0.15
+                  Width: =Parent.Width * 0.2
+                  Height: =Parent.Height * 0.2
+                  Icon: =Icon.Cancel
+                  Color: =RGBA(239, 68, 68, 1)
+                  
+            - 'Calendar.PermissionMessage.Title':
+                Control: Label
+                Properties:
+                  X: =Parent.Width * 0.05
+                  Y: =Parent.Height * 0.4
+                  Width: =Parent.Width * 0.9
+                  Height: =Parent.Height * 0.2
+                  Text: ="Không có quyền truy cập"
+                  Color: =RGBA(239, 68, 68, 1)
+                  Font: =Font.'Open Sans'
+                  FontWeight: =FontWeight.Bold
+                  Size: =FontSizes.Large
+                  Align: =Align.Center
+                  VerticalAlign: =VerticalAlign.Middle
+                  
+            - 'Calendar.PermissionMessage.Description':
+                Control: Label
+                Properties:
+                  X: =Parent.Width * 0.05
+                  Y: =Parent.Height * 0.65
+                  Width: =Parent.Width * 0.9
+                  Height: =Parent.Height * 0.25
+                  Text: ="Bạn không có quyền xem lịch nghỉ phép. Vui lòng liên hệ quản trị viên để được cấp quyền."
+                  Color: =RGBA(75, 85, 99, 1)
+                  Font: =Font.'Open Sans'
+                  Size: =FontSizes.Base
+                  Align: =Align.Center
+                  VerticalAlign: =VerticalAlign.Middle
+                  Wrap: =true
