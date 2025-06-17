@@ -1,8 +1,8 @@
 Switch(FirstError.Kind,
-  ErrorKind.Network, Notify("Loi ket noi mang. Vui long kiem tra ket noi.", NotificationType.Error),
-  ErrorKind.Sync, Notify("Loi dong bo du lieu. Vui long thu lai.", NotificationType.Warning),
-  ErrorKind.Validation, Notify("Du lieu khong hop le: " & FirstError.Message, NotificationType.Error),
-  Notify("Da xay ra loi: " & FirstError.Message, NotificationType.Error)
+  ErrorKind.Network, Notify("Lỗi kết nối mạng. Vui lòng kiểm tra kết nối.", NotificationType.Error),
+  ErrorKind.Sync, Notify("Lỗi đồng bộ dữ liệu. Vui lòng thử lại.", NotificationType.Warning),
+  ErrorKind.Validation, Notify("Dữ liệu không hợp lệ: " & FirstError.Message, NotificationType.Error),
+  Notify("Đã xảy ra lỗi: " & FirstError.Message, NotificationType.Error)
 );
 Set(varLastError, {
   Message: FirstError.Message,
