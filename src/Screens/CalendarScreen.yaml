@@ -39,7 +39,7 @@
           CanViewDashboard: CheckPermission(UserSessionANP.Permission, UserPermissions.VIEW_DASHBOARD)
         });
         
-        //CRITICAL: Check if user has calendar viewing permissions
+        //CRITICAL: Check if user has calendar viewing permissions - ALWAYS RECALCULATE  
         Set(varCanViewCalendar, Or(
           varUserPermissions.CanViewPersonalLeaves, 
           varUserPermissions.CanViewTeamLeaves, 
@@ -47,6 +47,16 @@
           varUserPermissions.CanManageUsers,
           UserSessionANP.MaVaiTro = "Admin"
         ));
+        
+        //DEBUG: Set debug info for troubleshooting permissions
+        Set(varDebugInfo, {
+          UserPermission: UserSessionANP.Permission,
+          UserRole: UserSessionANP.MaVaiTro,
+          CanViewPersonalLeaves: varUserPermissions.CanViewPersonalLeaves,
+          CanViewTeamLeaves: varUserPermissions.CanViewTeamLeaves,
+          CanViewAllLeaves: varUserPermissions.CanViewAllLeaves,
+          CanViewCalendar: varCanViewCalendar
+        });
         
         //Auto-set appropriate calendar view based on user permissions
         If(Not(varUserPermissions.CanViewPersonalLeaves) And varCalendarView = "Personal",
@@ -177,6 +187,39 @@
           //No authentication - use demo data for preview
           Set(varNetworkError, false);
           Set(varDemoMode, true);
+          
+          //DEMO: Set demo user only if no valid user session exists
+          If(UserSessionANP.Permission = 0,
+            Set(UserSessionANP, {
+              Id: "EMP001",
+              HoTen: "Demo User",
+              Email: "demo@company.com",
+              MaVaiTro: "Employee",
+              Permission: 259, // PERSONAL_LEAVE (1) + SPECIAL_LEAVE (2) + VIEW_DASHBOARD (256) 
+              NguoiQuanLyId: "MGR001",
+              ChucDanh: "Nhân viên",
+              MaDonVi: "IT",
+              TrangThai: "HoatDong",
+              Name: "Demo User",
+              Role: "Employee"
+            });
+            
+            //Recalculate permissions after setting demo user
+            Set(varUserPermissions, {
+              CanViewPersonalLeaves: CheckPermission(UserSessionANP.Permission, UserPermissions.PERSONAL_LEAVE),
+              CanCreateSpecialLeaves: CheckPermission(UserSessionANP.Permission, UserPermissions.SPECIAL_LEAVE),
+              CanViewTeamLeaves: CheckPermission(UserSessionANP.Permission, UserPermissions.VIEW_TEAM_LEAVE),
+              CanViewAllLeaves: CheckPermission(UserSessionANP.Permission, UserPermissions.VIEW_ALL_LEAVE),
+              CanApproveLevel1: CheckPermission(UserSessionANP.Permission, UserPermissions.APPROVE_LEVEL_1),
+              CanApproveLevel2: CheckPermission(UserSessionANP.Permission, UserPermissions.APPROVE_LEVEL_2),
+              CanApproveLevel3: CheckPermission(UserSessionANP.Permission, UserPermissions.APPROVE_LEVEL_3),
+              CanRecordLeave: CheckPermission(UserSessionANP.Permission, UserPermissions.RECORD_LEAVE),
+              CanManageUsers: CheckPermission(UserSessionANP.Permission, UserPermissions.MANAGE_USERS),
+              CanExportReports: CheckPermission(UserSessionANP.Permission, UserPermissions.EXPORT_REPORTS),
+              CanViewDashboard: CheckPermission(UserSessionANP.Permission, UserPermissions.VIEW_DASHBOARD)
+            })
+          );
+          
           //Create demo leave data for preview with correct structure
           ClearCollect(colPersonalLeaves, 
             Table(
@@ -184,10 +227,19 @@
               {MaNguoiDung: {Value: "EMP001"}, NgayBatDau: Date(varSelectedYear, varSelectedMonth, 15), NgayKetThuc: Date(varSelectedYear, varSelectedMonth, 15), SoNgayNghi: 1, MaLoai: {Value: "SICK"}, LyDo: "Nghỉ ốm", TrangThai: {Value: "ChoDuyetCap1"}}
             )
           );
-          ClearCollect(colDepartmentLeaves,
+          //Demo department leaves - lọc theo phòng ban của user hiện tại
+          ClearCollect(colAllDemoLeaves,
             Table(
               {MaNguoiDung: {Value: "EMP002"}, NgayBatDau: Date(varSelectedYear, varSelectedMonth, 10), NgayKetThuc: Date(varSelectedYear, varSelectedMonth, 12), SoNgayNghi: 3, MaLoai: {Value: "ANNUAL"}, LyDo: "Nghỉ phép", TrangThai: {Value: "DaDuyet"}},
-              {MaNguoiDung: {Value: "EMP003"}, NgayBatDau: Date(varSelectedYear, varSelectedMonth, 20), NgayKetThuc: Date(varSelectedYear, varSelectedMonth, 22), SoNgayNghi: 3, MaLoai: {Value: "PERSONAL"}, LyDo: "Việc cá nhân", TrangThai: {Value: "DaDuyet"}}
+              {MaNguoiDung: {Value: "EMP003"}, NgayBatDau: Date(varSelectedYear, varSelectedMonth, 20), NgayKetThuc: Date(varSelectedYear, varSelectedMonth, 22), SoNgayNghi: 3, MaLoai: {Value: "PERSONAL"}, LyDo: "Việc cá nhân", TrangThai: {Value: "DaDuyet"}},
+              {MaNguoiDung: {Value: "EMP004"}, NgayBatDau: Date(varSelectedYear, varSelectedMonth, 8), NgayKetThuc: Date(varSelectedYear, varSelectedMonth, 9), SoNgayNghi: 2, MaLoai: {Value: "SICK"}, LyDo: "Nghỉ ốm", TrangThai: {Value: "DaDuyet"}},
+              {MaNguoiDung: {Value: "EMP005"}, NgayBatDau: Date(varSelectedYear, varSelectedMonth, 25), NgayKetThuc: Date(varSelectedYear, varSelectedMonth, 26), SoNgayNghi: 2, MaLoai: {Value: "ANNUAL"}, LyDo: "Nghỉ phép", TrangThai: {Value: "DaDuyet"}}
+            )
+          );
+          //Lọc chỉ nhân viên cùng phòng ban với user hiện tại
+          ClearCollect(colDepartmentLeaves,
+            Filter(colAllDemoLeaves,
+              LookUp(colCalendarUsers, Title = MaNguoiDung).MaDonVi.Value = If(IsBlank(UserSessionANP.MaDonVi), "IT", UserSessionANP.MaDonVi)
             )
           );
           ClearCollect(colAllLeaves,
@@ -195,7 +247,9 @@
               {MaNguoiDung: {Value: "EMP001"}, NgayBatDau: Date(varSelectedYear, varSelectedMonth, 5), NgayKetThuc: Date(varSelectedYear, varSelectedMonth, 7), SoNgayNghi: 3, MaLoai: {Value: "ANNUAL"}, LyDo: "Nghỉ phép năm", TrangThai: {Value: "DaDuyet"}},
               {MaNguoiDung: {Value: "EMP002"}, NgayBatDau: Date(varSelectedYear, varSelectedMonth, 10), NgayKetThuc: Date(varSelectedYear, varSelectedMonth, 12), SoNgayNghi: 3, MaLoai: {Value: "ANNUAL"}, LyDo: "Nghỉ phép", TrangThai: {Value: "DaDuyet"}},
               {MaNguoiDung: {Value: "EMP003"}, NgayBatDau: Date(varSelectedYear, varSelectedMonth, 20), NgayKetThuc: Date(varSelectedYear, varSelectedMonth, 22), SoNgayNghi: 3, MaLoai: {Value: "PERSONAL"}, LyDo: "Việc cá nhân", TrangThai: {Value: "DaDuyet"}},
-              {MaNguoiDung: {Value: "EMP001"}, NgayBatDau: Date(varSelectedYear, varSelectedMonth, 15), NgayKetThuc: Date(varSelectedYear, varSelectedMonth, 15), SoNgayNghi: 1, MaLoai: {Value: "SICK"}, LyDo: "Nghỉ ốm", TrangThai: {Value: "ChoDuyetCap1"}}
+              {MaNguoiDung: {Value: "EMP001"}, NgayBatDau: Date(varSelectedYear, varSelectedMonth, 15), NgayKetThuc: Date(varSelectedYear, varSelectedMonth, 15), SoNgayNghi: 1, MaLoai: {Value: "SICK"}, LyDo: "Nghỉ ốm", TrangThai: {Value: "ChoDuyetCap1"}},
+              {MaNguoiDung: {Value: "EMP004"}, NgayBatDau: Date(varSelectedYear, varSelectedMonth, 8), NgayKetThuc: Date(varSelectedYear, varSelectedMonth, 9), SoNgayNghi: 2, MaLoai: {Value: "SICK"}, LyDo: "Nghỉ ốm", TrangThai: {Value: "DaDuyet"}},
+              {MaNguoiDung: {Value: "EMP005"}, NgayBatDau: Date(varSelectedYear, varSelectedMonth, 25), NgayKetThuc: Date(varSelectedYear, varSelectedMonth, 26), SoNgayNghi: 2, MaLoai: {Value: "ANNUAL"}, LyDo: "Nghỉ phép", TrangThai: {Value: "DaDuyet"}}
             )
           );
           //Demo holidays
@@ -207,12 +261,14 @@
               {Ngay: "02/09", TenNgayLe: "Quốc khánh", FormattedDate: Text(Date(varSelectedYear, 9, 2), "yyyy-mm-dd")}
             )
           );
-          //Demo users for lookups
+          //Demo users for lookups - với nhiều phòng ban để test
           ClearCollect(colCalendarUsers,
             Table(
               {Title: "EMP001", HoTen: "Nguyễn Văn An", MaDonVi: {Value: "IT"}},
               {Title: "EMP002", HoTen: "Trần Thị Bình", MaDonVi: {Value: "IT"}},
-              {Title: "EMP003", HoTen: "Lê Văn Cường", MaDonVi: {Value: "IT"}}
+              {Title: "EMP003", HoTen: "Lê Văn Cường", MaDonVi: {Value: "IT"}},
+              {Title: "EMP004", HoTen: "Phạm Thị Dung", MaDonVi: {Value: "HR"}},
+              {Title: "EMP005", HoTen: "Hoàng Văn Em", MaDonVi: {Value: "SALES"}}
             )
           );
           //Demo leave types
@@ -226,7 +282,9 @@
           //Demo departments
           ClearCollect(colCalendarDepartments,
             Table(
-              {Title: "IT", TenDonVi: "Phòng Công nghệ thông tin"}
+              {Title: "IT", TenDonVi: "Phòng Công nghệ thông tin"},
+              {Title: "HR", TenDonVi: "Phòng Nhân sự"},
+              {Title: "SALES", TenDonVi: "Phòng Kinh doanh"}
             )
           );
           //Demo leave balance
@@ -262,6 +320,26 @@
             )
           )
         );
+        
+        //FINAL: Always recalculate calendar permissions after all data is loaded
+        Set(varCanViewCalendar, Or(
+          varUserPermissions.CanViewPersonalLeaves, 
+          varUserPermissions.CanViewTeamLeaves, 
+          varUserPermissions.CanViewAllLeaves,
+          varUserPermissions.CanManageUsers,
+          UserSessionANP.MaVaiTro = "Admin"
+        ));
+        
+        //FINAL: Update debug info after final calculations
+        Set(varDebugInfo, {
+          UserPermission: UserSessionANP.Permission,
+          UserRole: UserSessionANP.MaVaiTro,
+          CanViewPersonalLeaves: varUserPermissions.CanViewPersonalLeaves,
+          CanViewTeamLeaves: varUserPermissions.CanViewTeamLeaves,
+          CanViewAllLeaves: varUserPermissions.CanViewAllLeaves,
+          CanViewCalendar: varCanViewCalendar
+        });
+        
         Set(varDataLoading, false);
         
         //Start authentication check
@@ -605,7 +683,7 @@
                                     Y: =0
                                     Width: =Parent.Width
                                     Height: =Parent.Height
-                                    Text: =Concatenate("Quyền hiện tại:" & " ", If(varUserPermissions.CanViewPersonalLeaves, "CN ", ""), If(varUserPermissions.CanViewTeamLeaves, "PB ", ""), If(Or(varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers, UserSessionANP.MaVaiTro = "Admin"), "CT ", ""), "| Role:" & " ", UserSessionANP.MaVaiTro, " | Permission:" & " ", Text(UserSessionANP.Permission))
+                                    Text: =Concatenate("Quyền hiện tại:" & " ", If(varUserPermissions.CanViewPersonalLeaves, "CN ", ""), If(varUserPermissions.CanViewTeamLeaves, "PB ", ""), If(Or(varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers, UserSessionANP.MaVaiTro = "Admin"), "CT ", ""), "| Phòng ban:" & " ", If(IsBlank(UserSessionANP.MaDonVi), "IT", UserSessionANP.MaDonVi), " | Role:" & " ", UserSessionANP.MaVaiTro, " | Permission:" & " ", Text(UserSessionANP.Permission))
                                     Color: =RGBA(59, 130, 246, 1)
                                     Font: =Font.'Open Sans'
                                     FontWeight: =FontWeight.Normal
@@ -1628,3 +1706,26 @@
                   Align: =Align.Center
                   VerticalAlign: =VerticalAlign.Middle
                   Wrap: =true
+                  
+      # Debug Permission Display (for troubleshooting)
+      - 'Calendar.DebugInfo':
+          Control: Label
+          Properties:
+            X: =0
+            Y: =Parent.Height - Parent.Height * 0.2
+            Width: =Parent.Width
+            Height: =Parent.Height * 0.2
+            Text: |
+              =Concatenate(
+              "DEBUG - User:", UserSessionANP.HoTen, " | Role:", UserSessionANP.MaVaiTro, " | Permission:", Text(UserSessionANP.Permission), " | ",
+              "CanViewPersonal:", Text(varUserPermissions.CanViewPersonalLeaves), " | ",
+              "CanViewTeam:", Text(varUserPermissions.CanViewTeamLeaves), " | ",
+              "CanViewAll:", Text(varUserPermissions.CanViewAllLeaves), " | ",
+              "CanViewCalendar:", Text(varCanViewCalendar)
+              )
+            Color: =RGBA(107, 114, 128, 1)
+            Font: =Font.'Open Sans'
+            Size: =FontSizes.Small
+            Align: =Align.Center
+            Visible: =true
+            Wrap: =true

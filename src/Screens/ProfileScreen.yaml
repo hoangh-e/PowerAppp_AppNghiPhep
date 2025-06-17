@@ -28,7 +28,7 @@ Screens:
         Set(varIsSaving, false);
         
         //Load SharePoint data with authentication check
-        If(varIsUserAuthenticated,
+        If(And(varIsUserAuthenticated, Not(IsBlank(UserSessionANP.Id))),
           //Load current user data from SharePoint NguoiDung
           Set(varCurrentUser, LookUp(NguoiDung, Title = UserSessionANP.Id));
           
@@ -44,11 +44,17 @@ Screens:
             )
           );
           
-          //Load user department info from SharePoint DonVi
-          Set(varUserDepartment, LookUp(DonVi, Title = varCurrentUser.MaDonVi.Value));
+          //Load user department info from SharePoint DonVi - with null check
+          If(Not(IsBlank(varCurrentUser)) And Not(IsBlank(varCurrentUser.MaDonVi.Value)),
+            Set(varUserDepartment, LookUp(DonVi, Title = varCurrentUser.MaDonVi.Value)),
+            Set(varUserDepartment, Blank())
+          );
           
-          //Load user manager info from SharePoint NguoiDung
-          Set(varUserManager, LookUp(NguoiDung, Title = varCurrentUser.MaQuanLy.Value));
+          //Load user manager info from SharePoint NguoiDung - with null check
+          If(Not(IsBlank(varCurrentUser)) And Not(IsBlank(varCurrentUser.MaQuanLy.Value)),
+            Set(varUserManager, LookUp(NguoiDung, Title = varCurrentUser.MaQuanLy.Value)),
+            Set(varUserManager, Blank())
+          );
           
           Set(varNetworkError, false),
           //No authentication - use demo data for preview
@@ -124,12 +130,9 @@ Screens:
             AutoStart: =varAuthTimerStart
             Visible: =false
             OnTimerEnd: |
-              =//Reset timer flag
-              Set(varAuthTimerStart, false);
-              //Check authentication: If not logged in, redirect to login
+              =Set(varAuthTimerStart, false);
               If(Not(varIsUserAuthenticated),
                 Navigate(LoginScreen),
-                //User is authenticated - continue with profile
                 Set(varAuthenticationValid, true)
               )
               
@@ -147,9 +150,7 @@ Screens:
             ShowNotification: =true
             NotificationCount: =0
             OnLogout: |
-              =//Clear authentication flag
-              Set(varIsUserAuthenticated, false);
-              //Clear UserSessionANP data with correct structure
+              =Set(varIsUserAuthenticated, false);
               Set(UserSessionANP, {
                 Id: "",
                 HoTen: "",
@@ -163,7 +164,6 @@ Screens:
                 Name: "",
                 Role: ""
               });
-              //Navigate to login
               Navigate(LoginScreen)
             
       # Navigation Component
@@ -271,7 +271,7 @@ Screens:
                               Y: =Parent.Height * 0.6
                               Width: =Parent.Width * 0.6
                               Height: =Parent.Height * 0.25
-                              Text: =Concatenate("Nhân viên" & ":" & " ", UserSessionANP.HoTen, " | ", UserSessionANP.MaVaiTro)
+                              Text: =Concatenate("Nhân viên", ":", " ", UserSessionANP.HoTen, " | ", UserSessionANP.MaVaiTro)
                               Color: =RGBA(75, 85, 99, 1)
                               Font: =Font.'Open Sans'
                               Size: =FontSizes.Small
@@ -411,7 +411,10 @@ Screens:
                                           Y: =Parent.Height * 0.55
                                           Width: =Parent.Width * 0.6
                                           Height: =Parent.Height * 0.35
-                                          Text: =If(Not(IsBlank(varCurrentUser)), varCurrentUser.ChucDanh.Value & " - " & LookUp(DonVi, Title = varCurrentUser.MaDonVi.Value).TenDonVi, UserSessionANP.ChucDanh)
+                                          Text: =If(Not(IsBlank(varCurrentUser)), 
+                                            varCurrentUser.ChucDanh.Value & " - " & 
+                                            If(Not(IsBlank(varUserDepartment)), varUserDepartment.TenDonVi, ""), 
+                                            UserSessionANP.ChucDanh)
                                           Color: =RGBA(75, 85, 99, 1)
                                           Font: =Font.'Open Sans'
                                           Size: =FontSizes.Medium
@@ -587,7 +590,7 @@ Screens:
                                           Y: =Parent.Height * 0.48
                                           Width: =Parent.Width * 0.68
                                           Height: =Parent.Height * 0.08
-                                          Text: =If(Not(IsBlank(varCurrentUser)), LookUp(DonVi, Title = varCurrentUser.MaDonVi.Value).TenDonVi, "")
+                                          Text: =If(Not(IsBlank(varUserDepartment)), varUserDepartment.TenDonVi, "")
                                           Color: =RGBA(17, 24, 39, 1)
                                           Font: =Font.'Open Sans'
                                           Size: =FontSizes.Base
@@ -774,13 +777,12 @@ Screens:
                                           Y: =Parent.Height * 0.25
                                           Width: =Parent.Width
                                           Height: =Parent.Height * 0.7
-                                          Text: |
-                                            =If(Not(IsBlank(varUserLeaveBalance)),
+                                          Text: =If(Not(IsBlank(varUserLeaveBalance)),
                                             Concatenate(
-                                              "• Tổng ngày phép được cấp:", varUserLeaveBalance.TongNgayDuocPhep, " ngày", Char(10),
-                                              "• Ngày phép đã sử dụng:", varUserLeaveBalance.SoNgayDaNghi, " ngày", Char(10),
-                                              "• Ngày phép còn lại:", varUserLeaveBalance.SoNgayConLai, " ngày", Char(10),
-                                              "• Tỷ lệ sử dụng:", Round((varUserLeaveBalance.SoNgayDaNghi / varUserLeaveBalance.TongNgayDuocPhep) * 100, 0), "%"
+                                              "Tổng ngày phép được cấp:", Text(varUserLeaveBalance.TongNgayDuocPhep), " ngày", Char(10),
+                                              "Ngày phép đã sử dụng:", Text(varUserLeaveBalance.SoNgayDaNghi), " ngày", Char(10),
+                                              "Ngày phép còn lại:", Text(varUserLeaveBalance.SoNgayConLai), " ngày", Char(10),
+                                              "Tỷ lệ sử dụng:", Text(Round((varUserLeaveBalance.SoNgayDaNghi / varUserLeaveBalance.TongNgayDuocPhep) * 100, 0)), "%"
                                             ),
                                             "Chưa có thông tin số ngày phép năm hiện tại"
                                             )
@@ -835,7 +837,7 @@ Screens:
                                     Width: =Parent.Width * 0.94
                                     Height: =Parent.Height * 0.87
                                     Items: =SortByColumns(colUserLeaveHistory, "NgayBatDau", SortOrder.Descending)
-                                    TemplateSize: =Self.Height * 0.12
+                                    TemplateSize: =(Self.Height * 0.87) / 5
                                     BorderThickness: =0
                                     Fill: =RGBA(0, 0, 0, 0)
                                   Children:
@@ -845,8 +847,8 @@ Screens:
                                         Properties:
                                           X: =0
                                           Y: =0
-                                          Width: =Parent.TemplateWidth
-                                          Height: =Parent.TemplateHeight
+                                          Width: =Parent.Width * 0.94
+                                          Height: =(Parent.Height * 0.87) / 5
                                           Fill: =RGBA(255, 255, 255, 1)
                                           BorderColor: =RGBA(226, 232, 240, 1)
                                           BorderThickness: =1
@@ -873,7 +875,7 @@ Screens:
                                                 Y: =Parent.Height * 0.55
                                                 Width: =Parent.Width * 0.25
                                                 Height: =Parent.Height * 0.35
-                                                Text: =ThisItem.SoNgayNghi & " ngày"
+                                                Text: =Concatenate(Text(ThisItem.SoNgayNghi), " ngày")
                                                 Color: =RGBA(75, 85, 99, 1)
                                                 Font: =Font.'Open Sans'
                                                 Size: =FontSizes.Small
