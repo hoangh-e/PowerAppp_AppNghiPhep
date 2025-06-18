@@ -2831,7 +2831,7 @@ MaNguoiDuyet: Lookup (to NguoiDung) # REQUIRES .Value
 #### 📄 List `QuyTrinhDuyet` (Approval Workflow)
 ```yaml
 # Table structure:
-MaQuyTrinh: Text
+STT: Number (AutoNumber/Counter)
 MaDonVi: Lookup (to DonVi) # REQUIRES .Value
 Cap: Choice # REQUIRES .Value
   # Values: "1", "2", "3"

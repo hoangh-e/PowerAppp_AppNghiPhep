@@ -24,12 +24,12 @@
           UserSessionANP.Permission > 0
         ));
         
-        //Check user permissions - ROLE-BASED CALENDAR PERMISSIONS per requirements document
+        //Check user permissions using CheckPermission function from App/Formulas - PERMISSION-BASED only
         Set(varUserPermissions, {
-          CanViewPersonalLeaves: true, //All roles can view personal calendar
+          CanViewPersonalLeaves: CheckPermission(UserSessionANP.Permission, UserPermissions.PERSONAL_LEAVE),
           CanCreateSpecialLeaves: CheckPermission(UserSessionANP.Permission, UserPermissions.SPECIAL_LEAVE),
-          CanViewTeamLeaves: Or(UserSessionANP.MaVaiTro = "Manager", UserSessionANP.MaVaiTro = "HR", UserSessionANP.MaVaiTro = "Admin"), //Manager, HR, Admin can view department calendar
-          CanViewAllLeaves: Or(UserSessionANP.MaVaiTro = "Director", UserSessionANP.MaVaiTro = "HR", UserSessionANP.MaVaiTro = "Admin"), //Director, HR, Admin can view company calendar
+          CanViewTeamLeaves: CheckPermission(UserSessionANP.Permission, UserPermissions.VIEW_TEAM_LEAVE),
+          CanViewAllLeaves: CheckPermission(UserSessionANP.Permission, UserPermissions.VIEW_ALL_LEAVE),
           CanApproveLevel1: CheckPermission(UserSessionANP.Permission, UserPermissions.APPROVE_LEVEL_1),
           CanApproveLevel2: CheckPermission(UserSessionANP.Permission, UserPermissions.APPROVE_LEVEL_2),
           CanApproveLevel3: CheckPermission(UserSessionANP.Permission, UserPermissions.APPROVE_LEVEL_3),
@@ -39,17 +39,12 @@
           CanViewDashboard: CheckPermission(UserSessionANP.Permission, UserPermissions.VIEW_DASHBOARD)
         });
         
-        //CRITICAL: Check if user has calendar viewing permissions - ROLE-BASED per document  
+        //CRITICAL: Check if user has calendar viewing permissions - PERMISSION-BASED only
         Set(varCanViewCalendar, Or(
-          varUserPermissions.CanViewPersonalLeaves, 
-          varUserPermissions.CanViewTeamLeaves, 
+          varUserPermissions.CanViewPersonalLeaves,
+          varUserPermissions.CanViewTeamLeaves,
           varUserPermissions.CanViewAllLeaves,
-          varUserPermissions.CanManageUsers,
-          UserSessionANP.MaVaiTro = "Admin",
-          UserSessionANP.MaVaiTro = "Employee", //All roles should have calendar access
-          UserSessionANP.MaVaiTro = "Manager",
-          UserSessionANP.MaVaiTro = "Director",
-          UserSessionANP.MaVaiTro = "HR"
+          varUserPermissions.CanManageUsers
         ));
         
         //DEBUG: Set debug info for troubleshooting permissions
@@ -67,10 +62,10 @@
           //User doesn't have personal permission, switch to available view
           If(varUserPermissions.CanViewTeamLeaves,
             Set(varCalendarView, "Department"),
-            If(Or(varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers, UserSessionANP.MaVaiTro = "Admin"),
-              Set(varCalendarView, "All"),
-              Set(varCalendarView, "Personal") //Fallback - will show empty
-            )
+                      If(Or(varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers),
+            Set(varCalendarView, "All"),
+            Set(varCalendarView, "Personal") //Fallback - will show empty
+          )
           )
         );
         
@@ -78,14 +73,14 @@
           //User doesn't have department permission, switch to available view
           If(varUserPermissions.CanViewPersonalLeaves,
             Set(varCalendarView, "Personal"),
-            If(Or(varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers, UserSessionANP.MaVaiTro = "Admin"),
+            If(Or(varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers),
               Set(varCalendarView, "All"),
               Set(varCalendarView, "Personal") //Fallback
             )
           )
         );
         
-        If(Not(Or(varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers, UserSessionANP.MaVaiTro = "Admin")) And varCalendarView = "All",
+        If(Not(Or(varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers)) And varCalendarView = "All",
           //User doesn't have all company permission, switch to available view
           If(varUserPermissions.CanViewPersonalLeaves,
             Set(varCalendarView, "Personal"),
@@ -135,7 +130,7 @@
           );
           
           //Load All Company Leaves from SharePoint based on permissions
-          If(Or(varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers, UserSessionANP.MaVaiTro = "Admin"),
+          If(Or(varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers),
             //Admin/HR - view all company leave requests
             ClearCollect(colAllLeaves,
               Filter(DonNghiPhep,
@@ -208,12 +203,12 @@
               Role: "Employee"
             });
             
-            //Recalculate permissions after setting demo user - ROLE-BASED LOGIC
+            //Recalculate permissions after setting demo user - PERMISSION-BASED LOGIC  
             Set(varUserPermissions, {
-              CanViewPersonalLeaves: true, //All roles can view personal calendar
+              CanViewPersonalLeaves: CheckPermission(UserSessionANP.Permission, UserPermissions.PERSONAL_LEAVE),
               CanCreateSpecialLeaves: CheckPermission(UserSessionANP.Permission, UserPermissions.SPECIAL_LEAVE),
-              CanViewTeamLeaves: Or(UserSessionANP.MaVaiTro = "Manager", UserSessionANP.MaVaiTro = "HR", UserSessionANP.MaVaiTro = "Admin"), //Manager, HR, Admin can view department calendar
-              CanViewAllLeaves: Or(UserSessionANP.MaVaiTro = "Director", UserSessionANP.MaVaiTro = "HR", UserSessionANP.MaVaiTro = "Admin"), //Director, HR, Admin can view company calendar
+              CanViewTeamLeaves: CheckPermission(UserSessionANP.Permission, UserPermissions.VIEW_TEAM_LEAVE),
+              CanViewAllLeaves: CheckPermission(UserSessionANP.Permission, UserPermissions.VIEW_ALL_LEAVE),
               CanApproveLevel1: CheckPermission(UserSessionANP.Permission, UserPermissions.APPROVE_LEVEL_1),
               CanApproveLevel2: CheckPermission(UserSessionANP.Permission, UserPermissions.APPROVE_LEVEL_2),
               CanApproveLevel3: CheckPermission(UserSessionANP.Permission, UserPermissions.APPROVE_LEVEL_3),
@@ -327,15 +322,10 @@
         
         //FINAL: Always recalculate calendar permissions after all data is loaded - ROLE-BASED
         Set(varCanViewCalendar, Or(
-          varUserPermissions.CanViewPersonalLeaves, 
-          varUserPermissions.CanViewTeamLeaves, 
+                    varUserPermissions.CanViewPersonalLeaves,
+          varUserPermissions.CanViewTeamLeaves,
           varUserPermissions.CanViewAllLeaves,
-          varUserPermissions.CanManageUsers,
-          UserSessionANP.MaVaiTro = "Admin",
-          UserSessionANP.MaVaiTro = "Employee", //All roles should have calendar access
-          UserSessionANP.MaVaiTro = "Manager",
-          UserSessionANP.MaVaiTro = "Director",
-          UserSessionANP.MaVaiTro = "HR"
+          varUserPermissions.CanManageUsers
         ));
         
         //FINAL: Update debug info after final calculations
@@ -666,9 +656,9 @@
                                     Text: ="CT"
                                     Variant: =If(varCalendarView = "All", "Primary", "Outline")
                                     Size: =FontSizes.Small
-                                    IsDisabled: =Not(Or(varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers, UserSessionANP.MaVaiTro = "Admin"))
+                                    IsDisabled: =Not(Or(varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers))
                                     OnClick: |
-                                      =If(Or(varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers, UserSessionANP.MaVaiTro = "Admin"),
+                                      =If(Or(varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers),
                                         Set(varCalendarView, "All"),
                                         Notify("Bạn không có quyền xem lịch toàn công ty", NotificationType.Warning)
                                       )

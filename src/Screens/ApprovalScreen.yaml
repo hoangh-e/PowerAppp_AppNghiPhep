@@ -26,6 +26,10 @@ Screens:
         Set(varCanApprove, Or(varUserPermissions.CanApproveLevel1, varUserPermissions.CanApproveLevel2, varUserPermissions.CanApproveLevel3));
         Set(varCanAccessApproval, Or(varCanApprove, varUserPermissions.CanRecordLeave, varUserPermissions.IsSystemAdmin));
         
+        //CRITICAL: Initialize designation check variables
+        Set(varIsDesignatedApprover, false);
+        Set(varDesignatedLevels, []);
+        
         //ENHANCED: Determine user approval level for display
         Set(varUserApprovalLevel, 
           If(varUserPermissions.CanApproveLevel3, 3,
@@ -142,25 +146,51 @@ Screens:
           Set(varApprovalComment, "");
           Set(varFilterLevel, "All"); //Default filter to show all levels
           
-          //Load SharePoint data with authentication check
-          If(varIsUserAuthenticated,
-            //Load pending approvals from SharePoint 
-            ClearCollect(colPendingApprovals, 
-              Filter(DonNghiPhep, 
-                Or(TrangThai.Value = "ChoDuyetCap1", TrangThai.Value = "ChoDuyetCap2", TrangThai.Value = "ChoDuyetCap3")
-              )
-            );
-            Set(varPendingApprovals, colPendingApprovals);
+                  //Load SharePoint data with authentication check
+        If(varIsUserAuthenticated,
+          //Load pending approvals from SharePoint 
+          ClearCollect(colPendingApprovals, 
+            Filter(DonNghiPhep, 
+              Or(TrangThai.Value = "ChoDuyetCap1", TrangThai.Value = "ChoDuyetCap2", TrangThai.Value = "ChoDuyetCap3")
+            )
+          );
+          Set(varPendingApprovals, colPendingApprovals);
+          
+          //Load approval workflow data to check designation
+          ClearCollect(colApprovalWorkflow, 
+            Filter(QuyTrinhDuyet, 
+              And(DangHoatDong = true, NguoiDuyetMacDinh.Value = UserSessionANP.Id)
+            )
+          );
+          Set(varApprovalWorkflow, colApprovalWorkflow);
+          
+          //CRITICAL: Check if user is designated approver and get their levels
+          Set(varIsDesignatedApprover, CountRows(colApprovalWorkflow) > 0);
+          ClearCollect(colDesignatedLevels, 
+            ShowColumns(colApprovalWorkflow, "Cap")
+          );
+          Set(varDesignatedLevels, colDesignatedLevels);
             
-            //ENHANCED: Filter approvals for current user's level AND all levels for visibility
+            //ENHANCED: Filter approvals based on permission AND designation
             ClearCollect(colMyLevelApprovals, 
               If(varCanApprove,
-                //If user can approve, show only their level
-                Filter(colPendingApprovals, 
-                  Or(
-                    And(varUserPermissions.CanApproveLevel1, TrangThai.Value = "ChoDuyetCap1"),
-                    And(varUserPermissions.CanApproveLevel2, TrangThai.Value = "ChoDuyetCap2"),
-                    And(varUserPermissions.CanApproveLevel3, TrangThai.Value = "ChoDuyetCap3")
+                //If user can approve, check designation and show only designated levels
+                If(varIsDesignatedApprover,
+                  //User is designated - show only designated levels
+                  Filter(colPendingApprovals, 
+                    Or(
+                      And(varUserPermissions.CanApproveLevel1, TrangThai.Value = "ChoDuyetCap1", CountRows(Filter(varDesignatedLevels, Cap.Value = "1")) > 0),
+                      And(varUserPermissions.CanApproveLevel2, TrangThai.Value = "ChoDuyetCap2", CountRows(Filter(varDesignatedLevels, Cap.Value = "2")) > 0),
+                      And(varUserPermissions.CanApproveLevel3, TrangThai.Value = "ChoDuyetCap3", CountRows(Filter(varDesignatedLevels, Cap.Value = "3")) > 0)
+                    )
+                  ),
+                  //User has permission but not designated - show all for viewing only
+                  Filter(colPendingApprovals, 
+                    Or(
+                      And(varUserPermissions.CanApproveLevel1, TrangThai.Value = "ChoDuyetCap1"),
+                      And(varUserPermissions.CanApproveLevel2, TrangThai.Value = "ChoDuyetCap2"),
+                      And(varUserPermissions.CanApproveLevel3, TrangThai.Value = "ChoDuyetCap3")
+                    )
                   )
                 ),
                 //If user can't approve (like HR), show all for monitoring
@@ -179,16 +209,50 @@ Screens:
             );
             Set(varPendingApprovals, colPendingApprovals);
             
-            //Enhanced demo filtering
+            //Demo approval workflow data - user is designated for their demo role level
+            ClearCollect(colApprovalWorkflow,
+              Switch(varDemoUserType,
+                "Manager", Table({STT: 1, Cap: {Value: "1"}, NguoiDuyetMacDinh: {Value: UserSessionANP.Id}, DangHoatDong: true}),
+                "Director", Table(
+                  {STT: 2, Cap: {Value: "2"}, NguoiDuyetMacDinh: {Value: UserSessionANP.Id}, DangHoatDong: true},
+                  {STT: 3, Cap: {Value: "3"}, NguoiDuyetMacDinh: {Value: UserSessionANP.Id}, DangHoatDong: true}
+                ),
+                "HR", Table(), //HR has no approval designation
+                Table() //Default empty
+              )
+            );
+            Set(varApprovalWorkflow, colApprovalWorkflow);
+            
+            //Check designation for demo user
+            Set(varIsDesignatedApprover, CountRows(colApprovalWorkflow) > 0);
+            ClearCollect(colDesignatedLevels, 
+              ShowColumns(colApprovalWorkflow, "Cap")
+            );
+            Set(varDesignatedLevels, colDesignatedLevels);
+            
+            //Enhanced demo filtering with designation check
             ClearCollect(colMyLevelApprovals, 
               If(varCanApprove,
-                Filter(colPendingApprovals, 
-                  Or(
-                    And(varUserPermissions.CanApproveLevel1, TrangThai.Value = "ChoDuyetCap1"),
-                    And(varUserPermissions.CanApproveLevel2, TrangThai.Value = "ChoDuyetCap2"),
-                    And(varUserPermissions.CanApproveLevel3, TrangThai.Value = "ChoDuyetCap3")
+                //If user can approve, check designation and show only designated levels
+                If(varIsDesignatedApprover,
+                  //User is designated - show only designated levels
+                  Filter(colPendingApprovals, 
+                    Or(
+                      And(varUserPermissions.CanApproveLevel1, TrangThai.Value = "ChoDuyetCap1", CountRows(Filter(varDesignatedLevels, Cap.Value = "1")) > 0),
+                      And(varUserPermissions.CanApproveLevel2, TrangThai.Value = "ChoDuyetCap2", CountRows(Filter(varDesignatedLevels, Cap.Value = "2")) > 0),
+                      And(varUserPermissions.CanApproveLevel3, TrangThai.Value = "ChoDuyetCap3", CountRows(Filter(varDesignatedLevels, Cap.Value = "3")) > 0)
+                    )
+                  ),
+                  //User has permission but not designated - show all for viewing only
+                  Filter(colPendingApprovals, 
+                    Or(
+                      And(varUserPermissions.CanApproveLevel1, TrangThai.Value = "ChoDuyetCap1"),
+                      And(varUserPermissions.CanApproveLevel2, TrangThai.Value = "ChoDuyetCap2"),
+                      And(varUserPermissions.CanApproveLevel3, TrangThai.Value = "ChoDuyetCap3")
+                    )
                   )
                 ),
+                //If user can't approve (like HR), show all for monitoring
                 colPendingApprovals
               )
             );
@@ -384,7 +448,7 @@ Screens:
                               FontWeight: =FontWeight.Semibold
                               Height: =Parent.Height * 0.2
                               Size: =FontSizes.Small
-                              Text: =Concatenate("Vai trò" & ":" & " ", varUserRoleDisplay, If(varCanApprove, Concatenate(" (Cấp ", Text(varUserApprovalLevel), ")"), " (Chỉ xem)"))
+                              Text: =Concatenate("Vai trò" & ":" & " ", varUserRoleDisplay, If(And(varCanApprove, varIsDesignatedApprover), Concatenate(" (Cấp ", Text(varUserApprovalLevel), " - Được chỉ định)"), If(And(varCanApprove, Not(varIsDesignatedApprover)), " (Có quyền - Chưa chỉ định)", " (Chỉ xem)")))
                               Width: =Parent.Width * 0.4
                         # ENHANCED: Demo User Switcher for Testing
                         - Approval.PageHeader.DemoSwitcher:
@@ -893,13 +957,13 @@ Screens:
                           Set(varShowApprovalConfirm, true)
                         Size: ="Medium"
                         Text: ="Phê duyệt"
-                        Visible: =varCanApprove
+                        Visible: =And(varCanApprove, varIsDesignatedApprover)
                         Width: =Parent.Width * 0.2
                   - Approval.RejectButton:
                       Control: CanvasComponent
                       ComponentName: ButtonComponent
                       Properties:
-                        X: =If(varCanApprove, Parent.Width * 0.5, Parent.Width * 0.35)
+                        X: =If(And(varCanApprove, varIsDesignatedApprover), Parent.Width * 0.5, Parent.Width * 0.35)
                         Y: =Parent.Height * 0.45
                         FullWidth: =false
                         Height: =Parent.Height * 0.4
@@ -913,14 +977,14 @@ Screens:
                           Set(varShowApprovalConfirm, true)
                         Size: ="Medium"
                         Text: ="Từ chối"
-                        Visible: =varCanApprove
+                        Visible: =And(varCanApprove, varIsDesignatedApprover)
                         Width: =Parent.Width * 0.2
                   # ENHANCED: HR Record Button (for HR role only)
                   - Approval.RecordButton:
                       Control: CanvasComponent
                       ComponentName: ButtonComponent
                       Properties:
-                        X: =If(varCanApprove, Parent.Width * 0.75, Parent.Width * 0.35)
+                        X: =If(And(varCanApprove, varIsDesignatedApprover), Parent.Width * 0.75, Parent.Width * 0.35)
                         Y: =Parent.Height * 0.45
                         FullWidth: =false
                         Height: =Parent.Height * 0.4
@@ -946,7 +1010,7 @@ Screens:
                           )
                         Size: ="Medium"
                         Text: ="Ghi nhận"
-                        Visible: =And(varUserPermissions.CanRecordLeave, Not(varCanApprove))
+                        Visible: =And(varUserPermissions.CanRecordLeave, Not(And(varCanApprove, varIsDesignatedApprover)))
                         Width: =Parent.Width * 0.25
                   # ENHANCED: View Only Message (for users without approval or record rights)
                   - Approval.ViewOnlyMessage:
@@ -959,8 +1023,8 @@ Screens:
                         FontWeight: =FontWeight.Semibold
                         Height: =Parent.Height * 0.4
                         Size: =FontSizes.Base
-                        Text: ="Bạn chỉ có quyền xem thông tin đơn nghỉ phép"
-                        Visible: =And(Not(varCanApprove), Not(varUserPermissions.CanRecordLeave), Not(varUserPermissions.IsSystemAdmin))
+                        Text: =If(And(varCanApprove, Not(varIsDesignatedApprover)), "Bạn có quyền phê duyệt nhưng chưa được chỉ định trong quy trình", "Bạn chỉ có quyền xem thông tin đơn nghỉ phép")
+                        Visible: =Or(And(varCanApprove, Not(varIsDesignatedApprover)), And(Not(varCanApprove), Not(varUserPermissions.CanRecordLeave), Not(varUserPermissions.IsSystemAdmin)))
                         Width: =Parent.Width * 0.7
       - Approval.Confirm.Modal:
           Control: GroupContainer
@@ -1089,18 +1153,45 @@ Screens:
                             Set(varApprovalAction, "");
                             Set(varApprovalComment, "");
                             Set(varSelectedApprovalLeave, Blank());
-                            //Refresh data using ClearCollect pattern like DashboardScreen
+                            //Refresh data using ClearCollect pattern with designation check
                             ClearCollect(colPendingApprovals, 
                               Filter(DonNghiPhep, Or(TrangThai.Value = "ChoDuyetCap1", TrangThai.Value = "ChoDuyetCap2", TrangThai.Value = "ChoDuyetCap3"))
                             );
                             Set(varPendingApprovals, colPendingApprovals);
+                            
+                            //Refresh designation data
+                            ClearCollect(colApprovalWorkflow, 
+                              Filter(QuyTrinhDuyet, 
+                                And(DangHoatDong = true, NguoiDuyetMacDinh.Value = UserSessionANP.Id)
+                              )
+                            );
+                            Set(varApprovalWorkflow, colApprovalWorkflow);
+                            Set(varIsDesignatedApprover, CountRows(colApprovalWorkflow) > 0);
+                            ClearCollect(colDesignatedLevels, 
+                              ShowColumns(colApprovalWorkflow, "Cap")
+                            );
+                            Set(varDesignatedLevels, colDesignatedLevels);
+                            
+                            //Filter with designation check
                             ClearCollect(colMyLevelApprovals, 
-                              Filter(colPendingApprovals, 
-                                Or(
-                                  And(varUserPermissions.CanApproveLevel1, TrangThai.Value = "ChoDuyetCap1"),
-                                  And(varUserPermissions.CanApproveLevel2, TrangThai.Value = "ChoDuyetCap2"),
-                                  And(varUserPermissions.CanApproveLevel3, TrangThai.Value = "ChoDuyetCap3")
-                                )
+                              If(varCanApprove,
+                                If(varIsDesignatedApprover,
+                                  Filter(colPendingApprovals, 
+                                    Or(
+                                      And(varUserPermissions.CanApproveLevel1, TrangThai.Value = "ChoDuyetCap1", CountRows(Filter(varDesignatedLevels, Cap.Value = "1")) > 0),
+                                      And(varUserPermissions.CanApproveLevel2, TrangThai.Value = "ChoDuyetCap2", CountRows(Filter(varDesignatedLevels, Cap.Value = "2")) > 0),
+                                      And(varUserPermissions.CanApproveLevel3, TrangThai.Value = "ChoDuyetCap3", CountRows(Filter(varDesignatedLevels, Cap.Value = "3")) > 0)
+                                    )
+                                  ),
+                                  Filter(colPendingApprovals, 
+                                    Or(
+                                      And(varUserPermissions.CanApproveLevel1, TrangThai.Value = "ChoDuyetCap1"),
+                                      And(varUserPermissions.CanApproveLevel2, TrangThai.Value = "ChoDuyetCap2"),
+                                      And(varUserPermissions.CanApproveLevel3, TrangThai.Value = "ChoDuyetCap3")
+                                    )
+                                  )
+                                ),
+                                colPendingApprovals
                               )
                             );
                             Set(varMyLevelApprovals, colMyLevelApprovals),
