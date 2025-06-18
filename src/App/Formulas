@@ -139,22 +139,22 @@ UserRoles = {
 
 //Permission values - Powers of 2 for bitwise operations
 UserPermissions = {
-  PERSONAL_LEAVE: 1,           // Quyền nghỉ phép cá nhân
-  SPECIAL_LEAVE: 2,            // Tạo đơn nghỉ phép đặc biệt
-  VIEW_TEAM_LEAVE: 4,          // Xem đơn nghỉ của team
-  VIEW_ALL_LEAVE: 8,           // Xem tất cả đơn nghỉ
-  APPROVE_LEVEL_1: 16,         // Phê duyệt cấp 1 (Manager)
-  APPROVE_LEVEL_2: 32,         // Phê duyệt cấp 2 (Director khối)
-  APPROVE_LEVEL_3: 64,         // Phê duyệt cấp 3 (Director điều hành)
-  RECORD_LEAVE: 128,           // Ghi nhận nghỉ phép
-  VIEW_DASHBOARD: 256,         // Xem dashboard
-  EXPORT_REPORTS: 512,         // Xuất báo cáo
-  MANAGE_LEAVE_QUOTA: 1024,    // Quản lý quota ngày phép
-  MANAGE_HOLIDAYS: 2048,       // Quản lý ngày lễ
-  MANAGE_USERS: 4096,          // Quản lý người dùng
-  MANAGE_ROLES: 8192,          // Quản lý vai trò
-  MANAGE_APPROVAL_PROCESS: 16384, // Quản lý quy trình phê duyệt
-  SYSTEM_ADMIN: 32768          // Quản trị hệ thống
+  PERSONAL_LEAVE: 1,
+  SPECIAL_LEAVE: 2,
+  VIEW_TEAM_LEAVE: 8,
+  VIEW_ALL_LEAVE: 256,
+  APPROVE_LEVEL_1: 16,
+  APPROVE_LEVEL_2: 32,
+  APPROVE_LEVEL_3: 64,
+  RECORD_LEAVE: 128,
+  VIEW_DASHBOARD: 512,
+  EXPORT_REPORTS: 1024,
+  MANAGE_LEAVE_QUOTA: 2048,
+  MANAGE_HOLIDAYS: 4096,
+  MANAGE_USERS: 8192,
+  MANAGE_ROLES: 16384,
+  MANAGE_APPROVAL_PROCESS: 32768,
+  SYSTEM_ADMIN: 65536
 };
 
 //Role permission combinations
@@ -163,7 +163,7 @@ RolePermissionCombinations = {
   Manager: UserPermissions.PERSONAL_LEAVE + UserPermissions.SPECIAL_LEAVE + UserPermissions.VIEW_TEAM_LEAVE + UserPermissions.APPROVE_LEVEL_1 + UserPermissions.VIEW_DASHBOARD + UserPermissions.EXPORT_REPORTS,
   Director: UserPermissions.PERSONAL_LEAVE + UserPermissions.SPECIAL_LEAVE + UserPermissions.VIEW_TEAM_LEAVE + UserPermissions.VIEW_ALL_LEAVE + UserPermissions.APPROVE_LEVEL_2 + UserPermissions.APPROVE_LEVEL_3 + UserPermissions.MANAGE_HOLIDAYS + UserPermissions.VIEW_DASHBOARD + UserPermissions.EXPORT_REPORTS,
   HR: UserPermissions.PERSONAL_LEAVE + UserPermissions.SPECIAL_LEAVE + UserPermissions.VIEW_ALL_LEAVE + UserPermissions.RECORD_LEAVE + UserPermissions.EXPORT_REPORTS + UserPermissions.MANAGE_LEAVE_QUOTA + UserPermissions.MANAGE_HOLIDAYS + UserPermissions.VIEW_DASHBOARD,
-  Admin: 65535  // All permissions
+  Admin: 131071  // All permissions (2^17 - 1)
 };
 
 //Demo Users for Testing

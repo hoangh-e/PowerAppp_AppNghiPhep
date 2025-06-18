@@ -9,6 +9,13 @@
         Set(varDataLoading, true);
         Set(varNetworkError, false);
         
+        //CRITICAL: Check authentication status first
+        Set(varIsUserAuthenticated, And(
+          Not(IsBlank(UserSessionANP.Id)),
+          UserSessionANP.Id <> "",
+          UserSessionANP.Permission > 0
+        ));
+        
         //Check user permissions using CheckPermission function from App/Formulas  
         Set(varUserPermissions, {
           ManageUsers: CheckPermission(UserSessionANP.Permission, UserPermissions.MANAGE_USERS),
@@ -110,14 +117,47 @@
           
           //No authentication - use demo data for preview
           Set(varNetworkError, true);
+          Set(varDemoMode, true);
+          
+          //DEMO: Set demo user only if no valid user session exists  
+          If(UserSessionANP.Permission = 0,
+            Set(UserSessionANP, {
+              Id: "ADMIN001",
+              HoTen: "Quản trị viên Demo",
+              Email: "admin@demo.com",
+              MaVaiTro: "Admin",
+              Permission: 131071, // All permissions - Updated to match new UserPermissions constants
+              NguoiQuanLyId: "",
+              ChucDanh: "Quản trị hệ thống",
+              MaDonVi: "IT",
+              TrangThai: "HoatDong",
+              Name: "Quản trị viên Demo",
+              Role: "Admin"
+            });
+            
+            //Recalculate permissions after setting demo user
+            Set(varUserPermissions, {
+              ManageUsers: CheckPermission(UserSessionANP.Permission, UserPermissions.MANAGE_USERS),
+              ManageRoles: CheckPermission(UserSessionANP.Permission, UserPermissions.MANAGE_ROLES),
+              ManageLeaveQuota: CheckPermission(UserSessionANP.Permission, UserPermissions.MANAGE_LEAVE_QUOTA),
+              ManageHolidays: CheckPermission(UserSessionANP.Permission, UserPermissions.MANAGE_HOLIDAYS),
+              ManageApprovalProcess: CheckPermission(UserSessionANP.Permission, UserPermissions.MANAGE_APPROVAL_PROCESS),
+              ExportReports: CheckPermission(UserSessionANP.Permission, UserPermissions.EXPORT_REPORTS),
+              SystemAdmin: CheckPermission(UserSessionANP.Permission, UserPermissions.SYSTEM_ADMIN),
+              ViewDashboard: CheckPermission(UserSessionANP.Permission, UserPermissions.VIEW_DASHBOARD),
+              CanViewAllLeaves: CheckPermission(UserSessionANP.Permission, UserPermissions.VIEW_ALL_LEAVE),
+              CanManageUsers: CheckPermission(UserSessionANP.Permission, UserPermissions.MANAGE_USERS)
+            })
+          );
+          
           ClearCollect(colAllUsers, 
             Table(
               {Title: "EMP001", HoTen: "Nguyễn Văn An", Email: "an.nguyen@company.com", 
-               MatKhau: "123456", MaDonVi: {Value: "IT"}, MaVaiTro: {Value: "Employee"}, TrangThai: {Value: "HoatDong"}},
+               MatKhau: "123456", MaDonVi: "IT", MaVaiTro: "Employee", TrangThai: "HoatDong"},
               {Title: "EMP002", HoTen: "Trần Thị Bình", Email: "binh.tran@company.com", 
-               MatKhau: "123456", MaDonVi: {Value: "HR"}, MaVaiTro: {Value: "Manager"}, TrangThai: {Value: "HoatDong"}},
+               MatKhau: "123456", MaDonVi: "HR", MaVaiTro: "Manager", TrangThai: "HoatDong"},
               {Title: "EMP003", HoTen: "Lê Hoàng Cường", Email: "cuong.le@company.com", 
-               MatKhau: "123456", MaDonVi: {Value: "Finance"}, MaVaiTro: {Value: "Director"}, TrangThai: {Value: "HoatDong"}}
+               MatKhau: "123456", MaDonVi: "Finance", MaVaiTro: "Director", TrangThai: "HoatDong"}
             )
           );
           
@@ -137,27 +177,27 @@
             )
           );
           
-          //Demo holidays with SharePoint structure
+          //Demo holidays with consistent structure
           ClearCollect(colHolidaysList, 
             Table(
-              {MaNgayLe: 1, Ngay: "01/01", TenNgayLe: "Tết Dương lịch", Nam: 2024, Buoi: {Value: "CaNgay"}},
-              {MaNgayLe: 2, Ngay: "10/02", TenNgayLe: "Tết Nguyên đán", Nam: 2024, Buoi: {Value: "CaNgay"}}
+              {MaNgayLe: 1, Ngay: "01/01", TenNgayLe: "Tết Dương lịch", Nam: 2024, Buoi: "CaNgay"},
+              {MaNgayLe: 2, Ngay: "10/02", TenNgayLe: "Tết Nguyên đán", Nam: 2024, Buoi: "CaNgay"}
             )
           );
           
-          //Demo leave balance with SharePoint structure
+          //Demo leave balance with consistent structure
           ClearCollect(colLeaveBalanceData, 
             Table(
-              {MaNhanVien: {Value: "EMP001"}, Nam: 2024, TongNgayDuocPhep: 12, SoNgayDaNghi: 3, SoNgayConLai: 9},
-              {MaNhanVien: {Value: "EMP002"}, Nam: 2024, TongNgayDuocPhep: 15, SoNgayDaNghi: 5, SoNgayConLai: 10}
+              {MaNhanVien: "EMP001", Nam: 2024, TongNgayDuocPhep: 12, SoNgayDaNghi: 3, SoNgayConLai: 9},
+              {MaNhanVien: "EMP002", Nam: 2024, TongNgayDuocPhep: 15, SoNgayDaNghi: 5, SoNgayConLai: 10}
             )
           );
           
-          //Demo workflow with SharePoint structure
+          //Demo workflow with consistent structure
           ClearCollect(colWorkflowData, 
             Table(
-              {MaDonVi: {Value: "IT"}, Cap: {Value: "1"}, MaVaiTro: {Value: "Manager"}, NguoiDuyetMacDinh: {Value: "EMP002"}, DangHoatDong: true},
-              {MaDonVi: {Value: "IT"}, Cap: {Value: "2"}, MaVaiTro: {Value: "Director"}, NguoiDuyetMacDinh: {Value: "EMP003"}, DangHoatDong: true}
+              {MaDonVi: "IT", Cap: "1", MaVaiTro: "Manager", NguoiDuyetMacDinh: "EMP002", DangHoatDong: true},
+              {MaDonVi: "IT", Cap: "2", MaVaiTro: "Director", NguoiDuyetMacDinh: "EMP003", DangHoatDong: true}
             )
           )
         );

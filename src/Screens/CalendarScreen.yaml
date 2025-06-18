@@ -17,6 +17,10 @@
         Set(varNavCollapsed, false);
         Set(varMobileMenuOpen, false);
         
+        //PROTECTION: Ensure ViewFormat and CalendarView are not reset - IMMEDIATE PROTECTION
+        If(IsBlank(varViewFormat), Set(varViewFormat, "Calendar"));
+        If(IsBlank(varCalendarView), Set(varCalendarView, "Personal"));
+        
         //CRITICAL: Check authentication status first
         Set(varIsUserAuthenticated, And(
           Not(IsBlank(UserSessionANP.Id)),
@@ -24,7 +28,43 @@
           UserSessionANP.Permission > 0
         ));
         
-        //Check user permissions using CheckPermission function from App/Formulas
+        //CRITICAL: Fix old Admin permission 65535 to new permission 131071 - EXECUTE FIRST BEFORE ANYTHING
+        //DEBUG: Track fix conditions
+        Set(varDebugFixCondition, {
+          IsAdmin: UserSessionANP.MaVaiTro = "Admin",
+          HasOldPermission: UserSessionANP.Permission = 65535,
+          UserRole: UserSessionANP.MaVaiTro,
+          UserPermission: UserSessionANP.Permission
+        });
+        
+        If(And(UserSessionANP.MaVaiTro = "Admin", UserSessionANP.Permission = 65535),
+          //DEBUG: Track permission fix
+          Set(varPermissionFixed, true);
+          Set(UserSessionANP, {
+            Id: UserSessionANP.Id,
+            HoTen: UserSessionANP.HoTen,
+            Email: UserSessionANP.Email,
+            MaVaiTro: UserSessionANP.MaVaiTro,
+            Permission: 131071, // Updated Admin permission with all new constants
+            NguoiQuanLyId: UserSessionANP.NguoiQuanLyId,
+            ChucDanh: UserSessionANP.ChucDanh,
+            MaDonVi: UserSessionANP.MaDonVi,
+            TrangThai: UserSessionANP.TrangThai,
+            Name: UserSessionANP.Name,
+            Role: UserSessionANP.Role
+          });
+          
+          //Re-check authentication after permission fix
+          Set(varIsUserAuthenticated, And(
+            Not(IsBlank(UserSessionANP.Id)),
+            UserSessionANP.Id <> "",
+            UserSessionANP.Permission > 0
+          )),
+          //No permission fix needed
+          Set(varPermissionFixed, false)
+        );
+        
+        //Check user permissions using CheckPermission function from App/Formulas - ALWAYS RECALCULATE
         Set(varUserPermissions, {
           CanViewPersonalLeaves: CheckPermission(UserSessionANP.Permission, UserPermissions.PERSONAL_LEAVE),
           CanCreateSpecialLeaves: CheckPermission(UserSessionANP.Permission, UserPermissions.SPECIAL_LEAVE),
@@ -39,13 +79,14 @@
           CanViewDashboard: CheckPermission(UserSessionANP.Permission, UserPermissions.VIEW_DASHBOARD)
         });
         
-        //CRITICAL: Check if user has calendar viewing permissions - ALWAYS RECALCULATE  
+        //CRITICAL: Check if user has calendar viewing permissions - MATCH WITH DASHBOARD LOGIC
         Set(varCanViewCalendar, Or(
-          varUserPermissions.CanViewPersonalLeaves, 
-          varUserPermissions.CanViewTeamLeaves, 
-          varUserPermissions.CanViewAllLeaves,
-          varUserPermissions.CanManageUsers,
-          UserSessionANP.MaVaiTro = "Admin"
+          varUserPermissions.CanViewDashboard,      // Same as Dashboard
+          varUserPermissions.CanViewPersonalLeaves, // Personal access
+          varUserPermissions.CanViewTeamLeaves,     // Team access
+          varUserPermissions.CanViewAllLeaves,      // All company access
+          varUserPermissions.CanManageUsers,        // Admin management access
+          UserSessionANP.MaVaiTro = "Admin"         // Role-based fallback
         ));
         
         //DEBUG: Set debug info for troubleshooting permissions
@@ -57,40 +98,6 @@
           CanViewAllLeaves: varUserPermissions.CanViewAllLeaves,
           CanViewCalendar: varCanViewCalendar
         });
-        
-        //Auto-set appropriate calendar view based on user permissions
-        If(Not(varUserPermissions.CanViewPersonalLeaves) And varCalendarView = "Personal",
-          //User doesn't have personal permission, switch to available view
-          If(varUserPermissions.CanViewTeamLeaves,
-            Set(varCalendarView, "Department"),
-            If(Or(varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers, UserSessionANP.MaVaiTro = "Admin"),
-              Set(varCalendarView, "All"),
-              Set(varCalendarView, "Personal") //Fallback - will show empty
-            )
-          )
-        );
-        
-        If(Not(varUserPermissions.CanViewTeamLeaves) And varCalendarView = "Department",
-          //User doesn't have department permission, switch to available view
-          If(varUserPermissions.CanViewPersonalLeaves,
-            Set(varCalendarView, "Personal"),
-            If(Or(varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers, UserSessionANP.MaVaiTro = "Admin"),
-              Set(varCalendarView, "All"),
-              Set(varCalendarView, "Personal") //Fallback
-            )
-          )
-        );
-        
-        If(Not(Or(varUserPermissions.CanViewAllLeaves, varUserPermissions.CanManageUsers, UserSessionANP.MaVaiTro = "Admin")) And varCalendarView = "All",
-          //User doesn't have all company permission, switch to available view
-          If(varUserPermissions.CanViewPersonalLeaves,
-            Set(varCalendarView, "Personal"),
-            If(varUserPermissions.CanViewTeamLeaves,
-              Set(varCalendarView, "Department"),
-              Set(varCalendarView, "Personal") //Fallback
-            )
-          )
-        );
         
         //Load SharePoint data with authentication check
         If(varIsUserAuthenticated,
@@ -195,7 +202,7 @@
               HoTen: "Demo User",
               Email: "demo@company.com",
               MaVaiTro: "Employee",
-              Permission: 259, // PERSONAL_LEAVE (1) + SPECIAL_LEAVE (2) + VIEW_DASHBOARD (256) 
+              Permission: 775, // PERSONAL_LEAVE (1) + SPECIAL_LEAVE (2) + VIEW_TEAM_LEAVE (8) + VIEW_ALL_LEAVE (256) + VIEW_DASHBOARD (512)
               NguoiQuanLyId: "MGR001",
               ChucDanh: "Nhân viên",
               MaDonVi: "IT",
@@ -236,10 +243,10 @@
               {MaNguoiDung: {Value: "EMP005"}, NgayBatDau: Date(varSelectedYear, varSelectedMonth, 25), NgayKetThuc: Date(varSelectedYear, varSelectedMonth, 26), SoNgayNghi: 2, MaLoai: {Value: "ANNUAL"}, LyDo: "Nghỉ phép", TrangThai: {Value: "DaDuyet"}}
             )
           );
-          //Lọc chỉ nhân viên cùng phòng ban với user hiện tại
+          //Lọc chỉ nhân viên cùng phòng ban với user hiện tại - IT department
           ClearCollect(colDepartmentLeaves,
             Filter(colAllDemoLeaves,
-              LookUp(colCalendarUsers, Title = MaNguoiDung).MaDonVi.Value = If(IsBlank(UserSessionANP.MaDonVi), "IT", UserSessionANP.MaDonVi)
+              LookUp(colCalendarUsers, Title = MaNguoiDung.Value).MaDonVi.Value = "IT"
             )
           );
           ClearCollect(colAllLeaves,
@@ -321,22 +328,29 @@
           )
         );
         
-        //FINAL: Always recalculate calendar permissions after all data is loaded
+        //FINAL: Always recalculate calendar permissions after all data is loaded AND permission fixes
         Set(varCanViewCalendar, Or(
-          varUserPermissions.CanViewPersonalLeaves, 
-          varUserPermissions.CanViewTeamLeaves, 
-          varUserPermissions.CanViewAllLeaves,
-          varUserPermissions.CanManageUsers,
-          UserSessionANP.MaVaiTro = "Admin"
+          varUserPermissions.CanViewDashboard,      // Same as Dashboard
+          varUserPermissions.CanViewPersonalLeaves, // Personal access
+          varUserPermissions.CanViewTeamLeaves,     // Team access
+          varUserPermissions.CanViewAllLeaves,      // All company access
+          varUserPermissions.CanManageUsers,        // Admin management access
+          UserSessionANP.MaVaiTro = "Admin"         // Role-based fallback
         ));
         
-        //FINAL: Update debug info after final calculations
+        //PROTECTION: Ensure ViewFormat and CalendarView are not empty
+        If(IsBlank(varViewFormat), Set(varViewFormat, "Calendar"));
+        If(IsBlank(varCalendarView), Set(varCalendarView, "Personal"));
+        
+        //FINAL: Update debug info after final calculations and permission fixes
         Set(varDebugInfo, {
           UserPermission: UserSessionANP.Permission,
           UserRole: UserSessionANP.MaVaiTro,
           CanViewPersonalLeaves: varUserPermissions.CanViewPersonalLeaves,
           CanViewTeamLeaves: varUserPermissions.CanViewTeamLeaves,
           CanViewAllLeaves: varUserPermissions.CanViewAllLeaves,
+          CanViewDashboard: varUserPermissions.CanViewDashboard,
+          CanManageUsers: varUserPermissions.CanManageUsers,
           CanViewCalendar: varCanViewCalendar
         });
         
@@ -1023,174 +1037,6 @@
                                       CountRows(Filter(colAllLeaves, And(NgayBatDau <= ThisItem.CalendarDate, NgayKetThuc >= ThisItem.CalendarDate))) > 0
                                       )
 
-                  # List View (only show when List format)
-                  - 'Calendar.List.Container':
-                      Control: GroupContainer
-                      Variant: ManualLayout
-                      Properties:
-                        X: =0
-                        Y: ='Calendar.PageHeader.Container'.Y + 'Calendar.PageHeader.Container'.Height + Parent.Height * 0.01
-                        Width: =Parent.Width
-                        Height: =Parent.Height * 0.82
-                        Visible: =varViewFormat = "List"
-                      Children:
-                        - 'Calendar.List.Background':
-                            Control: Rectangle
-                            Properties:
-                              X: =0
-                              Y: =0
-                              Width: =Parent.Width
-                              Height: =Parent.Height
-                              Fill: =RGBA(255, 255, 255, 1)
-                              BorderColor: =RGBA(226, 232, 240, 1)
-                              BorderThickness: =1
-                              
-                        # Leave List Gallery for List View
-                        - 'Calendar.List.Gallery':
-                            Control: Gallery
-                            Variant: Vertical
-                            Properties:
-                              X: =Parent.Width * 0.02
-                              Y: =Parent.Height * 0.02
-                              Width: =Parent.Width * 0.96
-                              Height: =Parent.Height * 0.96
-                              Items: =Switch(varCalendarView,
-                                "Personal", colPersonalLeaves,
-                                "Department", colDepartmentLeaves,
-                                "All", colAllLeaves
-                                )
-                              TemplateSize: =80
-                              BorderThickness: =0
-                              Fill: =RGBA(0, 0, 0, 0)
-                            Children:
-                              - 'Calendar.List.Item':
-                                  Control: GroupContainer
-                                  Variant: ManualLayout
-                                  Properties:
-                                    X: =0
-                                    Y: =0
-                                    Width: =Parent.TemplateWidth
-                                    Height: =80
-                                    Fill: =RGBA(255, 255, 255, 1)
-                                    BorderColor: =RGBA(226, 232, 240, 1)
-                                    BorderThickness: =1
-                                  Children:
-                                    # Employee Info
-                                    - 'Calendar.List.EmployeeName':
-                                        Control: Label
-                                        Properties:
-                                          X: =Parent.Width * 0.02
-                                          Y: =Parent.Height * 0.1
-                                          Width: =Parent.Width * 0.2
-                                          Height: =Parent.Height * 0.4
-                                          Text: =LookUp(colCalendarUsers, Title = ThisItem.MaNguoiDung.Value).HoTen
-                                          Color: =RGBA(17, 24, 39, 1)
-                                          Font: =Font.'Open Sans'
-                                          FontWeight: =FontWeight.Semibold
-                                          Size: =FontSizes.Base
-                                          
-                                    - 'Calendar.List.Department':
-                                        Control: Label
-                                        Properties:
-                                          X: =Parent.Width * 0.02
-                                          Y: =Parent.Height * 0.55
-                                          Width: =Parent.Width * 0.2
-                                          Height: =Parent.Height * 0.35
-                                          Text: =LookUp(colCalendarUsers, Title = ThisItem.MaNguoiDung.Value).MaDonVi.Value
-                                          Color: =RGBA(75, 85, 99, 1)
-                                          Font: =Font.'Open Sans'
-                                          Size: =FontSizes.Base
-                                          
-                                    # Leave Details
-                                    - 'Calendar.List.Period':
-                                        Control: Label
-                                        Properties:
-                                          X: =Parent.Width * 0.24
-                                          Y: =Parent.Height * 0.1
-                                          Width: =Parent.Width * 0.18
-                                          Height: =Parent.Height * 0.4
-                                          Text: =Text(ThisItem.NgayBatDau, "dd/mm/yyyy") & " - " & Text(ThisItem.NgayKetThuc, "dd/mm/yyyy")
-                                          Color: =RGBA(17, 24, 39, 1)
-                                          Font: =Font.'Open Sans'
-                                          FontWeight: =FontWeight.Semibold
-                                          Size: =FontSizes.Base
-                                          
-                                    - 'Calendar.List.Days':
-                                        Control: Label
-                                        Properties:
-                                          X: =Parent.Width * 0.24
-                                          Y: =Parent.Height * 0.55
-                                          Width: =Parent.Width * 0.18
-                                          Height: =Parent.Height * 0.35
-                                          Text: =ThisItem.SoNgayNghi & " ngày"
-                                          Color: =RGBA(75, 85, 99, 1)
-                                          Font: =Font.'Open Sans'
-                                          Size: =FontSizes.Base
-                                          
-                                    # Leave Type
-                                    - 'Calendar.List.LeaveType':
-                                        Control: Label
-                                        Properties:
-                                          X: =Parent.Width * 0.44
-                                          Y: =Parent.Height * 0.1
-                                          Width: =Parent.Width * 0.15
-                                          Height: =Parent.Height * 0.8
-                                          Text: =LookUp(colCalendarLeaveTypes, Title = ThisItem.MaLoai.Value).TenLoai
-                                          Color: =RGBA(17, 24, 39, 1)
-                                          Font: =Font.'Open Sans'
-                                          Size: =FontSizes.Base
-                                          
-                                    # Status
-                                    - 'Calendar.List.Status':
-                                        Control: Label
-                                        Properties:
-                                          X: =Parent.Width * 0.61
-                                          Y: =(Parent.Height - Self.Height) / 2
-                                          Width: =Parent.Width * 0.15
-                                          Height: =Parent.Height * 0.6
-                                          Text: =Switch(ThisItem.TrangThai.Value, 
-                                            "ChoDuyetCap1", "Chờ duyệt",
-                                            "ChoDuyetCap2", "Chờ duyệt", 
-                                            "ChoDuyetCap3", "Chờ duyệt",
-                                            "DaDuyet", "Đã duyệt",
-                                            "TuChoi", "Từ chối",
-                                            "Huy", "Đã hủy",
-                                            ThisItem.TrangThai.Value)
-                                          Color: =Switch(ThisItem.TrangThai.Value,
-                                            "DaDuyet", RGBA(34, 197, 94, 1),
-                                            "TuChoi", RGBA(239, 68, 68, 1),
-                                            "Huy", RGBA(107, 114, 128, 1),
-                                            RGBA(251, 191, 36, 1))
-                                          Fill: =Switch(ThisItem.TrangThai.Value,
-                                            "DaDuyet", RGBA(240, 253, 244, 1),
-                                            "TuChoi", RGBA(254, 242, 242, 1),
-                                            "Huy", RGBA(249, 250, 251, 1),
-                                            RGBA(254, 243, 199, 1))
-                                          BorderColor: =Switch(ThisItem.TrangThai.Value,
-                                            "DaDuyet", RGBA(34, 197, 94, 1),
-                                            "TuChoi", RGBA(239, 68, 68, 1),
-                                            "Huy", RGBA(107, 114, 128, 1),
-                                            RGBA(251, 191, 36, 1))
-                                          BorderThickness: =1
-                                          Font: =Font.'Open Sans'
-                                          FontWeight: =FontWeight.Semibold
-                                          Size: =FontSizes.Base
-                                          Align: =Align.Center
-                                          
-                                    # Reason
-                                    - 'Calendar.List.Reason':
-                                        Control: Label
-                                        Properties:
-                                          X: =Parent.Width * 0.78
-                                          Y: =(Parent.Height - Self.Height) / 2
-                                          Width: =Parent.Width * 0.2
-                                          Height: =Parent.Height * 0.8
-                                          Text: =ThisItem.LyDo
-                                          Color: =RGBA(75, 85, 99, 1)
-                                          Font: =Font.'Open Sans'
-                                          Size: =FontSizes.Base
-                                          Wrap: =true
-
              # Loading Indicator
       - 'Calendar.Loading.Overlay':
           Control: Rectangle
@@ -1718,10 +1564,18 @@
             Text: |
               =Concatenate(
               "DEBUG - User:", UserSessionANP.HoTen, " | Role:", UserSessionANP.MaVaiTro, " | Permission:", Text(UserSessionANP.Permission), " | ",
+              "PermissionFixed:", Text(varPermissionFixed), " | ",
+              "IsAdmin:", Text(varDebugFixCondition.IsAdmin), " | ",
+              "HasOldPerm:", Text(varDebugFixCondition.HasOldPermission), " | ",
               "CanViewPersonal:", Text(varUserPermissions.CanViewPersonalLeaves), " | ",
               "CanViewTeam:", Text(varUserPermissions.CanViewTeamLeaves), " | ",
               "CanViewAll:", Text(varUserPermissions.CanViewAllLeaves), " | ",
-              "CanViewCalendar:", Text(varCanViewCalendar)
+              "CanViewCalendar:", Text(varCanViewCalendar), " | ",
+              "ViewFormat:", varViewFormat, " | ",
+              "CalendarView:", varCalendarView, " | ",
+              "PersonalCount:", Text(CountRows(colPersonalLeaves)), " | ",
+              "DeptCount:", Text(CountRows(colDepartmentLeaves)), " | ",
+              "AllCount:", Text(CountRows(colAllLeaves))
               )
             Color: =RGBA(107, 114, 128, 1)
             Font: =Font.'Open Sans'
