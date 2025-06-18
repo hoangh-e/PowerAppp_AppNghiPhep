@@ -141,29 +141,29 @@ UserRoles = {
 UserPermissions = {
   PERSONAL_LEAVE: 1,
   SPECIAL_LEAVE: 2,
-  VIEW_TEAM_LEAVE: 8,
-  VIEW_ALL_LEAVE: 256,
+  VIEW_TEAM_LEAVE: 4,
+  VIEW_ALL_LEAVE: 8,
   APPROVE_LEVEL_1: 16,
   APPROVE_LEVEL_2: 32,
   APPROVE_LEVEL_3: 64,
   RECORD_LEAVE: 128,
-  VIEW_DASHBOARD: 512,
-  EXPORT_REPORTS: 1024,
-  MANAGE_LEAVE_QUOTA: 2048,
-  MANAGE_HOLIDAYS: 4096,
-  MANAGE_USERS: 8192,
-  MANAGE_ROLES: 16384,
-  MANAGE_APPROVAL_PROCESS: 32768,
-  SYSTEM_ADMIN: 65536
+  VIEW_DASHBOARD: 256,
+  EXPORT_REPORTS: 512,
+  MANAGE_LEAVE_QUOTA: 1024,
+  MANAGE_HOLIDAYS: 2048,
+  MANAGE_USERS: 4096,
+  MANAGE_ROLES: 8192,
+  MANAGE_APPROVAL_PROCESS: 16384,
+  SYSTEM_ADMIN: 32768
 };
 
 //Role permission combinations
 RolePermissionCombinations = {
-  Employee: UserPermissions.PERSONAL_LEAVE + UserPermissions.SPECIAL_LEAVE + UserPermissions.VIEW_DASHBOARD,
-  Manager: UserPermissions.PERSONAL_LEAVE + UserPermissions.SPECIAL_LEAVE + UserPermissions.VIEW_TEAM_LEAVE + UserPermissions.APPROVE_LEVEL_1 + UserPermissions.VIEW_DASHBOARD + UserPermissions.EXPORT_REPORTS,
-  Director: UserPermissions.PERSONAL_LEAVE + UserPermissions.SPECIAL_LEAVE + UserPermissions.VIEW_TEAM_LEAVE + UserPermissions.VIEW_ALL_LEAVE + UserPermissions.APPROVE_LEVEL_2 + UserPermissions.APPROVE_LEVEL_3 + UserPermissions.MANAGE_HOLIDAYS + UserPermissions.VIEW_DASHBOARD + UserPermissions.EXPORT_REPORTS,
-  HR: UserPermissions.PERSONAL_LEAVE + UserPermissions.SPECIAL_LEAVE + UserPermissions.VIEW_ALL_LEAVE + UserPermissions.RECORD_LEAVE + UserPermissions.EXPORT_REPORTS + UserPermissions.MANAGE_LEAVE_QUOTA + UserPermissions.MANAGE_HOLIDAYS + UserPermissions.VIEW_DASHBOARD,
-  Admin: 131071  // All permissions (2^17 - 1)
+  Employee: 259,
+  Manager: 279,
+  Director: 879,
+  HR: 3979,
+  Admin: 65535
 };
 
 //Demo Users for Testing

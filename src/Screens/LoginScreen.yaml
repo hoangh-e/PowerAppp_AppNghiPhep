@@ -329,7 +329,7 @@ Screens:
                         Size: =FontSizes.Small
                         Align: =Align.Center
 
-                  # Demo Buttons in 2x2 Grid
+                  # Demo Buttons in 2x3 Grid (5 buttons total)
                   - 'Login.Demo.Grid':
                       Control: GroupContainer
                       Variant: ManualLayout
@@ -404,7 +404,7 @@ Screens:
                                   HoTen: "Nguyễn Văn An",
                                   Email: "employee@demo.com",
                                   MaVaiTro: "Employee",
-                                  Permission: 3,
+                                  Permission: 259,
                                   NguoiQuanLyId: "MGR001",
                                   ChucDanh: "Nhân viên",
                                   MaDonVi: "IT",
@@ -442,7 +442,7 @@ Screens:
                                   HoTen: "Trần Thị Bình",
                                   Email: "manager@demo.com",
                                   MaVaiTro: "Manager",
-                                  Permission: 23,
+                                  Permission: 279,
                                   NguoiQuanLyId: "DIR001",
                                   ChucDanh: "Trưởng phòng",
                                   MaDonVi: "HR",
@@ -480,13 +480,51 @@ Screens:
                                   HoTen: "Lê Hoàng Cường",
                                   Email: "director@demo.com",
                                   MaVaiTro: "Director",
-                                  Permission: 2159,
+                                  Permission: 879,
                                   NguoiQuanLyId: "",
                                   ChucDanh: "Giám đốc",
                                   MaDonVi: "Management",
                                   TrangThai: "HoatDong",
                                   Name: "Lê Hoàng Cường",
                                   Role: "Director"
+                                });
+                                Set(varIsTraditionalLoading, false);
+                                Navigate(DashboardScreen)
+
+                        # HR Demo Button
+                        - 'Login.Demo.HR':
+                            Control: Classic/Button
+                            Properties:
+                              X: =(Parent.Width - Self.Width) / 2
+                              Y: =Parent.Height * 0.78
+                              Width: =Parent.Width * 0.48
+                              Height: =Parent.Height * 0.2
+                              Text: ="Nhân sự"
+                              Fill: =RGBA(255, 247, 237, 1)
+                              Color: =RGBA(217, 119, 6, 1)
+                              BorderColor: =RGBA(251, 191, 36, 1)
+                              BorderThickness: =1
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Normal
+                              Size: =FontSizes.Small
+                              HoverFill: =RGBA(254, 243, 199, 1)
+                              HoverBorderColor: =RGBA(245, 158, 11, 1)
+                              OnSelect: |
+                                =Set(varIsTraditionalLoading, true);
+                                Set(varLoginSuccess, true); Set(varSessionValid, true); Set(varIsUserAuthenticated, true);
+                                Set(varLoggedInUserEmail, "hr@demo.com");
+                                Set(UserSessionANP, {
+                                  Id: "HR001",
+                                  HoTen: "Phạm Thị Dung",
+                                  Email: "hr@demo.com",
+                                  MaVaiTro: "HR",
+                                  Permission: 3979,
+                                  NguoiQuanLyId: "",
+                                  ChucDanh: "Trưởng phòng Nhân sự",
+                                  MaDonVi: "HR",
+                                  TrangThai: "HoatDong",
+                                  Name: "Phạm Thị Dung",
+                                  Role: "HR"
                                 });
                                 Set(varIsTraditionalLoading, false);
                                 Navigate(DashboardScreen)

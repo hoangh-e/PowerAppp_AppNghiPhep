@@ -22,8 +22,23 @@ Screens:
           IsSystemAdmin: CheckPermission(UserSessionANP.Permission, UserPermissions.SYSTEM_ADMIN)
         });
         
-        //CRITICAL: Check if user has ANY approval permission
+        //ENHANCED: Check if user has ANY approval permission OR record permission (for HR)
         Set(varCanApprove, Or(varUserPermissions.CanApproveLevel1, varUserPermissions.CanApproveLevel2, varUserPermissions.CanApproveLevel3));
+        Set(varCanAccessApproval, Or(varCanApprove, varUserPermissions.CanRecordLeave, varUserPermissions.IsSystemAdmin));
+        
+        //ENHANCED: Determine user approval level for display
+        Set(varUserApprovalLevel, 
+          If(varUserPermissions.CanApproveLevel3, 3,
+            If(varUserPermissions.CanApproveLevel2, 2,
+              If(varUserPermissions.CanApproveLevel1, 1, 0))));
+              
+        //ENHANCED: Set user role display text
+        Set(varUserRoleDisplay,
+          If(varUserPermissions.IsSystemAdmin, "Quản trị viên",
+            If(varUserPermissions.CanRecordLeave, "Nhân sự (Ghi nhận)",
+              If(varUserPermissions.CanApproveLevel3, "Giám đốc điều hành",
+                If(varUserPermissions.CanApproveLevel2, "Giám đốc khối",
+                  If(varUserPermissions.CanApproveLevel1, "Quản lý phòng/bộ phận", "Nhân viên"))))));
         
         //DEBUG: Log permission check results for troubleshooting
         Set(varPermissionDebug, {
@@ -32,26 +47,61 @@ Screens:
           CanApproveLevel2: varUserPermissions.CanApproveLevel2, 
           CanApproveLevel3: varUserPermissions.CanApproveLevel3,
           CanApprove: varCanApprove,
+          CanAccessApproval: varCanAccessApproval,
           UserRole: UserSessionANP.MaVaiTro,
-          UserId: UserSessionANP.Id
+          UserId: UserSessionANP.Id,
+          ApprovalLevel: varUserApprovalLevel,
+          RoleDisplay: varUserRoleDisplay
         });
         
-        //If user has no approval permission AND not authenticated, provide demo user option
-        If(And(Not(varCanApprove), Not(varIsUserAuthenticated)),
-          //Set a demo approval user for testing
-          Set(UserSessionANP, {
-            Id: "DEMO_MANAGER_001",
-            HoTen: "Quản lý Demo (Có quyền duyệt)",
-            Email: "manager.demo@company.com",
-            MaVaiTro: "Manager",
-            Permission: 787, // Manager permissions with approval rights
-            NguoiQuanLyId: "",
-            ChucDanh: "Quản lý phòng",
-            MaDonVi: "IT",
-            TrangThai: "HoatDong",
-            Name: "Quản lý Demo",
-            Role: "Manager"
-          });
+        //ENHANCED: Provide different demo users based on missing permissions
+        If(And(Not(varCanAccessApproval), Not(varIsUserAuthenticated)),
+          //Set demo users with different approval levels for testing
+          Set(varDemoUserType, "Manager"); //Default to Manager for testing
+          Switch(varDemoUserType,
+            "Manager", 
+              Set(UserSessionANP, {
+                Id: "DEMO_MANAGER_001",
+                HoTen: "Trần Thị Bình (Demo Manager)",
+                Email: "manager.demo@company.com",
+                MaVaiTro: "Manager",
+                Permission: 279, // Manager permissions: PERSONAL_LEAVE(1) + SPECIAL_LEAVE(2) + VIEW_TEAM_LEAVE(4) + APPROVE_LEVEL_1(16) + VIEW_DASHBOARD(256)
+                NguoiQuanLyId: "",
+                ChucDanh: "Trưởng phòng",
+                MaDonVi: "IT",
+                TrangThai: "HoatDong",
+                Name: "Trần Thị Bình",
+                Role: "Manager"
+              }),
+            "Director",
+              Set(UserSessionANP, {
+                Id: "DEMO_DIRECTOR_001", 
+                HoTen: "Lê Văn Cường (Demo Director)",
+                Email: "director.demo@company.com",
+                MaVaiTro: "Director",
+                Permission: 879, // Director permissions: PERSONAL_LEAVE(1) + SPECIAL_LEAVE(2) + VIEW_TEAM_LEAVE(4) + VIEW_ALL_LEAVE(8) + APPROVE_LEVEL_2(32) + APPROVE_LEVEL_3(64) + VIEW_DASHBOARD(256) + EXPORT_REPORTS(512)
+                NguoiQuanLyId: "",
+                ChucDanh: "Giám đốc",
+                MaDonVi: "BOD",
+                TrangThai: "HoatDong",
+                Name: "Lê Văn Cường",
+                Role: "Director"
+              }),
+            "HR",
+              Set(UserSessionANP, {
+                Id: "DEMO_HR_001",
+                HoTen: "Phạm Thị Dung (Demo HR)",
+                Email: "hr.demo@company.com", 
+                MaVaiTro: "HR",
+                Permission: 3979, // HR permissions: PERSONAL_LEAVE(1) + SPECIAL_LEAVE(2) + VIEW_ALL_LEAVE(8) + RECORD_LEAVE(128) + VIEW_DASHBOARD(256) + EXPORT_REPORTS(512) + MANAGE_LEAVE_QUOTA(1024) + MANAGE_HOLIDAYS(2048)
+                NguoiQuanLyId: "",
+                ChucDanh: "Chuyên viên nhân sự",
+                MaDonVi: "HR",
+                TrangThai: "HoatDong",
+                Name: "Phạm Thị Dung",
+                Role: "HR"
+              })
+          );
           Set(varIsUserAuthenticated, true);
           //Recalculate permissions with demo user
           Set(varUserPermissions, {
@@ -66,19 +116,31 @@ Screens:
             CanExportReports: CheckPermission(UserSessionANP.Permission, UserPermissions.EXPORT_REPORTS),
             IsSystemAdmin: CheckPermission(UserSessionANP.Permission, UserPermissions.SYSTEM_ADMIN)
           });
-          Set(varCanApprove, Or(varUserPermissions.CanApproveLevel1, varUserPermissions.CanApproveLevel2, varUserPermissions.CanApproveLevel3))
+          Set(varCanApprove, Or(varUserPermissions.CanApproveLevel1, varUserPermissions.CanApproveLevel2, varUserPermissions.CanApproveLevel3));
+          Set(varCanAccessApproval, Or(varCanApprove, varUserPermissions.CanRecordLeave, varUserPermissions.IsSystemAdmin));
+          Set(varUserApprovalLevel, 
+            If(varUserPermissions.CanApproveLevel3, 3,
+              If(varUserPermissions.CanApproveLevel2, 2,
+                If(varUserPermissions.CanApproveLevel1, 1, 0))));
+          Set(varUserRoleDisplay,
+            If(varUserPermissions.IsSystemAdmin, "Quản trị viên",
+              If(varUserPermissions.CanRecordLeave, "Nhân sự (Ghi nhận)",
+                If(varUserPermissions.CanApproveLevel3, "Giám đốc điều hành",
+                  If(varUserPermissions.CanApproveLevel2, "Giám đốc khối",
+                    If(varUserPermissions.CanApproveLevel1, "Quản lý phòng/bộ phận", "Nhân viên"))))))
         );
         
-        //If no approval permission, set flag to navigate away after timer
-        If(Not(varCanApprove),
+        //ENHANCED: Only navigate away if user has NO access at all
+        If(Not(varCanAccessApproval),
           Set(varNavigateAwayFlag, true);
-          Set(varNavigateReason, "Bạn không có quyền phê duyệt đơn nghỉ phép"),
+          Set(varNavigateReason, "Bạn không có quyền truy cập chức năng phê duyệt"),
           //Continue with approval screen initialization
           Set(varSelectedApprovalLeave, Blank());
           Set(varShowApprovalDetails, false);
           Set(varShowApprovalConfirm, false);
           Set(varApprovalAction, "");
           Set(varApprovalComment, "");
+          Set(varFilterLevel, "All"); //Default filter to show all levels
           
           //Load SharePoint data with authentication check
           If(varIsUserAuthenticated,
@@ -90,29 +152,47 @@ Screens:
             );
             Set(varPendingApprovals, colPendingApprovals);
             
-            //Filter approvals for current user's level
+            //ENHANCED: Filter approvals for current user's level AND all levels for visibility
             ClearCollect(colMyLevelApprovals, 
-              Filter(colPendingApprovals, 
-                Or(
-                  And(varUserPermissions.CanApproveLevel1, TrangThai.Value = "ChoDuyetCap1"),
-                  And(varUserPermissions.CanApproveLevel2, TrangThai.Value = "ChoDuyetCap2"),
-                  And(varUserPermissions.CanApproveLevel3, TrangThai.Value = "ChoDuyetCap3")
-                )
+              If(varCanApprove,
+                //If user can approve, show only their level
+                Filter(colPendingApprovals, 
+                  Or(
+                    And(varUserPermissions.CanApproveLevel1, TrangThai.Value = "ChoDuyetCap1"),
+                    And(varUserPermissions.CanApproveLevel2, TrangThai.Value = "ChoDuyetCap2"),
+                    And(varUserPermissions.CanApproveLevel3, TrangThai.Value = "ChoDuyetCap3")
+                  )
+                ),
+                //If user can't approve (like HR), show all for monitoring
+                colPendingApprovals
               )
             );
             Set(varMyLevelApprovals, colMyLevelApprovals),
             
-            //No authentication - use demo data for preview
+            //No authentication - use enhanced demo data
             ClearCollect(colPendingApprovals,
               Table(
                 {Title: "REQ001", MaNguoiDung: {Value: "EMP001"}, NgayBatDau: DateAdd(Today(), 5, TimeUnit.Days), NgayKetThuc: DateAdd(Today(), 7, TimeUnit.Days), SoNgayNghi: 3, MaLoai: {Value: "ANNUAL"}, LyDo: "Nghỉ phép năm", TrangThai: {Value: "ChoDuyetCap1"}, NguoiBanGiao: {Value: "EMP002"}, NoiDungBanGiao: "Bàn giao công việc cho đồng nghiệp"},
-                {Title: "REQ002", MaNguoiDung: {Value: "EMP003"}, NgayBatDau: DateAdd(Today(), 10, TimeUnit.Days), NgayKetThuc: DateAdd(Today(), 12, TimeUnit.Days), SoNgayNghi: 3, MaLoai: {Value: "SICK"}, LyDo: "Nghỉ ốm", TrangThai: {Value: "ChoDuyetCap2"}, NguoiBanGiao: {Value: "EMP004"}, NoiDungBanGiao: "Bàn giao công việc cấp bách"}
+                {Title: "REQ002", MaNguoiDung: {Value: "EMP003"}, NgayBatDau: DateAdd(Today(), 10, TimeUnit.Days), NgayKetThuc: DateAdd(Today(), 12, TimeUnit.Days), SoNgayNghi: 3, MaLoai: {Value: "SICK"}, LyDo: "Nghỉ ốm", TrangThai: {Value: "ChoDuyetCap2"}, NguoiBanGiao: {Value: "EMP004"}, NoiDungBanGiao: "Bàn giao công việc cấp bách"},
+                {Title: "REQ003", MaNguoiDung: {Value: "EMP005"}, NgayBatDau: DateAdd(Today(), 15, TimeUnit.Days), NgayKetThuc: DateAdd(Today(), 29, TimeUnit.Days), SoNgayNghi: 15, MaLoai: {Value: "ANNUAL"}, LyDo: "Nghỉ phép dài ngày", TrangThai: {Value: "ChoDuyetCap3"}, NguoiBanGiao: {Value: "EMP006"}, NoiDungBanGiao: "Bàn giao dự án quan trọng"}
               )
             );
             Set(varPendingApprovals, colPendingApprovals);
             
-            //Demo my level approvals (all for demo)
-            Set(varMyLevelApprovals, colPendingApprovals)
+            //Enhanced demo filtering
+            ClearCollect(colMyLevelApprovals, 
+              If(varCanApprove,
+                Filter(colPendingApprovals, 
+                  Or(
+                    And(varUserPermissions.CanApproveLevel1, TrangThai.Value = "ChoDuyetCap1"),
+                    And(varUserPermissions.CanApproveLevel2, TrangThai.Value = "ChoDuyetCap2"),
+                    And(varUserPermissions.CanApproveLevel3, TrangThai.Value = "ChoDuyetCap3")
+                  )
+                ),
+                colPendingApprovals
+              )
+            );
+            Set(varMyLevelApprovals, colMyLevelApprovals)
           )
         );
         
@@ -140,7 +220,7 @@ Screens:
                 Set(varAuthenticationValid, true)
               )
       
-      # Permission Check Timer - Only navigate away if permission denied
+      # Permission Check Timer - Only navigate away if NO access at all
       - 'Approval.PermissionTimer':
           Control: Timer
           Properties:
@@ -248,7 +328,7 @@ Screens:
                       Properties:
                         X: =0
                         Y: =0
-                        Height: =Parent.Height * 0.1
+                        Height: =Parent.Height * 0.12
                         Width: =Parent.Width
                       Children:
                         - Approval.PageHeader.Background:
@@ -265,48 +345,141 @@ Screens:
                             Control: Classic/Icon
                             Properties:
                               X: =Parent.Width * 0.015
-                              Y: =Parent.Height * 0.25
+                              Y: =Parent.Height * 0.2
                               Color: =RGBA(59, 130, 246, 1)
-                              Height: =Parent.Height * 0.2
+                              Height: =Parent.Height * 0.15
                               Icon: =Icon.CheckBadge
-                              Width: =Parent.Height * 0.2
+                              Width: =Parent.Height * 0.15
                         - Approval.PageHeader.Title:
                             Control: Label
                             Properties:
                               X: =Parent.Width * 0.015 + 'Approval.PageHeader.Icon'.Width + Parent.Width * 0.01
-                              Y: =Parent.Height * 0.2
+                              Y: =Parent.Height * 0.15
                               Color: =RGBA(17, 24, 39, 1)
                               Font: =Font.'Open Sans'
                               FontWeight: =FontWeight.Bold
-                              Height: =Parent.Height * 0.35
+                              Height: =Parent.Height * 0.25
                               Size: =FontSizes.Medium
                               Text: ="Phê duyệt đơn nghỉ phép"
-                              Width: =Parent.Width * 0.6
+                              Width: =Parent.Width * 0.4
                         - Approval.PageHeader.Stats:
                             Control: Label
                             Properties:
                               X: =Parent.Width * 0.015 + 'Approval.PageHeader.Icon'.Width + Parent.Width * 0.01
-                              Y: =Parent.Height * 0.6
+                              Y: =Parent.Height * 0.45
                               Color: =RGBA(75, 85, 99, 1)
                               Font: =Font.'Open Sans'
-                              Height: =Parent.Height * 0.25
+                              Height: =Parent.Height * 0.2
                               Size: =FontSizes.Base
                               Text: =Concatenate("Đang chờ duyệt" & ":" & " ", CountRows(varMyLevelApprovals), " " & "đơn")
-                              Width: =Parent.Width * 0.6
-                        # Debug Permission Info
+                              Width: =Parent.Width * 0.4
+                        # ENHANCED: Role and Permission Display
+                        - Approval.PageHeader.RoleInfo:
+                            Control: Label
+                            Properties:
+                              X: =Parent.Width * 0.015 + 'Approval.PageHeader.Icon'.Width + Parent.Width * 0.01
+                              Y: =Parent.Height * 0.7
+                              Color: =If(varCanApprove, RGBA(34, 197, 94, 1), RGBA(251, 146, 60, 1))
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =Parent.Height * 0.2
+                              Size: =FontSizes.Small
+                              Text: =Concatenate("Vai trò" & ":" & " ", varUserRoleDisplay, If(varCanApprove, Concatenate(" (Cấp ", Text(varUserApprovalLevel), ")"), " (Chỉ xem)"))
+                              Width: =Parent.Width * 0.4
+                        # ENHANCED: Demo User Switcher for Testing
+                        - Approval.PageHeader.DemoSwitcher:
+                            Control: GroupContainer
+                            Variant: ManualLayout
+                            Properties:
+                              X: =Parent.Width * 0.55
+                              Y: =Parent.Height * 0.1
+                              Height: =Parent.Height * 0.8
+                              Width: =Parent.Width * 0.42
+                              Visible: =Not(varIsUserAuthenticated) //Show only when using demo
+                            Children:
+                              - Approval.Demo.Label:
+                                  Control: Label
+                                  Properties:
+                                    X: =0
+                                    Y: =0
+                                    Color: =RGBA(75, 85, 99, 1)
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =Parent.Height * 0.3
+                                    Size: =FontSizes.Small
+                                    Text: ="Demo User (Testing):"
+                                    Width: =Parent.Width
+                              - Approval.Demo.Manager:
+                                  Control: CanvasComponent
+                                  ComponentName: ButtonComponent
+                                  Properties:
+                                    X: =0
+                                    Y: =Parent.Height * 0.35
+                                    FullWidth: =false
+                                    Height: =Parent.Height * 0.25
+                                    Icon: =""
+                                    IconPosition: ="Left"
+                                    IsDisabled: =false
+                                    IsLoading: =false
+                                    LoadingText: ="Đang xử lý..."
+                                    OnClick: |
+                                      =Set(varDemoUserType, "Manager");
+                                      Navigate(ApprovalScreen)
+                                    Size: ="Small"
+                                    Text: ="Manager"
+                                    Width: =Parent.Width * 0.3
+                              - Approval.Demo.Director:
+                                  Control: CanvasComponent
+                                  ComponentName: ButtonComponent
+                                  Properties:
+                                    X: =Parent.Width * 0.35
+                                    Y: =Parent.Height * 0.35
+                                    FullWidth: =false
+                                    Height: =Parent.Height * 0.25
+                                    Icon: =""
+                                    IconPosition: ="Left"
+                                    IsDisabled: =false
+                                    IsLoading: =false
+                                    LoadingText: ="Đang xử lý..."
+                                    OnClick: |
+                                      =Set(varDemoUserType, "Director");
+                                      Navigate(ApprovalScreen)
+                                    Size: ="Small"
+                                    Text: ="Director"
+                                    Width: =Parent.Width * 0.3
+                              - Approval.Demo.HR:
+                                  Control: CanvasComponent
+                                  ComponentName: ButtonComponent
+                                  Properties:
+                                    X: =Parent.Width * 0.7
+                                    Y: =Parent.Height * 0.35
+                                    FullWidth: =false
+                                    Height: =Parent.Height * 0.25
+                                    Icon: =""
+                                    IconPosition: ="Left"
+                                    IsDisabled: =false
+                                    IsLoading: =false
+                                    LoadingText: ="Đang xử lý..."
+                                    OnClick: |
+                                      =Set(varDemoUserType, "HR");
+                                      Navigate(ApprovalScreen)
+                                    Size: ="Small"
+                                    Text: ="HR"
+                                    Width: =Parent.Width * 0.3
+                        # Permission Debug Info (can be hidden in production)
                         - Approval.PageHeader.Debug:
                             Control: Label
                             Properties:
-                              X: =Parent.Width * 0.65
-                              Y: =Parent.Height * 0.15
-                              Color: =RGBA(59, 130, 246, 1)
+                              X: =Parent.Width * 0.6
+                              Y: =Parent.Height * 0.75
+                              Color: =RGBA(156, 163, 175, 1)
                               Font: =Font.'Open Sans'
                               FontWeight: =FontWeight.Normal
-                              Height: =Parent.Height * 0.7
+                              Height: =Parent.Height * 0.2
                               Size: =FontSizes.Small
-                              Text: =Concatenate("Quyền:" & " ", If(varCanApprove, "CÓ QUYỀN DUYỆT", "KHÔNG CÓ QUYỀN"), " | ", "Role:" & " ", UserSessionANP.MaVaiTro, " | ", "Perm:" & " ", Text(UserSessionANP.Permission))
-                              Visible: =true
-                              Width: =Parent.Width * 0.32
+                              Text: =Concatenate("Debug - Perm:" & " ", Text(UserSessionANP.Permission), " | ", "L1:" & " ", If(varUserPermissions.CanApproveLevel1, "✓", "✗"), " ", "L2:" & " ", If(varUserPermissions.CanApproveLevel2, "✓", "✗"), " ", "L3:" & " ", If(varUserPermissions.CanApproveLevel3, "✓", "✗"))
+                              Visible: =true //Set to false in production
+                              Width: =Parent.Width * 0.35
                   - Approval.Stats.Container:
                       Control: GroupContainer
                       Variant: ManualLayout
@@ -720,12 +893,13 @@ Screens:
                           Set(varShowApprovalConfirm, true)
                         Size: ="Medium"
                         Text: ="Phê duyệt"
+                        Visible: =varCanApprove
                         Width: =Parent.Width * 0.2
                   - Approval.RejectButton:
                       Control: CanvasComponent
                       ComponentName: ButtonComponent
                       Properties:
-                        X: =Parent.Width * 0.5
+                        X: =If(varCanApprove, Parent.Width * 0.5, Parent.Width * 0.35)
                         Y: =Parent.Height * 0.45
                         FullWidth: =false
                         Height: =Parent.Height * 0.4
@@ -739,7 +913,55 @@ Screens:
                           Set(varShowApprovalConfirm, true)
                         Size: ="Medium"
                         Text: ="Từ chối"
+                        Visible: =varCanApprove
                         Width: =Parent.Width * 0.2
+                  # ENHANCED: HR Record Button (for HR role only)
+                  - Approval.RecordButton:
+                      Control: CanvasComponent
+                      ComponentName: ButtonComponent
+                      Properties:
+                        X: =If(varCanApprove, Parent.Width * 0.75, Parent.Width * 0.35)
+                        Y: =Parent.Height * 0.45
+                        FullWidth: =false
+                        Height: =Parent.Height * 0.4
+                        Icon: =""
+                        IconPosition: ="Left"
+                        IsDisabled: =false
+                        IsLoading: =false
+                        LoadingText: ="Đang xử lý..."
+                        OnClick: |
+                          =//HR Record action - mark leave as recorded
+                          If(Not(IsBlank(varSelectedApprovalLeave)),
+                            Patch(DonNghiPhep, varSelectedApprovalLeave, {GhiChuHR: Concatenate("Đã ghi nhận bởi " & UserSessionANP.HoTen & " - " & varApprovalComment)});
+                            Notify("Đã ghi nhận đơn nghỉ phép", NotificationType.Success);
+                            Set(varShowApprovalDetails, false);
+                            Set(varApprovalComment, "");
+                            Set(varSelectedApprovalLeave, Blank());
+                            //Refresh data
+                            ClearCollect(colPendingApprovals, 
+                              Filter(DonNghiPhep, Or(TrangThai.Value = "ChoDuyetCap1", TrangThai.Value = "ChoDuyetCap2", TrangThai.Value = "ChoDuyetCap3"))
+                            );
+                            Set(varPendingApprovals, colPendingApprovals),
+                            Notify("Có lỗi xảy ra", NotificationType.Error)
+                          )
+                        Size: ="Medium"
+                        Text: ="Ghi nhận"
+                        Visible: =And(varUserPermissions.CanRecordLeave, Not(varCanApprove))
+                        Width: =Parent.Width * 0.25
+                  # ENHANCED: View Only Message (for users without approval or record rights)
+                  - Approval.ViewOnlyMessage:
+                      Control: Label
+                      Properties:
+                        X: =Parent.Width * 0.25
+                        Y: =Parent.Height * 0.45
+                        Color: =RGBA(156, 163, 175, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =Parent.Height * 0.4
+                        Size: =FontSizes.Base
+                        Text: ="Bạn chỉ có quyền xem thông tin đơn nghỉ phép"
+                        Visible: =And(Not(varCanApprove), Not(varUserPermissions.CanRecordLeave), Not(varUserPermissions.IsSystemAdmin))
+                        Width: =Parent.Width * 0.7
       - Approval.Confirm.Modal:
           Control: GroupContainer
           Variant: ManualLayout
