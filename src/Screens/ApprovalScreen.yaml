@@ -166,10 +166,8 @@ Screens:
           
           //CRITICAL: Check if user is designated approver and get their levels
           Set(varIsDesignatedApprover, CountRows(colApprovalWorkflow) > 0);
-          ClearCollect(colDesignatedLevels, 
-            ShowColumns(colApprovalWorkflow, "Cap")
-          );
-          Set(varDesignatedLevels, colDesignatedLevels);
+          //Extract designated levels as simple array for easier checking
+          Set(varDesignatedLevels, colApprovalWorkflow);
             
             //ENHANCED: Filter approvals based on permission AND designation
             ClearCollect(colMyLevelApprovals, 
@@ -225,10 +223,8 @@ Screens:
             
             //Check designation for demo user
             Set(varIsDesignatedApprover, CountRows(colApprovalWorkflow) > 0);
-            ClearCollect(colDesignatedLevels, 
-              ShowColumns(colApprovalWorkflow, "Cap")
-            );
-            Set(varDesignatedLevels, colDesignatedLevels);
+            //Use full workflow collection instead of ShowColumns
+            Set(varDesignatedLevels, colApprovalWorkflow);
             
             //Enhanced demo filtering with designation check
             ClearCollect(colMyLevelApprovals, 
@@ -1167,10 +1163,8 @@ Screens:
                             );
                             Set(varApprovalWorkflow, colApprovalWorkflow);
                             Set(varIsDesignatedApprover, CountRows(colApprovalWorkflow) > 0);
-                            ClearCollect(colDesignatedLevels, 
-                              ShowColumns(colApprovalWorkflow, "Cap")
-                            );
-                            Set(varDesignatedLevels, colDesignatedLevels);
+                            //Use full workflow collection instead of ShowColumns
+                            Set(varDesignatedLevels, colApprovalWorkflow);
                             
                             //Filter with designation check
                             ClearCollect(colMyLevelApprovals, 

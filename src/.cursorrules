@@ -3823,6 +3823,9 @@ Items: =SortByColumns(MyCollection, "FieldName", SortOrder.Ascending)
 67. **IMPORT FUNCTION RESTRICTIONS** - CRITICAL: `Import()` function is not supported in Power Apps formulas. Never use `Set(varData, Import())`. For Import controls, use simulated data with counters like `Set(varImportedDataCount, Rand() * 10 + 5)` and `Text(Round(varImportedDataCount, 0))` for demo purposes
 68. **COLLECTION NAMING CONVENTIONS** - CRITICAL: Use `col` prefix for collections created with ClearCollect (e.g., `colAllUsers`, `colHolidaysList`, `colWorkflowData`). Use `var` prefix only for simple variables. This prevents confusion and schema conflicts
 69. **COUNTROWS WITH COLLECTIONS** - CRITICAL: Only use `CountRows()` with valid Table/Collection objects. Never use with undefined variables or Import() results. Use counter variables for simulated data counts instead of CountRows on invalid objects
+70. **CLASSIC/DROPDOWN PROPERTY RESTRICTIONS** - CRITICAL: Classic/DropDown controls do NOT support ValueField and TextField properties. PA2108 error will occur. Use simple arrays for Items and implement manual value mapping with Switch() or LookUp() functions for SharePoint submission
+71. **ATTACHMENTS CONTROL RESTRICTIONS** - CRITICAL: Attachments control does NOT support AllowedFileTypes, MaxAttachments, and MaxAttachmentSize properties. PA2108 error will occur. Only basic styling and behavior properties are supported
+72. **DROPDOWN VALUE MAPPING** - CRITICAL: When using Classic/DropDown without ValueField/TextField, implement manual value mapping for SharePoint submission using Switch() for Choice fields and LookUp() for Lookup fields. Always provide default values and handle both authenticated and demo scenarios
 
 **Agent must follow these rules ABSOLUTELY when generating Power App YAML code.**
 
@@ -4024,3 +4027,101 @@ OnVisible: |
 - **"Property not found" errors**: Check property name spelling
 - **"Schema mismatch" errors**: Verify nested object structure
 - **Runtime errors**: Validate all required properties are included
+
+---
+
+## 🚨 ADDITIONAL PA2108 ERROR FIXES
+
+### Rule 71: Classic/DropDown Property Restrictions
+**CRITICAL**: Classic/DropDown controls do NOT support ValueField and TextField properties.
+
+```yaml
+# ❌ WRONG - ValueField and TextField not supported
+- MyDropDown:
+    Control: Classic/DropDown
+    Properties:
+      Items: =Table({Value: "A", Text: "Option A"}, {Value: "B", Text: "Option B"})
+      ValueField: ="Value"     # PA2108 ERROR
+      TextField: ="Text"       # PA2108 ERROR
+
+# ✅ CORRECT - Use simple arrays or direct text display
+- MyDropDown:
+    Control: Classic/DropDown
+    Properties:
+      Items: =["Option A", "Option B", "Option C"]
+      # No ValueField or TextField properties
+```
+
+**DROPDOWN ITEM PATTERNS:**
+```yaml
+# Simple text array (recommended)
+Items: =["Cả ngày", "Sáng", "Chiều"]
+
+# Collection with text extraction
+Items: =colUsers.HoTen  # Extract text column from collection
+
+# Conditional items
+Items: =If(varIsAuthenticated, colRealData.DisplayName, ["Demo Option 1", "Demo Option 2"])
+```
+
+### Rule 72: Attachments Control Property Restrictions
+**CRITICAL**: Attachments control does NOT support AllowedFileTypes, MaxAttachments, and MaxAttachmentSize properties.
+
+```yaml
+# ❌ WRONG - Unsupported attachment properties
+- MyAttachments:
+    Control: Attachments
+    Properties:
+      MaxAttachments: =5        # PA2108 ERROR
+      MaxAttachmentSize: =10240 # PA2108 ERROR
+      AllowedFileTypes: ="*"    # PA2108 ERROR
+
+# ✅ CORRECT - Basic attachment properties only
+- MyAttachments:
+    Control: Attachments
+    Properties:
+      Items: =Parent.Default
+      DisplayMode: =Parent.DisplayMode
+      # Only basic styling and behavior properties supported
+```
+
+**SUPPORTED ATTACHMENTS PROPERTIES:**
+- `Items` - Attachment items to display
+- `DisplayMode` - Edit, View, Disabled modes
+- `BorderColor`, `Fill`, `Color` - Basic styling
+- `HoverFill`, `PressedFill` - Interaction styling
+- `ItemColor`, `ItemFill` - Item styling
+- `PaddingTop`, `PaddingBottom`, `PaddingLeft`, `PaddingRight` - Spacing
+- `Tooltip` - Tooltip text
+
+### Rule 73: DropDown Value Mapping for SharePoint
+**CRITICAL**: When using Classic/DropDown without ValueField/TextField, implement manual value mapping for SharePoint submission.
+
+```yaml
+# SharePoint Choice field mapping pattern
+Update: =Switch(DataCardValue_BuoiNghi.Selected.Value, 
+  "Cả ngày", "CaNgay",      # Display → SharePoint value
+  "Sáng", "Sang", 
+  "Chiều", "Chieu", 
+  "CaNgay"                  # Default value
+)
+
+# SharePoint Lookup field mapping pattern  
+Update: =If(varIsUserAuthenticated, 
+  LookUp(colPotentialHandovers, HoTen = DataCardValue_NguoiBanGiao.Selected.Value).Title,
+  Switch(DataCardValue_NguoiBanGiao.Selected.Value, 
+    "Quản lý Demo", "MGR001",
+    "Trần Thị Bình", "EMP002", 
+    "Lê Hoàng Cường", "EMP003",
+    "Phạm Thị Dung", "EMP004",
+    "MGR001"  # Default value
+  )
+)
+```
+
+**VALUE MAPPING RULES:**
+- **Display Values**: User-friendly text shown in dropdown
+- **SharePoint Values**: Actual values stored in SharePoint
+- **Mapping Logic**: Use Switch() or LookUp() to convert display→storage
+- **Default Values**: Always provide fallback values
+- **Authentication Check**: Handle both authenticated and demo scenarios
