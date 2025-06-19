@@ -4125,3 +4125,37 @@ Update: =If(varIsUserAuthenticated,
 - **Mapping Logic**: Use Switch() or LookUp() to convert display→storage
 - **Default Values**: Always provide fallback values
 - **Authentication Check**: Handle both authenticated and demo scenarios
+
+### Rule 74: ComboBox Property Restrictions
+**CRITICAL**: ComboBox controls do NOT support DisplayFields, SearchFields, Default, Color, Size, or HintText properties.
+
+```yaml
+# ❌ WRONG - Unsupported ComboBox properties
+- MyComboBox:
+    Control: ComboBox
+    Properties:
+      Items: =colData
+      DisplayFields: =["Name"]      # PA2108 ERROR
+      SearchFields: =["Name", "ID"] # PA2108 ERROR
+      Default: =Parent.Default      # PA2108 ERROR
+      Color: =RGBA(0,0,0,1)        # PA2108 ERROR
+      Size: =FontSizes.Base        # PA2108 ERROR
+      HintText: ="Search..."       # PA2108 ERROR
+
+# ✅ CORRECT - Supported ComboBox properties only
+- MyComboBox:
+    Control: ComboBox
+    Properties:
+      Items: =colData
+      DefaultSelectedItems: =[Parent.Default]  # Use this instead of Default
+      DisplayMode: =Parent.DisplayMode
+      # Only basic styling properties supported
+```
+
+**SUPPORTED COMBOBOX PROPERTIES:**
+- `Items` - Data source for ComboBox
+- `DefaultSelectedItems` - Initial selection (use instead of Default)
+- `DisplayMode` - Edit, View, Disabled modes
+- `BorderColor`, `Fill`, `Font` - Basic styling (no Color, Size)
+- `Width`, `Height`, `X`, `Y` - Positioning
+- `OnChange`, `OnSelect` - Event handlers
