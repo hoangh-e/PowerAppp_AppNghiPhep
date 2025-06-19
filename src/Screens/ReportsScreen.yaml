@@ -4,30 +4,124 @@
       Fill: =RGBA(248, 250, 252, 1)
       OnVisible: |
         =Set(varActiveScreen, "Reports"); 
-        //Permission checks using helper functions from App/Formulas
+        //CRITICAL: Check authentication status first
+        Set(varIsUserAuthenticated, And(
+          Not(IsBlank(UserSessionANP.Id)),
+          UserSessionANP.Id <> "",
+          UserSessionANP.Permission > 0
+        ));
+        
+        //Permission checks using helper functions from App/Formulas - PERMISSION-BASED only
         Set(varUserPermissions, {
           CanViewDashboard: CheckPermission(UserSessionANP.Permission, UserPermissions.VIEW_DASHBOARD),
           CanViewAllLeaves: CheckPermission(UserSessionANP.Permission, UserPermissions.VIEW_ALL_LEAVE),
           CanViewTeamLeaves: CheckPermission(UserSessionANP.Permission, UserPermissions.VIEW_TEAM_LEAVE),
           CanExportReports: CheckPermission(UserSessionANP.Permission, UserPermissions.EXPORT_REPORTS),
           CanManageUsers: CheckPermission(UserSessionANP.Permission, UserPermissions.MANAGE_USERS),
-          IsSystemAdmin: CheckPermission(UserSessionANP.Permission, UserPermissions.SYSTEM_ADMIN)
+          IsSystemAdmin: CheckPermission(UserSessionANP.Permission, UserPermissions.SYSTEM_ADMIN),
+          CanViewPersonalLeaves: CheckPermission(UserSessionANP.Permission, UserPermissions.PERSONAL_LEAVE),
+          CanApproveLevel1: CheckPermission(UserSessionANP.Permission, UserPermissions.APPROVE_LEVEL_1),
+          CanApproveLevel2: CheckPermission(UserSessionANP.Permission, UserPermissions.APPROVE_LEVEL_2),
+          CanApproveLevel3: CheckPermission(UserSessionANP.Permission, UserPermissions.APPROVE_LEVEL_3)
         });
         
-        //CRITICAL: Check if user can access reports - Admin should always have access
-        Set(varCanAccessReports, true);
+        //CRITICAL: Check if user can access reports based on Permission Matrix
+        Set(varCanAccessReports, Or(
+          varUserPermissions.CanViewDashboard,
+          varUserPermissions.CanViewAllLeaves,
+          varUserPermissions.CanViewTeamLeaves,
+          varUserPermissions.CanExportReports,
+          varUserPermissions.CanManageUsers,
+          varUserPermissions.IsSystemAdmin
+        ));
+        //DEBUG: Set debug info for troubleshooting permissions
+        Set(varDebugInfo, {
+          UserPermission: UserSessionANP.Permission,
+          UserRole: UserSessionANP.MaVaiTro,
+          CanViewDashboard: varUserPermissions.CanViewDashboard,
+          CanViewAllLeaves: varUserPermissions.CanViewAllLeaves,
+          CanViewTeamLeaves: varUserPermissions.CanViewTeamLeaves,
+          CanExportReports: varUserPermissions.CanExportReports,
+          CanAccessReports: varCanAccessReports
+        });
+        
+        //ENHANCED: Provide demo users based on missing permissions
+        If(And(Not(varCanAccessReports), Not(varIsUserAuthenticated)),
+          //Set demo users with different permission levels for testing
+          Set(varDemoUserType, "Director"); //Default to Director for reports testing
+          Switch(varDemoUserType,
+            "Manager", 
+              Set(UserSessionANP, {
+                Id: "DEMO_MANAGER_001",
+                HoTen: "Trần Thị Bình (Demo Manager)",
+                Email: "manager.demo@company.com",
+                MaVaiTro: "Manager",
+                Permission: 279, // Manager permissions: PERSONAL_LEAVE(1) + SPECIAL_LEAVE(2) + VIEW_TEAM_LEAVE(4) + APPROVE_LEVEL_1(16) + VIEW_DASHBOARD(256)
+                NguoiQuanLyId: "",
+                ChucDanh: "Trưởng phòng",
+                MaDonVi: "IT",
+                TrangThai: "HoatDong",
+                Name: "Trần Thị Bình",
+                Role: "Manager"
+              }),
+            "Director",
+              Set(UserSessionANP, {
+                Id: "DEMO_DIRECTOR_001", 
+                HoTen: "Lê Văn Cường (Demo Director)",
+                Email: "director.demo@company.com",
+                MaVaiTro: "Director",
+                Permission: 879, // Director permissions: PERSONAL_LEAVE(1) + SPECIAL_LEAVE(2) + VIEW_TEAM_LEAVE(4) + VIEW_ALL_LEAVE(8) + APPROVE_LEVEL_2(32) + APPROVE_LEVEL_3(64) + VIEW_DASHBOARD(256) + EXPORT_REPORTS(512)
+                NguoiQuanLyId: "",
+                ChucDanh: "Giám đốc",
+                MaDonVi: "BOD",
+                TrangThai: "HoatDong",
+                Name: "Lê Văn Cường",
+                Role: "Director"
+              }),
+            "HR",
+              Set(UserSessionANP, {
+                Id: "DEMO_HR_001",
+                HoTen: "Phạm Thị Dung (Demo HR)",
+                Email: "hr.demo@company.com", 
+                MaVaiTro: "HR",
+                Permission: 3979, // HR permissions: PERSONAL_LEAVE(1) + SPECIAL_LEAVE(2) + VIEW_ALL_LEAVE(8) + RECORD_LEAVE(128) + VIEW_DASHBOARD(256) + EXPORT_REPORTS(512) + MANAGE_LEAVE_QUOTA(1024) + MANAGE_HOLIDAYS(2048)
+                NguoiQuanLyId: "",
+                ChucDanh: "Chuyên viên nhân sự",
+                MaDonVi: "HR",
+                TrangThai: "HoatDong",
+                Name: "Phạm Thị Dung",
+                Role: "HR"
+              })
+          );
+          Set(varIsUserAuthenticated, true);
+          //Recalculate permissions with demo user
+          Set(varUserPermissions, {
+            CanViewDashboard: CheckPermission(UserSessionANP.Permission, UserPermissions.VIEW_DASHBOARD),
+            CanViewAllLeaves: CheckPermission(UserSessionANP.Permission, UserPermissions.VIEW_ALL_LEAVE),
+            CanViewTeamLeaves: CheckPermission(UserSessionANP.Permission, UserPermissions.VIEW_TEAM_LEAVE),
+            CanExportReports: CheckPermission(UserSessionANP.Permission, UserPermissions.EXPORT_REPORTS),
+            CanManageUsers: CheckPermission(UserSessionANP.Permission, UserPermissions.MANAGE_USERS),
+            IsSystemAdmin: CheckPermission(UserSessionANP.Permission, UserPermissions.SYSTEM_ADMIN),
+            CanViewPersonalLeaves: CheckPermission(UserSessionANP.Permission, UserPermissions.PERSONAL_LEAVE),
+            CanApproveLevel1: CheckPermission(UserSessionANP.Permission, UserPermissions.APPROVE_LEVEL_1),
+            CanApproveLevel2: CheckPermission(UserSessionANP.Permission, UserPermissions.APPROVE_LEVEL_2),
+            CanApproveLevel3: CheckPermission(UserSessionANP.Permission, UserPermissions.APPROVE_LEVEL_3)
+          });
+          Set(varCanAccessReports, Or(
+            varUserPermissions.CanViewDashboard,
+            varUserPermissions.CanViewAllLeaves,
+            varUserPermissions.CanViewTeamLeaves,
+            varUserPermissions.CanExportReports,
+            varUserPermissions.CanManageUsers,
+            varUserPermissions.IsSystemAdmin
+          ))
+        );
+        
+        //Initialize reports screen variables
         Set(varReportType, "Monthly"); 
         Set(varReportPeriod, "This Year"); 
         Set(varSelectedDepartment, UserSessionANP.MaDonVi); 
         Set(varSelectedYear, Year(Today())); 
-        Set(varReportData, Table(
-          {Thang: 1, TenThang: "Tháng 1", SoDon: 8, SoDonDuyet: 6, SoDonTuChoi: 1, TongNgayNghi: 18},
-          {Thang: 2, TenThang: "Tháng 2", SoDon: 5, SoDonDuyet: 4, SoDonTuChoi: 1, TongNgayNghi: 12},
-          {Thang: 3, TenThang: "Tháng 3", SoDon: 12, SoDonDuyet: 10, SoDonTuChoi: 2, TongNgayNghi: 30},
-          {Thang: 4, TenThang: "Tháng 4", SoDon: 7, SoDonDuyet: 5, SoDonTuChoi: 1, TongNgayNghi: 15},
-          {Thang: 5, TenThang: "Tháng 5", SoDon: 3, SoDonDuyet: 3, SoDonTuChoi: 0, TongNgayNghi: 9},
-          {Thang: 6, TenThang: "Tháng 6", SoDon: 6, SoDonDuyet: 4, SoDonTuChoi: 1, TongNgayNghi: 12}
-        )); 
         Set(varIsGenerating, false); 
         Set(varShowExportOptions, false); 
         Set(varChartType, "Column"); 
@@ -1368,4 +1462,84 @@
                         PressedFill: =ColorFade(RGBA(59, 130, 246, 1), -20%)
                         OnSelect: |
                           =Notify(Concatenate("Đã xuất báo cáo ", varReportType, " thành file CSV với ", CountRows(varReportData), " bản ghi"), NotificationType.Success);
-                          Set(varShowExportOptions, false) 
+                          Set(varShowExportOptions, false)
+
+      - 'Reports.NoAccess.Container':
+          Control: GroupContainer
+          Variant: ManualLayout
+          Properties:
+            X: ='Reports.Navigation'.Width
+            Y: ='Reports.Header'.Height
+            Width: =Parent.Width - 'Reports.Navigation'.Width
+            Height: =Parent.Height - 'Reports.Header'.Height
+            Visible: =Not(varCanAccessReports)
+          Children:
+            - 'Reports.NoAccess.Background':
+                Control: Rectangle
+                Properties:
+                  X: =0
+                  Y: =0
+                  Width: =Parent.Width
+                  Height: =Parent.Height
+                  Fill: =RGBA(249, 250, 251, 1)
+
+            - 'Reports.NoAccess.Message':
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =(Parent.Width - Self.Width) / 2
+                  Y: =(Parent.Height - Self.Height) / 2
+                  Width: =Parent.Width * 0.6
+                  Height: =Parent.Height * 0.4
+                Children:
+                  - 'Reports.NoAccess.Icon':
+                      Control: Classic/Icon
+                      Properties:
+                        X: =(Parent.Width - Self.Width) / 2
+                        Y: =Parent.Height * 0.1
+                        Width: =80
+                        Height: =80
+                        Icon: =Icon.BlockContact
+                        Color: =RGBA(239, 68, 68, 1)
+
+                  - 'Reports.NoAccess.Title':
+                      Control: Label
+                      Properties:
+                        X: =0
+                        Y: =Parent.Height * 0.4
+                        Width: =Parent.Width
+                        Height: =Parent.Height * 0.15
+                        Text: ="Không có quyền truy cập"
+                        Color: =RGBA(17, 24, 39, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Bold
+                        Size: =FontSizes.XLarge
+                        Align: =Align.Center
+
+                  - 'Reports.NoAccess.Description':
+                      Control: Label
+                      Properties:
+                        X: =0
+                        Y: =Parent.Height * 0.6
+                        Width: =Parent.Width
+                        Height: =Parent.Height * 0.25
+                        Text: ="Bạn không có quyền xem báo cáo. Vui lòng liên hệ quản trị viên để được cấp quyền VIEW_DASHBOARD, VIEW_ALL_LEAVE, VIEW_TEAM_LEAVE, hoặc EXPORT_REPORTS."
+                        Color: =RGBA(107, 114, 128, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Normal
+                        Size: =FontSizes.Small
+                        Align: =Align.Center
+                        Wrap: =true
+
+                  - 'Reports.NoAccess.BackButton':
+                      Control: CanvasComponent
+                      ComponentName: ButtonComponent
+                      Properties:
+                        X: =(Parent.Width - Self.Width) / 2
+                        Y: =Parent.Height * 0.9
+                        Width: =Parent.Width * 0.4
+                        Height: =40
+                        Text: ="Quay lại Dashboard"
+                        Size: ="Medium"
+                        OnClick: |
+                          =Navigate(DashboardScreen) 

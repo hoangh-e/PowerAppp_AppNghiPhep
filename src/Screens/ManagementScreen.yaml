@@ -310,6 +310,7 @@
             Y: ='Management.Header'.Height
             Width: =Parent.Width - 'Management.Navigation'.Width
             Height: =Parent.Height - 'Management.Header'.Height
+            Visible: =varCanAccessManagement
           Children:
             - 'Management.Content.Padded':
                 Control: GroupContainer
@@ -2222,3 +2223,84 @@
                     Set(varDataLoading, true);
                     //Simulate retry
                     Set(varAuthTimerStart, true)
+
+      # No Access Container  
+      - 'Management.NoAccess.Container':
+          Control: GroupContainer
+          Variant: ManualLayout
+          Properties:
+            X: ='Management.Navigation'.Width
+            Y: ='Management.Header'.Height
+            Width: =Parent.Width - 'Management.Navigation'.Width
+            Height: =Parent.Height - 'Management.Header'.Height
+            Visible: =Not(varCanAccessManagement)
+          Children:
+            - 'Management.NoAccess.Background':
+                Control: Rectangle
+                Properties:
+                  X: =0
+                  Y: =0
+                  Width: =Parent.Width
+                  Height: =Parent.Height
+                  Fill: =RGBA(249, 250, 251, 1)
+
+            - 'Management.NoAccess.Message':
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  X: =(Parent.Width - Self.Width) / 2
+                  Y: =(Parent.Height - Self.Height) / 2
+                  Width: =Parent.Width * 0.6
+                  Height: =Parent.Height * 0.4
+                Children:
+                  - 'Management.NoAccess.Icon':
+                      Control: Classic/Icon
+                      Properties:
+                        X: =(Parent.Width - Self.Width) / 2
+                        Y: =Parent.Height * 0.1
+                        Width: =80
+                        Height: =80
+                        Icon: =Icon.Shield
+                        Color: =RGBA(239, 68, 68, 1)
+
+                  - 'Management.NoAccess.Title':
+                      Control: Label
+                      Properties:
+                        X: =0
+                        Y: =Parent.Height * 0.4
+                        Width: =Parent.Width
+                        Height: =Parent.Height * 0.15
+                        Text: ="Không có quyền quản lý"
+                        Color: =RGBA(17, 24, 39, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Bold
+                        Size: =FontSizes.XLarge
+                        Align: =Align.Center
+
+                  - 'Management.NoAccess.Description':
+                      Control: Label
+                      Properties:
+                        X: =0
+                        Y: =Parent.Height * 0.6
+                        Width: =Parent.Width
+                        Height: =Parent.Height * 0.25
+                        Text: ="Bạn không có quyền truy cập trang Quản lý hệ thống. Vui lòng liên hệ quản trị viên để được cấp quyền MANAGE_USERS, MANAGE_HOLIDAYS, MANAGE_LEAVE_QUOTA, hoặc SYSTEM_ADMIN."
+                        Color: =RGBA(107, 114, 128, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Normal
+                        Size: =FontSizes.Small
+                        Align: =Align.Center
+                        Wrap: =true
+
+                  - 'Management.NoAccess.BackButton':
+                      Control: CanvasComponent
+                      ComponentName: ButtonComponent
+                      Properties:
+                        X: =(Parent.Width - Self.Width) / 2
+                        Y: =Parent.Height * 0.9
+                        Width: =Parent.Width * 0.4
+                        Height: =40
+                        Text: ="Quay lại Dashboard"
+                        Size: ="Medium"
+                        OnClick: |
+                          =Navigate(DashboardScreen)
